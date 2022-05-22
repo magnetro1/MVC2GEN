@@ -449,7 +449,7 @@ const logicTracker = function(Px) //"P1" or "P2"
 	return resultTable
 }
 /*
-Functions
+List of Functions for reference
 logicTracker(P2)
 Knockdown_StateFN(P1) 
 Prox_BlockFN(P1)
