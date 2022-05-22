@@ -202,7 +202,6 @@ function Prox_BlockFN(Pz)
 	}
 	return arrValues
 }
-
 // Names Table / For address ID_2.
 const namesTable = 
 {
@@ -340,8 +339,9 @@ const ProxBlocKObj =
 }
 
 // Prints out various character information
-const logicTracker = function(Px)
+const logicTracker = function(Px) //"P1" or "P2"
 {	
+	//Static values derived from original set of data
 	let dataAdrObj =
 	{
 		Action_Flags 		: 	varLookup2(Px, "Action_Flags"),
@@ -357,7 +357,7 @@ const logicTracker = function(Px)
 		SJ_Counter 			: 	varLookup2(Px, "SJ_Counter"),
 		Is_Prox_Block 		: 	varLookup2(Px, "Is_Prox_Block"),
 	}
-
+	// empty arrays that will contain our character's values
 	let arrBeing_Hit = 				[];
 	let arrFlying_Screen_Air = 		[];
 	let arrFlyingScreen_OTG = 		[];
@@ -385,7 +385,7 @@ const logicTracker = function(Px)
 	
 	// Status Keys and Values
 	let statusObject = 
-	{
+	{	//Each of these keys will contain an array of 1 or 0, indicating active/inactive
 		"Being_Hit" 			: arrBeing_Hit,
 		"Flying_Screen_Air"		: arrFlying_Screen_Air,
 		"FlyingScreen_OTG"		: arrFlyingScreen_OTG,
@@ -412,7 +412,7 @@ const logicTracker = function(Px)
 		"Thrown_Ground" 		: arrThrown_Ground,
 	}
 	for ( let p = 0; p < Px.length ; p++ )
-	{
+	{	//Ternary checkers for state active/inactive
 		arrBeing_Hit.push( dataAdrObj.Animation_Timer_Main[p] > 0 && dataAdrObj.Knockdown_State[p] == 32 ? 1 : 0 )
 		arrFlying_Screen_Air.push( dataAdrObj.FlyingScreen[p] == 1 && dataAdrObj.Knockdown_State[p] == 32 && dataAdrObj.Airborne[p] == 2 ? 1 : 0 )
 		arrFlyingScreen_OTG.push( dataAdrObj.FlyingScreen[p] == 1 && dataAdrObj.Knockdown_State[p] == 32 && dataAdrObj.Airborne[p] == 3 ? 1 : 0 )
@@ -439,14 +439,14 @@ const logicTracker = function(Px)
 	}
 	let fnStatusKeys = Object.keys(statusObject);
 	let fnStatusValues = Object.values(statusObject);
-	let fnStr = '';
+	let resultTable = '';
 
 	for ( i = 0 ; i < fnStatusValues.length; i++ )
 	{
-		fnStr += Px + fnStatusKeys[ i ] + ": " + fnStatusValues [ i ] + '\r'
+		resultTable += Px + fnStatusKeys[ i ] + ": " + fnStatusValues [ i ] + '\r'
 	}
 
-	return fnStr
+	return resultTable
 }
 /*
 Functions

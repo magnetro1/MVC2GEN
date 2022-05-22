@@ -97,4 +97,4 @@ P2_Final = inputsFinalP2
 	.replace( /48/gi , '7' )
 	.replace( /68/gi , '9' )
 
-P1_Final + "\r" + P2_Final
+P1_Final + "\r" + P2_Final //Using a return-carriage to separate the inputs; need to add position property change to have them display right
