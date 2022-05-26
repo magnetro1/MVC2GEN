@@ -202,7 +202,7 @@ function Prox_BlockFN(Pz)
 	}
 	return arrValues
 }
-// Names Table / For address ID_2.
+// Names Table / For address ID_2
 const namesTable = 
 {
 	0	: "Ryu",
