@@ -100,9 +100,9 @@ const minFN = function(Pz , address )
 		arrMin.push(xMath)
 	}
 	return arrMin
-}
+} //extraneous comment
 
-//Max
+//Max 
 const maxFN = function(Pz , address )
 {
 	addressSearch = varLookup2(Pz , address)
