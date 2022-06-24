@@ -1,4 +1,4 @@
-
+// Might need images to make this stuff easier to understand.
 // Stage Lookup to determine color
 // Manual Lookup Function // Needs complete target-address. Ex: "P1_A_Health_Big"
 const mnlLookup = function(address)
@@ -33,7 +33,7 @@ const stagesTable =
 	14	: hexToRgb("0xA43812"),	//"Cave1"
 	15	: hexToRgb("0x888885"),	//"Clock1"
 	16	: hexToRgb("0x8CA7DF"),	//"Raft1"
-}
+} 
 //Set UI color depending on the value
 if 		( stageResult == 0 ) { stagesTable[0] } 
 else if	( stageResult == 1 ) { stagesTable[1] }
