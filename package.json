@@ -1,0 +1,21 @@
+{
+  "name": "mvc2gen",
+  "version": "1.0.0",
+  "description": "Well, a readme file.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yahiaboudah/MVC2GEN.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yahiaboudah/MVC2GEN/issues"
+  },
+  "homepage": "https://github.com/yahiaboudah/MVC2GEN#readme"
+}
