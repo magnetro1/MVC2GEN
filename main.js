@@ -1,8 +1,10 @@
 
-import { Knockdown_State } from './constObjects/constKnockdownState.js';
-import { StagesTable } from  './constObjects/constStages.js';
-import { ProxBlock } from './constObjects/constProxBlocKState.js';
-import { namesTable } from   './constObjects/constNames.js';
-import * as clipData from   './csv_to_ae/Shuma47_node.js';
+import { Knockdown_State, StagesTable, ProxBlock, namesTable} from './constObjects/staticData.js';
+import * as Shuma47 from   './csv_to_js/Shuma47_node.js';
 
-console.log(clipData.A_2D_Game_Timer);
+console.log(Shuma47.A_2D_Game_Timer);
+
+console.log(Knockdown_State);
+console.log(StagesTable);
+console.log(ProxBlock);
+console.log(namesTable);
