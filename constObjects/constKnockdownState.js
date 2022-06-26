@@ -1,5 +1,5 @@
 //Knockdown_State Table
-const Knockdown_StateObj =
+export const Knockdown_State =
 {
 	0	: "Neutral",
 	1	: "Walking",

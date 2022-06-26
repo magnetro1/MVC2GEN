@@ -2,8 +2,8 @@
   "name": "mvc2gen",
   "version": "1.0.0",
   "description": "ingemination",
-  "main": "index.js",
-  "type": "commonjs",
+  "main": "main.js",
+  "type": "module",
   
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

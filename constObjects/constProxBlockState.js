@@ -1,5 +1,5 @@
 //Prox_Block Table
-const ProxBlocKObj = 
+export const ProxBlock = 
 {	
 	0	:	"Neutral" ,
 	1	:	"Air" ,

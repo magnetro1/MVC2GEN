@@ -2,7 +2,7 @@
 //Decimal Values in the order the the game stores the kvs. For ID_2 value.
 //The way the characters are typed has to be consistent throughout 
 //the project; any AE change will be predicated on the ID number
-const namesTable =
+export const namesTable =
 {
 	0	: "Ryu",
 	1	: "Zangief",

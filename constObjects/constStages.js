@@ -1,5 +1,5 @@
 //Stage KV codes in the order the game lists. These stage codes are used to decide colors that get applied to the custom UI
-const stagesTable =
+export const StagesTable =
 {
 	0	: "Boat1",
 	1	: "Desert1",
