@@ -1,5 +1,5 @@
-import { Knockdown_State, StagesTable, ProxBlock, namesTable} from './constObjects/staticData.js';
-import * as data from './csv_to_js/Shuma47_node.js';
+import { Knockdown_State, StagesTable, ProxBlock, namesTable} from './main_files/staticData.js';
+import * as data from './main_files/Shuma47_node.js';
 import * as fs from 'fs';
 
 // console.log(Knockdown_State);
