@@ -1,11 +1,7 @@
 ﻿$CleanArgs = $args.Split(',').Trim()
 $FileObject = (Get-ChildItem $CleanArgs)
 $CSVFile = Import-CSV $CleanArgs
-# $CSVFile = Import-CSV -Path ./csv_to_ae/Shuma47_F.csv
 $fileName = $FileObject.Name.ToString().replace(".csv", "").replace("_F","_node")
-# if (!(Test-Path ".\$fileName\")) {
-# 	New-Item -ItemType Directory -Path ".\$fileName\"
-# }
 $Headers= ($CSVFile | Get-Member -MemberType 'NoteProperty' | Select-Object -ExpandProperty 'Name')
 $Data = $Headers | ForEach-Object {Write-Output "$(($CSVFile | Select-Object -ExpandProperty $_) -Join ',')"}
 
