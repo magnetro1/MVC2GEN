@@ -30,9 +30,9 @@ for (var  m = 0 ; m < BeingHitArray.length ; m++ )
 			&& eval(`data.${slots[m]}Knockdown_State.split(',')`)[i] == 32 ) 
 			? 1 + ',' : 0 + ','
 	}
-	console.log(slots[m]+"BeingHit: " + BeingHitArray[m]);
+	// console.log(slots[m]+"BeingHit: " + BeingHitArray[m]);
 }
-// console.log(BeingHitArray);
+console.log(BeingHitArray);
 
 for (var  m = 0 ; m < FlyingScreenAirArray.length ; m++ )
 {
@@ -46,9 +46,9 @@ for (var  m = 0 ; m < FlyingScreenAirArray.length ; m++ )
 			&& eval(`data.${slots[m]}Airborne.split(',')`)[i] == 2) 
 			? 1 + ',' : 0 + ','
 	}
-	console.log(slots[m]+"FlyingScreenAir: " + FlyingScreenAirArray[m]);
+	// console.log(slots[m]+"FlyingScreenAir: " + FlyingScreenAirArray[m]);
 }
-// console.log(FlyingScreenAirArray);
+console.log(FlyingScreenAirArray);
 
 // fs.writeFile(`P2_C_BeingHit.js`, `export var P2_C_BeingHit = "${P2_C_BeingHit.toString()}";`, (err) =>
 // {
@@ -58,3 +58,51 @@ for (var  m = 0 ; m < FlyingScreenAirArray.length ; m++ )
 // 	   console.log('Hola');
 // 	 }
 // });
+
+//Point Checker System
+//These arrays will contain the active-point-character prefixes (Ex: P1_A_)
+// const P1 = [];
+// const P2 = [];
+
+// const pointTableP1 =
+// {
+// 	P1_A_ : data.P1_A_Is_Point.split(','),
+// 	P1_B_ : data.P1_B_Is_Point.split(','),
+// 	P1_C_ : data.P1_C_Is_Point.split(','),
+// };
+// const pointTableP2 =
+// {
+// 	P2_A_ : data.P2_A_Is_Point.split(','),
+// 	P2_B_ : data.P2_A_Is_Point.split(','),
+// 	P2_C_ : data.P2_A_Is_Point.split(','),
+// };
+// //Loops to check which keys have a 0 value and push them into previous arrays
+// //P1
+// for ( let i = 0 ; i < Object.values(pointTableP1).length ; i++ )
+// {
+// 	for ( let k = 0; k < Object.values(pointTableP1)[i].length; k++ )
+// 	{
+// 		if (Object.values(pointTableP1)[i][k] == 0)
+// 		{
+// 			P1.push(Object.keys(pointTableP1)[i])
+// 		}
+// 		// else
+// 		// {
+// 		// 	console.log("P1NG")
+// 		// }
+// 	}
+// };
+// for ( let i = 0 ; i < Object.values(pointTableP2).length ; i++ )
+// {
+// 	for ( let k = 0; k < Object.values(pointTableP2)[i].length; k++ )
+// 	{
+// 		if (Object.values(pointTableP2)[i][k] == 0)
+// 		{
+// 			P2.push(Object.keys(pointTableP2)[i])
+// 		}
+// 		// else
+// 		// {
+// 		// 	console.log("P2NG")
+// 		// }
+// 	}
+// };
