@@ -2,58 +2,6 @@ import { Knockdown_State, StagesTable, ProxBlock, namesTable} from './main_files
 // import * as data from './main_files/Shuma47_node.js';
 import * as data from './main_files/CaptainCommandoRogueCable8_node.js';
 import * as fs from 'fs';
-
-// var newStateNames = ["Being_Hit","Flying_Screen_Air","FlyingScreen_OTG","FSD_Dash","FS_Install_1","FS_Install_2","NJ_Air","NJ_Rising","OTG_Extra_Stun","OTG_Forced_Stun","OTG_Hit","OTG_Roll_Invincible","OTG_Roll_Stunned","ProxBlock_Air","ProxBlock_Ground","Pushblock_Air","Pushblock_Ground","Rising_Invincibility","SJ_Air","SJ_Counter","Stun","Tech_Hit","Thrown_Air","Thrown_Ground"];
-
-
-//Point Checker System
-//These arrays will contain the active-point-character prefixes (Ex: P1_A_)
-// const P1 = [];
-// const P2 = [];
-
-// const pointTableP1 =
-// {
-// 	P1_A_ : data.P1_A_Is_Point.split(','),
-// 	P1_B_ : data.P1_B_Is_Point.split(','),
-// 	P1_C_ : data.P1_C_Is_Point.split(','),
-// };
-// const pointTableP2 =
-// {
-// 	P2_A_ : data.P2_A_Is_Point.split(','),
-// 	P2_B_ : data.P2_A_Is_Point.split(','),
-// 	P2_C_ : data.P2_A_Is_Point.split(','),
-// };
-// //Loops to check which keys have a 0 value and push them into previous arrays
-// //P1
-// for ( let i = 0 ; i < Object.values(pointTableP1).length ; i++ )
-// {
-// 	for ( let k = 0; k < Object.values(pointTableP1)[i].length; k++ )
-// 	{
-// 		if (Object.values(pointTableP1)[i][k] == 0)
-// 		{
-// 			P1.push(Object.keys(pointTableP1)[i])
-// 		}
-// 		// else
-// 		// {
-// 		// 	console.log("P1NG")
-// 		// }
-// 	}
-// };
-// for ( let i = 0 ; i < Object.values(pointTableP2).length ; i++ )
-// {
-// 	for ( let k = 0; k < Object.values(pointTableP2)[i].length; k++ )
-// 	{
-// 		if (Object.values(pointTableP2)[i][k] == 0)
-// 		{
-// 			P2.push(Object.keys(pointTableP2)[i])
-// 		}
-// 		// else
-// 		// {
-// 		// 	console.log("P2NG")
-// 		// }
-// 	}
-// };
-
 const slots = ["P1_A_","P1_B_","P1_C_","P2_A_","P2_B_","P2_C_"];
 
 var BeingHitArray = [];
@@ -82,6 +30,7 @@ for (var  m = 0 ; m < BeingHitArray.length ; m++ )
 			&& eval(`data.${slots[m]}Knockdown_State.split(',')`)[i] == 32 ) 
 			? 1 + ',' : 0 + ','
 	}
+	console.log(slots[m]+"BeingHit: " + BeingHitArray[m]);
 }
 // console.log(BeingHitArray);
 
@@ -97,8 +46,9 @@ for (var  m = 0 ; m < FlyingScreenAirArray.length ; m++ )
 			&& eval(`data.${slots[m]}Airborne.split(',')`)[i] == 2) 
 			? 1 + ',' : 0 + ','
 	}
+	console.log(slots[m]+"FlyingScreenAir: " + FlyingScreenAirArray[m]);
 }
-console.log(FlyingScreenAirArray);
+// console.log(FlyingScreenAirArray);
 
 // fs.writeFile(`P2_C_BeingHit.js`, `export var P2_C_BeingHit = "${P2_C_BeingHit.toString()}";`, (err) =>
 // {
