@@ -6,35 +6,37 @@ import * as fs from 'fs';
 const slots = ["P1_A_","P1_B_","P1_C_","P2_A_","P2_B_","P2_C_"];
 const clipLength = data.A_2D_Game_Timer.split(',')
 
-/*List of States I'm going to export data for:
-  I was thinking of adding a table of states and their corresponding logics...
-  It would be cool if the MVC2GEN could iterate through this table automatically 
-  to pick out which key and value pairs to use for each character.
+// List of States I'm going to export data for:
+//   I was thinking of adding a table of states and their corresponding logics...
+//   It would be cool if the MVC2GEN could iterate through this table automatically 
+//   to pick out which key and value pairs to use for each character.
 
-	"Being_Hit" 			: Animation_Timer_Main > 0 && Knockdown_State == 32 
-	"Flying_Screen_Air"		: FlyingScreen == 1 && Knockdown_State == 32 && Airborne == 2
-	"FlyingScreen_OTG"		:
-	"FSD_Dash"				:
-	"FS_Install_1"			:
-	"FS_Install_2"			:
-	"NJ_Air"				:
-	"NJ_Rising" 			:
-	"OTG_Extra_Stun" 		:
-	"OTG_Forced_Stun" 		:
-	"OTG_Hit" 				:
-	"OTG_Roll_Invincible" 	:
-	"OTG_Roll_Stunned" 		:
-	"ProxBlock_Air" 		:
-	"ProxBlock_Ground" 		:
-	"Pushblock_Air" 		:
-	"Pushblock_Ground" 		:
-	"Rising_Invincibility" 	:
-	"SJ_Air" 				:
-	"SJ_Counter" 			:
-	"Stun" 					:
-	"Thrown_Air" 			:
-	"Thrown_Ground" 		:
-*/
+const newDataToWrite = {
+	"Being_Hit": Animation_Timer_Main > 0 && Knockdown_State == 32 ? 1 : 0,
+	"Flying_Screen_Air": FlyingScreen == 1 && Knockdown_State == 32 && Airborne == 2 ? 1 : 0,
+	"FlyingScreen_OTG": FlyingScreen == 1 && Knockdown_State == 32 && Airborne == 3 ? 1 : 0,
+	"FS_Install_1": FSI_Points == 8 || FSI_Points == 9  ? 1 : 0,
+	"FS_Install_2": FSI_Points > 9 ? 1 : 0,
+	"NJ_Air": Airborne == 2 && Knockdown_State == 3 && SJ_Counter == 0 ? 1 : 0,
+	"NJ_Rising": Airborne == 0 && Knockdown_State == 2 && SJ_Counter == 0 ? 1 : 0,
+	"OTG_Extra_Stun": Knockdown_State == 23 && Airborne == 3 ? 1 : 0,
+	"OTG_Forced_Stun": Knockdown_State == 32 && Airborne == 3 ? 1 : 0,
+	"OTG_Hit": Action_Flags == 0 && Airborne == 3 && Knockdown_State == 32 ? 1 : 0,
+	"OTG_Roll_Invincible": Action_Flags == 2 && Airborne == 1 && Attack_Immune == 1 && Knockdown_State == 17 ? 1 : 0,
+	"OTG_Roll_Stunned": Action_Flags == 1 && Airborne == 3 && Knockdown_State == 32 ? 1 : 0,
+	"ProxBlock_Air": Is_Prox_Block == 6 && Knockdown_State == 19 ? 1 : 0,
+	"ProxBlock_Ground": Is_Prox_Block == 5 && Knockdown_State == 18 ? 1 : 0,
+	"Pushblock_Air": Block_Meter > 0 && Animation_Timer_Main < 28 && Is_Prox_Block == 6 && Action_Flags == 2 ? 1 : 0, 
+	"Pushblock_Ground": Block_Meter > 0 && Animation_Timer_Main < 28 && Is_Prox_Block == 5 && Action_Flags == 3 ? 1 : 0,
+	"Rising_Invincibility": Airborne == 0 && Attack_Immune == 1 && Knockdown_State == 17 ? 1 : 0,
+	"SJ_Air": Airborne == 2 && Knockdown_State == 14 && SJ_Counter == 1 ? 1 : 0,
+	"SJ_Counter": SJ_Counter == 2 ? 1 : 0,
+	"Stun": Knockdown_State == 32 && Is_Prox_Block == 13 ? 1 : 0,
+	"Tech_Hit": Knockdown_State == 27 ? 1 : 0,
+	"Thrown_Air": Airborne == 2 && Knockdown_State == 31 && Is_Prox_Block == 16 ? 1 : 0,
+	"Thrown_Ground": Airborne == 0 && Knockdown_State == 31 && Is_Prox_Block == 16 ? 1 : 0,
+};
+
 
 /*Instead for now, there's these arrays corresponding to each character.
 I have to create a set of Arrays for each character for now.
