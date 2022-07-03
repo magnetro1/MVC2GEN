@@ -1,20 +1,27 @@
+
 import * as masterAddresses from "./main_files/masterAddresses.js";
 import * as fs from 'fs';
 import * as data from "./main_files/CaptainCommandoRogueCable8_node.js";
 // import * as data from "./main_files/Shuma47_node.js";
 // import * as data from "./main_files/SpiralUnblockable_node.js";
+import { Knockdown_State_Static, StagesTable_Static, ProxBlock_Static, namesTable_Static } from './main_files/staticData.js'
 
 
-// import { Knockdown_State_Static, StagesTable_Static, ProxBlock_Static, namesTable_Static } from './main_files/staticData.js'
-// const slots = ["P1_A_","P1_B_","P1_C_","P2_A_","P2_B_","P2_C_"];
+// Read directory to get files to include for the loops
+const getDir = fs.readdirSync('./main_files', 'utf8');
+var fileNames = [];
+getDir.toString().split(',').forEach(function (file){
+    let re = /\w+_node.js/g;
+    if (file.match(re)) {fileNames.push(file)}
+})
 
 // Get unique-list of player memory addresses per clip to feed into the PointCharacterDataWriter function
-const getFile = fs.readFileSync('./main_files/CaptainCommandoRogueCable8_node.js', 'utf8',)
 var playerDataAll = [];
 var uniqueArray = [];
+const getFile = fs.readFileSync('./main_files/CaptainCommandoRogueCable8_node.js', 'utf8',);
 getFile.toString().split(';').map(line => { // split file into lines
-        var re = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all Player memory addresses
-        var item = ''; // Temporary variable to run the exec function on
+        let re = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all Player memory addresses
+        let item = ''; // Temporary variable to run the exec function on
         while (item = re.exec(line)){ //I don't know how exec works
             playerDataAll.push(item[2]); // I guess this is how you grab $2 from the regex
             playerDataAll.join(','); // Joins the array values into a string
@@ -36,12 +43,12 @@ const pointTableP2 = {
     P2_C_: data.P2_C_Is_Point.split(","),
 };
 
-const PointCharacterDataWriter = function (Px, address)
+const PointCharacterDataWriter = function (Pw, address, TF)
 {
     var pointArray = [];
     var finalValue = [];
     //find point characters
-    if (Px == "P1")
+    if (Pw == "P1")
     {
         for (let i = 0; i < Object.values(pointTableP1).length; i++) // 3
         {
@@ -54,7 +61,7 @@ const PointCharacterDataWriter = function (Px, address)
             }
         }
 
-    } else if (Px == "P2")
+    } else if (Pw == "P2")
     {
         for (let i = 0; i < Object.values(pointTableP2).length; i++) //3
         {
@@ -70,15 +77,23 @@ const PointCharacterDataWriter = function (Px, address)
     {
         return `Arguments need to be strings!`;
     }
+    if ( TF == 1 )
+    {
+        for ( let a = 0; a < clipLength; a++)
+        {
+            finalValue += eval(`data.${pointArray[a]}${address}.split(',')`)[a]+',';
+        }
 
-    //Write file & 'head'
-    fs.writeFileSync(`${Px}_${address}.js` , `var result = [];`+'\r' , { flag: 'a+', encoding: 'utf8' }, err => {})
+        return finalValue
+    }
+    //Write file
+    fs.writeFileSync(`${Pw}_${address}.js` , `var result = [];`+'\r' , { flag: 'a+', encoding: 'utf8' } , (err => {}))
     //Append data for first-point
     for ( let a = 0; a < clipLength; a++)
     {
         finalValue += eval(`data.${pointArray[a]}${address}.split(',')`)[a]+','
     }
-    fs.appendFile(`${Px}_${address}.js` , `result[0] = [${finalValue.toString()}],`.replace(',]',']').replace('],','];')+'\n' , { flag: 'a+', encoding: 'utf8' }, err => {})
+    fs.appendFile(`${Pw}_${address}.js` , `result[0] = [${finalValue.toString()}],`.replace(',]',']').replace('],','];')+'\n' , { flag: 'a+', encoding: 'utf8' } , (err => {}))
     finalValue = [];
     //2-Character Bug-Logic:
     if ( pointArray.length >= (clipLength*2))
@@ -87,8 +102,8 @@ const PointCharacterDataWriter = function (Px, address)
         {
             finalValue += eval(`data.${pointArray[b]}${address}.split(',')`)[i]+','
         }
-        fs.appendFile(`${Px}_${address}.js` , `result[1] = [${finalValue.toString()}],`.replace(',]',']').replace('],','];')+'\n' , { flag: 'a+', encoding: 'utf8' }, err => {})
-        console.log(`2-Character Bug Active on ${Px} side!`)
+        fs.appendFile(`${Pw}_${address}.js` , `result[1] = [${finalValue.toString()}],`.replace(',]',']').replace('],','];')+'\n' , { flag: 'a+', encoding: 'utf8' } , (err => {}))
+        console.log(`2-Character Bug Active on ${Pw} side!`)
     }
     //3-Character Bug Logic:
     else if (pointArray.length >= (clipLength*3))
@@ -97,31 +112,33 @@ const PointCharacterDataWriter = function (Px, address)
         {
             finalValue += eval(`data.${pointArray[c]}${address}.split(',')`)[i]+','
         }
-        fs.appendFile(`${Px}_${address}.js` , `result[2] = [${finalValue.toString()}],`.replace(',]',']').replace('],','];')+'\n' , { flag: 'a+', encoding: 'utf8' }, err => {})
-        console.log(`3-Character Bug Active on ${Px} side!`)
+        fs.appendFile(`${Pw}_${address}.js` , `result[2] = [${finalValue.toString()}],`.replace(',]',']').replace('],','];')+'\n' , { flag: 'a+', encoding: 'utf8' } , (err => {}))
+        console.log(`3-Character Bug Active on ${Pw} side!`)
     }
     else
     {
-        console.log(`Only 1 Point Character on ${Px} side.`)
+        console.log(`Only 1 Point Character on ${Pw} side.`)
     }
 };
 
-for (let playerMemI = 0; playerMemI < uniqueArray.length; playerMemI++) {
-    PointCharacterDataWriter("P1", uniqueArray[playerMemI].toString());
-    PointCharacterDataWriter("P2", uniqueArray[playerMemI].toString());
+// Get names function; merge it into main or make another File-Writer function for this stuff
+var point_ID_2 = PointCharacterDataWriter("P2", "ID_2", 1).split(","); //P1/P2 , character IDs
+var getNamesValues = Object.values(namesTable_Static); 
+let namesArray = []; // used to store the names of the point characters
+for (let i = 0; i < point_ID_2.length-1; i++){
+    namesArray.push( getNamesValues[point_ID_2[i]] )
 }
+console.log(...namesArray)
 
 
-// console.log(masterAddresses.playerAddresses.split(',').length);
-// console.log(data.P1_A_Guardbreak_Flag.split(",").length);
-// console.log(data.P1_A_Health_Big.split(",").length);
-// PointCharacterDataWriter("P1", "Guardbreak_Flag");
-// PointCharacterDataWriter("P2","Health_Big")
-// fs.readdir('main_files', (err, files) => {
-//     files.forEach(file => {
-//       console.log(file.includes("_node.js"));
-//     });
-//   });
+
+// Write files for each player!
+// for (let playerMemI in uniqueArray) {
+//     PointCharacterDataWriter("P1", uniqueArray[playerMemI].toString());
+//     PointCharacterDataWriter("P2", uniqueArray[playerMemI].toString());
+// }
+
+
 /*List of States I'm going to export data for:
   I was thinking of adding a table of states and their corresponding logics...
   It would be cool if the MVC2GEN could iterate through this table automatically
@@ -205,14 +222,3 @@ for (let  m = 0 ; m < slots.length ; m++ )
 }
 console.log(BeingHitArray);
 */
-
-// console.log(FlyingScreenAirArray);
-// console.log(clipLength.length);
-// console.log(FlyingScreenAirArray[0].length);
-// console.log(FlyingScreenAirArray[1].length);
-// console.log(FlyingScreenAirArray[2].length);
-// console.log(FlyingScreenAirArray[3].length);
-// console.log(FlyingScreenAirArray[4].length);
-// console.log(FlyingScreenAirArray[5].length);
-
-
