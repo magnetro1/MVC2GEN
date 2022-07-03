@@ -37,7 +37,7 @@ export const Knockdown_State_Static =
 	33	: "???",
 	34	: "OC Launcher",
 };
-export const ProxBlock_Static = 
+export const Prox_Block_Static = 
 {	
 	0	:	"Neutral" ,
 	1	:	"Air" ,
@@ -68,26 +68,6 @@ export const ProxBlock_Static =
 	26	:	"Air Dash" ,
 }
 
-export const StagesTable_Static =
-{
-	0	: "Boat1",
-	1	: "Desert1",
-	2	: "Factory",
-	3	: "Carnival1",
-	4	: "Bridge1",
-	5	: "Cave2",
-	6	: "Clock2",
-	7	: "Raft2",
-	8	: "Abyss",
-	9	: "Boat2",
-	10	: "Desert2",
-	11	: "Training",
-	12	: "Carnival2",
-	13	: "Bridge2",
-	14	: "Cave1",
-	15	: "Clock1",
-	16	: "Raft1"
-}
 export const namesTable_Static =
 {
 	0	: "Ryu",
@@ -150,3 +130,24 @@ export const namesTable_Static =
 	57	: "Wolverine (Bone)",
 	58	: "Servbot",
 }
+
+// export const StagesTable_Static =
+// {
+// 	0	: "Boat1",
+// 	1	: "Desert1",
+// 	2	: "Factory",
+// 	3	: "Carnival1",
+// 	4	: "Bridge1",
+// 	5	: "Cave2",
+// 	6	: "Clock2",
+// 	7	: "Raft2",
+// 	8	: "Abyss",
+// 	9	: "Boat2",
+// 	10	: "Desert2",
+// 	11	: "Training",
+// 	12	: "Carnival2",
+// 	13	: "Bridge2",
+// 	14	: "Cave1",
+// 	15	: "Clock1",
+// 	16	: "Raft1"
+// }
