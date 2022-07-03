@@ -1,2 +1,4 @@
 .vscode/settings.json
-resources/After Effects Projects+/Adobe After Effects Auto-Save
+/node_modules
+/resources/After Effects Projects+/Adobe After Effects Auto-Save
+/resources/After Effects Projects+/LoadMe_AME
