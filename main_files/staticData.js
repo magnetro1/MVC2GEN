@@ -1,5 +1,5 @@
 
-export const Knockdown_State =
+export const Knockdown_State_Static =
 {
 	0	: "Neutral",
 	1	: "Walking",
@@ -37,7 +37,7 @@ export const Knockdown_State =
 	33	: "???",
 	34	: "OC Launcher",
 };
-export const ProxBlock = 
+export const ProxBlock_Static = 
 {	
 	0	:	"Neutral" ,
 	1	:	"Air" ,
@@ -68,7 +68,7 @@ export const ProxBlock =
 	26	:	"Air Dash" ,
 }
 
-export const StagesTable =
+export const StagesTable_Static =
 {
 	0	: "Boat1",
 	1	: "Desert1",
@@ -88,7 +88,7 @@ export const StagesTable =
 	15	: "Clock1",
 	16	: "Raft1"
 }
-export const namesTable =
+export const namesTable_Static =
 {
 	0	: "Ryu",
 	1	: "Zangief",
