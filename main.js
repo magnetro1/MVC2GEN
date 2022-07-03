@@ -1,18 +1,17 @@
-
-import * as masterAddresses from "./main_files/masterAddresses.js";
 import * as fs from 'fs';
 import * as data from "./main_files/CaptainCommandoRogueCable8_node.js";
 // import * as data from "./main_files/Shuma47_node.js";
 // import * as data from "./main_files/SpiralUnblockable_node.js";
-import { Knockdown_State_Static, StagesTable_Static, ProxBlock_Static, namesTable_Static } from './main_files/staticData.js'
+import { Knockdown_State_Static, Prox_Block_Static, namesTable_Static } from './main_files/staticData.js'
 
 
 // Read directory to get files to include for the loops
 const getDir = fs.readdirSync('./main_files', 'utf8');
 var fileNames = [];
-getDir.toString().split(',').forEach(function (file){
+getDir.toString().split(',').forEach((file) =>
+{
     let re = /\w+_node.js/g;
-    if (file.match(re)) {fileNames.push(file)}
+    if (file.match(re)) { fileNames.push(file); }
 })
 
 // Get unique-list of player memory addresses per clip to feed into the PointCharacterDataWriter function
@@ -43,20 +42,20 @@ const pointTableP2 = {
     P2_C_: data.P2_C_Is_Point.split(","),
 };
 
-const PointCharacterDataWriter = function (Pw, address, TF)
+function PointCharacterDataWriter(Pw, address, write)
 {
     var pointArray = [];
     var finalValue = [];
     //find point characters
     if (Pw == "P1")
     {
-        for (let i = 0; i < Object.values(pointTableP1).length; i++) // 3
+        for (let objectI = 0; objectI < Object.values(pointTableP1).length; objectI++) // 3
         {
-            for (let k = 0; k < Object.values(pointTableP1)[i].length; k++) // length of clip in frames
+            for (let k = 0; k < Object.values(pointTableP1)[objectI].length; k++) // length of clip in frames
             {
-                if (Object.values(pointTableP1)[i][k] == 0)
+                if (Object.values(pointTableP1)[objectI][k] == 0)
                 {
-                    pointArray.push(Object.keys(pointTableP1)[i])
+                    pointArray.push(Object.keys(pointTableP1)[objectI]);
                 }
             }
         }
@@ -69,74 +68,103 @@ const PointCharacterDataWriter = function (Pw, address, TF)
             {
                 if (Object.values(pointTableP2)[i][k] == 0)
                 {
-                    pointArray.push(Object.keys(pointTableP2)[i]) 
+                    pointArray.push(Object.keys(pointTableP2)[i]);
                 }
             }
         }
-    } else
-    {
-        return `Arguments need to be strings!`;
-    }
-    if ( TF == 1 )
-    {
-        for ( let a = 0; a < clipLength; a++)
-        {
-            finalValue += eval(`data.${pointArray[a]}${address}.split(',')`)[a]+',';
-        }
-
-        return finalValue
-    }
-    //Write file
-    fs.writeFileSync(`${Pw}_${address}.js` , `var result = [];`+'\r' , { flag: 'a+', encoding: 'utf8' } , (err => {}))
-    //Append data for first-point
-    for ( let a = 0; a < clipLength; a++)
-    {
-        finalValue += eval(`data.${pointArray[a]}${address}.split(',')`)[a]+','
-    }
-    fs.appendFile(`${Pw}_${address}.js` , `result[0] = [${finalValue.toString()}],`.replace(',]',']').replace('],','];')+'\n' , { flag: 'a+', encoding: 'utf8' } , (err => {}))
-    finalValue = [];
-    //2-Character Bug-Logic:
-    if ( pointArray.length >= (clipLength*2))
-    {
-        for (let b = clipLength, i = 0; b < clipLength*2; b++, i++)
-        {
-            finalValue += eval(`data.${pointArray[b]}${address}.split(',')`)[i]+','
-        }
-        fs.appendFile(`${Pw}_${address}.js` , `result[1] = [${finalValue.toString()}],`.replace(',]',']').replace('],','];')+'\n' , { flag: 'a+', encoding: 'utf8' } , (err => {}))
-        console.log(`2-Character Bug Active on ${Pw} side!`)
-    }
-    //3-Character Bug Logic:
-    else if (pointArray.length >= (clipLength*3))
-    {
-        for (let c = clipLength*2, i = 0; c < clipLength*3; c++, i++)
-        {
-            finalValue += eval(`data.${pointArray[c]}${address}.split(',')`)[i]+','
-        }
-        fs.appendFile(`${Pw}_${address}.js` , `result[2] = [${finalValue.toString()}],`.replace(',]',']').replace('],','];')+'\n' , { flag: 'a+', encoding: 'utf8' } , (err => {}))
-        console.log(`3-Character Bug Active on ${Pw} side!`)
     }
     else
     {
-        console.log(`Only 1 Point Character on ${Pw} side.`)
+        return `Arguments need to be strings!`;
     }
-};
+    if (write == 0) //Used to break out before writing to file
+    {
+        for (let dataLnI = 0; dataLnI < clipLength; dataLnI++)
+        {
+            finalValue += eval(`data.${pointArray[dataLnI]}${address}.split(',')`)[dataLnI] + ',';
+        }
 
-// Get names function; merge it into main or make another File-Writer function for this stuff
-var point_ID_2 = PointCharacterDataWriter("P2", "ID_2", 1).split(","); //P1/P2 , character IDs
-var getNamesValues = Object.values(namesTable_Static); 
-let namesArray = []; // used to store the names of the point characters
-for (let i = 0; i < point_ID_2.length-1; i++){
-    namesArray.push( getNamesValues[point_ID_2[i]] )
+        return finalValue;
+    }
+    //Write base file
+    fs.writeFileSync(`${Pw}_${address}.js`, `var result = [];` + '\r', { flag: 'a+', encoding: 'utf8' }, (err => { }));
+
+    //Append data for first-point
+    for (let dataLnI = 0; dataLnI < clipLength; dataLnI++)
+    {
+        finalValue += eval(`data.${pointArray[dataLnI]}${address}.split(',')`)[dataLnI] + ',';
+    }
+    fs.appendFile(`${Pw}_${address}.js`, `result[0] = [${finalValue.toString()}],`.replace(',]', ']').replace('],', '];') + '\n', { flag: 'a+', encoding: 'utf8' }, (err => { }));
+    finalValue = [];
+
+    //2-Character Bug-Logic:
+    if (pointArray.length >= (clipLength * 2))
+    {
+        for (let b = clipLength, i = 0; b < clipLength * 2; b++, i++)
+        {
+            finalValue += eval(`data.${pointArray[b]}${address}.split(',')`)[i] + ',';
+        }
+        fs.appendFile(`${Pw}_${address}.js`, `result[1] = [${finalValue.toString()}],`.replace(',]', ']').replace('],', '];') + '\n', { flag: 'a+', encoding: 'utf8' }, (err => { }));
+        console.log(`2-Character Bug Active on ${Pw} side!`);
+    }
+
+    //3-Character Bug Logic:
+    else if (pointArray.length >= (clipLength * 3))
+    {
+        for (let c = clipLength * 2, i = 0; c < clipLength * 3; c++, i++)
+        {
+            finalValue += eval(`data.${pointArray[c]}${address}.split(',')`)[i] + ',';
+        }
+
+        fs.appendFile(`${Pw}_${address}.js`, `result[2] = [${finalValue.toString()}],`.replace(',]', ']').replace('],', '];') + '\n', { flag: 'a+', encoding: 'utf8' }, (err => { }));
+        console.log(`3-Character Bug Active on ${Pw} side!`);
+    }
+
+    else
+    {
+        console.log(`Only 1 Point Character on ${Pw} side.`);
+    }
 }
-console.log(...namesArray)
 
+//Independent file-writer
+function IndependentFileWriter(Pw, FileName, address) // P1/P2, Title of file, address name from data()
+{
+    //Write base file
+    fs.writeFileSync(`${Pw}_${FileName}.js`, `var result = [];` + '\r', { flag: 'a+', encoding: 'utf8' }, (err => { }));
+    //Append data for first-point
+    fs.appendFile(`${Pw}_${FileName}.js`, `result[0] = [${address.toString()}],`.replace(',]', ']').replace('],', '];') + '\n', { flag: 'a+', encoding: 'utf8' }, (err => { }));
+    address = [];
+}
+
+//Write Static Data Conversion Function
+const staticDataTable = [ Knockdown_State_Static, Prox_Block_Static, namesTable_Static]
+const staticDataFiles = [ 'Knockdown_State', 'Is_Prox_Block', 'ID_2']
+var StaticValuesArr = [];
+function writeStaticDataCnv()
+{
+    for ( let p = 1; p < 3; p++ ){
+        for (let staticI in staticDataTable )
+        {
+            var getPointData = PointCharacterDataWriter(`P${[p]}`, staticDataFiles[staticI], 0).split(',');
+            var getObjectValues = Object.values(staticDataTable[staticI]); 
+            for (let dataI = 0; dataI < getPointData.length-1; dataI++){
+                StaticValuesArr.push( `'${getObjectValues[getPointData[dataI]]}'` );
+            }
+            IndependentFileWriter(`P${[p]}`, `${staticDataFiles[staticI]}_Cnv`, StaticValuesArr);
+            StaticValuesArr = [];
+        }
+    }
+}
+
+writeStaticDataCnv();
 
 
 // Write files for each player!
-// for (let playerMemI in uniqueArray) {
-//     PointCharacterDataWriter("P1", uniqueArray[playerMemI].toString());
-//     PointCharacterDataWriter("P2", uniqueArray[playerMemI].toString());
-// }
+for (let playerMemI in uniqueArray) {
+    PointCharacterDataWriter("P1", uniqueArray[playerMemI].toString());
+    PointCharacterDataWriter("P2", uniqueArray[playerMemI].toString());
+    uniqueArray.clear()
+}
 
 
 /*List of States I'm going to export data for:
