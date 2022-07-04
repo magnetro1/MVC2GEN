@@ -1,35 +1,16 @@
 import * as fs from 'fs';
-import * as data from "./main_files/CaptainCommandoRogueCable8_node.js";
+import * as path from 'path';
+// import * as data from "./main_files/CaptainCommandoRogueCable8_node.js";
 // import * as data from "./main_files/Shuma47_node.js";
-// import * as data from "./main_files/SpiralUnblockable_node.js";
+import * as data from "./main_files/SpiralUnblockable_node.js";
 import { Knockdown_State_Static, Prox_Block_Static, namesTable_Static } from './main_files/staticData.js'
 
 
-// Read directory to get files to include for the loops
-const getDir = fs.readdirSync('./main_files', 'utf8');
+var getDir = fs.readdirSync('./main_files', 'utf8');
 var fileNames = [];
-getDir.toString().split(',').forEach((file) =>
-{
-    let re = /\w+_node.js/g;
-    if (file.match(re)) { fileNames.push(file); }
-})
-
-// Get unique-list of player memory addresses per clip to feed into the PointCharacterDataWriter function
 var playerDataAll = [];
 var uniqueArray = [];
-const getFile = fs.readFileSync('./main_files/CaptainCommandoRogueCable8_node.js', 'utf8',);
-getFile.toString().split(';').map(line => { // split file into lines
-        let re = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all Player memory addresses
-        let item = ''; // Temporary variable to run the exec function on
-        while (item = re.exec(line)){ //I don't know how exec works
-            playerDataAll.push(item[2]); // I guess this is how you grab $2 from the regex
-            playerDataAll.join(','); // Joins the array values into a string
-        };
-    });
-uniqueArray = [...new Set(playerDataAll)]; // I don't know how Set works
-
-// Writes the P1 or P2 point-character's address data to a file as an array of strings
-// If the 2-character bug is active, it will create multiple arrays
+const dirPath = path.join(process.cwd(), `/exportToAE/SpiralUnblockable/`);
 const clipLength = data.A_2D_Game_Timer.split(',').length;
 const pointTableP1 = {
     P1_A_: data.P1_A_Is_Point.split(","),
@@ -42,6 +23,36 @@ const pointTableP2 = {
     P2_C_: data.P2_C_Is_Point.split(","),
 };
 
+
+// Read directory to get files to include for the loops
+getDir.toString().split(',').forEach((file) =>
+{
+    let re = /\w+_node.js/g;
+    if (file.match(re)) { fileNames.push(file); }
+})
+
+// Get unique-list of player memory addresses per clip to feed into the PointCharacterDataWriter function
+function getLabelsfromJS(pathToFile)
+{
+    var getFile = fs.readFileSync(pathToFile, 'utf8',);
+
+    getFile.toString().split(';').forEach(line =>
+    {
+        let re = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all Player memory addresses
+        let item = ''; // Temporary variable to run the exec method
+        while (item = re.exec(line))
+        {
+            playerDataAll.push(item[ 2 ]); // I guess this is how you grab $2 from the regex
+            playerDataAll.join(','); // Joins the array values into a string
+        };
+    });
+    uniqueArray = [ ...new Set(playerDataAll) ];
+    // console.log(...uniqueArray);
+}
+// getLabelsfromJS('./main_files/CaptainCommandoRogueCable8_node.js'); // I don't know how Set works
+
+// Writes the P1 or P2 point-character's address data to a file as an array of strings
+// If the 2-character+ bug is active, it will new arrays and append them
 function PointCharacterDataWriter(Pw, address, write)
 {
     var pointArray = [];
@@ -51,24 +62,23 @@ function PointCharacterDataWriter(Pw, address, write)
     {
         for (let objectI = 0; objectI < Object.values(pointTableP1).length; objectI++) // 3
         {
-            for (let k = 0; k < Object.values(pointTableP1)[objectI].length; k++) // length of clip in frames
+            for (let k = 0; k < Object.values(pointTableP1)[ objectI ].length; k++) // length of clip in frames
             {
-                if (Object.values(pointTableP1)[objectI][k] == 0)
+                if (Object.values(pointTableP1)[ objectI ][ k ] == 0)
                 {
-                    pointArray.push(Object.keys(pointTableP1)[objectI]);
+                    pointArray.push(Object.keys(pointTableP1)[ objectI ]);
                 }
             }
         }
-
     } else if (Pw == "P2")
     {
         for (let i = 0; i < Object.values(pointTableP2).length; i++) //3
         {
-            for (let k = 0; k < Object.values(pointTableP2)[i].length; k++) // length of clip in frames
+            for (let k = 0; k < Object.values(pointTableP2)[ i ].length; k++) // length of clip in frames
             {
-                if (Object.values(pointTableP2)[i][k] == 0)
+                if (Object.values(pointTableP2)[ i ][ k ] == 0)
                 {
-                    pointArray.push(Object.keys(pointTableP2)[i]);
+                    pointArray.push(Object.keys(pointTableP2)[ i ]);
                 }
             }
         }
@@ -77,24 +87,49 @@ function PointCharacterDataWriter(Pw, address, write)
     {
         return `Arguments need to be strings!`;
     }
+    // Break out without writing files!
     if (write == 0) //Used to break out before writing to file
     {
-        for (let dataLnI = 0; dataLnI < clipLength; dataLnI++)
+        for (let clipLen = 0; clipLen < clipLength; clipLen++)
         {
-            finalValue += eval(`data.${pointArray[dataLnI]}${address}.split(',')`)[dataLnI] + ',';
+            finalValue += eval(`data.${pointArray[ clipLen ]}${address}.split(',')`)[ clipLen ] + ',';
         }
-
-        return finalValue;
+        //2-character Bug Logic:
+        if (pointArray.length >= (clipLength * 2))
+        {
+            for (let b = clipLength, i = 0; b < clipLength * 2; b++, i++)
+            {
+                finalValue += eval(`data.${pointArray[ b ]}${address}.split(',')`)[ i ] + ',';
+            }
+            console.log(`2-Character Bug Active on ${Pw} side!`);
+        }
+        //3-Character Bug Logic:
+        else if (pointArray.length >= (clipLength * 3))
+        {
+            for (let c = clipLength * 2, i = 0; c < clipLength * 3; c++, i++)
+            {
+                finalValue += eval(`data.${pointArray[ c ]}${address}.split(',')`)[ i ] + ',';
+            }
+            console.log(`3-Character Bug Active on ${Pw} side!`);
+        }
+        return finalValue
     }
+
+    // //Make Directories if they don't exist
+    if (!fs.existsSync(dirPath))
+    {
+        fs.mkdirSync(dirPath);
+    }
+
     //Write base file
-    fs.writeFileSync(`${Pw}_${address}.js`, `var result = [];` + '\r', { flag: 'a+', encoding: 'utf8' }, (err => { }));
+    fs.writeFileSync(`${dirPath}/${Pw}_${address}.js`, `var result = [];` + '\r', { flag: 'a+', encoding: 'utf8' }, (err => { }));
 
     //Append data for first-point
     for (let dataLnI = 0; dataLnI < clipLength; dataLnI++)
     {
-        finalValue += eval(`data.${pointArray[dataLnI]}${address}.split(',')`)[dataLnI] + ',';
+        finalValue += eval(`data.${pointArray[ dataLnI ]}${address}.split(',')`)[ dataLnI ] + ',';
     }
-    fs.appendFile(`${Pw}_${address}.js`, `result[0] = [${finalValue.toString()}],`.replace(',]', ']').replace('],', '];') + '\n', { flag: 'a+', encoding: 'utf8' }, (err => { }));
+    fs.appendFile(`${dirPath}/${Pw}_${address}.js`, `result[0] = [${finalValue.toString()}],`.replace(',]', ']').replace('],', '];') + '\n', { flag: 'a+', encoding: 'utf8' }, (err => { }));
     finalValue = [];
 
     //2-Character Bug-Logic:
@@ -102,9 +137,9 @@ function PointCharacterDataWriter(Pw, address, write)
     {
         for (let b = clipLength, i = 0; b < clipLength * 2; b++, i++)
         {
-            finalValue += eval(`data.${pointArray[b]}${address}.split(',')`)[i] + ',';
+            finalValue += eval(`data.${pointArray[ b ]}${address}.split(',')`)[ i ] + ',';
         }
-        fs.appendFile(`${Pw}_${address}.js`, `result[1] = [${finalValue.toString()}],`.replace(',]', ']').replace('],', '];') + '\n', { flag: 'a+', encoding: 'utf8' }, (err => { }));
+        fs.appendFile(`${dirPath}/${Pw}_${address}.js`, `result[1] = [${finalValue.toString()}],`.replace(',]', ']').replace('],', '];') + '\n', { flag: 'a+', encoding: 'utf8' }, (err => { }));
         console.log(`2-Character Bug Active on ${Pw} side!`);
     }
 
@@ -113,19 +148,18 @@ function PointCharacterDataWriter(Pw, address, write)
     {
         for (let c = clipLength * 2, i = 0; c < clipLength * 3; c++, i++)
         {
-            finalValue += eval(`data.${pointArray[c]}${address}.split(',')`)[i] + ',';
+            finalValue += eval(`data.${pointArray[ c ]}${address}.split(',')`)[ i ] + ',';
         }
 
-        fs.appendFile(`${Pw}_${address}.js`, `result[2] = [${finalValue.toString()}],`.replace(',]', ']').replace('],', '];') + '\n', { flag: 'a+', encoding: 'utf8' }, (err => { }));
+        fs.appendFile(`${dirPath}/${Pw}_${address}.js`, `result[2] = [${finalValue.toString()}],`.replace(',]', ']').replace('],', '];') + '\n', { flag: 'a+', encoding: 'utf8' }, (err => { }));
         console.log(`3-Character Bug Active on ${Pw} side!`);
     }
-
+    // No 2- or 3-Character Bug
     else
     {
         console.log(`Only 1 Point Character on ${Pw} side.`);
     }
 }
-
 //Independent file-writer
 function IndependentFileWriter(Pw, FileName, address) // P1/P2, Title of file, address name from data()
 {
@@ -137,33 +171,46 @@ function IndependentFileWriter(Pw, FileName, address) // P1/P2, Title of file, a
 }
 
 //Write Static Data Conversion Function
-const staticDataTable = [ Knockdown_State_Static, Prox_Block_Static, namesTable_Static]
-const staticDataFiles = [ 'Knockdown_State', 'Is_Prox_Block', 'ID_2']
+const staticDataTable = [ Knockdown_State_Static, Prox_Block_Static, namesTable_Static ]
+const staticDataFiles = [ 'Knockdown_State', 'Is_Prox_Block', 'ID_2' ]
 var StaticValuesArr = [];
 function writeStaticDataCnv()
 {
-    for ( let p = 1; p < 3; p++ ){
-        for (let staticI in staticDataTable )
+    for (let p = 2; p < 3; p++)
+    {
+        for (let staticI = 0; staticI < staticDataTable.length; staticI++)
         {
-            var getPointData = PointCharacterDataWriter(`P${[p]}`, staticDataFiles[staticI], 0).split(',');
-            var getObjectValues = Object.values(staticDataTable[staticI]); 
-            for (let dataI = 0; dataI < getPointData.length-1; dataI++){
-                StaticValuesArr.push( `'${getObjectValues[getPointData[dataI]]}'` );
+            fs.writeFileSync(`P${[ p ]}_${staticDataFiles[ staticI ]}_CNV.js`, `var result = [];` + '\r', { flag: 'a+', encoding: 'utf8' }, (err => { }));
+            var getPointData = PointCharacterDataWriter(`P${[ p ]}`, staticDataFiles[ staticI ], 0).split(',');
+            for (let i = 0; i < clipLength; i++)
+            {
+                StaticValuesArr.push(`'${Object.values(staticDataTable[ staticI ])[ getPointData[ i ] ]}'`); //converts number to string
             }
-            IndependentFileWriter(`P${[p]}`, `${staticDataFiles[staticI]}_Cnv`, StaticValuesArr);
+            // console.log(StaticValuesArr)
+            fs.appendFileSync(`P${[ p ]}_${staticDataFiles[ staticI ]}_CNV.js`, `result[0] = [${StaticValuesArr},']`.replace(/',']/, '\'];') + '\n', { flag: 'a+', encoding: 'utf8' }, (err => { }));
             StaticValuesArr = [];
+            if (getPointData.length - 1 >= (clipLength * 2))
+            {
+                for (let b = clipLength; b < clipLength * 2; b++)
+                {
+                    StaticValuesArr.push(`'${Object.values(staticDataTable[ staticI ])[ getPointData[ b ] ]}'`); //converts number to string
+                }
+                fs.appendFileSync(`P${[ p ]}_${staticDataFiles[ staticI ]}_CNV.js`, `result[1] = [${StaticValuesArr},']`.replace(/',']/, '\'];') + '\n', { flag: 'a+', encoding: 'utf8' }, (err => { }));
+                StaticValuesArr = [];
+            }
         }
     }
 }
 
-writeStaticDataCnv();
-
+// writeStaticDataCnv();
 
 // Write files for each player!
-for (let playerMemI in uniqueArray) {
-    PointCharacterDataWriter("P1", uniqueArray[playerMemI].toString());
-    PointCharacterDataWriter("P2", uniqueArray[playerMemI].toString());
-    uniqueArray.clear()
+getLabelsfromJS("./main_files/SpiralUnblockable_node.js");
+for (let playerMemI in uniqueArray)
+{
+    PointCharacterDataWriter("P1", uniqueArray[ playerMemI ].toString());
+    PointCharacterDataWriter("P2", uniqueArray[ playerMemI ].toString());
+    // uniqueArray.clear()
 }
 
 
