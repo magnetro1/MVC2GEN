@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as data from './main_files/SpiralUnblockable_node.js'; // TODO figure out how to make this dynamic
+// import * as data from './main_files/SpiralUnblockable_node.js'; // TODO figure out how to make this dynamic
 import { Knockdown_State_Static, Prox_Block_Static, namesTable_Static } from './main_files/staticData.js' //eval(testPath);
-// import * as data from "./main_files/Shuma47_node.js";
+import * as data from "./main_files/Shuma47_node.js";
 // import * as data from "./main_files/CaptainCommandoRogueCable8_node.js";
 
-const DIR_OUTPATH = path.join( process.cwd(), `/exportToAE/SpiralUnblockable/` ); // File Directory to write to; needs to match the clip name to make sense TODO fix this
+const DIR_OUTPATH = path.join( process.cwd(), `/exportToAE/Shuma47/` ); // File Directory to write to; needs to match the clip name to make sense TODO fix this
 const CLIP_LENGTH = data.A_2D_Game_Timer.split( ',' ).length; // Used as clip-length frame tracker; address doesn't matter
 const POINT_OBJ_P1 = // Objects with the player slots as keys, and their values (0/1/2) as object-values. Ex: 'P1_A_ : 0'
 {
@@ -22,7 +22,6 @@ const POINT_OBJ_P2 =
 
 /****** Functions ******/
 
-// 01
 // Fetches usable node-js files exported using Powershell script from a pre-set directory
 const DIR_MAIN_FILES = path.join( process.cwd(), `/main_files/` );
 var fileNames = [];
@@ -66,99 +65,101 @@ var finalValuesArray = [];
 finalValuesArray[0] = [];
 finalValuesArray[1] = [];
 finalValuesArray[2] = [];
-var playerObject;
+var playerObjectString;
 var playerString;
-function writePlayerMemory( playerMemoryAddress, write ) // 'P1'/'P2', address from data-object, 1/0
+function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) // 'P1'/'P2', address from data-object, 1/0
 {
-    for ( let playerIterator = 1; playerIterator < 3; playerIterator++ )
+    // Arrays have to be emptied on-start
+    finalValuesArray = [];
+    finalValuesArray[0] = [];
+    finalValuesArray[1] = [];
+    finalValuesArray[2] = [];
+    // Change playerString to PlayerOneOrPlayerTwo
+    if ( PlayerOneOrPlayerTwo == 1 )
     {
-        if ( playerIterator == 1 )
+        playerObjectString = POINT_OBJ_P1;
+        playerString = "P1";
+    }
+    else if ( PlayerOneOrPlayerTwo == 2 )
+    {
+        playerObjectString = POINT_OBJ_P2;
+        playerString = "P2";
+    }
+    // Push all player memory addresses to finalValuesArray depending on the if-statement-logic
+    for ( let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++ ) // length of clip
+    {
+        if ( ( Object.values( playerObjectString )[0][clipLen] == 0 ) && ( Object.values( playerObjectString )[1][clipLen] == 0 ) && ( Object.values( playerObjectString )[2][clipLen] == 0 ) )
         {
-            playerObject = POINT_OBJ_P1;
-            playerString = "P1";
+            // console.log( `${ playerString }: 3-Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
+            finalValuesArray[0].push( eval( `data.${ Object.keys( playerObjectString )[0] }${ playerMemoryAddress }.split(',')` )[clipLen] );
+            finalValuesArray[1].push( eval( `data.${ Object.keys( playerObjectString )[1] }${ playerMemoryAddress }.split(',')` )[clipLen] );
+            finalValuesArray[2].push( eval( `data.${ Object.keys( playerObjectString )[2] }${ playerMemoryAddress }.split(',')` )[clipLen] );
         }
-        else if ( playerIterator == 2 )
+        //2-Character Bug Logic
+        else if ( ( Object.values( playerObjectString )[0][clipLen] == 0 ) && ( Object.values( playerObjectString )[1][clipLen] == 0 ) && ( Object.values( playerObjectString )[2][clipLen] != 0 ) )
         {
-            playerObject = POINT_OBJ_P2;
-            playerString = "P2";
-        }
-        // Push all player memory addresses to finalValuesArray depending on the if-statement-logic
-        for ( let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++ ) // length of clip
-        {
-            if ( ( Object.values( playerObject )[0][clipLen] == 0 ) && ( Object.values( playerObject )[1][clipLen] == 0 ) && ( Object.values( playerObject )[2][clipLen] == 0 ) )
-            {
-                // console.log("P1: 3-Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC");
-                finalValuesArray[0].push( eval( `data.${ Object.keys( playerObject )[0] }${ playerMemoryAddress }.split(',')` )[clipLen] );
-                finalValuesArray[1].push( eval( `data.${ Object.keys( playerObject )[1] }${ playerMemoryAddress }.split(',')` )[clipLen] );
-                finalValuesArray[2].push( eval( `data.${ Object.keys( playerObject )[2] }${ playerMemoryAddress }.split(',')` )[clipLen] );
-            }
-            //2-Character Bug Logic
-            else if ( ( Object.values( playerObject )[0][clipLen] == 0 ) && ( Object.values( playerObject )[1][clipLen] == 0 ) && ( Object.values( playerObject )[2][clipLen] != 0 ) )
-            {
-                // console.log("P1: 2-Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB");
-                finalValuesArray[0].push( eval( `data.${ Object.keys( playerObject )[0] }${ playerMemoryAddress }.split(',')` )[clipLen] );
-                finalValuesArray[1].push( eval( `data.${ Object.keys( playerObject )[1] }${ playerMemoryAddress }.split(',')` )[clipLen] );
+            // console.log( `${ playerString }: 2-Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
+            finalValuesArray[0].push( eval( `data.${ Object.keys( playerObjectString )[0] }${ playerMemoryAddress }.split(',')` )[clipLen] );
+            finalValuesArray[1].push( eval( `data.${ Object.keys( playerObjectString )[1] }${ playerMemoryAddress }.split(',')` )[clipLen] );
 
-            }
-            else if ( ( Object.values( playerObject )[0][clipLen] == 0 ) && ( Object.values( playerObject )[1][clipLen] != 0 ) && ( Object.values( playerObject )[2][clipLen] == 0 ) )
-            {
-                // console.log("P1: 2-Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC");
-                finalValuesArray[0].push( eval( `data.${ Object.keys( playerObject )[0] }${ playerMemoryAddress }.split(',')` )[clipLen] );
-                finalValuesArray[1].push( eval( `data.${ Object.keys( playerObject )[2] }${ playerMemoryAddress }.split(',')` )[clipLen] );
-            }
-            else if ( ( Object.values( playerObject )[0][clipLen] != 0 ) && ( Object.values( playerObject )[1][clipLen] == 0 ) && ( Object.values( playerObject )[2][clipLen] == 0 ) )
-            {
-                // console.log("P1: 2-Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC");
-                finalValuesArray[0].push( eval( `data.${ Object.keys( playerObject )[1] }${ playerMemoryAddress }.split(',')` )[clipLen] );
-                finalValuesArray[1].push( eval( `data.${ Object.keys( playerObject )[2] }${ playerMemoryAddress }.split(',')` )[clipLen] );
-            }
-            //1-Character Logic
-            else if ( ( Object.values( playerObject )[0][clipLen] == 0 ) && ( Object.values( playerObject )[1][clipLen] != 0 ) && ( Object.values( playerObject )[2][clipLen] != 0 ) )
-            {
-                // console.log( "P1: 1-Character Logic: A == 0 && B != 0 && C != 0        P1: A" );
-                finalValuesArray[0].push( eval( `data.${ Object.keys( playerObject )[0] }${ playerMemoryAddress }.split(',')` )[clipLen] );
-            }
-            else if ( ( Object.values( playerObject )[0][clipLen] != 0 ) && ( Object.values( playerObject )[1][clipLen] == 0 ) && ( Object.values( playerObject )[2][clipLen] != 0 ) )
-            {
-                // console.log( "P1: 1-Character Logic: A != 0 && B == 0 && C != 0        P1: B" );
-                finalValuesArray[0].push( eval( `data.${ Object.keys( playerObject )[1] }${ playerMemoryAddress }.split(',')` )[clipLen] );
-            }
-            else if ( ( Object.values( playerObject )[0][clipLen] != 0 ) && ( Object.values( playerObject )[1][clipLen] != 0 ) && ( Object.values( playerObject )[2][clipLen] == 0 ) )
-            {
-                // console.log( "P1: 1-Character Logic: A != 0 && B != 0 && C == 0        P1: C" );
-                finalValuesArray[0].push( eval( `data.${ Object.keys( playerObject )[2] }${ playerMemoryAddress }.split(',')` )[clipLen] );
-            }
         }
-        // Break if not writing files
-        if ( write == 0 )
-            return finalValuesArray
-        // Write files
-        if ( !fs.existsSync( DIR_OUTPATH ) )
-            fs.mkdirSync( DIR_OUTPATH );
-        // Write base file
-        fs.writeFileSync( `${ DIR_OUTPATH }/${ playerString }_${ playerMemoryAddress.split( ',' ) }.js`,
-            `var result = [];` + '\n',
-            { flag: 'a+', encoding: 'utf8' },
-            ( err => {} ) );
-        // Append main data
-        for ( let dataArrayPerCharacter in finalValuesArray )
+        else if ( ( Object.values( playerObjectString )[0][clipLen] == 0 ) && ( Object.values( playerObjectString )[1][clipLen] != 0 ) && ( Object.values( playerObjectString )[2][clipLen] == 0 ) )
         {
-            fs.appendFileSync( `${ DIR_OUTPATH }/${ playerString }_${ playerMemoryAddress.split( ',' ) }.js`,
-                `result[${ dataArrayPerCharacter }] = [${ finalValuesArray[dataArrayPerCharacter] }];\n`,
-                { encoding: 'utf8' },
-                ( err => {} ) );
-            finalValuesArray = [];
-            finalValuesArray[0] = [];
-            finalValuesArray[1] = [];
-            finalValuesArray[2] = [];
+            // console.log( `${ playerString }: 2-Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
+            finalValuesArray[0].push( eval( `data.${ Object.keys( playerObjectString )[0] }${ playerMemoryAddress }.split(',')` )[clipLen] );
+            finalValuesArray[1].push( eval( `data.${ Object.keys( playerObjectString )[2] }${ playerMemoryAddress }.split(',')` )[clipLen] );
+        }
+        else if ( ( Object.values( playerObjectString )[0][clipLen] != 0 ) && ( Object.values( playerObjectString )[1][clipLen] == 0 ) && ( Object.values( playerObjectString )[2][clipLen] == 0 ) )
+        {
+            // console.log( `${ playerString }: 2-Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
+            finalValuesArray[0].push( eval( `data.${ Object.keys( playerObjectString )[1] }${ playerMemoryAddress }.split(',')` )[clipLen] );
+            finalValuesArray[1].push( eval( `data.${ Object.keys( playerObjectString )[2] }${ playerMemoryAddress }.split(',')` )[clipLen] );
+        }
+        //1-Character Logic
+        else if ( ( Object.values( playerObjectString )[0][clipLen] == 0 ) && ( Object.values( playerObjectString )[1][clipLen] != 0 ) && ( Object.values( playerObjectString )[2][clipLen] != 0 ) )
+        {
+            // console.log( `${ playerString }: 1-Character Logic: A == 0 && B != 0 && C != 0        P1: A` );
+            finalValuesArray[0].push( eval( `data.${ Object.keys( playerObjectString )[0] }${ playerMemoryAddress }.split(',')` )[clipLen] );
+        }
+        else if ( ( Object.values( playerObjectString )[0][clipLen] != 0 ) && ( Object.values( playerObjectString )[1][clipLen] == 0 ) && ( Object.values( playerObjectString )[2][clipLen] != 0 ) )
+        {
+            // console.log( `${ playerString }: 1-Character Logic: A != 0 && B == 0 && C != 0        P1: B` );
+            finalValuesArray[0].push( eval( `data.${ Object.keys( playerObjectString )[1] }${ playerMemoryAddress }.split( ',' )` )[clipLen] );
+        }
+        else if ( ( Object.values( playerObjectString )[0][clipLen] != 0 ) && ( Object.values( playerObjectString )[1][clipLen] != 0 ) && ( Object.values( playerObjectString )[2][clipLen] == 0 ) )
+        {
+            // console.log( `${ playerString }: 1 - Character Logic: A != 0 && B != 0 && C == 0        P1: C` );
+            finalValuesArray[0].push( eval( `data.${ Object.keys( playerObjectString )[2] }${ playerMemoryAddress }.split(',')` )[clipLen] );
         }
     }
+    // Return if not writing files
+    if ( write == 0 )
+        return finalValuesArray
+    // Write files
+    if ( !fs.existsSync( DIR_OUTPATH ) )
+        fs.mkdirSync( DIR_OUTPATH );
+    // Write base file
+    fs.writeFileSync( `${ DIR_OUTPATH }/${ playerString }_${ playerMemoryAddress.split( ',' ) }.js`,
+        `var result = [];` + '\n',
+        { flag: 'a+', encoding: 'utf8' },
+        ( err => {} ) );
+    // Append main data
+    for ( let dataArrayPerCharacter in finalValuesArray )
+    {
+        fs.appendFileSync( `${ DIR_OUTPATH }/${ playerString }_${ playerMemoryAddress.split( ',' ) }.js`,
+            `result[${ dataArrayPerCharacter }] = [${ finalValuesArray[dataArrayPerCharacter] }];\n`,
+            { encoding: 'utf8' },
+            ( err => {} ) );
+
+    }
+
 } // End of Mainfunction()
 // EXECUTE MAIN FUNCTIONS
-getLabelsfromJS( "./main_files/SpiralUnblockable_node.js" ).forEach( ( label ) =>
-{
-    writePlayerMemory( label.toString(), 1 );
-} );
+// getLabelsfromJS( "./main_files/Shuma47_node.js" ).forEach( ( label ) =>
+// {
+//     writePlayerMemory( 1, label.toString(), 1 );
+//     writePlayerMemory( 2, label.toString(), 1 );
+// } );
 
 
 
@@ -172,39 +173,52 @@ getLabelsfromJS( "./main_files/SpiralUnblockable_node.js" ).forEach( ( label ) =
 //     address = [];
 // }
 
-//Write Static Data Conversion Function
-const staticDataTable = [Knockdown_State_Static, Prox_Block_Static, namesTable_Static]
-const staticDataFiles = ['Knockdown_State', 'Is_Prox_Block', 'ID_2']
-var StaticValuesArr = [];
+// //Write Static Data Conversion Function
+const STATIC_DATA_OBJS = [Knockdown_State_Static, Prox_Block_Static, namesTable_Static]
+const STATIC_DATA_ADRS = ['Knockdown_State', 'Is_Prox_Block', 'ID_2']
+var staticLookupResultsArray = [];
+staticLookupResultsArray[0] = [];
+staticLookupResultsArray[1] = [];
+staticLookupResultsArray[2] = [];
+
 function writeStaticDataCnv()
 {
-    for ( let playersLen = 2; playersLen < 3; playersLen++ )
+    for ( let playersLen = 1; playersLen < 3; playersLen++ )
     {
-        for ( let staticDataLen = 0; staticDataLen < staticDataTable.length; staticDataLen++ )
+        for ( let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++ )
         {
-            fs.writeFileSync( `${ DIR_OUTPATH }/P${ [playersLen] }_${ staticDataFiles[staticDataLen] }_CNV.js`, `var result = [];` + '\r', { flag: 'a+', encoding: 'utf8' }, ( err => {} ) );
-            var getPointData = PointCharacterDataWriter( `P${ [playersLen] }`, staticDataFiles[staticDataLen], 0 ).split( ',' );
-            for ( let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++ )
+            // Make directories if they don't exist
+            if ( !fs.existsSync( DIR_OUTPATH ) )
+                fs.mkdirSync( DIR_OUTPATH );
+            //Write base file
+            fs.writeFileSync( `${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`,
+                `var result = [];` + '\n',
+                { flag: 'a+', encoding: 'utf8' },
+                ( err => {} ) );
+        }
+        for ( let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++ )
+        {
+            var callPlayerMemory = writePlayerMemory( `${ playersLen }`, STATIC_DATA_ADRS[staticDataLen] /*staticDataFiles[staticDataLen]*/, 0 );
+            // callPlayerMemory.length = 3; 3 arrays: callPlayerMemory[0], callPlayerMemory[1], callPlayerMemory[2].each contains an array of values
+            for ( let playerMemLength = 0; playerMemLength < callPlayerMemory.length; playerMemLength++ )
             {
-                StaticValuesArr.push( `'${ Object.values( staticDataTable[staticDataLen] )[getPointData[clipLen]] }'` ); //converts number to string
-            }
-            fs.appendFile( `${ DIR_OUTPATH }/P${ [playersLen] }_${ staticDataFiles[staticDataLen] }_CNV.js`, `result[0] = [${ StaticValuesArr },']`.replace( /',']/, '\'];' ) + '\n', { flag: 'a+', encoding: 'utf8' }, ( err => {} ) );
-            StaticValuesArr = [];
-            // 2-Character Bug Logic:
-            if ( getPointData.length - 1 >= ( CLIP_LENGTH * 2 ) )
-            {
-                for ( let clipLenSlotB = CLIP_LENGTH; clipLenSlotB < CLIP_LENGTH * 2; clipLenSlotB++ )
+                //Push and convert all three arrays' values
+                for ( let i = 0; i < callPlayerMemory[playerMemLength].length; i++ )
                 {
-                    StaticValuesArr.push( `'${ Object.values( staticDataTable[staticDataLen] )[getPointData[clipLenSlotB]] }'` ); //converts number to string
+                    staticLookupResultsArray[playerMemLength].push( `'${ Object.values( STATIC_DATA_OBJS[staticDataLen] )[callPlayerMemory[playerMemLength][i]] }'` );
                 }
-                fs.appendFile( `${ DIR_OUTPATH }/P${ [playersLen] }_${ staticDataFiles[staticDataLen] }_CNV.js`, `result[1] = [${ StaticValuesArr },']`.replace( /',']/, '\'];' ) + '\n', { flag: 'a+', encoding: 'utf8' }, ( err => {} ) );
-                StaticValuesArr = [];
+                fs.appendFileSync( `${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+                staticLookupResultsArray = [];
+                staticLookupResultsArray[0] = [];
+                staticLookupResultsArray[1] = [];
+                staticLookupResultsArray[2] = [];
             }
         }
     }
-}
+};
+// writeStaticDataCnv();
 
-
+// console.log( writePlayerMemory( 'Knockdown_State', 1 ) );
 
 // function writeMathFromFilesCnv(pathToData)
 // {
@@ -224,7 +238,7 @@ function writeStaticDataCnv()
 //     return removeDuplicates
 // }
 
-// writeMathFromFilesCnv("./main_files/SpiralUnblockable_node.js")
+// writeMathFromFilesCnv("./main_files/Shuma47_node.js")
 
 
 
