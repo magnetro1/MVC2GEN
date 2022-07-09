@@ -24,7 +24,7 @@ const POINT_OBJ_P2 =
 
 // Fetches usable node-js files exported using Powershell script from a pre-set directory
 const DIR_MAIN_FILES = path.join( process.cwd(), "/main_files/" )
-const fileNames = []
+const FILE_NAMES = []
 function getNodeJSFiles() // uses dirMainFiles to fetch usable files; returns array of file names
 {
   fs.readdirSync( DIR_MAIN_FILES, 'utf8' ).toString().split( ',' ).forEach( function ( file )
@@ -32,15 +32,15 @@ function getNodeJSFiles() // uses dirMainFiles to fetch usable files; returns ar
     let _nodeJSRegex = /\w+_node.js/g;
     if ( file.match( _nodeJSRegex ) )
     {
-      fileNames.push( file );
+      FILE_NAMES.push( file );
     }
   } )
-  return fileNames;
+  return FILE_NAMES;
 }
 // console.log(getNodeJSFiles());
 
 // Get unique-list of player memory addresses per clip to feed into main function
-const playerDataAll = []
+var playerDataAll = []
 function getLabelsfromJS( pathToFile )
 {
   var getFile = fs.readFileSync( pathToFile, 'utf8', );
@@ -60,19 +60,16 @@ function getLabelsfromJS( pathToFile )
 }
 // Main function to write data to files OR return finalValues array
 // Appends array if 2-character+ bug is on
-var finalValuesArray = [];
-finalValuesArray[ 0 ] = [];
-finalValuesArray[ 1 ] = [];
-finalValuesArray[ 2 ] = [];
-var playerObjectString;
-var playerString;
+
+
 function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) // 'P1'/'P2', address from data-object, 1/0
 {
-  // Arrays have to be emptied on-start
-  finalValuesArray = [];
+  var finalValuesArray = [];
   finalValuesArray[ 0 ] = [];
   finalValuesArray[ 1 ] = [];
   finalValuesArray[ 2 ] = [];
+  var playerObjectString;
+  var playerString;
   // Change playerString to PlayerOneOrPlayerTwo
   if ( PlayerOneOrPlayerTwo == 1 )
   {
@@ -156,21 +153,21 @@ function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) /
 // EXECUTE MAIN FUNCTIONS
 // getLabelsfromJS( "./main_files/Shuma47_node.js" ).forEach( ( label ) =>
 // {
-//     writePlayerMemory( 1, label.toString(), 1 );
-//     writePlayerMemory( 2, label.toString(), 1 );
+//   writePlayerMemory( 1, label.toString(), 1 );
+//   writePlayerMemory( 2, label.toString(), 1 );
 // } );
 
 // Write Static Data Conversion Function
-// Uses these base files to do Key-Value pair conversion to generate strings for the final files. Example: 01 -> "Ryu"
-const STATIC_DATA_OBJS = [ Knockdown_State_Static, Prox_Block_Static, namesTable_Static ]
-const STATIC_DATA_ADRS = [ 'Knockdown_State', 'Is_Prox_Block', 'ID_2' ]
-var staticLookupResultsArray = [];
-staticLookupResultsArray[ 0 ] = [];
-staticLookupResultsArray[ 1 ] = [];
-staticLookupResultsArray[ 2 ] = [];
+// Uses these base files to do Key-Value pair conversion to generate strings for the final files. Example ID: 01 turns into "Ryu"
 
 function writeStaticDataCnv()
 {
+  const STATIC_DATA_OBJS = [ Knockdown_State_Static, Prox_Block_Static, namesTable_Static ]
+  const STATIC_DATA_ADRS = [ 'Knockdown_State', 'Is_Prox_Block', 'ID_2' ]
+  var staticLookupResultsArray = [];
+  staticLookupResultsArray[ 0 ] = [];
+  staticLookupResultsArray[ 1 ] = [];
+  staticLookupResultsArray[ 2 ] = [];
   for ( let playersLen = 1; playersLen < 3; playersLen++ )
   {
     for ( let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++ )
@@ -181,7 +178,7 @@ function writeStaticDataCnv()
       //Write base file
       fs.writeFileSync( `${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[ staticDataLen ] }_CNV.js`,
         `var result = [];` + '\n',
-        { flag: 'a+', encoding: 'utf8' },
+        { encoding: 'utf8' },
         ( err => {} ) );
     }
     for ( let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++ )
@@ -190,11 +187,13 @@ function writeStaticDataCnv()
       for ( let playerMemLength = 0; playerMemLength < callPlayerMemory.length; playerMemLength++ )
       {
         //Push and convert all three arrays' values
-        for ( let i = 0; i < callPlayerMemory[ playerMemLength ].length; i++ )
+        for ( let characterSlot = 0; characterSlot < callPlayerMemory[ playerMemLength ].length; characterSlot++ )
         {
-          staticLookupResultsArray[ playerMemLength ].push( `'${ Object.values( STATIC_DATA_OBJS[ staticDataLen ] )[ callPlayerMemory[ playerMemLength ][ i ] ] }'` );
+          staticLookupResultsArray[ playerMemLength ].push( `'${ Object.values( STATIC_DATA_OBJS[ staticDataLen ] )[ callPlayerMemory[ playerMemLength ][ characterSlot ] ] }'` );
         }
-        fs.appendFileSync( `${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[ staticDataLen ] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[ playerMemLength ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+        fs.appendFileSync( `${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[ staticDataLen ] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[ playerMemLength ] }];\n`,
+          { encoding: 'utf8' },
+          ( err => {} ) );
         staticLookupResultsArray = [];
         staticLookupResultsArray[ 0 ] = [];
         staticLookupResultsArray[ 1 ] = [];
@@ -203,118 +202,127 @@ function writeStaticDataCnv()
     }
   }
 };
-writeStaticDataCnv();
 
-var P1Inputs = data.P1_Input_DEC.split( ',' );
-var P2Inputs = data.P2_Input_DEC.split( ',' );
-var playerInputResults = '';
-var P2InputResults = '';
+// writeStaticDataCnv();
 
-var buttonConversionVersion1 =
+function writeInputConvert()
 {
-  "6": 1024, 	// 6 = right
-  "4": 2048, 	// 4 = left
-  "2": 4096, 	// 2 = down
-  "8": 8192, 	// 8 = up
-  "u": 512, 	// LP = u
-  "j": 64,	// LK = j
-  "i": 256,	// HP = i
-  "k": 32,	// HK = k
-  "o": 128,	// A1 = o
-  "l": 16,	// A2 = l
-  "(": 32768, // START = (
-  ")": 2,		// SELECT = )
-};
+  var P1Inputs = data.P1_Input_DEC.split( ',' );
+  var P2Inputs = data.P2_Input_DEC.split( ',' );
+  var playerInputResults = '';
+  var playerInputsCNVArray = [];
+  let tempPlayerString = '';
 
-var buttonConversionVersion2 =
-{
-  "6": 1024, 	// 6 = right
-  "4": 2048, 	// 4 = left
-  "2": 4096, 	// 2 = down
-  "8": 8192, 	// 8 = up
-  "LP": 512, 	    // LP = u
-  "LK": 64,	    // LK = j
-  "HP": 256,	    // HP = i
-  "HK": 32,	    // HK = k
-  "AA": 128,	    // A1 = o
-  "AB": 16,	    // A2 = l
-  "START": 32768, // START = (
-  "SELECT": 2,    // SELECT = )
-};
-
-var playerInputResults = '';
-var playerInputsCNVArray = [];
-
-//Input Conversion Type 1
-for ( let input in P1Inputs )
-{
-  for ( let button in Object.entries( buttonConversionVersion1 ) )
+  var buttonConversionVersion1 =
   {
-    if ( ( P1Inputs[ input ] & Object.values( buttonConversionVersion1 )[ button ] ) != 0 )
-    {
-      playerInputResults += `${ Object.keys( buttonConversionVersion1 )[ button ] }`;
-    }
-  }
-  playerInputsCNVArray.push( playerInputResults );
-  playerInputResults = '';
-}
-fs.writeFileSync( `Test.js`, `var result = [];` + '\n' + `result[0] = ['${ playerInputsCNVArray.toString()
-  .replace( /24/gi, '1' )
-  .replace( /26/gi, '3' )
-  .replace( /48/gi, '7' )
-  .replace( /84/gi, '7' )
-  .replace( /86/gi, '9' )
-  .replace( /68/gi, '9' )
-  }'];` + '\n',
-  { encoding: 'utf8' },
-  ( err => {} ) );
-playerInputsCNVArray = [];
+    "6": 1024, 	// 6 = right
+    "4": 2048, 	// 4 = left
+    "2": 4096, 	// 2 = down
+    "8": 8192, 	// 8 = up
+    "u": 512, 	// LP = u
+    "j": 64,	  // LK = j
+    "i": 256,	  // HP = i
+    "k": 32,	  // HK = k
+    "o": 128,	  // A1 = o
+    "l": 16,	  // A2 = l
+    "(": 32768, // START = (
+    ")": 2,		  // SELECT = )
+  };
 
-//Input Conversion Type 2
-for ( let input in P1Inputs )
-{
-  for ( let button in Object.entries( buttonConversionVersion2 ) )
+  var buttonConversionVersion2 =
   {
-    if ( ( P1Inputs[ input ] & Object.values( buttonConversionVersion2 )[ button ] ) != 0 )
+    "6": 1024, 	    // 6 = right
+    "4": 2048, 	    // 4 = left
+    "2": 4096, 	    // 2 = down
+    "8": 8192, 	    // 8 = up
+    "LP": 512, 	    // LP = u
+    "LK": 64,	      // LK = j
+    "HP": 256,	    // HP = i
+    "HK": 32,	      // HK = k
+    "AA": 128,	    // A1 = o
+    "AB": 16,	      // A2 = l
+    "START": 32768, // START = (
+    "SELECT": 2,    // SELECT = )
+  };
+
+  for ( let playersLen = 1; playersLen < 3; playersLen++ )
+  {
+    playersLen == 1 ? tempPlayerString = P1Inputs : tempPlayerString = P2Inputs;
+    //Input Conversion Type 1
+    for ( let input in tempPlayerString )
     {
-      playerInputResults += Object.keys( buttonConversionVersion2 )[ button ];
+      for ( let button in Object.entries( buttonConversionVersion1 ) )
+      {
+        if ( ( tempPlayerString[ input ] & Object.values( buttonConversionVersion1 )[ button ] ) != 0 )
+        {
+          playerInputResults += `${ Object.keys( buttonConversionVersion1 )[ button ] }`;
+        }
+      }
+      playerInputsCNVArray.push( playerInputResults );
+      playerInputResults = '';
     }
+    fs.writeFileSync( `${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`, `var result = [];` + '\n' + `result[0] = ['${ playerInputsCNVArray.toString()
+      .replace( /24/gi, '1' )
+      .replace( /26/gi, '3' )
+      .replace( /48/gi, '7' )
+      .replace( /84/gi, '7' )
+      .replace( /86/gi, '9' )
+      .replace( /68/gi, '9' )
+      }'];` + '\n',
+      { encoding: 'utf8' },
+      ( err => {} ) );
+    playerInputsCNVArray = [];
+
+    //Input Conversion Type 2
+    for ( let input in tempPlayerString )
+    {
+      for ( let button in Object.entries( buttonConversionVersion2 ) )
+      {
+        if ( ( tempPlayerString[ input ] & Object.values( buttonConversionVersion2 )[ button ] ) != 0 )
+        {
+          playerInputResults += Object.keys( buttonConversionVersion2 )[ button ];
+        }
+      }
+      playerInputsCNVArray.push( playerInputResults );
+      playerInputResults = '';
+    }
+    fs.appendFileSync( `${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`, `result[1] = ['${ playerInputsCNVArray.toString()
+      //Fix diagonals
+      .replace( /24/gi, '1' )
+      .replace( /26/gi, '3' )
+      .replace( /48/gi, '7' )
+      .replace( /84/gi, '7' )
+      .replace( /68/gi, '9' )
+      .replace( /86/gi, '9' )
+      //Add '+' to direction+button inputs
+      .replace( /([1-9](?=\w+))/gm, '$1+' )
+      //Replace numbers with Letter-notation
+      .replace( /2|2\+/gm, 'D' )
+      .replace( /6|6\+/gm, 'R' )
+      .replace( /8|8\+/gm, 'U' )
+      .replace( /4|4\+/gm, 'L' )
+      .replace( /1|1\+/gm, 'DL' )
+      .replace( /3|3\+/gm, 'DR' )
+      .replace( /9|9\+/gm, 'UR' )
+      .replace( /7|7\+/gm, 'UL' )
+      //Re-write assists' notation
+      .replace( /AA/gi, 'A1' )
+      .replace( /AB/gi, 'A2' )
+      }'];`,
+      { encoding: 'utf8' },
+      ( err => {} ) );
+    playerInputsCNVArray = [];
   }
-  playerInputsCNVArray.push( playerInputResults );
-  playerInputResults = '';
 }
-fs.appendFileSync( `Test.js`, `result[1] = ['${ playerInputsCNVArray.toString()
-  //Fix diagonals
-  .replace( /24/gi, '1' )
-  .replace( /26/gi, '3' )
-  .replace( /48/gi, '7' )
-  .replace( /84/gi, '7' )
-  .replace( /68/gi, '9' )
-  .replace( /86/gi, '9' )
-  //Add '+' to direction+button inputs
-  .replace( /([1-9](?=\w+))/gm, '$1+' )
-  //Replace numbers with Letter-notation
-  .replace( /2|2\+/gm, 'D' )
-  .replace( /6|6\+/gm, 'R' )
-  .replace( /8|8\+/gm, 'U' )
-  .replace( /4|4\+/gm, 'L' )
-  .replace( /1|1\+/gm, 'DL' )
-  .replace( /3|3\+/gm, 'DR' )
-  .replace( /9|9\+/gm, 'UR' )
-  .replace( /7|7\+/gm, 'UL' )
-  //Re-write assists' notation
-  .replace( /AA/gi, 'A1' )
-  .replace( /AB/gi, 'A2' )
-  }'];`,
-  { encoding: 'utf8' },
-  ( err => {} ) );
-playerInputsCNVArray = [];
+
+// writeInputConvert();
+
 
 
 // i = PlayerOneAndPlayerTwo
-// j = ComparisonStates
-// k = numberOfArraysInCall
-// m = lengthOfEntriesInClip
+  // j = ComparisonStates
+    // k = numberOfArraysInCall
+      // m = lengthOfEntriesInClip
 
 // finalArray[i].push(BlockstunArray[i][j]  && ActionFlags[0][0] && AnimationTimerMain[i][j])
 
