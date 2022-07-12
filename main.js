@@ -1,12 +1,13 @@
 import * as fs from "fs"
 import * as path from "path"
 // import * as data from './main_files/SpiralUnblockable_node.js'; // TODO figure out how to make this dynamic
-import { Knockdown_State_Static, Prox_Block_Static, namesTable_Static } from "./main_files/staticData.js" // eval(testPath);
+import { Knockdown_State_Static, Prox_Block_Static, namesTable_Static, floatingPointAddresses } from "./main_files/staticData.js" // eval(testPath);
 import * as data from "./main_files/Shuma47_node.js"
 // import * as data from "./main_files/CaptainCommandoRogueCable8_node.js";
 
 const DIR_OUTPATH = path.join( process.cwd(), "/exportToAE/Shuma47/" ) // File Directory to write to; needs to match the clip name to make sense TODO fix this
 const CLIP_LENGTH = data.A_2D_Game_Timer.split( "," ).length // Used as clip-length frame tracker; address doesn't matter
+//Objects containing Point-Character data used in main function
 const POINT_OBJ_P1 = // Objects with the player slots as keys, and their values (0/1/2) as object-values. Ex: 'P1_A_ : 0'
 {
   P1_A_: data.P1_A_Is_Point.split( "," ),
@@ -20,9 +21,9 @@ const POINT_OBJ_P2 =
   P2_C_: data.P2_C_Is_Point.split( "," ),
 };
 
-/** **** Functions ******/
+/******* Functions ******/
 
-// Fetches usable node-js files exported using Powershell script from a pre-set directory
+// Fetches usable node-js files exported using Powershell script
 const DIR_MAIN_FILES = path.join( process.cwd(), "/main_files/" )
 const FILE_NAMES = []
 function getNodeJSFiles() // uses dirMainFiles to fetch usable files; returns array of file names
@@ -71,12 +72,12 @@ function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) /
   var playerObjectString;
   var playerString;
   // Change playerString to PlayerOneOrPlayerTwo
-  if ( PlayerOneOrPlayerTwo == 1 )
+  if ( PlayerOneOrPlayerTwo == 1 || PlayerOneOrPlayerTwo == "P1" )
   {
     playerObjectString = POINT_OBJ_P1;
     playerString = "P1";
   }
-  else if ( PlayerOneOrPlayerTwo == 2 )
+  else if ( PlayerOneOrPlayerTwo == 2 || PlayerOneOrPlayerTwo == "P2" )
   {
     playerObjectString = POINT_OBJ_P2;
     playerString = "P2";
@@ -97,7 +98,6 @@ function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) /
       // console.log( `${ playerString }: 2-Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
       finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectString )[ 0 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
       finalValuesArray[ 1 ].push( eval( `data.${ Object.keys( playerObjectString )[ 1 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
-
     }
     else if ( ( Object.values( playerObjectString )[ 0 ][ clipLen ] == 0 ) && ( Object.values( playerObjectString )[ 1 ][ clipLen ] != 0 ) && ( Object.values( playerObjectString )[ 2 ][ clipLen ] == 0 ) )
     {
@@ -130,15 +130,32 @@ function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) /
   }
   // Return if not writing files
   if ( write == 0 )
+  {
     return finalValuesArray
+  }
   // Write files
   if ( !fs.existsSync( DIR_OUTPATH ) )
+  {
     fs.mkdirSync( DIR_OUTPATH );
-  // Write base file
+  }
+
+  // Check for Floating Point Addresses so that we can do stuff with them if they show up
+  // for ( let floatAddress in floatingPointAddresses )
+  // {
+  //   if ( playerMemoryAddress == floatingPointAddresses[ floatAddress ] )
+  //   {
+  //     fs.writeFileSync( ` ${ DIR_OUTPATH }/${ playerString }_${ playerMemoryAddress }_Rounded.js` ),
+  //       `var result = [];` + '\n',
+  //       { flag: 'a+', encoding: 'utf8' },
+  //       ( err => {} );
+  //     console.log( `hola` )
+  //   }
+  // }
   fs.writeFileSync( `${ DIR_OUTPATH }/${ playerString }_${ playerMemoryAddress.split( ',' ) }.js`,
     `var result = [];` + '\n',
     { flag: 'a+', encoding: 'utf8' },
     ( err => {} ) );
+
   // Append main data
   for ( let dataArrayPerCharacter in finalValuesArray )
   {
@@ -147,9 +164,9 @@ function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) /
       { encoding: 'utf8' },
       ( err => {} ) );
   }
-
 } // End of Mainfunction()
 
+// writePlayerMemory( 'P1', 'X_Position_Arena', 1 );
 // EXECUTE MAIN FUNCTIONS
 // getLabelsfromJS( "./main_files/Shuma47_node.js" ).forEach( ( label ) =>
 // {
@@ -157,8 +174,12 @@ function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) /
 //   writePlayerMemory( 2, label.toString(), 1 );
 // } );
 
+/*
+
+*/
 // Write Static Data Conversion Function
-// Uses these base files to do Key-Value pair conversion to generate strings for the final files. Example ID: 01 turns into "Ryu"
+// Uses these base files to do Key-Value pair conversion to generate strings for the final files.
+// Example ID: 01 turns into "Ryu"
 
 function writeStaticDataCnv()
 {
@@ -183,13 +204,13 @@ function writeStaticDataCnv()
     }
     for ( let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++ )
     {
-      var callPlayerMemory = writePlayerMemory( `${ playersLen }`, STATIC_DATA_ADRS[ staticDataLen ], 0 );
-      for ( let playerMemLength = 0; playerMemLength < callPlayerMemory.length; playerMemLength++ )
+      var callPlayerMemoryFN = writePlayerMemory( `${ playersLen }`, STATIC_DATA_ADRS[ staticDataLen ], 0 );
+      for ( let playerMemLength = 0; playerMemLength < callPlayerMemoryFN.length; playerMemLength++ )
       {
         //Push and convert all three arrays' values
-        for ( let characterSlot = 0; characterSlot < callPlayerMemory[ playerMemLength ].length; characterSlot++ )
+        for ( let characterSlot = 0; characterSlot < callPlayerMemoryFN[ playerMemLength ].length; characterSlot++ )
         {
-          staticLookupResultsArray[ playerMemLength ].push( `'${ Object.values( STATIC_DATA_OBJS[ staticDataLen ] )[ callPlayerMemory[ playerMemLength ][ characterSlot ] ] }'` );
+          staticLookupResultsArray[ playerMemLength ].push( `'${ Object.values( STATIC_DATA_OBJS[ staticDataLen ] )[ callPlayerMemoryFN[ playerMemLength ][ characterSlot ] ] }'` );
         }
         fs.appendFileSync( `${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[ staticDataLen ] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[ playerMemLength ] }];\n`,
           { encoding: 'utf8' },
@@ -202,16 +223,15 @@ function writeStaticDataCnv()
     }
   }
 };
-
 // writeStaticDataCnv();
 
 function writeInputConvert()
 {
   var P1Inputs = data.P1_Input_DEC.split( ',' );
   var P2Inputs = data.P2_Input_DEC.split( ',' );
-  var playerInputResults = '';
-  var playerInputsCNVArray = [];
-  let tempPlayerString = '';
+  let playerInputResults = ''; // holds each result for P1 and P2
+  let playerInputsCNVArray = []; // contains transformed results for P1 and P2
+  let tempPlayerString = ''; // Changes to "P1" or "P2"
 
   var buttonConversionVersion1 =
   {
@@ -261,13 +281,16 @@ function writeInputConvert()
       playerInputsCNVArray.push( playerInputResults );
       playerInputResults = '';
     }
-    fs.writeFileSync( `${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`, `var result = [];` + '\n' + `result[0] = ['${ playerInputsCNVArray.toString()
-      .replace( /24/gi, '1' )
-      .replace( /26/gi, '3' )
-      .replace( /48/gi, '7' )
-      .replace( /84/gi, '7' )
-      .replace( /86/gi, '9' )
-      .replace( /68/gi, '9' )
+    fs.writeFileSync( `${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`, `var result = [];` + '\n' + `result[0] = ['
+      ${ playerInputsCNVArray.toString()
+        .replace( /24/gi, '1' )
+        .replace( /42/gi, '1' )
+        .replace( /26/gi, '3' )
+        .replace( /62/gi, '3' )
+        .replace( /48/gi, '7' )
+        .replace( /84/gi, '7' )
+        .replace( /86/gi, '9' )
+        .replace( /68/gi, '9' )
       }'];` + '\n',
       { encoding: 'utf8' },
       ( err => {} ) );
@@ -289,11 +312,13 @@ function writeInputConvert()
     fs.appendFileSync( `${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`, `result[1] = ['${ playerInputsCNVArray.toString()
       //Fix diagonals
       .replace( /24/gi, '1' )
+      .replace( /42/gi, '1' )
       .replace( /26/gi, '3' )
+      .replace( /62/gi, '3' )
       .replace( /48/gi, '7' )
       .replace( /84/gi, '7' )
-      .replace( /68/gi, '9' )
       .replace( /86/gi, '9' )
+      .replace( /68/gi, '9' )
       //Add '+' to direction+button inputs
       .replace( /([1-9](?=\w+))/gm, '$1+' )
       //Replace numbers with Letter-notation
@@ -314,23 +339,23 @@ function writeInputConvert()
     playerInputsCNVArray = [];
   }
 }
-
+// data.P1_A_X_Position_Arena
 // writeInputConvert();
 
-
+// writePlayerMemory(P1, 'ActionFlags', 0);
 
 // i = PlayerOneAndPlayerTwo
-  // j = ComparisonStates
-    // k = numberOfArraysInCall
-      // m = lengthOfEntriesInClip
+// j = ComparisonStates
+// k = numberOfArraysInCall
+// m = lengthOfEntriesInClip
 
-// finalArray[i].push(BlockstunArray[i][j]  && ActionFlags[0][0] && AnimationTimerMain[i][j])
+// finalArray[ i ].push( BlockstunArray[ i ][ j ] && ActionFlags[ 0 ][ 0 ] && AnimationTimerMain[ i ][ j ] )
 
 // console.log( writePlayerMemory( 'Knockdown_State', 1 ) );
 
 // function writeMathFromFilesCnv(pathToData)
 // {
-//     var getFile = fs.readFileSync(pathToData, 'utf8',);
+// var getFile = fs.readFileSync(pathToData, 'utf8',);
 //     getFile.toString().split(';').forEach(function (line) //Split each block of text by semi-colon
 //     {
 //         let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all player memory addresses; want capture group 2.
@@ -352,36 +377,37 @@ function writeInputConvert()
   I was thinking of adding a table of states and their corresponding logics...
   It would be cool if the MVC2GEN could iterate through this table automatically
   to pick out which key and value pairs to use for each character.
+*/
 
-const newDataToWrite = {
-  "Being_Hit": Animation_Timer_Main > 0 && Knockdown_State == 32 ? 1 : 0,
-  "Flying_Screen_Air": FlyingScreen == 1 && Knockdown_State == 32 && Airborne == 2 ? 1 : 0,
-  "FlyingScreen_OTG": FlyingScreen == 1 && Knockdown_State == 32 && Airborne == 3 ? 1 : 0,
-  "FS_Install_1": FSI_Points == 8 || FSI_Points == 9  ? 1 : 0,
-  "FS_Install_2": FSI_Points > 9 ? 1 : 0,
-  "NJ_Air": Airborne == 2 && Knockdown_State == 3 && SJ_Counter == 0 ? 1 : 0,
-  "NJ_Rising": Airborne == 0 && Knockdown_State == 2 && SJ_Counter == 0 ? 1 : 0,
-  "OTG_Extra_Stun": Knockdown_State == 23 && Airborne == 3 ? 1 : 0,
-  "OTG_Forced_Stun": Knockdown_State == 32 && Airborne == 3 ? 1 : 0,
-  "OTG_Hit": Action_Flags == 0 && Airborne == 3 && Knockdown_State == 32 ? 1 : 0,
-  "OTG_Roll_Invincible": Action_Flags == 2 && Airborne == 1 && Attack_Immune == 1 && Knockdown_State == 17 ? 1 : 0,
-  "OTG_Roll_Stunned": Action_Flags == 1 && Airborne == 3 && Knockdown_State == 32 ? 1 : 0,
-  "ProxBlock_Air": Is_Prox_Block == 6 && Knockdown_State == 19 ? 1 : 0,
-  "ProxBlock_Ground": Is_Prox_Block == 5 && Knockdown_State == 18 ? 1 : 0,
-  "Pushblock_Air": Block_Meter > 0 && Animation_Timer_Main < 28 && Is_Prox_Block == 6 && Action_Flags == 2 ? 1 : 0,
-  "Pushblock_Ground": Block_Meter > 0 && Animation_Timer_Main < 28 && Is_Prox_Block == 5 && Action_Flags == 3 ? 1 : 0,
-  "Rising_Invincibility": Airborne == 0 && Attack_Immune == 1 && Knockdown_State == 17 ? 1 : 0,
-  "SJ_Air": Airborne == 2 && Knockdown_State == 14 && SJ_Counter == 1 ? 1 : 0,
-  "SJ_Counter": SJ_Counter == 2 ? 1 : 0,
-  "Stun": Knockdown_State == 32 && Is_Prox_Block == 13 ? 1 : 0,
-  "Tech_Hit": Knockdown_State == 27 ? 1 : 0,
-  "Thrown_Air": Airborne == 2 && Knockdown_State == 31 && Is_Prox_Block == 16 ? 1 : 0,
-  "Thrown_Ground": Airborne == 0 && Knockdown_State == 31 && Is_Prox_Block == 16 ? 1 : 0,
-}
+// const newDataToWrite = {
+//   "Being_Hit": Animation_Timer_Main > 0 && Knockdown_State == 32 ? 1 : 0,
+//   "Flying_Screen_Air": FlyingScreen == 1 && Knockdown_State == 32 && Airborne == 2 ? 1 : 0,
+//   "FlyingScreen_OTG": FlyingScreen == 1 && Knockdown_State == 32 && Airborne == 3 ? 1 : 0,
+//   "FS_Install_1": FSI_Points == 8 || FSI_Points == 9  ? 1 : 0,
+//   "FS_Install_2": FSI_Points > 9 ? 1 : 0,
+//   "NJ_Air": Airborne == 2 && Knockdown_State == 3 && SJ_Counter == 0 ? 1 : 0,
+//   "NJ_Rising": Airborne == 0 && Knockdown_State == 2 && SJ_Counter == 0 ? 1 : 0,
+//   "OTG_Extra_Stun": Knockdown_State == 23 && Airborne == 3 ? 1 : 0,
+//   "OTG_Forced_Stun": Knockdown_State == 32 && Airborne == 3 ? 1 : 0,
+//   "OTG_Hit": Action_Flags == 0 && Airborne == 3 && Knockdown_State == 32 ? 1 : 0,
+//   "OTG_Roll_Invincible": Action_Flags == 2 && Airborne == 1 && Attack_Immune == 1 && Knockdown_State == 17 ? 1 : 0,
+//   "OTG_Roll_Stunned": Action_Flags == 1 && Airborne == 3 && Knockdown_State == 32 ? 1 : 0,
+//   "ProxBlock_Air": Is_Prox_Block == 6 && Knockdown_State == 19 ? 1 : 0,
+//   "ProxBlock_Ground": Is_Prox_Block == 5 && Knockdown_State == 18 ? 1 : 0,
+//   "Pushblock_Air": Block_Meter > 0 && Animation_Timer_Main < 28 && Is_Prox_Block == 6 && Action_Flags == 2 ? 1 : 0,
+//   "Pushblock_Ground": Block_Meter > 0 && Animation_Timer_Main < 28 && Is_Prox_Block == 5 && Action_Flags == 3 ? 1 : 0,
+//   "Rising_Invincibility": Airborne == 0 && Attack_Immune == 1 && Knockdown_State == 17 ? 1 : 0,
+//   "SJ_Air": Airborne == 2 && Knockdown_State == 14 && SJ_Counter == 1 ? 1 : 0,
+//   "SJ_Counter": SJ_Counter == 2 ? 1 : 0,
+//   "Stun": Knockdown_State == 32 && Is_Prox_Block == 13 ? 1 : 0,
+//   "Tech_Hit": Knockdown_State == 27 ? 1 : 0,
+//   "Thrown_Air": Airborne == 2 && Knockdown_State == 31 && Is_Prox_Block == 16 ? 1 : 0,
+//   "Thrown_Ground": Airborne == 0 && Knockdown_State == 31 && Is_Prox_Block == 16 ? 1 : 0,
+// }
 
 /*Instead for now, there's these arrays corresponding to each character.
 I have to create a set of Arrays for each character for now.
-*/
+
 // var BeingHitArray = [];
 // 	BeingHitArray[0] = '';
 // 	BeingHitArray[1] = '';
@@ -413,20 +439,20 @@ I have to create a set of Arrays for each character for now.
 // 	FlyingScreenAirArray[sixCharsI] = FlyingScreenAirArray[sixCharsI].replace(`, "` , `"`);
 // }
 
-/* Old method of doing the loops; I'm keeping it here to update it later.
-I'd like to figure out an efficient way to do these loops before propagating it to the other files.
+//  Old method of doing the loops; I'm keeping it here to update it later.
+// I'd like to figure out an efficient way to do these loops before propagating it to the other files.
 
-for (let  m = 0 ; m < slots.length ; m++ )
-{
-    for ( let i = 0; i < data.A_2D_Game_Timer.split(',').length ; i++ )
-    {
-        // console.log(slots[m]+"Knockdown_State: "+(eval(`data.${ slots[ m ] } Knockdown_State.split( ',' )`)[i]))
-        // console.log(slots[m]+"Animation_Timer_Main: "+(eval(`data.${ slots[ m ] } Animation_Timer_Main.split( ',' )`)[i]))
-        BeingHitArray[m] += ( eval(`data.${ slots[ m ] } Animation_Timer_Main.split( ',' )`)[i] > 0
-            && eval(`data.${ slots[ m ] } Knockdown_State.split( ',' )`)[i] == 32 )
-            ? 1 + ',' : 0 + ','
-    }
-    // console.log(slots[m]+"BeingHit: " + BeingHitArray[m]);
-}
-console.log(BeingHitArray);
+// for (let  m = 0 ; m < slots.length ; m++ )
+// {
+//     for ( let i = 0; i < data.A_2D_Game_Timer.split(',').length ; i++ )
+//     {
+//         // console.log(slots[m]+"Knockdown_State: "+(eval(`data.${ slots[ m ] } Knockdown_State.split( ',' )`)[i]))
+//         // console.log(slots[m]+"Animation_Timer_Main: "+(eval(`data.${ slots[ m ] } Animation_Timer_Main.split( ',' )`)[i]))
+//         BeingHitArray[m] += ( eval(`data.${ slots[ m ] } Animation_Timer_Main.split( ',' )`)[i] > 0
+//             && eval(`data.${ slots[ m ] } Knockdown_State.split( ',' )`)[i] == 32 )
+//             ? 1 + ',' : 0 + ','
+//     }
+//     // console.log(slots[m]+"BeingHit: " + BeingHitArray[m]);
+// }
+// console.log(BeingHitArray);
 */

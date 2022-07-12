@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/yahiaboudah/MVC2GEN#readme",
   "dependencies": {
-    "csv": "^6.1.5"
-  },
-  "devDependencies": {}
+    "csv": "^6.1.5",
+    "csv-parser": "^3.0.0"
+  }
 }
