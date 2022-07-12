@@ -364,13 +364,16 @@ var State_Being_Hit_FN = function ()
     {
       tempPlayerString = "P2";
     }
+    // The two addresses whose values we will compare
     var getKnockdown_State = writePlayerMemory( tempPlayerString, 'Knockdown_State', 0 )
     var getAnimation_Timer_Main = writePlayerMemory( tempPlayerString, 'Animation_Timer_Main', 0 )
-
-    for ( let playerSlotI = 0; playerSlotI < 3; playerSlotI++ ) // 3 Arrays for each player. 
+    // Each Player has 3 arrays of addresses to compare
+    for ( let playerSlotI = 0; playerSlotI < 3; playerSlotI++ ) 
     {
-      for ( let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++ ) // total amount of frames in a clip
+      // total amount of frames in a clip
+      for ( let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++ )
       {
+        // Concurrent logic that's needed for the state of being hit
         if ( ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAnimation_Timer_Main )[ playerSlotI ][ clipLen ] > 0 ) )
         {
           state_results_array[ playerSlotI ].push( 1 );
@@ -381,9 +384,10 @@ var State_Being_Hit_FN = function ()
         }
       }
     }
+    // Writes the results of each array that was compared
     fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[0] = [${ state_results_array[ 0 ].toString() }];\n`, { encoding: 'utf8' }, ( err => {} ) );
     fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[1] = [${ state_results_array[ 1 ].toString() }];\n`, { encoding: 'utf8' }, ( err => {} ) );
-    fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[2] = [${ state_results_array[ 1 ].toString() }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+    fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[2] = [${ state_results_array[ 2 ].toString() }];\n`, { encoding: 'utf8' }, ( err => {} ) );
     // Reset the array for the next player
     state_results_array = [];
     state_results_array[ 0 ] = [];
