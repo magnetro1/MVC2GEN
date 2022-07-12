@@ -40,7 +40,7 @@ function getNodeJSFiles() // uses dirMainFiles to fetch usable files; returns ar
 }
 // console.log(getNodeJSFiles());
 
-// Get unique-list of player memory addresses per clip to feed into main function
+// Get unique-list of player memory addresses per clip to feed into main function. EX: P1_A/B/C_Health_Big
 var playerDataAll = []
 function getLabelsfromJS( pathToFile )
 {
@@ -65,67 +65,71 @@ function getLabelsfromJS( pathToFile )
 
 function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) // 'P1'/'P2', address from data-object, 1/0
 {
-  var finalValuesArray = [];
+  var finalValuesArray = []; // 3 Arrays to hold all 3 player slots.
   finalValuesArray[ 0 ] = [];
   finalValuesArray[ 1 ] = [];
   finalValuesArray[ 2 ] = [];
-  var playerObjectString;
-  var playerString;
-  // Change playerString to PlayerOneOrPlayerTwo
+  var playerObjectSwitcher; // Switches between the Player1 and Player2 objects
+  var playerSwitcher; // Switches between "P1" and "P2"
+
   if ( PlayerOneOrPlayerTwo == 1 || PlayerOneOrPlayerTwo == "P1" )
   {
-    playerObjectString = POINT_OBJ_P1;
-    playerString = "P1";
+    playerObjectSwitcher = POINT_OBJ_P1;
+    playerSwitcher = "P1";
   }
   else if ( PlayerOneOrPlayerTwo == 2 || PlayerOneOrPlayerTwo == "P2" )
   {
-    playerObjectString = POINT_OBJ_P2;
-    playerString = "P2";
+    playerObjectSwitcher = POINT_OBJ_P2;
+    playerSwitcher = "P2";
   }
   // Push all player memory addresses to finalValuesArray depending on the if-statement-logic
+  // Eval EX: eval(data.P1_A_Health_Big.split(','))[clipLen])
   for ( let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++ ) // length of clip
   {
-    if ( ( Object.values( playerObjectString )[ 0 ][ clipLen ] == 0 ) && ( Object.values( playerObjectString )[ 1 ][ clipLen ] == 0 ) && ( Object.values( playerObjectString )[ 2 ][ clipLen ] == 0 ) )
+    if ( ( Object.values( playerObjectSwitcher )[ 0 ][ clipLen ] == 0 ) && ( Object.values( playerObjectSwitcher )[ 1 ][ clipLen ] == 0 ) && ( Object.values( playerObjectSwitcher )[ 2 ][ clipLen ] == 0 ) )
     {
       // console.log( `${ playerString }: 3-Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
-      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectString )[ 0 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
-      finalValuesArray[ 1 ].push( eval( `data.${ Object.keys( playerObjectString )[ 1 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
-      finalValuesArray[ 2 ].push( eval( `data.${ Object.keys( playerObjectString )[ 2 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectSwitcher )[ 0 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      finalValuesArray[ 1 ].push( eval( `data.${ Object.keys( playerObjectSwitcher )[ 1 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      finalValuesArray[ 2 ].push( eval( `data.${ Object.keys( playerObjectSwitcher )[ 2 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
     }
     //2-Character Bug Logic
-    else if ( ( Object.values( playerObjectString )[ 0 ][ clipLen ] == 0 ) && ( Object.values( playerObjectString )[ 1 ][ clipLen ] == 0 ) && ( Object.values( playerObjectString )[ 2 ][ clipLen ] != 0 ) )
+    else if ( ( Object.values( playerObjectSwitcher )[ 0 ][ clipLen ] == 0 ) && ( Object.values( playerObjectSwitcher )[ 1 ][ clipLen ] == 0 ) && ( Object.values( playerObjectSwitcher )[ 2 ][ clipLen ] != 0 ) )
     {
       // console.log( `${ playerString }: 2-Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
-      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectString )[ 0 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
-      finalValuesArray[ 1 ].push( eval( `data.${ Object.keys( playerObjectString )[ 1 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectSwitcher )[ 0 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      finalValuesArray[ 1 ].push( eval( `data.${ Object.keys( playerObjectSwitcher )[ 1 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
     }
-    else if ( ( Object.values( playerObjectString )[ 0 ][ clipLen ] == 0 ) && ( Object.values( playerObjectString )[ 1 ][ clipLen ] != 0 ) && ( Object.values( playerObjectString )[ 2 ][ clipLen ] == 0 ) )
+    else if ( ( Object.values( playerObjectSwitcher )[ 0 ][ clipLen ] == 0 ) && ( Object.values( playerObjectSwitcher )[ 1 ][ clipLen ] != 0 ) && ( Object.values( playerObjectSwitcher )[ 2 ][ clipLen ] == 0 ) )
     {
       // console.log( `${ playerString }: 2-Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
-      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectString )[ 0 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
-      finalValuesArray[ 1 ].push( eval( `data.${ Object.keys( playerObjectString )[ 2 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectSwitcher )[ 0 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      finalValuesArray[ 1 ].push( eval( `data.${ Object.keys( playerObjectSwitcher )[ 2 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
     }
-    else if ( ( Object.values( playerObjectString )[ 0 ][ clipLen ] != 0 ) && ( Object.values( playerObjectString )[ 1 ][ clipLen ] == 0 ) && ( Object.values( playerObjectString )[ 2 ][ clipLen ] == 0 ) )
+    else if ( ( Object.values( playerObjectSwitcher )[ 0 ][ clipLen ] != 0 ) && ( Object.values( playerObjectSwitcher )[ 1 ][ clipLen ] == 0 ) && ( Object.values( playerObjectSwitcher )[ 2 ][ clipLen ] == 0 ) )
     {
       // console.log( `${ playerString }: 2-Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
-      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectString )[ 1 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
-      finalValuesArray[ 1 ].push( eval( `data.${ Object.keys( playerObjectString )[ 2 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectSwitcher )[ 1 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      finalValuesArray[ 1 ].push( eval( `data.${ Object.keys( playerObjectSwitcher )[ 2 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
     }
     //1-Character Logic
-    else if ( ( Object.values( playerObjectString )[ 0 ][ clipLen ] == 0 ) && ( Object.values( playerObjectString )[ 1 ][ clipLen ] != 0 ) && ( Object.values( playerObjectString )[ 2 ][ clipLen ] != 0 ) )
+    else if ( ( Object.values( playerObjectSwitcher )[ 0 ][ clipLen ] == 0 ) && ( Object.values( playerObjectSwitcher )[ 1 ][ clipLen ] != 0 ) && ( Object.values( playerObjectSwitcher )[ 2 ][ clipLen ] != 0 ) )
     {
       // console.log( `${ playerString }: 1-Character Logic: A == 0 && B != 0 && C != 0        P1: A` );
-      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectString )[ 0 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectSwitcher )[ 0 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      //                          eval(data.P1_A_Health_Big.split(','))[clipLen])
     }
-    else if ( ( Object.values( playerObjectString )[ 0 ][ clipLen ] != 0 ) && ( Object.values( playerObjectString )[ 1 ][ clipLen ] == 0 ) && ( Object.values( playerObjectString )[ 2 ][ clipLen ] != 0 ) )
+    else if ( ( Object.values( playerObjectSwitcher )[ 0 ][ clipLen ] != 0 ) && ( Object.values( playerObjectSwitcher )[ 1 ][ clipLen ] == 0 ) && ( Object.values( playerObjectSwitcher )[ 2 ][ clipLen ] != 0 ) )
     {
       // console.log( `${ playerString }: 1-Character Logic: A != 0 && B == 0 && C != 0        P1: B` );
-      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectString )[ 1 ] }${ playerMemoryAddress }.split( ',' )` )[ clipLen ] );
+      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectSwitcher )[ 1 ] }${ playerMemoryAddress }.split( ',' )` )[ clipLen ] );
+      //                          eval(data.P1_B_Health_Big.split(','))[clipLen])
     }
-    else if ( ( Object.values( playerObjectString )[ 0 ][ clipLen ] != 0 ) && ( Object.values( playerObjectString )[ 1 ][ clipLen ] != 0 ) && ( Object.values( playerObjectString )[ 2 ][ clipLen ] == 0 ) )
+    else if ( ( Object.values( playerObjectSwitcher )[ 0 ][ clipLen ] != 0 ) && ( Object.values( playerObjectSwitcher )[ 1 ][ clipLen ] != 0 ) && ( Object.values( playerObjectSwitcher )[ 2 ][ clipLen ] == 0 ) )
     {
       // console.log( `${ playerString }: 1 - Character Logic: A != 0 && B != 0 && C == 0        P1: C` );
-      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectString )[ 2 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      finalValuesArray[ 0 ].push( eval( `data.${ Object.keys( playerObjectSwitcher )[ 2 ] }${ playerMemoryAddress }.split(',')` )[ clipLen ] );
+      //                          eval(data.P1_B_Health_Big.split(','))[clipLen])
     }
   }
   // Return if not writing files
@@ -151,7 +155,7 @@ function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) /
   //     console.log( `hola` )
   //   }
   // }
-  fs.writeFileSync( `${ DIR_OUTPATH }/${ playerString }_${ playerMemoryAddress.split( ',' ) }.js`,
+  fs.writeFileSync( `${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split( ',' ) }.js`,
     `var result = [];` + '\n',
     { flag: 'a+', encoding: 'utf8' },
     ( err => {} ) );
@@ -159,7 +163,7 @@ function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) /
   // Append main data
   for ( let dataArrayPerCharacter in finalValuesArray )
   {
-    fs.appendFileSync( `${ DIR_OUTPATH }/${ playerString }_${ playerMemoryAddress.split( ',' ) }.js`,
+    fs.appendFileSync( `${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split( ',' ) }.js`,
       `result[${ dataArrayPerCharacter }] = [${ finalValuesArray[ dataArrayPerCharacter ] }];\n`,
       { encoding: 'utf8' },
       ( err => {} ) );
@@ -174,12 +178,7 @@ function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) /
 //   writePlayerMemory( 2, label.toString(), 1 );
 // } );
 
-/*
-
-*/
-// Write Static Data Conversion Function
-// Uses these base files to do Key-Value pair conversion to generate strings for the final files.
-// Example ID: 01 turns into "Ryu"
+// Write Static Data Conversion. Example ID: 01 turns into "Ryu"
 
 function writeStaticDataCnv()
 {
@@ -339,10 +338,64 @@ function writeInputConvert()
     playerInputsCNVArray = [];
   }
 }
-// data.P1_A_X_Position_Arena
+
 // writeInputConvert();
 
-// writePlayerMemory(P1, 'ActionFlags', 0);
+var State_Being_Hit_FN = function ()
+{
+  fs.writeFileSync( `${ DIR_OUTPATH }P1_State_Being_Hit.js`, `var result = [];` + '\n', { encoding: 'utf8' }, ( err => {} ) );
+  fs.writeFileSync( `${ DIR_OUTPATH }P2_State_Being_Hit.js`, `var result = [];` + '\n', { encoding: 'utf8' }, ( err => {} ) );
+
+  var state_results_array = [];
+  state_results_array[ 0 ] = [];
+  state_results_array[ 1 ] = [];
+  state_results_array[ 2 ] = [];
+  var tempPlayerValue;
+  var tempPlayerString;
+
+
+  for ( tempPlayerValue = 1; tempPlayerValue < 3; tempPlayerValue++ ) // P1 and P2
+  {
+    if ( tempPlayerValue == 1 ) 
+    {
+      tempPlayerString = "P1";
+    }
+    else
+    {
+      tempPlayerString = "P2";
+    }
+    var getKnockdown_State = writePlayerMemory( tempPlayerString, 'Knockdown_State', 0 )
+    var getAnimation_Timer_Main = writePlayerMemory( tempPlayerString, 'Animation_Timer_Main', 0 )
+
+    for ( let playerSlotI = 0; playerSlotI < 3; playerSlotI++ ) // 3 Arrays for each player. 
+    {
+      for ( let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++ ) // total amount of frames in a clip
+      {
+        if ( ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAnimation_Timer_Main )[ playerSlotI ][ clipLen ] > 0 ) )
+        {
+          state_results_array[ playerSlotI ].push( 1 );
+        }
+        else
+        {
+          state_results_array[ playerSlotI ].push( 0 );
+        }
+      }
+    }
+    fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[0] = [${ state_results_array[ 0 ].toString() }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+    fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[1] = [${ state_results_array[ 1 ].toString() }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+    fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[2] = [${ state_results_array[ 1 ].toString() }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+    // Reset the array for the next player
+    state_results_array = [];
+    state_results_array[ 0 ] = [];
+    state_results_array[ 1 ] = [];
+    state_results_array[ 2 ] = [];
+  }
+}
+
+State_Being_Hit_FN()
+// console.log( writePlayerMemory( "P1", "Animation_Timer_Main", 0 )[ 0 ][ 0 ] );
+
+//   "Being_Hit": (( Animation_Timer_Main > 0 )&& (Knockdown_State == 32) ) ? 1 : 0,
 
 // i = PlayerOneAndPlayerTwo
 // j = ComparisonStates
@@ -380,29 +433,29 @@ function writeInputConvert()
 */
 
 // const newDataToWrite = {
-//   "Being_Hit": Animation_Timer_Main > 0 && Knockdown_State == 32 ? 1 : 0,
-//   "Flying_Screen_Air": FlyingScreen == 1 && Knockdown_State == 32 && Airborne == 2 ? 1 : 0,
-//   "FlyingScreen_OTG": FlyingScreen == 1 && Knockdown_State == 32 && Airborne == 3 ? 1 : 0,
-//   "FS_Install_1": FSI_Points == 8 || FSI_Points == 9  ? 1 : 0,
-//   "FS_Install_2": FSI_Points > 9 ? 1 : 0,
-//   "NJ_Air": Airborne == 2 && Knockdown_State == 3 && SJ_Counter == 0 ? 1 : 0,
-//   "NJ_Rising": Airborne == 0 && Knockdown_State == 2 && SJ_Counter == 0 ? 1 : 0,
-//   "OTG_Extra_Stun": Knockdown_State == 23 && Airborne == 3 ? 1 : 0,
-//   "OTG_Forced_Stun": Knockdown_State == 32 && Airborne == 3 ? 1 : 0,
-//   "OTG_Hit": Action_Flags == 0 && Airborne == 3 && Knockdown_State == 32 ? 1 : 0,
-//   "OTG_Roll_Invincible": Action_Flags == 2 && Airborne == 1 && Attack_Immune == 1 && Knockdown_State == 17 ? 1 : 0,
-//   "OTG_Roll_Stunned": Action_Flags == 1 && Airborne == 3 && Knockdown_State == 32 ? 1 : 0,
-//   "ProxBlock_Air": Is_Prox_Block == 6 && Knockdown_State == 19 ? 1 : 0,
-//   "ProxBlock_Ground": Is_Prox_Block == 5 && Knockdown_State == 18 ? 1 : 0,
-//   "Pushblock_Air": Block_Meter > 0 && Animation_Timer_Main < 28 && Is_Prox_Block == 6 && Action_Flags == 2 ? 1 : 0,
-//   "Pushblock_Ground": Block_Meter > 0 && Animation_Timer_Main < 28 && Is_Prox_Block == 5 && Action_Flags == 3 ? 1 : 0,
-//   "Rising_Invincibility": Airborne == 0 && Attack_Immune == 1 && Knockdown_State == 17 ? 1 : 0,
-//   "SJ_Air": Airborne == 2 && Knockdown_State == 14 && SJ_Counter == 1 ? 1 : 0,
-//   "SJ_Counter": SJ_Counter == 2 ? 1 : 0,
-//   "Stun": Knockdown_State == 32 && Is_Prox_Block == 13 ? 1 : 0,
-//   "Tech_Hit": Knockdown_State == 27 ? 1 : 0,
-//   "Thrown_Air": Airborne == 2 && Knockdown_State == 31 && Is_Prox_Block == 16 ? 1 : 0,
-//   "Thrown_Ground": Airborne == 0 && Knockdown_State == 31 && Is_Prox_Block == 16 ? 1 : 0,
+//   "Being_Hit": (( Animation_Timer_Main > 0 )&& (Knockdown_State == 32) ) ? 1 : 0,
+//   "Flying_Screen_Air":( (FlyingScreen == 1) && (Knockdown_State == 32) && (Airborne == 2) ) ? 1 : 0,
+//   "FlyingScreen_OTG": ((FlyingScreen == 1) && (Knockdown_State == 32) && (Airborne == 3) ) ? 1 : 0,
+//   "FS_Install_1": ((FSI_Points == 8) || (FSI_Points == 9) ) ? 1 : 0,
+//   "FS_Install_2": ((FSI_Points > 9) ) ? 1 : 0,
+//   "NJ_Air": (( (Airborne == 2) && (Knockdown_State == 3) && (SJ_Counter == 0) ) ) ? 1 : 0,
+//   "NJ_Rising": ((Airborne == 0) && (Knockdown_State == 2) && (SJ_Counter == 0) ) ? 1 : 0,
+//   "OTG_Extra_Stun": ((Knockdown_State == 23) && (Airborne == 3) ) ? 1 : 0,
+//   "OTG_Forced_Stun": ((Knockdown_State == 32) && (Airborne == 3) ) ? 1 : 0,
+//   "OTG_Hit": ((Action_Flags == 0) && (Airborne == 3) && (Knockdown_State == 32) ) ? 1 : 0,
+//   "OTG_Roll_Invincible": ((Action_Flags == 2) && (Airborne == 1) && (Attack_Immune == 1) && (Knockdown_State == 17) ) ? 1 : 0,
+//   "OTG_Roll_Stunned": ((Action_Flags == 1) && (Airborne == 3) && (Knockdown_State == 32) ) ? 1 : 0,
+//   "ProxBlock_Air": ((Is_Prox_Block == 6) && (Knockdown_State == 19) ) ? 1 : 0,
+//   "ProxBlock_Ground": ((Is_Prox_Block == 5) && (Knockdown_State == 18) ) ? 1 : 0,
+//   "Pushblock_Air": ((Block_Meter > 0) && (Animation_Timer_Main < 28) && (Is_Prox_Block == 6) && (Action_Flags == 2) ) ? 1 : 0,
+//   "Pushblock_Ground": ((Block_Meter > 0) && (Animation_Timer_Main < 28) && (Is_Prox_Block == 5) && (Action_Flags == 3) ) ? 1 : 0,
+//   "Rising_Invincibility": ((Airborne == 0) && (Attack_Immune == 1) && (Knockdown_State == 17) ) ? 1 : 0,
+//   "SJ_Air": ((Airborne == 2) && (Knockdown_State == 14) && (SJ_Counter == 1) ) ? 1 : 0,
+//   "SJ_Counter": ((SJ_Counter == 2) ) ? 1 : 0,
+//   "Stun": ((Knockdown_State == 32) && (Is_Prox_Block == 13) ) ? 1 : 0,
+//   "Tech_Hit": ((Knockdown_State == 27) ) ? 1 : 0,
+//   "Thrown_Air": ((Airborne == 2) && (Knockdown_State == 31) && (Is_Prox_Block == 16) ) ? 1 : 0,
+//   "Thrown_Ground": ((Airborne == 0) && (Knockdown_State == 31) && (Is_Prox_Block == 16) ) ? 1 : 0,
 // }
 
 /*Instead for now, there's these arrays corresponding to each character.
