@@ -1,4 +1,3 @@
-console.time( 'Time to complete' );
 import * as fs from "fs"
 import * as path from "path"
 // import * as data from './main_files/SpiralUnblockable_node.js'; // TODO figure out how to make this dynamic
@@ -337,18 +336,37 @@ function writeInputConvert()
 
 var writeNewStates = function ()
 {
-  // Results-array-per-slot
-  var state_results_array = [];
-  state_results_array[ 0 ] = [];
-  state_results_array[ 1 ] = [];
-  state_results_array[ 2 ] = [];
-  //Temps for switching variables
+  //Temps for switching P1 and P2
   var tempPlayerValue;
   var tempPlayerString;
-
-  var stateNamesArray = [ 'State_Being_Hit', 'State_Flying_Screen_Air', 'State_Flying_Screen_OTG', 'State_FS_Install_1', 'State_FS_Install_2', 'State_NJ_Air', 'State_NJ_Rising', 'State_OTG_Extra_Stun', 'State_OTG_Forced_Stun', 'State_OTG_Hit', 'State_OTG_Roll_Invincible' ];
-
-  for ( tempPlayerValue = 1; tempPlayerValue < 3; tempPlayerValue++ ) // P1 and P2
+  // List of files to be written
+  var stateNamesArray = [
+    'State_Being_Hit',
+    'State_Flying_Screen_Air',
+    'State_Flying_Screen_OTG',
+    'State_FS_Install_1',
+    'State_FS_Install_2',
+    'State_NJ_Air',
+    'State_NJ_Rising',
+    'State_OTG_Extra_Stun',
+    'State_OTG_Forced_Stun',
+    'State_OTG_Hit',
+    'State_OTG_Roll_Invincible',
+    'State_OTG_Roll_Stunned',
+    'State_ProxBlock_Air',
+    'State_ProxBlock_Ground',
+    'State_Pushblock_Air',
+    'State_Pushblock_Ground',
+    'State_Rising_Invincibility',
+    'State_SJ_Air',
+    'State_SJ_Counter',
+    'State_Stun',
+    'State_Tech_Hit',
+    'State_Thrown_Air',
+    'State_Thrown_Ground',
+  ];
+  // P1 and P2
+  for ( tempPlayerValue = 1; tempPlayerValue < 3; tempPlayerValue++ )
   {
     if ( tempPlayerValue == 1 ) 
     {
@@ -364,8 +382,7 @@ var writeNewStates = function ()
       fs.writeFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_${ stateNamesArray[ stateName ] }.js`, `var result = [];` + '\n', { encoding: 'utf8' }, ( err => {} ) );
     }
 
-
-    // Fetches relevant addresses for State-Logic-Check
+    // Fetches relevant addresses for State-Logic-Checking
     var getAction_Flags = writePlayerMemory( tempPlayerString, 'Action_Flags', 0 );
     var getAirborne = writePlayerMemory( tempPlayerString, 'Airborne', 0 );
     var getAnimation_Timer_Main = writePlayerMemory( tempPlayerString, 'Animation_Timer_Main', 0 );
@@ -401,62 +418,112 @@ var writeNewStates = function ()
     var arrStateTech_Hit = [ [], [], [] ];
     var arrStateThrown_Air = [ [], [], [] ];
     var arrStateThrown_Ground = [ [], [], [] ];
-
+    // for each slot (abc) in a Player's side
     for ( var playerSlotI = 0; playerSlotI < 3; playerSlotI++ ) 
     {
+      // for each frame in a clip
       for ( var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++ )
       {
+        // Pushing the State-Logic-Checking for each State
         //Being_Hit
-        ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAnimation_Timer_Main )[ playerSlotI ][ clipLen ] > 0 ) ? arrStateBeingHit[ playerSlotI ].push( 1 ) : arrStateBeingHit[ playerSlotI ].push( 0 );
+        ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAnimation_Timer_Main )[ playerSlotI ][ clipLen ] > 0 )
+          ? arrStateBeingHit[ playerSlotI ].push( 1 )
+          : arrStateBeingHit[ playerSlotI ].push( 0 );
         // // "Flying_Screen_Air"
-        ( ( getFlyingScreen )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 2 ) ? arrStateFlying_Screen_Air[ playerSlotI ].push( 1 ) : arrStateFlying_Screen_Air[ playerSlotI ].push( 0 );
+        ( ( getFlyingScreen )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 2 )
+          ? arrStateFlying_Screen_Air[ playerSlotI ].push( 1 )
+          : arrStateFlying_Screen_Air[ playerSlotI ].push( 0 );
         // // // "Flying_Screen_OTG"
-        ( ( getFlyingScreen )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 ) ? arrStateFlyingScreen_OTG[ playerSlotI ].push( 1 ) : arrStateFlyingScreen_OTG[ playerSlotI ].push( 0 );
+        ( ( getFlyingScreen )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 )
+          ? arrStateFlyingScreen_OTG[ playerSlotI ].push( 1 )
+          : arrStateFlyingScreen_OTG[ playerSlotI ].push( 0 );
         // // // "FS_Install_1"
-        ( ( getFSI_Points )[ playerSlotI ][ clipLen ] == 8 ) || ( ( getFSI_Points )[ playerSlotI ][ clipLen ] == 9 ) ? arrStateFS_Install_1[ playerSlotI ].push( 1 ) : arrStateFS_Install_1[ playerSlotI ].push( 0 );
+        ( ( getFSI_Points )[ playerSlotI ][ clipLen ] == 8 ) || ( ( getFSI_Points )[ playerSlotI ][ clipLen ] == 9 )
+          ? arrStateFS_Install_1[ playerSlotI ].push( 1 )
+          : arrStateFS_Install_1[ playerSlotI ].push( 0 );
         // // "FS_Install_2"
-        ( ( getFSI_Points )[ playerSlotI ][ clipLen ] > 9 ) ? arrStateFS_Install_2[ playerSlotI ].push( 1 ) : arrStateFS_Install_2[ playerSlotI ].push( 0 );
+        ( ( getFSI_Points )[ playerSlotI ][ clipLen ] > 9 )
+          ? arrStateFS_Install_2[ playerSlotI ].push( 1 )
+          : arrStateFS_Install_2[ playerSlotI ].push( 0 );
         // // "NJ_Air"
-        ( ( getAirborne )[ playerSlotI ][ clipLen ] == 2 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 3 ) && ( ( getSJ_Counter )[ playerSlotI ][ clipLen ] == 0 ) ? arrStateNJ_Air[ playerSlotI ].push( 1 ) : arrStateNJ_Air[ playerSlotI ].push( 0 );
+        ( ( getAirborne )[ playerSlotI ][ clipLen ] == 2 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 3 ) && ( ( getSJ_Counter )[ playerSlotI ][ clipLen ] == 0 )
+          ? arrStateNJ_Air[ playerSlotI ].push( 1 )
+          : arrStateNJ_Air[ playerSlotI ].push( 0 );
         // // "NJ_Rising
-        ( ( getAirborne )[ playerSlotI ][ clipLen ] == 0 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 2 ) && ( ( getSJ_Counter )[ playerSlotI ][ clipLen ] == 0 ) ? arrStateNJ_Rising[ playerSlotI ].push( 1 ) : arrStateNJ_Rising[ playerSlotI ].push( 0 );
+        ( ( getAirborne )[ playerSlotI ][ clipLen ] == 0 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 2 ) && ( ( getSJ_Counter )[ playerSlotI ][ clipLen ] == 0 )
+          ? arrStateNJ_Rising[ playerSlotI ].push( 1 )
+          : arrStateNJ_Rising[ playerSlotI ].push( 0 );
         // // "OTG_Extra_Stun"
-        ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 23 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 ) ? arrStateOTG_Extra_Stun[ playerSlotI ].push( 1 ) : arrStateOTG_Extra_Stun[ playerSlotI ].push( 0 );
+        ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 23 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 )
+          ? arrStateOTG_Extra_Stun[ playerSlotI ].push( 1 )
+          : arrStateOTG_Extra_Stun[ playerSlotI ].push( 0 );
         // // "OTG_Forced_Stun"
-        ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 ) ? arrStateOTG_Forced_Stun[ playerSlotI ].push( 1 ) : arrStateOTG_Forced_Stun[ playerSlotI ].push( 0 );
+        ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 )
+          ? arrStateOTG_Forced_Stun[ playerSlotI ].push( 1 )
+          : arrStateOTG_Forced_Stun[ playerSlotI ].push( 0 );
         // // "OTG_Hit"
-        ( ( getAction_Flags )[ playerSlotI ][ clipLen ] == 0 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) ? arrStateOTG_Hit[ playerSlotI ].push( 1 ) : arrStateOTG_Hit[ playerSlotI ].push( 0 );
+        ( ( getAction_Flags )[ playerSlotI ][ clipLen ] == 0 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 )
+          ? arrStateOTG_Hit[ playerSlotI ].push( 1 )
+          : arrStateOTG_Hit[ playerSlotI ].push( 0 );
         // // "OTG_Roll_Invincible"
-        ( ( getAction_Flags )[ playerSlotI ][ clipLen ] == 2 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getAttack_Immune )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 17 ) ? arrStateOTG_Roll_Invincible[ playerSlotI ].push( 1 ) : arrStateOTG_Roll_Invincible[ playerSlotI ].push( 0 );
+        ( ( getAction_Flags )[ playerSlotI ][ clipLen ] == 2 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getAttack_Immune )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 17 )
+          ? arrStateOTG_Roll_Invincible[ playerSlotI ].push( 1 )
+          : arrStateOTG_Roll_Invincible[ playerSlotI ].push( 0 );
         // // "OTG_Roll_Stunned"
-        ( ( getAction_Flags )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) ? arrStateOTG_Roll_Stunned[ playerSlotI ].push( 1 ) : arrStateOTG_Roll_Stunned[ playerSlotI ].push( 0 );
+        ( ( getAction_Flags )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 )
+          ? arrStateOTG_Roll_Stunned[ playerSlotI ].push( 1 )
+          : arrStateOTG_Roll_Stunned[ playerSlotI ].push( 0 );
         // // "ProxBlock_Air"
-        // ( ( getIs_Prox_Block == 6 ) && ( getKnockdown_State == 19 ) ) ? 1 : 0;
+        ( ( ( getIs_Prox_Block )[ playerSlotI ][ clipLen ] == 6 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 19 ) )
+          ? arrStateProxBlock_Air[ playerSlotI ].push( 1 )
+          : arrStateProxBlock_Air[ playerSlotI ].push( 0 );
         // // "ProxBlock_Ground"
-        // ( ( getIs_Prox_Block == 5 ) && ( getKnockdown_State == 18 ) ) ? 1 : 0;
+        ( ( ( getIs_Prox_Block )[ playerSlotI ][ clipLen ] == 5 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 18 ) )
+          ? arrStateProxBlock_Ground[ playerSlotI ].push( 1 )
+          : arrStateProxBlock_Ground[ playerSlotI ].push( 0 );
         // // "Pushblock_Air"
-        // ( ( getBlock_Meter > 0 ) && ( getAnimation_Timer_Main < 28 ) && ( getIs_Prox_Block == 6 ) && ( getAction_Flags == 2 ) ) ? 1 : 0;
+        ( ( ( getBlock_Meter )[ playerSlotI ][ clipLen ] > 0 ) && ( ( getAnimation_Timer_Main )[ playerSlotI ][ clipLen ] < 28 ) && ( ( getIs_Prox_Block )[ playerSlotI ][ clipLen ] == 6 ) && ( ( getAction_Flags )[ playerSlotI ][ clipLen ] == 2 ) )
+          ? arrStatePushblock_Air[ playerSlotI ].push( 1 )
+          : arrStatePushblock_Air[ playerSlotI ].push( 0 );
         // // "Pushblock_Ground"
-        // ( ( getBlock_Meter > 0 ) && ( getAnimation_Timer_Main < 28 ) && ( getIs_Prox_Block == 5 ) && ( getAction_Flags == 3 ) ) ? 1 : 0;
+        ( ( getBlock_Meter )[ playerSlotI ][ clipLen ] > 0 ) && ( ( getAnimation_Timer_Main )[ playerSlotI ][ clipLen ] < 28 ) && ( ( getIs_Prox_Block )[ playerSlotI ][ clipLen ] == 5 ) && ( ( getAction_Flags )[ playerSlotI ][ clipLen ] == 3 )
+          ? arrStatePushblock_Ground[ playerSlotI ].push( 1 )
+          : arrStatePushblock_Ground[ playerSlotI ].push( 0 );
         // // "Rising_Invincibility"
-        // ( ( getAirborne == 0 ) && ( getAttack_Immune == 1 ) && ( getKnockdown_State == 17 ) ) ? 1 : 0;
+        ( ( ( getAirborne )[ playerSlotI ][ clipLen ] == 0 ) && ( ( getAttack_Immune )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 17 ) )
+          ? arrStateRising_Invincibility[ playerSlotI ].push( 1 )
+          : arrStateRising_Invincibility[ playerSlotI ].push( 0 );
         // // "SJ_Air"
-        // ( ( getAirborne == 2 ) && ( getKnockdown_State == 14 ) && ( getSJ_Counter == 1 ) ) ? 1 : 0;
+        ( ( ( getAirborne )[ playerSlotI ][ clipLen ] == 2 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 14 ) && ( ( getSJ_Counter )[ playerSlotI ][ clipLen ] == 1 ) )
+          ? arrStateSJ_Air[ playerSlotI ].push( 1 )
+          : arrStateSJ_Air[ playerSlotI ].push( 0 );
         // // "SJ_Counter"
-        // ( ( getSJ_Counter == 2 ) ) ? 1 : 0;
+        ( ( getSJ_Counter )[ playerSlotI ][ clipLen ] == 2 )
+          ? arrStateSJ_Counter[ playerSlotI ].push( 1 )
+          : arrStateSJ_Counter[ playerSlotI ].push( 0 );
         // // "Stun"
-        // ( ( getKnockdown_State == 32 ) && ( getIs_Prox_Block == 13 ) ) ? 1 : 0;
+        ( ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getIs_Prox_Block )[ playerSlotI ][ clipLen ] == 13 ) )
+          ? arrStateStun[ playerSlotI ].push( 1 )
+          : arrStateStun[ playerSlotI ].push( 0 );
         // // "Tech_Hit"
-        // ( ( getKnockdown_State == 27 ) ) ? 1 : 0;
+        ( ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 27 ) )
+          ? arrStateTech_Hit[ playerSlotI ].push( 1 )
+          : arrStateTech_Hit[ playerSlotI ].push( 0 );
         // // "Thrown_Air"
-        // ( ( getAirborne == 2 ) && ( getKnockdown_State == 31 ) && ( getIs_Prox_Block == 16 ) ) ? 1 : 0;
+        ( ( ( getAirborne )[ playerSlotI ][ clipLen ] == 2 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 31 ) && ( ( getIs_Prox_Block )[ playerSlotI ][ clipLen ] == 16 ) )
+          ? arrStateThrown_Air[ playerSlotI ].push( 1 )
+          : arrStateThrown_Air[ playerSlotI ].push( 0 );
         // // "Thrown_Ground"
-        // ( ( getAirborne == 0 ) && ( getKnockdown_State == 31 ) && ( getIs_Prox_Block == 16 ) ) ? 1 : 0
+        ( ( ( getAirborne )[ playerSlotI ][ clipLen ] == 0 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 31 ) && ( ( getIs_Prox_Block )[ playerSlotI ][ clipLen ] == 16 ) )
+          ? arrStateThrown_Ground[ playerSlotI ].push( 1 )
+          : arrStateThrown_Ground[ playerSlotI ].push( 0 );
       }
       // Only iterations are the P1/P2 and the ABC Slots; we are writing very-explictly tracked items
       fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[${ playerSlotI }] =[ ${ arrStateBeingHit[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
       fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Flying_Screen_Air.js`, `result[${ playerSlotI }] =[ ${ arrStateFlying_Screen_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
       fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Flying_Screen_OTG.js`, `result[${ playerSlotI }] =[ ${ arrStateFlyingScreen_OTG[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_FS_Install_1.js`, `result[${ playerSlotI }] =[ ${ arrStateFS_Install_1[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_FS_Install_2.js`, `result[${ playerSlotI }] =[ ${ arrStateFS_Install_2[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
       fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_NJ_Air.js`, `result[${ playerSlotI }] =[ ${ arrStateNJ_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
       fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_NJ_Rising.js`, `result[${ playerSlotI }] =[ ${ arrStateNJ_Rising[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
       fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Extra_Stun.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Extra_Stun[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
@@ -464,15 +531,21 @@ var writeNewStates = function ()
       fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Hit.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Hit[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
       fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Roll_Invincible.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Roll_Invincible[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
       fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Roll_Stunned.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Roll_Stunned[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_ProxBlock_Air.js`, `result[${ playerSlotI }] =[ ${ arrStateProxBlock_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_ProxBlock_Ground.js`, `result[${ playerSlotI }] =[ ${ arrStateProxBlock_Ground[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Pushblock_Air.js`, `result[${ playerSlotI }] =[ ${ arrStatePushblock_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Pushblock_Ground.js`, `result[${ playerSlotI }] =[ ${ arrStatePushblock_Ground[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Rising_Invincibility.js`, `result[${ playerSlotI }] =[ ${ arrStateRising_Invincibility[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_SJ_Air.js`, `result[${ playerSlotI }] =[ ${ arrStateSJ_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_SJ_Counter.js`, `result[${ playerSlotI }] =[ ${ arrStateSJ_Counter[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Stun.js`, `result[${ playerSlotI }] =[ ${ arrStateStun[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Tech_Hit.js`, `result[${ playerSlotI }] =[ ${ arrStateTech_Hit[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Thrown_Air.js`, `result[${ playerSlotI }] =[ ${ arrStateThrown_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Thrown_Ground.js`, `result[${ playerSlotI }] =[ ${ arrStateThrown_Ground[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
     }
   }
 }
-
-// }
 writeNewStates();
-console.timeEnd();
-// fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_${ stateNamesArray[ 0 ] }.js`, `result[0] =[ ${ state_results_array[ 0 ].toString() } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-
 // Writes the results of each array that was compared
 // fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_${ stateNamesArray[ stateName ] }.js`, `result[0] =[ ${ state_results_array[ 0 ].toString() } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
 // fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_${ stateNamesArray[ stateName ] }.js`, `result[ 1 ] = [ ${ state_results_array[ 1 ].toString() } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
