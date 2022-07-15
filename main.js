@@ -273,8 +273,8 @@ function writeInputConvert()
       playerInputsCNVArray.push( playerInputResults );
       playerInputResults = '';
     }
-    fs.writeFileSync( `${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`, `var result = [];` + '\n' + `result[0] = ['
-      ${ playerInputsCNVArray.toString()
+    fs.writeFileSync( `${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`, `var result = [];` + '\n' + `result[0] = ['` +
+      `${ playerInputsCNVArray.toString()
         .replace( /24/gi, '1' )
         .replace( /42/gi, '1' )
         .replace( /26/gi, '3' )
@@ -332,7 +332,7 @@ function writeInputConvert()
   }
 }
 
-// writeInputConvert();
+writeInputConvert();
 
 var writeNewStates = function ()
 {
@@ -546,6 +546,7 @@ var writeNewStates = function ()
   }
 }
 writeNewStates();
+
 // Writes the results of each array that was compared
 // fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_${ stateNamesArray[ stateName ] }.js`, `result[0] =[ ${ state_results_array[ 0 ].toString() } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
 // fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_${ stateNamesArray[ stateName ] }.js`, `result[ 1 ] = [ ${ state_results_array[ 1 ].toString() } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
