@@ -2,10 +2,10 @@ import * as fs from "fs"
 import * as path from "path"
 // import * as data from './main_files/SpiralUnblockable_node.js'; // TODO figure out how to make this dynamic
 import { Knockdown_State_Static, Prox_Block_Static, namesTable_Static, floatingPointAddresses } from "./main_files/staticData.js" // eval(testPath);
-import * as data from "./main_files/Shuma47_node.js"
+import * as data from "./main_files/SpiralUnblockable_node.js"
 // import * as data from "./main_files/CaptainCommandoRogueCable8_node.js";
 
-const DIR_OUTPATH = path.join( process.cwd(), "/exportToAE/Shuma47/" ) // File Directory to write to; needs to match the clip name to make sense TODO fix this
+const DIR_OUTPATH = path.join( process.cwd(), "/exportToAE/SpiralUnblockable/" ) // File Directory to write to; needs to match the clip name to make sense TODO fix this
 const CLIP_LENGTH = data.A_2D_Game_Timer.split( "," ).length // Used as clip-length frame tracker; address doesn't matter
 //Objects containing Point-Character data used in main function
 const POINT_OBJ_P1 = // Objects with the player slots as keys, and their values (0/1/2) as object-values. Ex: 'P1_A_ : 0'
@@ -169,11 +169,11 @@ function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) /
 
 // writePlayerMemory( 'P1', 'X_Position_Arena', 1 );
 // EXECUTE MAIN FUNCTIONS
-// getLabelsfromJS( "./main_files/Shuma47_node.js" ).forEach( ( label ) =>
-// {
-//   writePlayerMemory( 1, label.toString(), 1 );
-//   writePlayerMemory( 2, label.toString(), 1 );
-// } );
+getLabelsfromJS( "./main_files/SpiralUnblockable_node.js" ).forEach( ( label ) =>
+{
+  writePlayerMemory( 1, label.toString(), 1 );
+  writePlayerMemory( 2, label.toString(), 1 );
+} );
 
 // Write Static Data Conversion. Example ID: 01 turns into "Ryu"
 
@@ -215,7 +215,7 @@ function writeStaticDataCnv()
     }
   }
 };
-// writeStaticDataCnv();
+writeStaticDataCnv();
 
 function writeInputConvert()
 {
@@ -519,29 +519,29 @@ var writeNewStates = function ()
           : arrStateThrown_Ground[ playerSlotI ].push( 0 );
       }
       // Only iterations are the P1/P2 and the ABC Slots; we are writing very-explictly tracked items
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[${ playerSlotI }] =[ ${ arrStateBeingHit[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Flying_Screen_Air.js`, `result[${ playerSlotI }] =[ ${ arrStateFlying_Screen_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Flying_Screen_OTG.js`, `result[${ playerSlotI }] =[ ${ arrStateFlyingScreen_OTG[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_FS_Install_1.js`, `result[${ playerSlotI }] =[ ${ arrStateFS_Install_1[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_FS_Install_2.js`, `result[${ playerSlotI }] =[ ${ arrStateFS_Install_2[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_NJ_Air.js`, `result[${ playerSlotI }] =[ ${ arrStateNJ_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_NJ_Rising.js`, `result[${ playerSlotI }] =[ ${ arrStateNJ_Rising[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Extra_Stun.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Extra_Stun[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Forced_Stun.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Forced_Stun[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Hit.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Hit[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Roll_Invincible.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Roll_Invincible[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Roll_Stunned.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Roll_Stunned[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_ProxBlock_Air.js`, `result[${ playerSlotI }] =[ ${ arrStateProxBlock_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_ProxBlock_Ground.js`, `result[${ playerSlotI }] =[ ${ arrStateProxBlock_Ground[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Pushblock_Air.js`, `result[${ playerSlotI }] =[ ${ arrStatePushblock_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Pushblock_Ground.js`, `result[${ playerSlotI }] =[ ${ arrStatePushblock_Ground[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Rising_Invincibility.js`, `result[${ playerSlotI }] =[ ${ arrStateRising_Invincibility[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_SJ_Air.js`, `result[${ playerSlotI }] =[ ${ arrStateSJ_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_SJ_Counter.js`, `result[${ playerSlotI }] =[ ${ arrStateSJ_Counter[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Stun.js`, `result[${ playerSlotI }] =[ ${ arrStateStun[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Tech_Hit.js`, `result[${ playerSlotI }] =[ ${ arrStateTech_Hit[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Thrown_Air.js`, `result[${ playerSlotI }] =[ ${ arrStateThrown_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
-      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Thrown_Ground.js`, `result[${ playerSlotI }] =[ ${ arrStateThrown_Ground[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[${ playerSlotI }] =[${ arrStateBeingHit[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Flying_Screen_Air.js`, `result[${ playerSlotI }] =[${ arrStateFlying_Screen_Air[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Flying_Screen_OTG.js`, `result[${ playerSlotI }] =[${ arrStateFlyingScreen_OTG[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_FS_Install_1.js`, `result[${ playerSlotI }] =[${ arrStateFS_Install_1[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_FS_Install_2.js`, `result[${ playerSlotI }] =[${ arrStateFS_Install_2[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_NJ_Air.js`, `result[${ playerSlotI }] =[${ arrStateNJ_Air[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_NJ_Rising.js`, `result[${ playerSlotI }] =[${ arrStateNJ_Rising[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Extra_Stun.js`, `result[${ playerSlotI }] =[${ arrStateOTG_Extra_Stun[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Forced_Stun.js`, `result[${ playerSlotI }] =[${ arrStateOTG_Forced_Stun[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Hit.js`, `result[${ playerSlotI }] =[${ arrStateOTG_Hit[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Roll_Invincible.js`, `result[${ playerSlotI }] =[${ arrStateOTG_Roll_Invincible[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Roll_Stunned.js`, `result[${ playerSlotI }] =[${ arrStateOTG_Roll_Stunned[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_ProxBlock_Air.js`, `result[${ playerSlotI }] =[${ arrStateProxBlock_Air[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_ProxBlock_Ground.js`, `result[${ playerSlotI }] =[${ arrStateProxBlock_Ground[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Pushblock_Air.js`, `result[${ playerSlotI }] =[${ arrStatePushblock_Air[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Pushblock_Ground.js`, `result[${ playerSlotI }] =[${ arrStatePushblock_Ground[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Rising_Invincibility.js`, `result[${ playerSlotI }] =[${ arrStateRising_Invincibility[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_SJ_Air.js`, `result[${ playerSlotI }] =[${ arrStateSJ_Air[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_SJ_Counter.js`, `result[${ playerSlotI }] =[${ arrStateSJ_Counter[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Stun.js`, `result[${ playerSlotI }] =[${ arrStateStun[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Tech_Hit.js`, `result[${ playerSlotI }] =[${ arrStateTech_Hit[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Thrown_Air.js`, `result[${ playerSlotI }] =[${ arrStateThrown_Air[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Thrown_Ground.js`, `result[${ playerSlotI }] =[${ arrStateThrown_Ground[ playerSlotI ] }];\n`, { encoding: 'utf8' }, ( err => {} ) );
     }
   }
 }
