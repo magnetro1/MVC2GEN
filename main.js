@@ -1,3 +1,4 @@
+console.time( 'Time to complete' );
 import * as fs from "fs"
 import * as path from "path"
 // import * as data from './main_files/SpiralUnblockable_node.js'; // TODO figure out how to make this dynamic
@@ -59,16 +60,12 @@ function getLabelsfromJS( pathToFile )
 
   return removeDuplicates
 }
+
 // Main function to write data to files OR return finalValues array
 // Appends array if 2-character+ bug is on
-
-
 function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) // 'P1'/'P2', address from data-object, 1/0
 {
-  var finalValuesArray = []; // 3 Arrays to hold all 3 player slots.
-  finalValuesArray[ 0 ] = [];
-  finalValuesArray[ 1 ] = [];
-  finalValuesArray[ 2 ] = [];
+  var finalValuesArray = [ [], [], [] ]; // 3 Arrays to hold all 3 player slots.
   var playerObjectSwitcher; // Switches between the Player1 and Player2 objects
   var playerSwitcher; // Switches between "P1" and "P2"
 
@@ -155,6 +152,7 @@ function writePlayerMemory( PlayerOneOrPlayerTwo, playerMemoryAddress, write ) /
   //     console.log( `hola` )
   //   }
   // }
+
   fs.writeFileSync( `${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split( ',' ) }.js`,
     `var result = [];` + '\n',
     { flag: 'a+', encoding: 'utf8' },
@@ -184,10 +182,8 @@ function writeStaticDataCnv()
 {
   const STATIC_DATA_OBJS = [ Knockdown_State_Static, Prox_Block_Static, namesTable_Static ]
   const STATIC_DATA_ADRS = [ 'Knockdown_State', 'Is_Prox_Block', 'ID_2' ]
-  var staticLookupResultsArray = [];
-  staticLookupResultsArray[ 0 ] = [];
-  staticLookupResultsArray[ 1 ] = [];
-  staticLookupResultsArray[ 2 ] = [];
+  var staticLookupResultsArray = [ [], [], [] ];
+
   for ( let playersLen = 1; playersLen < 3; playersLen++ )
   {
     for ( let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++ )
@@ -214,10 +210,8 @@ function writeStaticDataCnv()
         fs.appendFileSync( `${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[ staticDataLen ] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[ playerMemLength ] }];\n`,
           { encoding: 'utf8' },
           ( err => {} ) );
-        staticLookupResultsArray = [];
-        staticLookupResultsArray[ 0 ] = [];
-        staticLookupResultsArray[ 1 ] = [];
-        staticLookupResultsArray[ 2 ] = [];
+        staticLookupResultsArray = [ [], [], [] ];
+
       }
     }
   }
@@ -341,18 +335,18 @@ function writeInputConvert()
 
 // writeInputConvert();
 
-var State_Being_Hit_FN = function ()
+var writeNewStates = function ()
 {
-  fs.writeFileSync( `${ DIR_OUTPATH }P1_State_Being_Hit.js`, `var result = [];` + '\n', { encoding: 'utf8' }, ( err => {} ) );
-  fs.writeFileSync( `${ DIR_OUTPATH }P2_State_Being_Hit.js`, `var result = [];` + '\n', { encoding: 'utf8' }, ( err => {} ) );
-
+  // Results-array-per-slot
   var state_results_array = [];
   state_results_array[ 0 ] = [];
   state_results_array[ 1 ] = [];
   state_results_array[ 2 ] = [];
+  //Temps for switching variables
   var tempPlayerValue;
   var tempPlayerString;
 
+  var stateNamesArray = [ 'State_Being_Hit', 'State_Flying_Screen_Air', 'State_Flying_Screen_OTG', 'State_FS_Install_1', 'State_FS_Install_2', 'State_NJ_Air', 'State_NJ_Rising', 'State_OTG_Extra_Stun', 'State_OTG_Forced_Stun', 'State_OTG_Hit', 'State_OTG_Roll_Invincible' ];
 
   for ( tempPlayerValue = 1; tempPlayerValue < 3; tempPlayerValue++ ) // P1 and P2
   {
@@ -364,51 +358,134 @@ var State_Being_Hit_FN = function ()
     {
       tempPlayerString = "P2";
     }
-    // The two addresses whose values we will compare
-    var getKnockdown_State = writePlayerMemory( tempPlayerString, 'Knockdown_State', 0 )
-    var getAnimation_Timer_Main = writePlayerMemory( tempPlayerString, 'Animation_Timer_Main', 0 )
-    // Each Player has 3 arrays of addresses to compare
-    for ( let playerSlotI = 0; playerSlotI < 3; playerSlotI++ ) 
+
+    for ( var stateName = 0; stateName < stateNamesArray.length; stateName++ )
     {
-      // total amount of frames in a clip
-      for ( let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++ )
-      {
-        // Concurrent logic that's needed for the state of being hit
-        if ( ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAnimation_Timer_Main )[ playerSlotI ][ clipLen ] > 0 ) )
-        {
-          state_results_array[ playerSlotI ].push( 1 );
-        }
-        else
-        {
-          state_results_array[ playerSlotI ].push( 0 );
-        }
-      }
+      fs.writeFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_${ stateNamesArray[ stateName ] }.js`, `var result = [];` + '\n', { encoding: 'utf8' }, ( err => {} ) );
     }
-    // Writes the results of each array that was compared
-    fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[0] = [${ state_results_array[ 0 ].toString() }];\n`, { encoding: 'utf8' }, ( err => {} ) );
-    fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[1] = [${ state_results_array[ 1 ].toString() }];\n`, { encoding: 'utf8' }, ( err => {} ) );
-    fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[2] = [${ state_results_array[ 2 ].toString() }];\n`, { encoding: 'utf8' }, ( err => {} ) );
-    // Reset the array for the next player
-    state_results_array = [];
-    state_results_array[ 0 ] = [];
-    state_results_array[ 1 ] = [];
-    state_results_array[ 2 ] = [];
+
+
+    // Fetches relevant addresses for State-Logic-Check
+    var getAction_Flags = writePlayerMemory( tempPlayerString, 'Action_Flags', 0 );
+    var getAirborne = writePlayerMemory( tempPlayerString, 'Airborne', 0 );
+    var getAnimation_Timer_Main = writePlayerMemory( tempPlayerString, 'Animation_Timer_Main', 0 );
+    var getAttack_Immune = writePlayerMemory( tempPlayerString, 'Attack_Immune', 0 );
+    var getBlock_Meter = writePlayerMemory( tempPlayerString, 'Block_Meter', 0 );
+    var getKnockdown_State = writePlayerMemory( tempPlayerString, 'Knockdown_State', 0 );
+    var getFlyingScreen = writePlayerMemory( tempPlayerString, 'FlyingScreen', 0 );
+    var getFSI_Points = writePlayerMemory( tempPlayerString, 'FlyingScreen', 0 );
+    var getIs_Prox_Block = writePlayerMemory( tempPlayerString, 'Is_Prox_Block', 0 );
+    var getSJ_Counter = writePlayerMemory( tempPlayerString, 'SJ_Counter', 0 );
+
+    // Explicitly named arrays to store the values of each State-Logic-Check
+    var arrStateBeingHit = [ [], [], [] ];
+    var arrStateFlying_Screen_Air = [ [], [], [] ];
+    var arrStateFlyingScreen_OTG = [ [], [], [] ];
+    var arrStateFS_Install_1 = [ [], [], [] ];
+    var arrStateFS_Install_2 = [ [], [], [] ];
+    var arrStateNJ_Air = [ [], [], [] ];
+    var arrStateNJ_Rising = [ [], [], [] ]
+    var arrStateOTG_Extra_Stun = [ [], [], [] ];
+    var arrStateOTG_Forced_Stun = [ [], [], [] ]
+    var arrStateOTG_Hit = [ [], [], [] ];
+    var arrStateOTG_Roll_Invincible = [ [], [], [] ];
+    var arrStateOTG_Roll_Stunned = [ [], [], [] ];
+    var arrStateProxBlock_Air = [ [], [], [] ];
+    var arrStateProxBlock_Ground = [ [], [], [] ];
+    var arrStatePushblock_Air = [ [], [], [] ];
+    var arrStatePushblock_Ground = [ [], [], [] ];
+    var arrStateRising_Invincibility = [ [], [], [] ]
+    var arrStateSJ_Air = [ [], [], [] ];
+    var arrStateSJ_Counter = [ [], [], [] ];
+    var arrStateStun = [ [], [], [] ]
+    var arrStateTech_Hit = [ [], [], [] ];
+    var arrStateThrown_Air = [ [], [], [] ];
+    var arrStateThrown_Ground = [ [], [], [] ];
+
+    for ( var playerSlotI = 0; playerSlotI < 3; playerSlotI++ ) 
+    {
+      for ( var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++ )
+      {
+        //Being_Hit
+        ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAnimation_Timer_Main )[ playerSlotI ][ clipLen ] > 0 ) ? arrStateBeingHit[ playerSlotI ].push( 1 ) : arrStateBeingHit[ playerSlotI ].push( 0 );
+        // // "Flying_Screen_Air"
+        ( ( getFlyingScreen )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 2 ) ? arrStateFlying_Screen_Air[ playerSlotI ].push( 1 ) : arrStateFlying_Screen_Air[ playerSlotI ].push( 0 );
+        // // // "Flying_Screen_OTG"
+        ( ( getFlyingScreen )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 ) ? arrStateFlyingScreen_OTG[ playerSlotI ].push( 1 ) : arrStateFlyingScreen_OTG[ playerSlotI ].push( 0 );
+        // // // "FS_Install_1"
+        ( ( getFSI_Points )[ playerSlotI ][ clipLen ] == 8 ) || ( ( getFSI_Points )[ playerSlotI ][ clipLen ] == 9 ) ? arrStateFS_Install_1[ playerSlotI ].push( 1 ) : arrStateFS_Install_1[ playerSlotI ].push( 0 );
+        // // "FS_Install_2"
+        ( ( getFSI_Points )[ playerSlotI ][ clipLen ] > 9 ) ? arrStateFS_Install_2[ playerSlotI ].push( 1 ) : arrStateFS_Install_2[ playerSlotI ].push( 0 );
+        // // "NJ_Air"
+        ( ( getAirborne )[ playerSlotI ][ clipLen ] == 2 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 3 ) && ( ( getSJ_Counter )[ playerSlotI ][ clipLen ] == 0 ) ? arrStateNJ_Air[ playerSlotI ].push( 1 ) : arrStateNJ_Air[ playerSlotI ].push( 0 );
+        // // "NJ_Rising
+        ( ( getAirborne )[ playerSlotI ][ clipLen ] == 0 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 2 ) && ( ( getSJ_Counter )[ playerSlotI ][ clipLen ] == 0 ) ? arrStateNJ_Rising[ playerSlotI ].push( 1 ) : arrStateNJ_Rising[ playerSlotI ].push( 0 );
+        // // "OTG_Extra_Stun"
+        ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 23 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 ) ? arrStateOTG_Extra_Stun[ playerSlotI ].push( 1 ) : arrStateOTG_Extra_Stun[ playerSlotI ].push( 0 );
+        // // "OTG_Forced_Stun"
+        ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 ) ? arrStateOTG_Forced_Stun[ playerSlotI ].push( 1 ) : arrStateOTG_Forced_Stun[ playerSlotI ].push( 0 );
+        // // "OTG_Hit"
+        ( ( getAction_Flags )[ playerSlotI ][ clipLen ] == 0 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) ? arrStateOTG_Hit[ playerSlotI ].push( 1 ) : arrStateOTG_Hit[ playerSlotI ].push( 0 );
+        // // "OTG_Roll_Invincible"
+        ( ( getAction_Flags )[ playerSlotI ][ clipLen ] == 2 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getAttack_Immune )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 17 ) ? arrStateOTG_Roll_Invincible[ playerSlotI ].push( 1 ) : arrStateOTG_Roll_Invincible[ playerSlotI ].push( 0 );
+        // // "OTG_Roll_Stunned"
+        ( ( getAction_Flags )[ playerSlotI ][ clipLen ] == 1 ) && ( ( getAirborne )[ playerSlotI ][ clipLen ] == 3 ) && ( ( getKnockdown_State )[ playerSlotI ][ clipLen ] == 32 ) ? arrStateOTG_Roll_Stunned[ playerSlotI ].push( 1 ) : arrStateOTG_Roll_Stunned[ playerSlotI ].push( 0 );
+        // // "ProxBlock_Air"
+        // ( ( getIs_Prox_Block == 6 ) && ( getKnockdown_State == 19 ) ) ? 1 : 0;
+        // // "ProxBlock_Ground"
+        // ( ( getIs_Prox_Block == 5 ) && ( getKnockdown_State == 18 ) ) ? 1 : 0;
+        // // "Pushblock_Air"
+        // ( ( getBlock_Meter > 0 ) && ( getAnimation_Timer_Main < 28 ) && ( getIs_Prox_Block == 6 ) && ( getAction_Flags == 2 ) ) ? 1 : 0;
+        // // "Pushblock_Ground"
+        // ( ( getBlock_Meter > 0 ) && ( getAnimation_Timer_Main < 28 ) && ( getIs_Prox_Block == 5 ) && ( getAction_Flags == 3 ) ) ? 1 : 0;
+        // // "Rising_Invincibility"
+        // ( ( getAirborne == 0 ) && ( getAttack_Immune == 1 ) && ( getKnockdown_State == 17 ) ) ? 1 : 0;
+        // // "SJ_Air"
+        // ( ( getAirborne == 2 ) && ( getKnockdown_State == 14 ) && ( getSJ_Counter == 1 ) ) ? 1 : 0;
+        // // "SJ_Counter"
+        // ( ( getSJ_Counter == 2 ) ) ? 1 : 0;
+        // // "Stun"
+        // ( ( getKnockdown_State == 32 ) && ( getIs_Prox_Block == 13 ) ) ? 1 : 0;
+        // // "Tech_Hit"
+        // ( ( getKnockdown_State == 27 ) ) ? 1 : 0;
+        // // "Thrown_Air"
+        // ( ( getAirborne == 2 ) && ( getKnockdown_State == 31 ) && ( getIs_Prox_Block == 16 ) ) ? 1 : 0;
+        // // "Thrown_Ground"
+        // ( ( getAirborne == 0 ) && ( getKnockdown_State == 31 ) && ( getIs_Prox_Block == 16 ) ) ? 1 : 0
+      }
+      // Only iterations are the P1/P2 and the ABC Slots; we are writing very-explictly tracked items
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[${ playerSlotI }] =[ ${ arrStateBeingHit[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Flying_Screen_Air.js`, `result[${ playerSlotI }] =[ ${ arrStateFlying_Screen_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_Flying_Screen_OTG.js`, `result[${ playerSlotI }] =[ ${ arrStateFlyingScreen_OTG[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_NJ_Air.js`, `result[${ playerSlotI }] =[ ${ arrStateNJ_Air[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_NJ_Rising.js`, `result[${ playerSlotI }] =[ ${ arrStateNJ_Rising[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Extra_Stun.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Extra_Stun[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Forced_Stun.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Forced_Stun[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Hit.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Hit[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Roll_Invincible.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Roll_Invincible[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+      fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_State_OTG_Roll_Stunned.js`, `result[${ playerSlotI }] =[ ${ arrStateOTG_Roll_Stunned[ playerSlotI ] } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+    }
   }
 }
 
-State_Being_Hit_FN()
-// console.log( writePlayerMemory( "P1", "Animation_Timer_Main", 0 )[ 0 ][ 0 ] );
+// }
+writeNewStates();
+console.timeEnd();
+// fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_${ stateNamesArray[ 0 ] }.js`, `result[0] =[ ${ state_results_array[ 0 ].toString() } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
 
-//   "Being_Hit": (( Animation_Timer_Main > 0 )&& (Knockdown_State == 32) ) ? 1 : 0,
+// Writes the results of each array that was compared
+// fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_${ stateNamesArray[ stateName ] }.js`, `result[0] =[ ${ state_results_array[ 0 ].toString() } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+// fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_${ stateNamesArray[ stateName ] }.js`, `result[ 1 ] = [ ${ state_results_array[ 1 ].toString() } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+// fs.appendFileSync( `${ DIR_OUTPATH }${ tempPlayerString }_${ stateNamesArray[ stateName ] }.js`, `result[ 2 ] = [ ${ state_results_array[ 2 ].toString() } ]; \n`, { encoding: 'utf8' }, ( err => {} ) );
+// // Reset the array for the next player
+// }
+// return state_results_array
+//   }
+// }
 
-// i = PlayerOneAndPlayerTwo
-// j = ComparisonStates
-// k = numberOfArraysInCall
-// m = lengthOfEntriesInClip
+// TODO Finish writing a copy of the above function for each of these states
 
-// finalArray[ i ].push( BlockstunArray[ i ][ j ] && ActionFlags[ 0 ][ 0 ] && AnimationTimerMain[ i ][ j ] )
-
-// console.log( writePlayerMemory( 'Knockdown_State', 1 ) );
+// TODO Write Math.Min & Math.Max & Math.Round functions!
 
 // function writeMathFromFilesCnv(pathToData)
 // {
@@ -426,90 +503,3 @@ State_Being_Hit_FN()
 //     var removeDuplicates = [ ...new Set(playerDataAll) ];
 
 //     return removeDuplicates
-// }
-
-// writeMathFromFilesCnv("./main_files/Shuma47_node.js")
-
-/* List of States I'm going to export data for:
-  I was thinking of adding a table of states and their corresponding logics...
-  It would be cool if the MVC2GEN could iterate through this table automatically
-  to pick out which key and value pairs to use for each character.
-*/
-
-// const newDataToWrite = {
-//   "Being_Hit": (( Animation_Timer_Main > 0 )&& (Knockdown_State == 32) ) ? 1 : 0,
-//   "Flying_Screen_Air":( (FlyingScreen == 1) && (Knockdown_State == 32) && (Airborne == 2) ) ? 1 : 0,
-//   "FlyingScreen_OTG": ((FlyingScreen == 1) && (Knockdown_State == 32) && (Airborne == 3) ) ? 1 : 0,
-//   "FS_Install_1": ((FSI_Points == 8) || (FSI_Points == 9) ) ? 1 : 0,
-//   "FS_Install_2": ((FSI_Points > 9) ) ? 1 : 0,
-//   "NJ_Air": (( (Airborne == 2) && (Knockdown_State == 3) && (SJ_Counter == 0) ) ) ? 1 : 0,
-//   "NJ_Rising": ((Airborne == 0) && (Knockdown_State == 2) && (SJ_Counter == 0) ) ? 1 : 0,
-//   "OTG_Extra_Stun": ((Knockdown_State == 23) && (Airborne == 3) ) ? 1 : 0,
-//   "OTG_Forced_Stun": ((Knockdown_State == 32) && (Airborne == 3) ) ? 1 : 0,
-//   "OTG_Hit": ((Action_Flags == 0) && (Airborne == 3) && (Knockdown_State == 32) ) ? 1 : 0,
-//   "OTG_Roll_Invincible": ((Action_Flags == 2) && (Airborne == 1) && (Attack_Immune == 1) && (Knockdown_State == 17) ) ? 1 : 0,
-//   "OTG_Roll_Stunned": ((Action_Flags == 1) && (Airborne == 3) && (Knockdown_State == 32) ) ? 1 : 0,
-//   "ProxBlock_Air": ((Is_Prox_Block == 6) && (Knockdown_State == 19) ) ? 1 : 0,
-//   "ProxBlock_Ground": ((Is_Prox_Block == 5) && (Knockdown_State == 18) ) ? 1 : 0,
-//   "Pushblock_Air": ((Block_Meter > 0) && (Animation_Timer_Main < 28) && (Is_Prox_Block == 6) && (Action_Flags == 2) ) ? 1 : 0,
-//   "Pushblock_Ground": ((Block_Meter > 0) && (Animation_Timer_Main < 28) && (Is_Prox_Block == 5) && (Action_Flags == 3) ) ? 1 : 0,
-//   "Rising_Invincibility": ((Airborne == 0) && (Attack_Immune == 1) && (Knockdown_State == 17) ) ? 1 : 0,
-//   "SJ_Air": ((Airborne == 2) && (Knockdown_State == 14) && (SJ_Counter == 1) ) ? 1 : 0,
-//   "SJ_Counter": ((SJ_Counter == 2) ) ? 1 : 0,
-//   "Stun": ((Knockdown_State == 32) && (Is_Prox_Block == 13) ) ? 1 : 0,
-//   "Tech_Hit": ((Knockdown_State == 27) ) ? 1 : 0,
-//   "Thrown_Air": ((Airborne == 2) && (Knockdown_State == 31) && (Is_Prox_Block == 16) ) ? 1 : 0,
-//   "Thrown_Ground": ((Airborne == 0) && (Knockdown_State == 31) && (Is_Prox_Block == 16) ) ? 1 : 0,
-// }
-
-/*Instead for now, there's these arrays corresponding to each character.
-I have to create a set of Arrays for each character for now.
-
-// var BeingHitArray = [];
-// 	BeingHitArray[0] = '';
-// 	BeingHitArray[1] = '';
-// 	BeingHitArray[2] = '';
-// 	BeingHitArray[3] = '';
-// 	BeingHitArray[4] = '';
-// 	BeingHitArray[5] = '';
-
-// var FlyingScreenAirArray = [];
-// 	FlyingScreenAirArray[0] = '';
-// 	FlyingScreenAirArray[1] = '';
-// 	FlyingScreenAirArray[2] = '';
-// 	FlyingScreenAirArray[3] = '';
-// 	FlyingScreenAirArray[4] = '';
-// 	FlyingScreenAirArray[5] = '';
-
-// for ( let sixCharsI in slots )
-// {
-// 	let tempTxt = '';
-// 	for ( let frame in clipLength )
-// 	{
-// 		tempTxt += ( eval(`data.${ slots[ sixCharsI ]}FlyingScreen.split( ',' )`)[frame] == 1
-// 			&& eval(`data.${ slots[ sixCharsI ]}Knockdown_State.split( ',' )`)[frame] == 32
-// 			&& eval(`data.${ slots[ sixCharsI ]}Airborne.split( ',' )`)[frame] == 2)
-// 			? 1 + ',' : 0 + ',';
-// 		FlyingScreenAirArray[sixCharsI] = `export var ${ slots[ sixCharsI ]}FlyingScreenAir = "${tempTxt}"; `;
-// 	}
-// 	tempTxt = '';
-// 	FlyingScreenAirArray[sixCharsI] = FlyingScreenAirArray[sixCharsI].replace(`, "` , `"`);
-// }
-
-//  Old method of doing the loops; I'm keeping it here to update it later.
-// I'd like to figure out an efficient way to do these loops before propagating it to the other files.
-
-// for (let  m = 0 ; m < slots.length ; m++ )
-// {
-//     for ( let i = 0; i < data.A_2D_Game_Timer.split(',').length ; i++ )
-//     {
-//         // console.log(slots[m]+"Knockdown_State: "+(eval(`data.${ slots[ m ] } Knockdown_State.split( ',' )`)[i]))
-//         // console.log(slots[m]+"Animation_Timer_Main: "+(eval(`data.${ slots[ m ] } Animation_Timer_Main.split( ',' )`)[i]))
-//         BeingHitArray[m] += ( eval(`data.${ slots[ m ] } Animation_Timer_Main.split( ',' )`)[i] > 0
-//             && eval(`data.${ slots[ m ] } Knockdown_State.split( ',' )`)[i] == 32 )
-//             ? 1 + ',' : 0 + ','
-//     }
-//     // console.log(slots[m]+"BeingHit: " + BeingHitArray[m]);
-// }
-// console.log(BeingHitArray);
-*/
