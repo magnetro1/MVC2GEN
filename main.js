@@ -1,67 +1,18 @@
 import * as fs from "fs"
 import * as path from "path"
-import * as pMem from "./main_files/Shuma47_node.js"
+import * as pMem from "./main_files/CaptainCommandoRogueCable8_node.js"
+
 import {Knockdown_State_Static, Prox_Block_Static, namesTable_Static, floatingPointAddresses, MinMaxList, StagesTable_Static, miscAddresses} from "./main_files/staticData.js"
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`)
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`)
 
-const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Shuma47/`
+const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }CaptainCommandoRogueCable8/`
 var currentFileNoExtension = DIR_OUTPATH.toString();
 var currentFileNoExtension = currentFileNoExtension.match(/(\w+).$/)[1];
 const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ currentFileNoExtension }_node.js` // Current-Active-Working-File
-
-console.log(NODE_JS_FILE.toString());
-
-
 const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length // Used as clip-length frame tracker; address doesn't matter
 
-// import * as pMem from NODE_JS_FILE
-// File Directory to write to; needs to match the clip name to make sense TODO fix this
-
-// // Fetches usable node-js files exported using Powershell script
-// const FILE_NAMES = []
-// function getNodeJSFiles() // uses dirMainFiles to fetch usable files; returns array of file names
-// {
-//   fs.readdirSync(DIR_MAIN_FILES, 'utf8').toString().split(',').forEach((file) =>
-//   {
-//     let _nodeJSRegex = /\w+_node.js/g;
-//     if (file.match(_nodeJSRegex))
-//     {
-//       FILE_NAMES.push(file);
-//     }
-//   })
-//   return FILE_NAMES;
-// }
-// getNodeJSFiles()
-
-// for (let FILE in FILE_NAMES)
-// {
-//   FILE_NAMES[FILE].toString();
-//   var currentWorkingFileSwitcher = FILE_NAMES[FILE];
-//   var currentWorkingFileSwitcher = currentWorkingFileSwitcher.match(/(\w+)_node.js/)[1];
-//   currentWorkingFileSwitcher = '';
-// }
-// var currentOutputPath = path.join(process.cwd(), `${ DIR_EXPORT_TO_AE }${ currentWorkingFileSwitcher }/`)
-// var current_NodeJSFile = path.join(process.cwd(), `${ DIR_MAIN_FILES }${ currentWorkingFileSwitcher }`) // Current-Active-Working-File
-// console.log(FILE_NAMES)
-
-
-//Objects containing Point-Character data used in main function
-const POINT_OBJ_P1 = // Objects with the player slots as keys, and their values (0/1/2) as object-values. Ex: 'P1_A_ : 0'
-{
-  P1_A_: pMem.P1_A_Is_Point.split(","),
-  P1_B_: pMem.P1_B_Is_Point.split(","),
-  P1_C_: pMem.P1_C_Is_Point.split(","),
-};
-const POINT_OBJ_P2 =
-{
-  P2_A_: pMem.P2_A_Is_Point.split(","),
-  P2_B_: pMem.P2_B_Is_Point.split(","),
-  P2_C_: pMem.P2_C_Is_Point.split(","),
-};
-
-// /*
 function writeMinMaxToNodeJSFile()
 {
   for (var MinMaxAddress in MinMaxList)
@@ -89,34 +40,79 @@ function writeMinMaxToNodeJSFile()
       tempStringMin = "";
       tempStringMax = "";
     }
-    else
-    {
-      console.log("MinMax already exists in file");
-    }
   }
-  console.log("writeMinMaxToNodeJSFile is finished running");
 }
+writeMinMaxToNodeJSFile()
 
+// // TODO Automate the script to check for new node.js files in the main_files folder
+// //Fetches usable node-js files exported using Powershell script
+// const FILE_NAMES = []
+// function getNodeJSFiles() // uses dirMainFiles to fetch usable files; returns array of file names
+// {
+//   fs.readdirSync(DIR_MAIN_FILES, 'utf8').toString().split(',').forEach((file) =>
+//   {
+//     let _nodeJSRegex = /\w+_node.js/g;
+//     if (file.match(_nodeJSRegex))
+//     {
+//       FILE_NAMES.push(file);
+//     }
+//   })
+//   return FILE_NAMES;
+// }
+// getNodeJSFiles()
+// // Truncates '_node.js' from file names
+// for (let FILE in FILE_NAMES)
+// {
+//   FILE_NAMES[FILE].toString();
+//   var currentWorkingFileSwitcher = FILE_NAMES[FILE];
+//   var currentWorkingFileSwitcher = currentWorkingFileSwitcher.match(/(\w+)_node.js/)[1];
+//   currentWorkingFileSwitcher = '';
+// }
+// // Would need to be able to switch the node file, and its data-output-path
+// var currentOutputPath = path.join(process.cwd(), `${ DIR_EXPORT_TO_AE }${ currentWorkingFileSwitcher }/`)
+// var current_NodeJSFile = path.join(process.cwd(), `${ DIR_MAIN_FILES }${ currentWorkingFileSwitcher }`) // Current-Active-Working-File
+// console.log(FILE_NAMES)
+
+//Objects containing Point-Character data used in main function
+const POINT_OBJ_P1 = // Objects with the player slots as keys, and their values (0/1/2) as object-values. Ex: 'P1_A_ : 0'
+{
+  P1_A_: pMem.P1_A_Is_Point.split(","),
+  P1_B_: pMem.P1_B_Is_Point.split(","),
+  P1_C_: pMem.P1_C_Is_Point.split(","),
+};
+const POINT_OBJ_P2 =
+{
+  P2_A_: pMem.P2_A_Is_Point.split(","),
+  P2_B_: pMem.P2_B_Is_Point.split(","),
+  P2_C_: pMem.P2_C_Is_Point.split(","),
+};
+
+
+function getLabelsfromJS(pathToFile)
+{
+  var readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: 'utf8'});
+  if (readFileForChecking.match("P2_C_Y_Velocity_Max"))
+  {
+    var playerDataAll = []
+    var getFile = fs.readFileSync(pathToFile, 'utf8',);
+    getFile.toString().split(';').forEach(function (line) //Split each block of text by semi-colon
+    {
+      let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all player memory addresses; want capture group 2.
+      let tempRegexVar; // Temporary variable to run the exec method
+      while (tempRegexVar = playerMemoryRegex.exec(line)) // Exec needs to match true or false
+      {
+        playerDataAll.push(tempRegexVar[2]); // regex.exec returns array of all matches; item[2] is the address; has many duplicates
+        playerDataAll.join(','); // Converts array to string
+      };
+    });
+    var removeDuplicates = [...new Set(playerDataAll)];
+
+    return removeDuplicates
+  }
+}
 
 
 // Get unique-list of player memory addresses per clip to feed into main function. EX: P1_A/B/C_Health_Big
-function getLabelsfromJS(pathToFile)
-{
-  var playerDataAll = []
-  var getFile = fs.readFileSync(pathToFile, 'utf8',);
-  getFile.toString().split(';').forEach(function (line) //Split each block of text by semi-colon
-  {
-    let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all player memory addresses; want capture group 2.
-    let tempRegexVar; // Temporary variable to run the exec method
-    while (tempRegexVar = playerMemoryRegex.exec(line)) // Exec needs to match true or false
-    {
-      playerDataAll.push(tempRegexVar[2]); // regex.exec returns array of all matches; item[2] is the address; has many duplicates
-      playerDataAll.join(','); // Converts array to string
-    };
-  });
-  var removeDuplicates = [...new Set(playerDataAll)];
-  return removeDuplicates
-}
 
 // Main function to write data to files OR return finalValues array
 // Appends array if 2-character+ bug is on
@@ -621,8 +617,6 @@ function writeNewStates()
     }
   }
 }
-
-writeMinMaxToNodeJSFile();
 getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
 {
   writePlayerMemory(1, label.toString(), 1);
@@ -630,5 +624,4 @@ getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
 });
 writeStaticDataCNV();
 writeInputCNV();
-writeNewStates();
-// */
+console.log('all done')
