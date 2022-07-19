@@ -1,18 +1,19 @@
 import * as fs from "fs"
 import * as path from "path"
-import * as pMem from "./main_files/CaptainCommandoRogueCable8_node.js"
+import * as pMem from "./main_files/Shuma47_node.js"
 
 import {Knockdown_State_Static, Prox_Block_Static, namesTable_Static, floatingPointAddresses, MinMaxList, StagesTable_Static, miscAddresses} from "./main_files/staticData.js"
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`)
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`)
 
-const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }CaptainCommandoRogueCable8/`
+const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Shuma47/`
 var currentFileNoExtension = DIR_OUTPATH.toString();
 var currentFileNoExtension = currentFileNoExtension.match(/(\w+).$/)[1];
 const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ currentFileNoExtension }_node.js` // Current-Active-Working-File
 const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length // Used as clip-length frame tracker; address doesn't matter
 
+// /*
 function writeMinMaxToNodeJSFile()
 {
   for (var MinMaxAddress in MinMaxList)
@@ -37,12 +38,24 @@ function writeMinMaxToNodeJSFile()
     {
       fs.appendFileSync(`${ NODE_JS_FILE }`, ` ${ prependStringMin.toString() }"${ tempStringMin.toString() }";\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
       fs.appendFileSync(`${ NODE_JS_FILE }`, ` ${ prependStringMax.toString() }"${ tempStringMax.toString() }";\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
-      tempStringMin = "";
-      tempStringMax = "";
     }
+    //   if (!fs.existsSync(`${ DIR_MAIN_FILES }testFile.js`))
+    //   {
+    //     fs.appendFileSync(`${ `${ DIR_MAIN_FILES }testFile.js` }`, ` ${ prependStringMin.toString() }"${ tempStringMin.toString() }";\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
+    //     fs.appendFileSync(`${ `${ DIR_MAIN_FILES }testFile.js` }`, ` ${ prependStringMax.toString() }"${ tempStringMax.toString() }";\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
+    //     tempStringMin = "";
+    //     tempStringMax = "";
+    //   }
   }
 }
+
 writeMinMaxToNodeJSFile()
+
+// if (fs.existsSync(`${ DIR_MAIN_FILES }testFile.js`))
+// {
+//   // import module for side effects
+//   import("./main_files/testFile.js");
+// };
 
 // // TODO Automate the script to check for new node.js files in the main_files folder
 // //Fetches usable node-js files exported using Powershell script
@@ -110,7 +123,6 @@ function getLabelsfromJS(pathToFile)
     return removeDuplicates
   }
 }
-
 
 // Get unique-list of player memory addresses per clip to feed into main function. EX: P1_A/B/C_Health_Big
 
@@ -586,7 +598,7 @@ function writeNewStates()
         (((getAirborne)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 31) && ((getIs_Prox_Block)[playerSlotI][clipLen] == 16))
           ? arrStateThrown_Ground[playerSlotI].push(1)
           : arrStateThrown_Ground[playerSlotI].push(0);
-        // // "NEW_STATE_ADD_HERE"
+        // // "NEW_STATE_ADD_NAME_HERE"
         // NEW_STATE_ADD_HERE
       }
       // Only iterations are the P1/P2 and the ABC Slots; we are writing very-explictly tracked items
@@ -617,6 +629,7 @@ function writeNewStates()
     }
   }
 }
+// */
 getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
 {
   writePlayerMemory(1, label.toString(), 1);
@@ -624,4 +637,56 @@ getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
 });
 writeStaticDataCNV();
 writeInputCNV();
-console.log('all done')
+writeNewStates();
+
+function writeTotalFrameCountCNV()
+{
+  var totalFrameArr = [];
+  pMem.Total_Frames.split(',').forEach((frame, index) =>
+  {
+    totalFrameArr.push(index + 1);
+  });
+  if (!fs.existsSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`))
+  {
+    fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `var result = [];\nresult[0] = [${ totalFrameArr }];\n`, {encoding: 'utf8'}, (err => {}));
+    totalFrameArr.reverse()
+    fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `result[1] = [${ totalFrameArr }];\n`, {encoding: 'utf8'}, (err => {}));
+  }
+}
+writeTotalFrameCountCNV();
+
+function writeStageDataCNV()
+{
+  var stageData = [];
+  pMem.Stage_Selector.split(',').forEach((frame, index) =>
+  {
+    stageData.push(frame)
+  });
+
+  if (!fs.existsSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`))
+  {
+    fs.writeFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`, `var result = [];\nresult[0] = [${ stageData }];\n`, {encoding: 'utf8'}, (err => {}));
+    stageData = [];
+
+    pMem.Stage_Selector.split(',').forEach((frame) =>
+    {
+      stageData.push(`'${ Object.values(StagesTable_Static)[frame] }FF'`)
+    });
+    fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`, `result[1] = [${ stageData }];\n`, {encoding: 'utf8'}, (err => {}));
+    stageData = [];
+  }
+}
+writeStageDataCNV()
+
+// function convertToRGB(hex)
+// {
+//   var aRgbHex = hex.match(/.{1,2}/g);
+//   var aRgb = [
+//     parseInt(aRgbHex[0], 16),
+//     parseInt(aRgbHex[1], 16),
+//     parseInt(aRgbHex[2], 16),
+//     1
+//   ];
+//   return aRgb;
+// }
+// console.log(convertToRGB('FF1EBC'));
