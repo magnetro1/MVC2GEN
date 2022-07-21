@@ -1,8 +1,8 @@
 import * as fs from "fs"
 import * as path from "path"
 import * as pMem from "./main_files/Shuma47_node.js"
+import {Knockdown_State_Static, Prox_Block_Static, namesTable_Static, floatingPointAddresses, MinMaxList, miscAddresses, StagesTable_Static} from "./main_files/staticData.js"
 
-import {Knockdown_State_Static, Prox_Block_Static, namesTable_Static, floatingPointAddresses, MinMaxList, StagesTable_Static, miscAddresses} from "./main_files/staticData.js"
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`)
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`)
@@ -10,6 +10,11 @@ const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Shuma47/`
 const FILE_NAME_NO_EXT = DIR_OUTPATH.toString().match(/(\w+).$/)[1];
 const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js` // Current-Active-Working-File
 const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length // Used as clip-length frame tracker; address doesn't matter
+
+if (!fs.existsSync(`${ DIR_OUTPATH }`))
+{
+  fs.mkdirSync(`${ DIR_OUTPATH }`), {recursive: true};
+}
 
 // /*
 function writeMinMaxToNodeJSFile()
@@ -37,16 +42,15 @@ function writeMinMaxToNodeJSFile()
       fs.appendFileSync(`${ NODE_JS_FILE }`, ` ${ prependStringMin.toString() }"${ tempStringMin.toString() }";\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
       fs.appendFileSync(`${ NODE_JS_FILE }`, ` ${ prependStringMax.toString() }"${ tempStringMax.toString() }";\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
     }
-    //   if (!fs.existsSync(`${ DIR_MAIN_FILES }testFile.js`))
-    //   {
-    //     fs.appendFileSync(`${ `${ DIR_MAIN_FILES }testFile.js` }`, ` ${ prependStringMin.toString() }"${ tempStringMin.toString() }";\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
-    //     fs.appendFileSync(`${ `${ DIR_MAIN_FILES }testFile.js` }`, ` ${ prependStringMax.toString() }"${ tempStringMax.toString() }";\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
-    //     tempStringMin = "";
-    //     tempStringMax = "";
-    //   }
+    if (prependStringMin.match(/P\d_Combo_Meter_Value/gm))
+    {
+      fs.writeFileSync(`${ DIR_OUTPATH }${ MinMaxList[MinMaxAddress] }_Min.js`, `var result = [];\nresult[0] = [${ tempStringMin.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
+      fs.writeFileSync(`${ DIR_OUTPATH }${ MinMaxList[MinMaxAddress] }_Max.js`, `var result = [];\nresult[0] = [${ tempStringMax.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
+    }
   }
-}
+};
 
+// Would need to be able to switch the node file, and its data-output-path
 // const FILE_NAMES = []
 // function getNodeJSFiles() // uses dirMainFiles to fetch usable files; returns array of file names
 // {
@@ -69,10 +73,6 @@ function writeMinMaxToNodeJSFile()
 //   var currentWorkingFileSwitcher = currentWorkingFileSwitcher.match(/(\w+)_node.js/)[1];
 //   currentWorkingFileSwitcher = '';
 // }
-// // Would need to be able to switch the node file, and its data-output-path
-// var currentOutputPath = path.join(process.cwd(), `${ DIR_EXPORT_TO_AE }${ currentWorkingFileSwitcher }/`)
-// var current_NodeJSFile = path.join(process.cwd(), `${ DIR_MAIN_FILES }${ currentWorkingFileSwitcher }`) // Current-Active-Working-File
-// console.log(FILE_NAMES)
 
 //Objects containing Point-Character data used in main function
 const POINT_OBJ_P1 = // Objects with the player slots as keys, and their values (0/1/2) as object-values. Ex: 'P1_A_ : 0'
@@ -122,6 +122,24 @@ function writeTotalFrameCountCNV()
     fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `var result = [];\nresult[0] = [${ totalFrameArr }];\n`, {encoding: 'utf8'}, (err => {}));
     totalFrameArr.reverse()
     fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `result[1] = [${ totalFrameArr }];\n`, {encoding: 'utf8'}, (err => {}));
+  }
+};
+
+function writeP1P2Addresses()
+{
+  var tempArr = [[]];
+  for (let p1p2Address in miscAddresses)
+  {
+    eval(`pMem.${ miscAddresses[p1p2Address] }`).split(',').forEach((address, index) =>
+    {
+      tempArr[0].push(address);
+    });
+
+    // if (!fs.existsSync(`${ DIR_OUTPATH }${ miscAddresses[p1p2Address] }.js`))
+    // {
+    fs.writeFileSync(`${ DIR_OUTPATH }${ miscAddresses[p1p2Address] }.js`, `var result = [];\nresult[0] = [${ tempArr }];\n`, {encoding: 'utf8'}, (err => {}));
+    tempArr[0] = [];
+    // }
   }
 };
 
@@ -652,7 +670,7 @@ function writeNewStates()
   }
 }
 // */
-writeMinMaxToNodeJSFile()
+writeMinMaxToNodeJSFile() // breaks next function on first-run; re-run program to get full results
 getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
 {
   writePlayerMemory(1, label.toString(), 1);
@@ -663,4 +681,4 @@ writeInputCNV();
 writeNewStates();
 writeTotalFrameCountCNV();
 writeStageDataCNV()
-
+writeP1P2Addresses();
