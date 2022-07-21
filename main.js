@@ -6,11 +6,9 @@ import {Knockdown_State_Static, Prox_Block_Static, namesTable_Static, floatingPo
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`)
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`)
-
 const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Shuma47/`
-var currentFileNoExtension = DIR_OUTPATH.toString();
-var currentFileNoExtension = currentFileNoExtension.match(/(\w+).$/)[1];
-const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ currentFileNoExtension }_node.js` // Current-Active-Working-File
+const FILE_NAME_NO_EXT = DIR_OUTPATH.toString().match(/(\w+).$/)[1];
+const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js` // Current-Active-Working-File
 const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length // Used as clip-length frame tracker; address doesn't matter
 
 // /*
@@ -49,16 +47,6 @@ function writeMinMaxToNodeJSFile()
   }
 }
 
-writeMinMaxToNodeJSFile()
-
-// if (fs.existsSync(`${ DIR_MAIN_FILES }testFile.js`))
-// {
-//   // import module for side effects
-//   import("./main_files/testFile.js");
-// };
-
-// // TODO Automate the script to check for new node.js files in the main_files folder
-// //Fetches usable node-js files exported using Powershell script
 // const FILE_NAMES = []
 // function getNodeJSFiles() // uses dirMainFiles to fetch usable files; returns array of file names
 // {
@@ -100,7 +88,6 @@ const POINT_OBJ_P2 =
   P2_C_: pMem.P2_C_Is_Point.split(","),
 };
 
-
 function getLabelsfromJS(pathToFile)
 {
   var readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: 'utf8'});
@@ -122,8 +109,43 @@ function getLabelsfromJS(pathToFile)
 
     return removeDuplicates
   }
-}
+};
+function writeTotalFrameCountCNV()
+{
+  var totalFrameArr = [];
+  pMem.Total_Frames.split(',').forEach((frame, index) =>
+  {
+    totalFrameArr.push(index + 1);
+  });
+  if (!fs.existsSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`))
+  {
+    fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `var result = [];\nresult[0] = [${ totalFrameArr }];\n`, {encoding: 'utf8'}, (err => {}));
+    totalFrameArr.reverse()
+    fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `result[1] = [${ totalFrameArr }];\n`, {encoding: 'utf8'}, (err => {}));
+  }
+};
 
+function writeStageDataCNV()
+{
+  var stageData = [];
+  pMem.Stage_Selector.split(',').forEach((frame, index) =>
+  {
+    stageData.push(frame)
+  });
+
+  if (!fs.existsSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`))
+  {
+    fs.writeFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`, `var result = [];\nresult[0] = [${ stageData }];\n`, {encoding: 'utf8'}, (err => {}));
+    stageData = [];
+
+    pMem.Stage_Selector.split(',').forEach((frame) =>
+    {
+      stageData.push(`'${ Object.values(StagesTable_Static)[frame] }FF'`)
+    });
+    fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`, `result[1] = [${ stageData }];\n`, {encoding: 'utf8'}, (err => {}));
+    stageData = [];
+  }
+};
 // Get unique-list of player memory addresses per clip to feed into main function. EX: P1_A/B/C_Health_Big
 
 // Main function to write data to files OR return finalValues array
@@ -259,7 +281,7 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
         (err => {}));
     }
   }
-} // End of Mainfunction()
+}; // End of Mainfunction()
 
 // Write Static Data Conversion. Example ID: 01 turns into "Ryu"
 function writeStaticDataCNV()
@@ -630,6 +652,7 @@ function writeNewStates()
   }
 }
 // */
+writeMinMaxToNodeJSFile()
 getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
 {
   writePlayerMemory(1, label.toString(), 1);
@@ -638,55 +661,6 @@ getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
 writeStaticDataCNV();
 writeInputCNV();
 writeNewStates();
-
-function writeTotalFrameCountCNV()
-{
-  var totalFrameArr = [];
-  pMem.Total_Frames.split(',').forEach((frame, index) =>
-  {
-    totalFrameArr.push(index + 1);
-  });
-  if (!fs.existsSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`))
-  {
-    fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `var result = [];\nresult[0] = [${ totalFrameArr }];\n`, {encoding: 'utf8'}, (err => {}));
-    totalFrameArr.reverse()
-    fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `result[1] = [${ totalFrameArr }];\n`, {encoding: 'utf8'}, (err => {}));
-  }
-}
 writeTotalFrameCountCNV();
-
-function writeStageDataCNV()
-{
-  var stageData = [];
-  pMem.Stage_Selector.split(',').forEach((frame, index) =>
-  {
-    stageData.push(frame)
-  });
-
-  if (!fs.existsSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`))
-  {
-    fs.writeFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`, `var result = [];\nresult[0] = [${ stageData }];\n`, {encoding: 'utf8'}, (err => {}));
-    stageData = [];
-
-    pMem.Stage_Selector.split(',').forEach((frame) =>
-    {
-      stageData.push(`'${ Object.values(StagesTable_Static)[frame] }FF'`)
-    });
-    fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`, `result[1] = [${ stageData }];\n`, {encoding: 'utf8'}, (err => {}));
-    stageData = [];
-  }
-}
 writeStageDataCNV()
 
-// function convertToRGB(hex)
-// {
-//   var aRgbHex = hex.match(/.{1,2}/g);
-//   var aRgb = [
-//     parseInt(aRgbHex[0], 16),
-//     parseInt(aRgbHex[1], 16),
-//     parseInt(aRgbHex[2], 16),
-//     1
-//   ];
-//   return aRgb;
-// }
-// console.log(convertToRGB('FF1EBC'));

@@ -1,4 +1,3 @@
-
 export const Knockdown_State_Static =
 {
   0: "Neutral",
@@ -66,7 +65,7 @@ export const Prox_Block_Static =
   24: "Assist Related",
   25: "???",
   26: "Air Dash",
-}
+};
 
 export const namesTable_Static =
 {
@@ -129,7 +128,7 @@ export const namesTable_Static =
   56: "Captain Commando",
   57: "Wolverine (Bone)",
   58: "Servbot",
-}
+};
 
 export var floatingPointAddresses =
   [
@@ -293,7 +292,7 @@ export const miscAddresses =
     'Timer_Secondary',
     'P1_Block_Stun',
     'P2_Block_Stun'
-  ]
+  ];
 
 export const StagesTable_Static =
 {
@@ -314,4 +313,4 @@ export const StagesTable_Static =
   14: 'A43812', //"Cave1",
   15: '888885', //"Clock1",
   16: '8CA7DF' //"Raft1"
-}
+};
