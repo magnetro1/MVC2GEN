@@ -1,12 +1,12 @@
 import * as fs from "fs"
 import * as path from "path"
-import * as pMem from "./main_files/Shuma47_node.js"
+import * as pMem from "./main_files/SpiralUnblockable_node.js"
 import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js"
 
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`)
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`)
-const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Shuma47/`
+const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }SpiralUnblockable/`
 const FILE_NAME_NO_EXT = DIR_OUTPATH.toString().match(/(\w+).$/)[1];
 const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js` // Current-Active-Working-File
 const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length // Used as clip-length frame tracker; address doesn't matter
@@ -249,7 +249,6 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
   {
     var toFixedDigitNumber = 2; //7 by default
     var floatArrayFixed = [[], [], []];
-    var floatArrayMin = [[], [], []];
     if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
     {
       //ToFixed
@@ -478,7 +477,7 @@ function writeInputCNV()
   }
 }
 
-//Boolean checks for particular game-states
+//Boolean results for particular game-states
 //Search for "NEW_STATE_ADD_HERE" to add new states properly
 function writeNewStates()
 {
