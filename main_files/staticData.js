@@ -1,4 +1,4 @@
-export const Knockdown_State_Static =
+export const KNOCKDOWN_STATE_OBJ =
 {
   0: "Neutral",
   1: "Walking",
@@ -36,7 +36,7 @@ export const Knockdown_State_Static =
   33: "???",
   34: "OC Launcher",
 };
-export const Prox_Block_Static =
+export const PROX_BLOCK_OBJ =
 {
   0: "Neutral",
   1: "Air",
@@ -67,7 +67,7 @@ export const Prox_Block_Static =
   26: "Air Dash",
 };
 
-export const namesTable_Static =
+export const NAME_TABLE_OBJ =
 {
   0: "Ryu",
   1: "Zangief",
@@ -130,7 +130,7 @@ export const namesTable_Static =
   58: "Servbot",
 };
 
-export var floatingPointAddresses =
+export const FLOATING_POINT_ADRS =
   [
     'X_Gravity',
     'X_Position_Arena',
@@ -142,7 +142,7 @@ export var floatingPointAddresses =
     'Y_Position_Screen',
     'Y_Velocity',
   ];
-export var MinMaxList =
+export const MIN_MAX_ADRS =
   [
     'P1_A_X_Gravity',
     'P1_A_X_Position_Arena',
@@ -255,7 +255,7 @@ export var MinMaxList =
     'P1_Combo_Meter_Value',
     'P2_Combo_Meter_Value',
   ];
-export const miscAddresses =
+export const MISC_ADRS =
   [
     'Total_Frames',
     'Camera_Field_of_View',
@@ -294,7 +294,7 @@ export const miscAddresses =
     'Timer_Secondary',
   ];
 
-export const StagesTable_Static =
+export const STAGES_OBJ =
 {
   0: '142030', //"Boat1",
   1: 'E1540C', //"Desert1",
@@ -313,4 +313,67 @@ export const StagesTable_Static =
   14: 'A43812', //"Cave1",
   15: '888885', //"Clock1",
   16: '8CA7DF' //"Raft1"
+};
+
+export const PORTRAITS_TO_TIME_OBJ =
+{
+  24: 1,  //Abyss-1
+  25: 2,  //Abyss-2
+  26: 3,  //Abyss-3
+  30: 4,  //Akuma
+  21: 5,  //Amingo
+  4: 6,  //Anakaris
+  31: 7,  //B.B. Hood
+  53: 8,  //Blackheart
+  23: 9,  //Cable
+  36: 10, //Cammy
+  11: 11, //Captain America
+  56: 12, //Captain Commando
+  33: 13, //Charlie
+  27: 14, //Chun-Li
+  50: 15, //Colossus
+  6: 16, //Cyclops
+  35: 17, //Dan
+  37: 18, //Dhalsim
+  15: 19, //Doctor Doom
+  32: 20, //Felicia
+  40: 21, //Gambit
+  2: 22, //Guile
+  18: 23, //Hayato
+  13: 24, //Hulk
+  9: 25, //Iceman
+  51: 26, //Iron Man
+  17: 27, //Jill
+  55: 28, //Jin
+  41: 29, //Juggernaut
+  39: 30, //Ken
+  38: 31, //M.Bison
+  44: 32, //Magneto
+  22: 33, //Marrow
+  28: 34, //Megaman
+  3: 35, //Morrigan
+  48: 36, //Omega Red
+  8: 37, //Psylocke
+  10: 38, //Rogue
+  29: 39, //Roll
+  19: 40, //Ruby Heart
+  0: 41, //Ryu
+  43: 42, //Sabretooth
+  34: 43, //Sakura
+  52: 44, //Sentinel
+  58: 45, //Servbot
+  45: 46, //Shuma-Gorath
+  47: 47, //Silver Samurai
+  20: 48, //Sonson
+  12: 49, //Spider-Man
+  49: 50, //Spiral
+  42: 51, //Storm
+  5: 52, //Strider Hiryu
+  54: 53, //Thanos
+  16: 54, //Tron Bonne
+  14: 55, //Venom
+  46: 56, //War Machine
+  7: 57, //Wolverine (Adamantium)
+  57: 58, //Wolverine (Bone)
+  1: 59, //Zangief
 };

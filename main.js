@@ -1,7 +1,7 @@
 import * as fs from "fs"
 import * as path from "path"
 import * as pMem from "./main_files/Shuma47_node.js"
-import {Knockdown_State_Static, Prox_Block_Static, namesTable_Static, floatingPointAddresses, MinMaxList, miscAddresses, StagesTable_Static} from "./main_files/staticData.js"
+import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js"
 
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`)
@@ -19,13 +19,13 @@ if (!fs.existsSync(`${ DIR_OUTPATH }`))
 // /*
 function writeMinMaxToNodeJSFile()
 {
-  for (var MinMaxAddress in MinMaxList)
+  for (var MinMaxAddress in MIN_MAX_ADRS)
   {
-    var tempAddress = eval(`pMem.${ MinMaxList[MinMaxAddress] }.split(',')`);
+    var tempAddress = eval(`pMem.${ MIN_MAX_ADRS[MinMaxAddress] }.split(',')`);
     var tempMinValue = (Math.min(...tempAddress));
     var tempMaxValue = (Math.max(...tempAddress));
-    var prependStringMin = `export var ${ MinMaxList[MinMaxAddress] }_Min = `;
-    var prependStringMax = `export var ${ MinMaxList[MinMaxAddress] }_Max = `;
+    var prependStringMin = `export var ${ MIN_MAX_ADRS[MinMaxAddress] }_Min = `;
+    var prependStringMax = `export var ${ MIN_MAX_ADRS[MinMaxAddress] }_Max = `;
     var tempStringMin = "";
     var tempStringMax = "";
     var readFileForChecking = "";
@@ -44,8 +44,8 @@ function writeMinMaxToNodeJSFile()
     }
     if (prependStringMin.match(/P\d_Combo_Meter_Value/gm))
     {
-      fs.writeFileSync(`${ DIR_OUTPATH }${ MinMaxList[MinMaxAddress] }_Min.js`, `var result = [];\nresult[0] = [${ tempStringMin.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
-      fs.writeFileSync(`${ DIR_OUTPATH }${ MinMaxList[MinMaxAddress] }_Max.js`, `var result = [];\nresult[0] = [${ tempStringMax.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
+      fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[MinMaxAddress] }_Min.js`, `var result = [];\nresult[0] = [${ tempStringMin.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
+      fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[MinMaxAddress] }_Max.js`, `var result = [];\nresult[0] = [${ tempStringMax.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
     }
   }
 };
@@ -128,16 +128,16 @@ function writeTotalFrameCountCNV()
 function writeP1P2Addresses()
 {
   var tempArr = [[]];
-  for (let p1p2Address in miscAddresses)
+  for (let p1p2Address in MISC_ADRS)
   {
-    eval(`pMem.${ miscAddresses[p1p2Address] }`).split(',').forEach((address, index) =>
+    eval(`pMem.${ MISC_ADRS[p1p2Address] }`).split(',').forEach((address, index) =>
     {
       tempArr[0].push(address);
     });
 
     // if (!fs.existsSync(`${ DIR_OUTPATH }${ miscAddresses[p1p2Address] }.js`))
     // {
-    fs.writeFileSync(`${ DIR_OUTPATH }${ miscAddresses[p1p2Address] }.js`, `var result = [];\nresult[0] = [${ tempArr }];\n`, {encoding: 'utf8'}, (err => {}));
+    fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[p1p2Address] }.js`, `var result = [];\nresult[0] = [${ tempArr }];\n`, {encoding: 'utf8'}, (err => {}));
     tempArr[0] = [];
     // }
   }
@@ -158,7 +158,7 @@ function writeStageDataCNV()
 
     pMem.Stage_Selector.split(',').forEach((frame) =>
     {
-      stageData.push(`'${ Object.values(StagesTable_Static)[frame] }FF'`)
+      stageData.push(`'${ Object.values(STAGES_OBJ)[frame] }FF'`)
     });
     fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`, `result[1] = [${ stageData }];\n`, {encoding: 'utf8'}, (err => {}));
     stageData = [];
@@ -245,17 +245,17 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
     fs.mkdirSync(DIR_OUTPATH);
   }
   // Check for Floating Point Addresses so we can truncate their trailing digits
-  for (let floatAddress in floatingPointAddresses)
+  for (let floatAddress in FLOATING_POINT_ADRS)
   {
     var toFixedDigitNumber = 2; //7 by default
     var floatArrayFixed = [[], [], []];
     var floatArrayMin = [[], [], []];
-    if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ floatingPointAddresses[floatAddress] }`)
+    if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
     {
       //ToFixed
-      if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ floatingPointAddresses[floatAddress] }_ToFixed_${ toFixedDigitNumber }.js`))
+      if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumber }.js`))
       {
-        fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ floatingPointAddresses[floatAddress] }_ToFixed_${ toFixedDigitNumber }.js`, `result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
+        fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumber }.js`, `result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
 
         finalValuesArray[0].forEach((value) =>
         {
@@ -272,7 +272,7 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
           value = parseFloat(value)
           floatArrayFixed[2].push(value.toFixed(toFixedDigitNumber));
         });
-        fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ floatingPointAddresses[floatAddress] }_ToFixed_${ toFixedDigitNumber }.js`,
+        fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumber }.js`,
           `result[0]=[${ floatArrayFixed[0].toString() }];` + '\n' +
           `result[1]=[${ floatArrayFixed[1].toString() }];` + '\n' +
           `result[2]=[${ floatArrayFixed[2].toString() }];`
@@ -301,11 +301,11 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
   }
 }; // End of Mainfunction()
 
-// Write Static Data Conversion. Example ID: 01 turns into "Ryu"
+// Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
 function writeStaticDataCNV()
 {
-  const STATIC_DATA_OBJS = [Knockdown_State_Static, Prox_Block_Static, namesTable_Static]
-  const STATIC_DATA_ADRS = ['Knockdown_State', 'Is_Prox_Block', 'ID_2']
+  const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
+  const STATIC_DATA_ADRS = ['Knockdown_State', 'Is_Prox_Block', 'ID_2', 'ID_2']
   var staticLookupResultsArray = [[], [], []];
 
   for (let playersLen = 1; playersLen < 3; playersLen++)
@@ -316,10 +316,20 @@ function writeStaticDataCNV()
       if (!fs.existsSync(DIR_OUTPATH))
         fs.mkdirSync(DIR_OUTPATH);
       //Write base file
-      fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`,
-        `var result = [];` + '\n',
-        {encoding: 'utf8'},
-        (err => {}));
+      if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+      {
+        fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`,
+          `var result = [];` + '\n',
+          {encoding: 'utf8'},
+          (err => {}));
+      }
+      else
+      {
+        fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`,
+          `var result = [];` + '\n',
+          {encoding: 'utf8'},
+          (err => {}));
+      }
     }
     for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
     {
@@ -331,10 +341,21 @@ function writeStaticDataCNV()
         {
           staticLookupResultsArray[playerMemLength].push(`'${ Object.values(STATIC_DATA_OBJS[staticDataLen])[callPlayerMemoryFN[playerMemLength][characterSlot]] }'`);
         }
-        fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
-          {encoding: 'utf8'},
-          (err => {}));
-        staticLookupResultsArray = [[], [], []];
+
+        if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+        {
+          fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
+            {encoding: 'utf8'},
+            (err => {}));
+          staticLookupResultsArray = [[], [], []];
+        }
+        else
+        {
+          fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
+            {encoding: 'utf8'},
+            (err => {}));
+          staticLookupResultsArray = [[], [], []];
+        }
       }
     }
   }
@@ -668,8 +689,8 @@ function writeNewStates()
       //NEW_STATE_ADD_HERE
     }
   }
-}
-// */
+};
+
 writeMinMaxToNodeJSFile() // breaks next function on first-run; re-run program to get full results
 getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
 {
