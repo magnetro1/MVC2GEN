@@ -49,6 +49,8 @@ function writeMinMaxToNodeJSFile()
     }
   }
 };
+writeMinMaxToNodeJSFile();
+
 
 // Would need to be able to switch the node file, and its data-output-path
 // const FILE_NAMES = []
@@ -702,3 +704,29 @@ writeNewStates();
 writeTotalFrameCountCNV();
 writeStageDataCNV()
 writeP1P2Addresses();
+
+  // /*STEP 1    ⬇⬇⬇ Pushes playerMemory addresses & values into an array*/
+  // /*STEP 1*/  var readArray = [];
+  // /*STEP 1*/  fs.readFileSync(`${ DIR_MAIN_FILES }/SpiralUnblockable_node.js`, 'utf8')
+  // /*STEP 1*/    .toString().split(';').forEach((exportVar) =>
+  // /*STEP 1*/    {
+  // /*STEP 1      ⬇⬇⬇ P1_A_Health & Numbers + ','; Group 1 & Group 4*/
+  // /*STEP 1*/    let playerMemoryREGEX = /(P\d_[A-C]_\w+)(\s=\s)(")(\d+.*)(")/gm;
+  // /*STEP 1*/    let tempData;
+  // /*STEP 1*/    if (exportVar.match(playerMemoryREGEX))
+  // /*STEP 1*/    {
+  // /*STEP 1*/      while ((tempData = playerMemoryREGEX.exec(exportVar)) !== null)
+  // /*STEP 1*/      {
+  // /*STEP 1*/        readArray.push(`export var ${ tempData[1] } = "${ tempData[4] }";`);
+  // /*STEP 1*/      }
+  // /*STEP 1*/    }
+  // /*STEP 1*/  })
+  // /*STEP 2    ⬇⬇⬇ Writes file for module importer*/      
+  // /*STEP 2*/  fs.writeFileSync('exportVarNames.js', readArray.join('\n'),
+  // /*STEP 2*/    {encoding: 'utf8'}, (err => {}));
+  // /*STEP 3    ⬇⬇⬇ import runs before anything else, so it can't work this way*/
+  // /*STEP 3*/  import * as playerMem from './exportVarNames.js';
+  // /*STEP 4    ⬇⬇⬇ Can't get to this if no-file exists on first-run.*/
+  // /*STEP 4*/  console.log(playerMem.P1_A_Action_Flags);
+
+
