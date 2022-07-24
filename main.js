@@ -1,11 +1,11 @@
 import * as fs from "fs"
 import * as path from "path"
-import * as pMem from "./main_files/CaptainCommandoRogueCable8_node.js"
+import * as pMem from "./main_files/RubyHeart34_node.js"
 import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js"
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`);
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
-const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }CaptainCommandoRogueCable8/`;
+const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }RubyHeart34/`;
 const FILE_NAME_NO_EXT = DIR_OUTPATH.toString().match(/(\w+).$/)[1];
 const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js`; // Current-Active-Working-File
 const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
@@ -153,11 +153,11 @@ function writeP1P2Addresses()
       tempArr[0].push(address);
     });
 
-    // if (!fs.existsSync(`${ DIR_OUTPATH }${ miscAddresses[p1p2Address] }.js`))
-    // {
-    fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[p1p2Address] }.js`, `var result = [];\nresult[0] = [${ tempArr }];\n`, {encoding: 'utf8'}, (err => {}));
-    tempArr[0] = [];
-    // }
+    if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADRS[p1p2Address] }.js`))
+    {
+      fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[p1p2Address] }.js`, `var result = [];\nresult[0] = [${ tempArr }];\n`, {encoding: 'utf8'}, (err => {}));
+      tempArr[0] = [];
+    }
   }
 };
 
@@ -538,12 +538,14 @@ function writeNewStates()
     {
       fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ stateNamesArray[stateName] }.js`, `var result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
     }
+
     // Fetches relevant addresses for State-Logic-Checking
     var getAction_Flags = writePlayerMemory(tempPlayerString, 'Action_Flags', 0);
     var getAirborne = writePlayerMemory(tempPlayerString, 'Airborne', 0);
     var getAnimation_Timer_Main = writePlayerMemory(tempPlayerString, 'Animation_Timer_Main', 0);
     var getAttack_Immune = writePlayerMemory(tempPlayerString, 'Attack_Immune', 0);
     var getBlock_Meter = writePlayerMemory(tempPlayerString, 'Block_Meter', 0);
+    var getHitStop = writePlayerMemory(tempPlayerString, 'Hitstop2', 0);
     var getKnockdown_State = writePlayerMemory(tempPlayerString, 'Knockdown_State', 0);
     var getFlyingScreen = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
     var getFSI_Points = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
@@ -585,7 +587,7 @@ function writeNewStates()
       {
         // Pushing the State-Logic-Checking for each State
         //Being_Hit
-        ((getKnockdown_State)[playerSlotI][clipLen] == 32) && ((getAnimation_Timer_Main)[playerSlotI][clipLen] > 0)
+        ((getKnockdown_State)[playerSlotI][clipLen] == 32) && ((getHitStop)[playerSlotI][clipLen] > 0)
           ? arrStateBeingHit[playerSlotI].push(1)
           : arrStateBeingHit[playerSlotI].push(0);
         // // "Flying_Screen_Air"

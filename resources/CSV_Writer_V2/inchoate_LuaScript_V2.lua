@@ -1,35 +1,27 @@
 pathToFile = "E:\\M.csv"
-----------Pausing Functions----------
-function PauseToggleHotkey()
-	if (ActiveGameWindowCheck()) then ToggleCheckBox(ConsoleForm.PauseToggle) end
+-- Pause Emulator & Advance 1 Frame
+function advanceFrame()
+    demulPause = ("demul.exe+D9B536")
+    prevFrame = readTF()
+    -- print(prevFrame)
+    writeBytes(demulPause, 0x01)
+    sleep(10)
+    writeBytes(demulPause, 0x00)
+    sleep(10)
+    writeBytes(demulPause, 0x01)
 end
-
-function PauseOnToggle(_sender)
-	local _value = 0
-	if (_sender.Checked) then _value = 1 end
-	WriteByte(exedata.prgmbase + exedata.emupause, _value)
+---------------------------
+-- Read Total_Frames
+function readTF()
+    tfPointer = (0x2C3496B0)
+    readITF = readInteger(tfPointer)
+    return (readITF)
 end
-
-function PauseNextFrameHotkey()
-	if (ActiveGameWindowCheck()) then PauseNextFrame() end
-end
-
-function PauseNextFrame()
-	ConsoleForm.PauseToggle.Checked = false
-	pausenextframe = true
-end
-
-function FrameStepCheck()
-	if (pausenextframe) then
-		ConsoleForm.PauseToggle.Checked = true
-		pausenextframe = false
-	end
-end
------------------------------------
+---------------------------
 -------StartScript---------
 
 PauseNextFrame()
-outPath = "E:\\M.csv"
+outPath = "V:\\Git\\MVC2GEN\\resources\\CSV_Writer_V2\\M.csv"
 _starting_new_write_flag = false
 data_table = {}
 
@@ -67,9 +59,9 @@ function csv_write(path, data)
         file_handle:close();
 
         if isKeyPressed(VK_HOME) then
-			contScript = false
-			break
-		end
+            contScript = false
+            break
+        end
         -- Check if last line was written into the file
         file = io.open(path, "r+")
         local lastLineResult = nil
@@ -77,12 +69,12 @@ function csv_write(path, data)
         local counter = 0
         for line in file:lines() do
             table.insert(lineTable, line)
-            counter = counter + 1 
+            counter = counter + 1
         end
 
         lastLineResult = lineTable[counter] -- can be right or wrong
 
-        if ( lastLineResult.match( (tostring(lastLineResult)) , (tostring(output_string)) ) ) then
+        if (lastLineResult.match((tostring(lastLineResult)), (tostring(output_string)))) then
             print("Same line, but lets pretend it didnt match")
             PauseNextFrame()
             sleep(1000)
@@ -90,7 +82,7 @@ function csv_write(path, data)
         else
             print("NOPE")
             output_string = '';
-        end 
+        end
     end
 end
 PauseNextFrame()
@@ -101,11 +93,25 @@ v2 = address_list.getMemoryRecordByDescription("Frame_Skip_Cycle_Value")
 v3 = address_list.getMemoryRecordByDescription("Frame_Skip_Rate")
 v4 = address_list.getMemoryRecordByDescription("Frame_Skip_Toggle")
 
-
-data_table[0]= {desc = v0.Description,val = v0.Value}
-data_table[1]= {desc = v1.Description,val = v1.Value}
-data_table[2]= {desc = v2.Description,val = v2.Value}
-data_table[3]= {desc = v3.Description,val = v3.Value}
-data_table[4]= {desc = v4.Description,val = v4.Value}
+data_table[0] = {
+    desc = v0.Description,
+    val = v0.Value
+}
+data_table[1] = {
+    desc = v1.Description,
+    val = v1.Value
+}
+data_table[2] = {
+    desc = v2.Description,
+    val = v2.Value
+}
+data_table[3] = {
+    desc = v3.Description,
+    val = v3.Value
+}
+data_table[4] = {
+    desc = v4.Description,
+    val = v4.Value
+}
 
 csv_write(outPath, data_table)
