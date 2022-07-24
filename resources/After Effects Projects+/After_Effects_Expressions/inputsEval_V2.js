@@ -13,7 +13,7 @@ const fnInputLookup = function(address)
 	{
 		for ( i = 11 ; i > frame.length ; i--)
 		{
-			fnStr += check[ frame -i + 3 ] + ","
+			fnStr += check[ frame -i + 3 ] + "\r" // ???
 		}
 	
 		let inputSplit = fnStr.split(',');

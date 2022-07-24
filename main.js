@@ -1,22 +1,38 @@
 import * as fs from "fs"
 import * as path from "path"
-import * as pMem from "./main_files/SpiralUnblockable_node.js"
+import * as pMem from "./main_files/CaptainCommandoRogueCable8_node.js"
 import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js"
 
-
-const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`)
-const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`)
-const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }SpiralUnblockable/`
+const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`);
+const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
+const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }CaptainCommandoRogueCable8/`;
 const FILE_NAME_NO_EXT = DIR_OUTPATH.toString().match(/(\w+).$/)[1];
-const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js` // Current-Active-Working-File
-const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length // Used as clip-length frame tracker; address doesn't matter
+const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js`; // Current-Active-Working-File
+const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
 
 if (!fs.existsSync(`${ DIR_OUTPATH }`))
 {
+
   fs.mkdirSync(`${ DIR_OUTPATH }`), {recursive: true};
 }
 
-// /*
+function writeAllJSForAE()
+{
+  fs.readFileSync(`${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js`, 'utf8')
+    .toString().split(';').forEach((exportVar) =>
+    {
+      var allVariableInfoREGEX = /export var (\w+) = "(.*)"/gmi;
+      var nameOfVariable;
+      while (nameOfVariable = allVariableInfoREGEX.exec(exportVar))
+      {
+        if (!fs.existsSync(`${ DIR_OUTPATH }${ nameOfVariable[1] }.js`))
+          fs.writeFileSync(`${ DIR_OUTPATH }${ nameOfVariable[1] }.js`,
+            `export var result = [];\n result[0] = [${ nameOfVariable[2] }];\n`,
+            {encoding: 'utf8'}, (err => {}));
+      }
+    })
+}
+
 function writeMinMaxToNodeJSFile()
 {
   for (var MinMaxAddress in MIN_MAX_ADRS)
@@ -97,7 +113,7 @@ function getLabelsfromJS(pathToFile)
   {
     var playerDataAll = []
     var getFile = fs.readFileSync(pathToFile, 'utf8',);
-    getFile.toString().split(';').forEach(function (line) //Split each block of text by semi-colon
+    getFile.toString().split(';').forEach((line) =>
     {
       let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all player memory addresses; want capture group 2.
       let tempRegexVar; // Temporary variable to run the exec method
@@ -704,29 +720,5 @@ writeNewStates();
 writeTotalFrameCountCNV();
 writeStageDataCNV()
 writeP1P2Addresses();
-
-  // /*STEP 1    ⬇⬇⬇ Pushes playerMemory addresses & values into an array*/
-  // /*STEP 1*/  var readArray = [];
-  // /*STEP 1*/  fs.readFileSync(`${ DIR_MAIN_FILES }/SpiralUnblockable_node.js`, 'utf8')
-  // /*STEP 1*/    .toString().split(';').forEach((exportVar) =>
-  // /*STEP 1*/    {
-  // /*STEP 1      ⬇⬇⬇ P1_A_Health & Numbers + ','; Group 1 & Group 4*/
-  // /*STEP 1*/    let playerMemoryREGEX = /(P\d_[A-C]_\w+)(\s=\s)(")(\d+.*)(")/gm;
-  // /*STEP 1*/    let tempData;
-  // /*STEP 1*/    if (exportVar.match(playerMemoryREGEX))
-  // /*STEP 1*/    {
-  // /*STEP 1*/      while ((tempData = playerMemoryREGEX.exec(exportVar)) !== null)
-  // /*STEP 1*/      {
-  // /*STEP 1*/        readArray.push(`export var ${ tempData[1] } = "${ tempData[4] }";`);
-  // /*STEP 1*/      }
-  // /*STEP 1*/    }
-  // /*STEP 1*/  })
-  // /*STEP 2    ⬇⬇⬇ Writes file for module importer*/      
-  // /*STEP 2*/  fs.writeFileSync('exportVarNames.js', readArray.join('\n'),
-  // /*STEP 2*/    {encoding: 'utf8'}, (err => {}));
-  // /*STEP 3    ⬇⬇⬇ import runs before anything else, so it can't work this way*/
-  // /*STEP 3*/  import * as playerMem from './exportVarNames.js';
-  // /*STEP 4    ⬇⬇⬇ Can't get to this if no-file exists on first-run.*/
-  // /*STEP 4*/  console.log(playerMem.P1_A_Action_Flags);
-
+writeAllJSForAE();
 
