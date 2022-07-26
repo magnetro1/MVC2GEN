@@ -1,5 +1,5 @@
--- [ENABLE]
--- {$lua}
+[ENABLE]
+{$lua}
 -- Variables and Functions
 outPath = "G:\\Emulators\\PCSX2\\pcsx2\\Cheat Tables+\\CSV_Input\\MvC2DataAll_Original.csv"
 _starting_new_write_flag = false
@@ -2853,5 +2853,5 @@ while (currentFrame ~= v0.Value) and contScript do
     v0_prev = v0.Value
     csv_write(outPath, data_table)
 end
--- {$asm}
--- [DISABLE]
+{$asm}
+[DISABLE]
