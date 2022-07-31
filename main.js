@@ -681,8 +681,331 @@ function writeNewStates()
         // // "NEW_STATE_ADD_NAME_HERE"
         // NEW_STATE_ADD_HERE
       }
-      // Only iterations are the P1/P2 and the ABC Slots; we are writing very-explictly tracked items
-      fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[${ playerSlotI }] =[${ arrStateBeingHit[playerSlotI] }];\n`, {encoding: 'utf8'}, (err => {}));
+      // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
+      var counter = 0;
+      arrStateBeingHit[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateBeingHit[playerSlotI][index]
+        }
+        else
+        {
+          arrStateBeingHit[playerSlotI][index] = num + counter
+          counter++
+          return arrStateBeingHit[playerSlotI][index + counter]
+        }
+      });
+      arrStateFlying_Screen_Air[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateFlying_Screen_Air[playerSlotI][index]
+        }
+        else
+        {
+          arrStateFlying_Screen_Air[playerSlotI][index] = num + counter
+          counter++
+          return arrStateFlying_Screen_Air[playerSlotI][index + counter]
+        }
+      });
+      arrStateFlyingScreen_OTG[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateFlyingScreen_OTG[playerSlotI][index]
+        }
+        else
+        {
+          arrStateFlyingScreen_OTG[playerSlotI][index] = num + counter
+          counter++
+          return arrStateFlyingScreen_OTG[playerSlotI][index + counter]
+        }
+      });
+      arrStateFS_Install_1[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateFS_Install_1[playerSlotI][index]
+        }
+        else
+        {
+          arrStateFS_Install_1[playerSlotI][index] = num + counter
+          counter++
+          return arrStateFS_Install_1[playerSlotI][index + counter]
+        }
+      });
+      arrStateFS_Install_2[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateFS_Install_2[playerSlotI][index]
+        }
+        else
+        {
+          arrStateFS_Install_2[playerSlotI][index] = num + counter
+          counter++
+          return arrStateFS_Install_2[playerSlotI][index + counter]
+        }
+      });
+      arrStateNJ_Air[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateNJ_Air[playerSlotI][index]
+        }
+        else
+        {
+          arrStateNJ_Air[playerSlotI][index] = num + counter
+          counter++
+          return arrStateNJ_Air[playerSlotI][index + counter]
+        }
+      });
+      arrStateNJ_Rising[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateNJ_Rising[playerSlotI][index]
+        }
+        else
+        {
+          arrStateNJ_Rising[playerSlotI][index] = num + counter
+          counter++
+          return arrStateNJ_Rising[playerSlotI][index + counter]
+        }
+      });
+      arrStateOTG_Extra_Stun[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateOTG_Extra_Stun[playerSlotI][index]
+        }
+        else
+        {
+          arrStateOTG_Extra_Stun[playerSlotI][index] = num + counter
+          counter++
+          return arrStateOTG_Extra_Stun[playerSlotI][index + counter]
+        }
+      });
+      arrStateOTG_Forced_Stun[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateOTG_Forced_Stun[playerSlotI][index]
+        }
+        else
+        {
+          arrStateOTG_Forced_Stun[playerSlotI][index] = num + counter
+          counter++
+          return arrStateOTG_Forced_Stun[playerSlotI][index + counter]
+        }
+      });
+      arrStateOTG_Hit[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateOTG_Hit[playerSlotI][index]
+        }
+        else
+        {
+          arrStateOTG_Hit[playerSlotI][index] = num + counter
+          counter++
+          return arrStateOTG_Hit[playerSlotI][index + counter]
+        }
+      });
+      arrStateOTG_Roll_Invincible[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateOTG_Roll_Invincible[playerSlotI][index]
+        }
+        else
+        {
+          arrStateOTG_Roll_Invincible[playerSlotI][index] = num + counter
+          counter++
+          return arrStateOTG_Roll_Invincible[playerSlotI][index + counter]
+        }
+      });
+      arrStateOTG_Roll_Stunned[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateOTG_Roll_Stunned[playerSlotI][index]
+        }
+        else
+        {
+          arrStateOTG_Roll_Stunned[playerSlotI][index] = num + counter
+          counter++
+          return arrStateOTG_Roll_Stunned[playerSlotI][index + counter]
+        }
+      });
+      arrStateProxBlock_Air[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateProxBlock_Air[playerSlotI][index]
+        }
+        else
+        {
+          arrStateProxBlock_Air[playerSlotI][index] = num + counter
+          counter++
+          return arrStateProxBlock_Air[playerSlotI][index + counter]
+        }
+      });
+      arrStateProxBlock_Ground[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateProxBlock_Ground[playerSlotI][index]
+        }
+        else
+        {
+          arrStateProxBlock_Ground[playerSlotI][index] = num + counter
+          counter++
+          return arrStateProxBlock_Ground[playerSlotI][index + counter]
+        }
+      });
+      arrStatePushblock_Air[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStatePushblock_Air[playerSlotI][index]
+        }
+        else
+        {
+          arrStatePushblock_Air[playerSlotI][index] = num + counter
+          counter++
+          return arrStatePushblock_Air[playerSlotI][index + counter]
+        }
+      });
+      arrStatePushblock_Ground[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStatePushblock_Ground[playerSlotI][index]
+        }
+        else
+        {
+          arrStatePushblock_Ground[playerSlotI][index] = num + counter
+          counter++
+          return arrStatePushblock_Ground[playerSlotI][index + counter]
+        }
+      });
+      arrStateRising_Invincibility[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateRising_Invincibility[playerSlotI][index]
+        }
+        else
+        {
+          arrStateRising_Invincibility[playerSlotI][index] = num + counter
+          counter++
+          return arrStateRising_Invincibility[playerSlotI][index + counter]
+        }
+      });
+      arrStateSJ_Air[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateSJ_Air[playerSlotI][index]
+        }
+        else
+        {
+          arrStateSJ_Air[playerSlotI][index] = num + counter
+          counter++
+          return arrStateSJ_Air[playerSlotI][index + counter]
+        }
+      });
+      arrStateSJ_Counter[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateSJ_Counter[playerSlotI][index]
+        }
+        else
+        {
+          arrStateSJ_Counter[playerSlotI][index] = num + counter
+          counter++
+          return arrStateSJ_Counter[playerSlotI][index + counter]
+        }
+      });
+      arrStateStun[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateStun[playerSlotI][index]
+        }
+        else
+        {
+          arrStateStun[playerSlotI][index] = num + counter
+          counter++
+          return arrStateStun[playerSlotI][index + counter]
+        }
+      });
+      arrStateTech_Hit[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateTech_Hit[playerSlotI][index]
+        }
+        else
+        {
+          arrStateTech_Hit[playerSlotI][index] = num + counter
+          counter++
+          return arrStateTech_Hit[playerSlotI][index + counter]
+        }
+      });
+      arrStateThrown_Air[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateThrown_Air[playerSlotI][index]
+        }
+        else
+        {
+          arrStateThrown_Air[playerSlotI][index] = num + counter
+          counter++
+          return arrStateThrown_Air[playerSlotI][index + counter]
+        }
+      });
+      arrStateThrown_Ground[playerSlotI].map((num, index) =>
+      {
+        if (num === 0)
+        {
+          counter = 0
+          return arrStateThrown_Ground[playerSlotI][index]
+        }
+        else
+        {
+          arrStateThrown_Ground[playerSlotI][index] = num + counter
+          counter++
+          return arrStateThrown_Ground[playerSlotI][index + counter]
+        }
+      });
+      fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[${ playerSlotI }] = [${ arrStateBeingHit[playerSlotI] }];\n`, {encoding: 'utf8'}, (err => {}));
       fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_State_Flying_Screen_Air.js`, `result[${ playerSlotI }] =[${ arrStateFlying_Screen_Air[playerSlotI] }];\n`, {encoding: 'utf8'}, (err => {}));
       fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_State_Flying_Screen_OTG.js`, `result[${ playerSlotI }] =[${ arrStateFlyingScreen_OTG[playerSlotI] }];\n`, {encoding: 'utf8'}, (err => {}));
       fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_State_FS_Install_1.js`, `result[${ playerSlotI }] =[${ arrStateFS_Install_1[playerSlotI] }];\n`, {encoding: 'utf8'}, (err => {}));
@@ -710,17 +1033,16 @@ function writeNewStates()
   }
 };
 
-writeMinMaxToNodeJSFile() // breaks next function on first-run; re-run program to get full results
-getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
-{
-  writePlayerMemory(1, label.toString(), 1);
-  writePlayerMemory(2, label.toString(), 1);
-});
-writeStaticDataCNV();
-writeInputCNV();
+// writeMinMaxToNodeJSFile() // breaks next function on first-run; re-run program to get full results
+// getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
+// {
+//   writePlayerMemory(1, label.toString(), 1);
+//   writePlayerMemory(2, label.toString(), 1);
+// });
+// writeStaticDataCNV();
+// writeInputCNV();
 writeNewStates();
-writeTotalFrameCountCNV();
-writeStageDataCNV()
-writeP1P2Addresses();
-writeAllJSForAE();
-
+// writeTotalFrameCountCNV();
+// writeStageDataCNV()
+// writeP1P2Addresses();
+// writeAllJSForAE();
