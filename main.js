@@ -148,7 +148,7 @@ function writeP1P2Addresses()
   var tempArr = [[]];
   for (let p1p2Address in MISC_ADRS)
   {
-    eval(`pMem.${ MISC_ADRS[p1p2Address] }`).split(',').forEach((address, index) =>
+    eval(`pMem.${ MISC_ADRS[p1p2Address] }`).split(',').forEach((address) =>
     {
       tempArr[0].push(address);
     });
@@ -164,7 +164,7 @@ function writeP1P2Addresses()
 function writeStageDataCNV()
 {
   var stageData = [];
-  pMem.Stage_Selector.split(',').forEach((frame, index) =>
+  pMem.Stage_Selector.split(',').forEach((frame) =>
   {
     stageData.push(frame)
   });
@@ -265,31 +265,101 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
   // Check for Floating Point Addresses so we can truncate their trailing digits
   for (let floatAddress in FLOATING_POINT_ADRS)
   {
-    var toFixedDigitNumber = 2; //7 by default
+    var toFixedDigitNumberZero = 0; //7 by default
     var floatArrayFixed = [[], [], []];
     if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
     {
       //ToFixed
-      if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumber }.js`))
+      if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero }.js`))
       {
-        fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumber }.js`, `result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
+        fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero }.js`, `result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
 
         finalValuesArray[0].forEach((value) =>
         {
           value = parseFloat(value)
-          floatArrayFixed[0].push(value.toFixed(toFixedDigitNumber));
+          floatArrayFixed[0].push(value.toFixed(toFixedDigitNumberZero));
         });
         finalValuesArray[1].forEach((value) =>
         {
           value = parseFloat(value)
-          floatArrayFixed[1].push(value.toFixed(toFixedDigitNumber));
+          floatArrayFixed[1].push(value.toFixed(toFixedDigitNumberZero));
         });
         finalValuesArray[2].forEach((value) =>
         {
           value = parseFloat(value)
-          floatArrayFixed[2].push(value.toFixed(toFixedDigitNumber));
+          floatArrayFixed[2].push(value.toFixed(toFixedDigitNumberZero));
         });
-        fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumber }.js`,
+        fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero }.js`,
+          `result[0]=[${ floatArrayFixed[0].toString() }];` + '\n' +
+          `result[1]=[${ floatArrayFixed[1].toString() }];` + '\n' +
+          `result[2]=[${ floatArrayFixed[2].toString() }];`
+          , {encoding: 'utf8'}
+          , (err => {}));
+      }
+    }
+  }
+  for (let floatAddress in FLOATING_POINT_ADRS)
+  {
+    var toFixedDigitNumberTwo = 2; //7 by default
+    var floatArrayFixed = [[], [], []];
+    if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
+    {
+      //ToFixed
+      if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberTwo }.js`))
+      {
+        fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberTwo }.js`, `result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
+
+        finalValuesArray[0].forEach((value) =>
+        {
+          value = parseFloat(value)
+          floatArrayFixed[0].push(value.toFixed(toFixedDigitNumberTwo));
+        });
+        finalValuesArray[1].forEach((value) =>
+        {
+          value = parseFloat(value)
+          floatArrayFixed[1].push(value.toFixed(toFixedDigitNumberTwo));
+        });
+        finalValuesArray[2].forEach((value) =>
+        {
+          value = parseFloat(value)
+          floatArrayFixed[2].push(value.toFixed(toFixedDigitNumberTwo));
+        });
+        fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberTwo }.js`,
+          `result[0]=[${ floatArrayFixed[0].toString() }];` + '\n' +
+          `result[1]=[${ floatArrayFixed[1].toString() }];` + '\n' +
+          `result[2]=[${ floatArrayFixed[2].toString() }];`
+          , {encoding: 'utf8'}
+          , (err => {}));
+      }
+    }
+  }
+  for (let floatAddress in FLOATING_POINT_ADRS)
+  {
+    var toFixedDigitNumberFour = 4; //7 by default
+    var floatArrayFixed = [[], [], []];
+    if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
+    {
+      //ToFixed
+      if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberFour }.js`))
+      {
+        fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberFour }.js`, `result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
+
+        finalValuesArray[0].forEach((value) =>
+        {
+          value = parseFloat(value)
+          floatArrayFixed[0].push(value.toFixed(toFixedDigitNumberFour));
+        });
+        finalValuesArray[1].forEach((value) =>
+        {
+          value = parseFloat(value)
+          floatArrayFixed[1].push(value.toFixed(toFixedDigitNumberFour));
+        });
+        finalValuesArray[2].forEach((value) =>
+        {
+          value = parseFloat(value)
+          floatArrayFixed[2].push(value.toFixed(toFixedDigitNumberFour));
+        });
+        fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberFour }.js`,
           `result[0]=[${ floatArrayFixed[0].toString() }];` + '\n' +
           `result[1]=[${ floatArrayFixed[1].toString() }];` + '\n' +
           `result[2]=[${ floatArrayFixed[2].toString() }];`
@@ -1005,6 +1075,7 @@ function writeNewStates()
           return arrStateThrown_Ground[playerSlotI][index + counter]
         }
       });
+
       fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_State_Being_Hit.js`, `result[${ playerSlotI }] = [${ arrStateBeingHit[playerSlotI] }];\n`, {encoding: 'utf8'}, (err => {}));
       fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_State_Flying_Screen_Air.js`, `result[${ playerSlotI }] =[${ arrStateFlying_Screen_Air[playerSlotI] }];\n`, {encoding: 'utf8'}, (err => {}));
       fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_State_Flying_Screen_OTG.js`, `result[${ playerSlotI }] =[${ arrStateFlyingScreen_OTG[playerSlotI] }];\n`, {encoding: 'utf8'}, (err => {}));
@@ -1033,16 +1104,16 @@ function writeNewStates()
   }
 };
 
-// writeMinMaxToNodeJSFile() // breaks next function on first-run; re-run program to get full results
-// getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
-// {
-//   writePlayerMemory(1, label.toString(), 1);
-//   writePlayerMemory(2, label.toString(), 1);
-// });
-// writeStaticDataCNV();
-// writeInputCNV();
+writeMinMaxToNodeJSFile() // breaks next function on first-run; re-run program to get full results
+getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
+{
+  writePlayerMemory(1, label.toString(), 1);
+  writePlayerMemory(2, label.toString(), 1);
+});
+writeStaticDataCNV();
+writeInputCNV();
 writeNewStates();
-// writeTotalFrameCountCNV();
-// writeStageDataCNV()
-// writeP1P2Addresses();
-// writeAllJSForAE();
+writeTotalFrameCountCNV();
+writeStageDataCNV()
+writeP1P2Addresses();
+writeAllJSForAE();

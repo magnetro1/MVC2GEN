@@ -9601,7 +9601,7 @@ v253= address_list.getMemoryRecordByDescription("P1_B_Y_Pos")
 v254= address_list.getMemoryRecordByDescription("P1_B_Y_Position_Screen")
 v255= address_list.getMemoryRecordByDescription("P1_B_Y_Velocity")
 v256= address_list.getMemoryRecordByDescription("P2_B_FS_Flag_BK")
-v257= address_list.getMemoryRecordByDescription("P1_B_is_ProxBlock")
+v257= address_list.getMemoryRecordByDescription("P1_B_Is_ProxBlock")
 v258= address_list.getMemoryRecordByDescription("P1_B_SuperArmor_Timer")
 v259= address_list.getMemoryRecordByDescription("P1_C_Air_Dash_Count")
 v260= address_list.getMemoryRecordByDescription("P1_C_Air_Recovery_Timer")
@@ -9680,7 +9680,7 @@ v332= address_list.getMemoryRecordByDescription("P1_C_Y_Distance_From_Enemy")
 v333= address_list.getMemoryRecordByDescription("P1_C_Y_Pos")
 v334= address_list.getMemoryRecordByDescription("P1_C_Y_Position_Screen")
 v335= address_list.getMemoryRecordByDescription("P1_C_Y_Velocity")
-v336= address_list.getMemoryRecordByDescription("P1_C_is_ProxBlock")
+v336= address_list.getMemoryRecordByDescription("P1_C_Is_ProxBlock")
 v337= address_list.getMemoryRecordByDescription("P1_C_SuperArmor_Timer")
 v338= address_list.getMemoryRecordByDescription("P2_A_Air_Dash_Count")
 v339= address_list.getMemoryRecordByDescription("P2_A_Air_Recovery_Timer")
@@ -9838,7 +9838,7 @@ v490= address_list.getMemoryRecordByDescription("P2_B_Y_Distance_From_Enemy")
 v491= address_list.getMemoryRecordByDescription("P2_B_Y_Pos")
 v492= address_list.getMemoryRecordByDescription("P2_B_Y_Position_Screen")
 v493= address_list.getMemoryRecordByDescription("P2_B_Y_Velocity")
-v494= address_list.getMemoryRecordByDescription("P2_B_is_ProxBlock")
+v494= address_list.getMemoryRecordByDescription("P2_B_Is_ProxBlock")
 v495= address_list.getMemoryRecordByDescription("P2_B_SuperArmor_Timer")
 v496= address_list.getMemoryRecordByDescription("P2_C_Air_Dash_Count")
 v497= address_list.getMemoryRecordByDescription("P2_C_Air_Recovery_Timer")
@@ -9917,7 +9917,7 @@ v569= address_list.getMemoryRecordByDescription("P2_C_Y_Distance_From_Enemy")
 v570= address_list.getMemoryRecordByDescription("P2_C_Y_Pos")
 v571= address_list.getMemoryRecordByDescription("P2_C_Y_Position_Screen")
 v572= address_list.getMemoryRecordByDescription("P2_C_Y_Velocity")
-v573= address_list.getMemoryRecordByDescription("P2_C_is_ProxBlock")
+v573= address_list.getMemoryRecordByDescription("P2_C_Is_ProxBlock")
 v574= address_list.getMemoryRecordByDescription("P2_C_SuperArmor_Timer")
 v575= address_list.getMemoryRecordByDescription("P1_Assist_Flag")
 v576= address_list.getMemoryRecordByDescription("P2_Assist_Flag")
@@ -11007,7 +11007,7 @@ v258= address_list.getMemoryRecordByDescription("P1_B_Y_Pos")
 v259= address_list.getMemoryRecordByDescription("P1_B_Y_Position_Screen")
 v260= address_list.getMemoryRecordByDescription("P1_B_Y_Velocity")
 v261= address_list.getMemoryRecordByDescription("P2_B_FS_Flag_BK")
-v262= address_list.getMemoryRecordByDescription("P1_B_is_ProxBlock")
+v262= address_list.getMemoryRecordByDescription("P1_B_Is_ProxBlock")
 v263= address_list.getMemoryRecordByDescription("P1_B_SuperArmor_Timer")
 v264= address_list.getMemoryRecordByDescription("P1_C_Air_Dash_Count")
 v265= address_list.getMemoryRecordByDescription("P1_C_Air_Recovery_Timer")
@@ -11086,7 +11086,7 @@ v337= address_list.getMemoryRecordByDescription("P1_C_Y_Distance_From_Enemy")
 v338= address_list.getMemoryRecordByDescription("P1_C_Y_Pos")
 v339= address_list.getMemoryRecordByDescription("P1_C_Y_Position_Screen")
 v340= address_list.getMemoryRecordByDescription("P1_C_Y_Velocity")
-v341= address_list.getMemoryRecordByDescription("P1_C_is_ProxBlock")
+v341= address_list.getMemoryRecordByDescription("P1_C_Is_ProxBlock")
 v342= address_list.getMemoryRecordByDescription("P1_C_SuperArmor_Timer")
 v343= address_list.getMemoryRecordByDescription("P2_A_Air_Dash_Count")
 v344= address_list.getMemoryRecordByDescription("P2_A_Air_Recovery_Timer")
@@ -11244,7 +11244,7 @@ v495= address_list.getMemoryRecordByDescription("P2_B_Y_Distance_From_Enemy")
 v496= address_list.getMemoryRecordByDescription("P2_B_Y_Pos")
 v497= address_list.getMemoryRecordByDescription("P2_B_Y_Position_Screen")
 v498= address_list.getMemoryRecordByDescription("P2_B_Y_Velocity")
-v499= address_list.getMemoryRecordByDescription("P2_B_is_ProxBlock")
+v499= address_list.getMemoryRecordByDescription("P2_B_Is_ProxBlock")
 v500= address_list.getMemoryRecordByDescription("P2_B_SuperArmor_Timer")
 v501= address_list.getMemoryRecordByDescription("P2_C_Air_Dash_Count")
 v502= address_list.getMemoryRecordByDescription("P2_C_Air_Recovery_Timer")
@@ -11323,7 +11323,7 @@ v574= address_list.getMemoryRecordByDescription("P2_C_Y_Distance_From_Enemy")
 v575= address_list.getMemoryRecordByDescription("P2_C_Y_Pos")
 v576= address_list.getMemoryRecordByDescription("P2_C_Y_Position_Screen")
 v577= address_list.getMemoryRecordByDescription("P2_C_Y_Velocity")
-v578= address_list.getMemoryRecordByDescription("P2_C_is_ProxBlock")
+v578= address_list.getMemoryRecordByDescription("P2_C_Is_ProxBlock")
 v579= address_list.getMemoryRecordByDescription("P2_C_SuperArmor_Timer")
 v580= address_list.getMemoryRecordByDescription("P1_Assist_Flag")
 v581= address_list.getMemoryRecordByDescription("P2_Assist_Flag")
@@ -12620,7 +12620,7 @@ v361= address_list.getMemoryRecordByDescription("P1_B_Y_Pos")
 v362= address_list.getMemoryRecordByDescription("P1_B_Y_Position_Screen")
 v363= address_list.getMemoryRecordByDescription("P1_B_Y_Velocity")
 v364= address_list.getMemoryRecordByDescription("P2_B_FS_Flag_BK")
-v365= address_list.getMemoryRecordByDescription("P1_B_is_ProxBlock")
+v365= address_list.getMemoryRecordByDescription("P1_B_Is_ProxBlock")
 v366= address_list.getMemoryRecordByDescription("P1_B_SuperArmor_Timer")
 v367= address_list.getMemoryRecordByDescription("P1_C_Air_Dash_Count")
 v368= address_list.getMemoryRecordByDescription("P1_C_Air_Recovery_Timer")
@@ -12699,7 +12699,7 @@ v440= address_list.getMemoryRecordByDescription("P1_C_Y_Distance_From_Enemy")
 v441= address_list.getMemoryRecordByDescription("P1_C_Y_Pos")
 v442= address_list.getMemoryRecordByDescription("P1_C_Y_Position_Screen")
 v443= address_list.getMemoryRecordByDescription("P1_C_Y_Velocity")
-v444= address_list.getMemoryRecordByDescription("P1_C_is_ProxBlock")
+v444= address_list.getMemoryRecordByDescription("P1_C_Is_ProxBlock")
 v445= address_list.getMemoryRecordByDescription("P1_C_SuperArmor_Timer")
 v446= address_list.getMemoryRecordByDescription("P2_A_Air_Dash_Count")
 v447= address_list.getMemoryRecordByDescription("P2_A_Air_Recovery_Timer")
@@ -12857,7 +12857,7 @@ v598= address_list.getMemoryRecordByDescription("P2_B_Y_Distance_From_Enemy")
 v599= address_list.getMemoryRecordByDescription("P2_B_Y_Pos")
 v600= address_list.getMemoryRecordByDescription("P2_B_Y_Position_Screen")
 v601= address_list.getMemoryRecordByDescription("P2_B_Y_Velocity")
-v602= address_list.getMemoryRecordByDescription("P2_B_is_ProxBlock")
+v602= address_list.getMemoryRecordByDescription("P2_B_Is_ProxBlock")
 v603= address_list.getMemoryRecordByDescription("P2_B_SuperArmor_Timer")
 v604= address_list.getMemoryRecordByDescription("P2_C_Air_Dash_Count")
 v605= address_list.getMemoryRecordByDescription("P2_C_Air_Recovery_Timer")
@@ -12936,7 +12936,7 @@ v677= address_list.getMemoryRecordByDescription("P2_C_Y_Distance_From_Enemy")
 v678= address_list.getMemoryRecordByDescription("P2_C_Y_Pos")
 v679= address_list.getMemoryRecordByDescription("P2_C_Y_Position_Screen")
 v680= address_list.getMemoryRecordByDescription("P2_C_Y_Velocity")
-v681= address_list.getMemoryRecordByDescription("P2_C_is_ProxBlock")
+v681= address_list.getMemoryRecordByDescription("P2_C_Is_ProxBlock")
 v682= address_list.getMemoryRecordByDescription("P2_C_SuperArmor_Timer")
 v683= address_list.getMemoryRecordByDescription("P1_Assist_Flag")
 v684= address_list.getMemoryRecordByDescription("P2_Assist_Flag")
@@ -18481,7 +18481,7 @@ file_handle:close()
                 </CheatEntry>
                 <CheatEntry>
                   <ID>13711</ID>
-                  <Description>"P1_B_is_ProxBlock"</Description>
+                  <Description>"P1_B_Is_ProxBlock"</Description>
                   <LastState Value="0" RealAddress="05E57D89"/>
                   <VariableType>Byte</VariableType>
                   <Address>05E57D89</Address>
@@ -19084,7 +19084,7 @@ file_handle:close()
                 </CheatEntry>
                 <CheatEntry>
                   <ID>13712</ID>
-                  <Description>"P1_C_is_ProxBlock"</Description>
+                  <Description>"P1_C_Is_ProxBlock"</Description>
                   <LastState Value="0" RealAddress="05E588F9"/>
                   <VariableType>Byte</VariableType>
                   <Address>05E588F9</Address>
@@ -20264,7 +20264,7 @@ file_handle:close()
                 </CheatEntry>
                 <CheatEntry>
                   <ID>13714</ID>
-                  <Description>"P2_B_is_ProxBlock"</Description>
+                  <Description>"P2_B_Is_ProxBlock"</Description>
                   <LastState Value="0" RealAddress="05E58341"/>
                   <VariableType>Byte</VariableType>
                   <Address>05E58341</Address>
@@ -20849,7 +20849,7 @@ file_handle:close()
                 </CheatEntry>
                 <CheatEntry>
                   <ID>13715</ID>
-                  <Description>"P2_C_is_ProxBlock"</Description>
+                  <Description>"P2_C_Is_ProxBlock"</Description>
                   <LastState Value="0" RealAddress="05E58EB1"/>
                   <VariableType>Byte</VariableType>
                   <Address>05E58EB1</Address>

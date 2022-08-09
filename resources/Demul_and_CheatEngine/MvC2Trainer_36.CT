@@ -12329,42 +12329,42 @@ end
               <CheatEntries>
                 <CheatEntry>
                   <ID>12627</ID>
-                  <Description>"P1_A_is_Prox_Block"</Description>
+                  <Description>"P1_A_Is_Prox_Block"</Description>
                   <LastState Value="0" RealAddress="2C268499"/>
                   <VariableType>Byte</VariableType>
                   <Address>2C268499</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>12632</ID>
-                  <Description>"P1_B_is_Prox_Block"</Description>
+                  <Description>"P1_B_Is_Prox_Block"</Description>
                   <LastState Value="0" RealAddress="2C268FE1"/>
                   <VariableType>Byte</VariableType>
                   <Address>2C268FE1</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>12633</ID>
-                  <Description>"P1_C_is_Prox_Block"</Description>
+                  <Description>"P1_C_Is_Prox_Block"</Description>
                   <LastState Value="0" RealAddress="2C269B29"/>
                   <VariableType>Byte</VariableType>
                   <Address>2C269B29</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>12631</ID>
-                  <Description>"P2_A_is_Prox_Block"</Description>
+                  <Description>"P2_A_Is_Prox_Block"</Description>
                   <LastState Value="0" RealAddress="2C268A3D"/>
                   <VariableType>Byte</VariableType>
                   <Address>2C268A3D</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>12630</ID>
-                  <Description>"P2_B_is_Prox_Block"</Description>
+                  <Description>"P2_B_Is_Prox_Block"</Description>
                   <LastState Value="0" RealAddress="2C269585"/>
                   <VariableType>Byte</VariableType>
                   <Address>2C269585</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>12629</ID>
-                  <Description>"P2_C_is_Prox_Block"</Description>
+                  <Description>"P2_C_Is_Prox_Block"</Description>
                   <LastState Value="0" RealAddress="2C26A0CD"/>
                   <VariableType>Byte</VariableType>
                   <Address>2C26A0CD</Address>

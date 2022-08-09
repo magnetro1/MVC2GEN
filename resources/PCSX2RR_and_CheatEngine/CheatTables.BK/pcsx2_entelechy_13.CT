@@ -14172,7 +14172,7 @@ file_handle:close()
                 </CheatEntry>
                 <CheatEntry>
                   <ID>13711</ID>
-                  <Description>"P1_B_is_ProxBlock"</Description>
+                  <Description>"P1_B_Is_ProxBlock"</Description>
                   <LastState Value="0" RealAddress="05E57D89"/>
                   <VariableType>Byte</VariableType>
                   <Address>05E57D89</Address>
@@ -14824,7 +14824,7 @@ file_handle:close()
                 </CheatEntry>
                 <CheatEntry>
                   <ID>13712</ID>
-                  <Description>"P1_C_is_ProxBlock"</Description>
+                  <Description>"P1_C_Is_ProxBlock"</Description>
                   <LastState Value="24" RealAddress="05E588F9"/>
                   <VariableType>Byte</VariableType>
                   <Address>05E588F9</Address>
