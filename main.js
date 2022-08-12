@@ -1,11 +1,11 @@
 import * as fs from "fs"
 import * as path from "path"
-import * as pMem from "./main_files/Combo_Magneto105_node.js"
+import * as pMem from "./main_files/Situation_SpiralUnblockable_node.js"
 import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js"
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`);
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
-const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Combo_Magneto105/`;
+const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Situation_SpiralUnblockable/`;
 const FILE_NAME_NO_EXT = DIR_OUTPATH.toString().match(/(\w+).$/)[1];
 const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js`; // Current-Active-Working-File
 const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
@@ -35,13 +35,13 @@ function writeAllJSForAE()
 
 function writeMinMaxToNodeJSFile()
 {
-  for (var MinMaxAddress in MIN_MAX_ADRS)
+  for (var minMaxAddress in MIN_MAX_ADRS)
   {
-    var tempAddress = eval(`pMem.${ MIN_MAX_ADRS[MinMaxAddress] }.split(',')`);
+    var tempAddress = eval(`pMem.${ MIN_MAX_ADRS[minMaxAddress] }.split(',')`);
     var tempMinValue = (Math.min(...tempAddress));
     var tempMaxValue = (Math.max(...tempAddress));
-    var prependStringMin = `export var ${ MIN_MAX_ADRS[MinMaxAddress] }_Min = `;
-    var prependStringMax = `export var ${ MIN_MAX_ADRS[MinMaxAddress] }_Max = `;
+    var prependStringMin = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
+    var prependStringMax = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Max = `;
     var tempStringMin = "";
     var tempStringMax = "";
     var readFileForChecking = "";
@@ -60,8 +60,8 @@ function writeMinMaxToNodeJSFile()
     }
     if (prependStringMin.match(/P\d_Combo_Meter_Value/gm))
     {
-      fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[MinMaxAddress] }_Min.js`, `var result = [];\nresult[0] = [${ tempStringMin.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
-      fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[MinMaxAddress] }_Max.js`, `var result = [];\nresult[0] = [${ tempStringMax.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
+      fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[minMaxAddress] }_Min.js`, `var result = [];\nresult[0] = [${ tempStringMin.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
+      fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[minMaxAddress] }_Max.js`, `var result = [];\nresult[0] = [${ tempStringMax.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
     }
   }
 };
@@ -145,18 +145,18 @@ function writeTotalFrameCountCNV()
 
 function writeP1P2Addresses()
 {
-  var tempArr = [[]];
-  for (let p1p2Address in MISC_ADRS)
+  var miscAdrArray = [[]];
+  for (let miscAdrIterator in MISC_ADRS)
   {
-    eval(`pMem.${ MISC_ADRS[p1p2Address] }`).split(',').forEach((address) =>
+    eval(`pMem.${ MISC_ADRS[miscAdrIterator] }`).split(',').forEach((address) =>
     {
-      tempArr[0].push(address);
+      miscAdrArray[0].push(address);
     });
 
-    if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADRS[p1p2Address] }.js`))
+    if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`))
     {
-      fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[p1p2Address] }.js`, `var result = [];\nresult[0] = [${ tempArr }];\n`, {encoding: 'utf8'}, (err => {}));
-      tempArr[0] = [];
+      fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`, `var result = [];\nresult[0] = [${ miscAdrArray }];\n`, {encoding: 'utf8'}, (err => {}));
+      miscAdrArray[0] = [];
     }
   }
 };
