@@ -1,18 +1,17 @@
 import * as fs from "fs"
 import * as path from "path"
-import * as pMem from "./main_files/Situation_SpiralUnblockable_node.js"
+import * as pMem from "./main_files/Reset_Magneto_02_node.js"
 import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js"
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`);
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
-const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Situation_SpiralUnblockable/`;
+const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Reset_Magneto_02/`;
 const FILE_NAME_NO_EXT = DIR_OUTPATH.toString().match(/(\w+).$/)[1];
 const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js`; // Current-Active-Working-File
 const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
 
 if (!fs.existsSync(`${ DIR_OUTPATH }`))
 {
-
   fs.mkdirSync(`${ DIR_OUTPATH }`), {recursive: true};
 }
 
@@ -92,8 +91,9 @@ writeMinMaxToNodeJSFile();
 //   currentWorkingFileSwitcher = '';
 // }
 
-//Objects containing Point-Character data used in main function
-const POINT_OBJ_P1 = // Objects with the player slots as keys, and their values (0/1/2) as object-values. Ex: 'P1_A_ : 0'
+// Objects containing Point-Character data used in main function
+// Objects with the player slots as keys, and their values (0/1/2) as object-values. Ex: 'P1_A_ : 0'
+const POINT_OBJ_P1 =
 {
   P1_A_: pMem.P1_A_Is_Point.split(","),
   P1_B_: pMem.P1_B_Is_Point.split(","),
