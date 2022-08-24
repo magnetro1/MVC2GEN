@@ -1,11 +1,11 @@
 import * as fs from "fs"
 import * as path from "path"
-import * as pMem from "./main_files/Reset_Magneto_02_node.js"
+import * as pMem from "./main_files/Combo_Ruby34_node.js"
 import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js"
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`);
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
-const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Reset_Magneto_02/`;
+const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Combo_Ruby34/`;
 const FILE_NAME_NO_EXT = DIR_OUTPATH.toString().match(/(\w+).$/)[1];
 const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js`; // Current-Active-Working-File
 const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
