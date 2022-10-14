@@ -1,11 +1,11 @@
 import * as fs from "fs"
 import * as path from "path"
-import * as pMem from "./main_files/Cyclops13_node.js"
+import * as pMem from "./main_files/Storm09_node.js"
 import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js"
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`);
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
-const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Cyclops13/`;
+const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Storm09/`;
 const FILE_NAME_NO_EXT = DIR_OUTPATH.toString().match(/(\w+).$/)[1];
 const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js`; // Current-Active-Working-File
 const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
@@ -66,33 +66,6 @@ function writeMinMaxToNodeJSFile()
 };
 writeMinMaxToNodeJSFile();
 
-
-// Would need to be able to switch the node file, and its data-output-path
-// const FILE_NAMES = []
-// function getNodeJSFiles() // uses dirMainFiles to fetch usable files; returns array of file names
-// {
-//   fs.readdirSync(DIR_MAIN_FILES, 'utf8').toString().split(',').forEach((file) =>
-//   {
-//     let _nodeJSRegex = /\w+_node.js/g;
-//     if (file.match(_nodeJSRegex))
-//     {
-//       FILE_NAMES.push(file);
-//     }
-//   })
-//   return FILE_NAMES;
-// }
-// getNodeJSFiles()
-// // Truncates '_node.js' from file names
-// for (let FILE in FILE_NAMES)
-// {
-//   FILE_NAMES[FILE].toString();
-//   var currentWorkingFileSwitcher = FILE_NAMES[FILE];
-//   var currentWorkingFileSwitcher = currentWorkingFileSwitcher.match(/(\w+)_node.js/)[1];
-//   currentWorkingFileSwitcher = '';
-// }
-
-// Objects containing Point-Character data used in main function
-// Objects with the player slots as keys, and their values (0/1/2) as object-values. Ex: 'P1_A_ : 0'
 const POINT_OBJ_P1 =
 {
   P1_A_: pMem.P1_A_Is_Point.split(","),
@@ -649,6 +622,32 @@ function writeNewStates()
     var arrStateThrown_Ground = [[], [], []];
     //NEW_STATE_ADD_HERE
 
+    var AllStatesArray = [
+      arrStateBeingHit,
+      arrStateFlying_Screen_Air,
+      arrStateFlyingScreen_OTG,
+      arrStateFS_Install_1,
+      arrStateFS_Install_2,
+      arrStateNJ_Air,
+      arrStateNJ_Rising,
+      arrStateOTG_Extra_Stun,
+      arrStateOTG_Forced_Stun,
+      arrStateOTG_Hit,
+      arrStateOTG_Roll_Invincible,
+      arrStateOTG_Roll_Stunned,
+      arrStateProxBlock_Air,
+      arrStateProxBlock_Ground,
+      arrStatePushblock_Air,
+      arrStatePushblock_Ground,
+      arrStateRising_Invincibility,
+      arrStateSJ_Air,
+      arrStateSJ_Counter,
+      arrStateStun,
+      arrStateTech_Hit,
+      arrStateThrown_Air,
+      arrStateThrown_Ground
+      //NEW_STATE_ADD_HERE
+    ];
     // for each slot (abc) in a Player's side
     for (var playerSlotI = 0; playerSlotI < 3; playerSlotI++)
     {
@@ -752,38 +751,11 @@ function writeNewStates()
         // NEW_STATE_ADD_HERE
       }
       // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
-      var AllStatesArray = [
-        arrStateBeingHit,
-        arrStateFlying_Screen_Air,
-        arrStateFlyingScreen_OTG,
-        arrStateFS_Install_1,
-        arrStateFS_Install_2,
-        arrStateNJ_Air,
-        arrStateNJ_Rising,
-        arrStateOTG_Extra_Stun,
-        arrStateOTG_Forced_Stun,
-        arrStateOTG_Hit,
-        arrStateOTG_Roll_Invincible,
-        arrStateOTG_Roll_Stunned,
-        arrStateProxBlock_Air,
-        arrStateProxBlock_Ground,
-        arrStatePushblock_Air,
-        arrStatePushblock_Ground,
-        arrStateRising_Invincibility,
-        arrStateSJ_Air,
-        arrStateSJ_Counter,
-        arrStateStun,
-        arrStateTech_Hit,
-        arrStateThrown_Air,
-        arrStateThrown_Ground,
-        //NEW_STATE_ADD_HERE
-      ];
-
       var counter = 0;
 
       for (let stateArray in AllStatesArray)
       {
-        AllStatesArray[stateArray][playerSlotI].map((num, index) =>
+        AllStatesArray[stateArray][playerSlotI].map((num, index) => // Map through all 3 arrays' values + keep track of the index it's
         {
           if (num === 0)
           {
