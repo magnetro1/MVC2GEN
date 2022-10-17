@@ -235,7 +235,7 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
   {
     fs.mkdirSync(DIR_OUTPATH);
   }
-  // Check for Floating Point Addresses so we can truncate their trailing digits
+  // Check for Floating Point Addresses in order to truncate their trailing digits
   for (let floatAddress in FLOATING_POINT_ADRS)
   {
     var toFixedDigitNumberZero = 0; //7 by default
@@ -550,11 +550,6 @@ function writeNewStates()
   {
     tempPlayerValue == 1 ? tempPlayerString = 'P1' : tempPlayerString = 'P2';
 
-    // for (var stateName in allStateNamesArray)
-    // {
-    //   fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ allStateNamesArray[stateName] }.js`, `var result = [[],[],[]];` + '\n', {encoding: 'utf8'}, (err => {}));
-    // }
-
     // Fetches relevant SINGLE addresses for State-Logic-Checking
     var getAction_Flags = writePlayerMemory(tempPlayerString, 'Action_Flags', 0);
     var getAirborne = writePlayerMemory(tempPlayerString, 'Airborne', 0);
@@ -573,11 +568,7 @@ function writeNewStates()
     var getAir_Dash_Count = writePlayerMemory(tempPlayerString, 'Air_Dash_Count', 0);
     var getY_Position_Arena = writePlayerMemory(tempPlayerString, 'Y_Position_Arena', 0);
     var getY_Position_From_Enemy = writePlayerMemory(tempPlayerString, 'Y_Position_From_Enemy', 0);
-    // Exclusive to P2
-    var getY_Position_ArenaP2 = writePlayerMemory(2, 'Y_Position_From_Enemy', 0);
-    var getY_Position_From_EnemyP2 = writePlayerMemory(2, 'Y_Position_From_Enemy', 0);
     //NEW_STATE_ADD_HERE : Define your SINGLE get-Address here
-
 
     // List of files to be written. Will have prefix of P1_ or P2_
     var allStateNamesArray = [
@@ -610,8 +601,15 @@ function writeNewStates()
       'State_ROM_02_ChoiceA',
       'State_ROM_03_InputA_LK',
       'State_ROM_03_InputA_MK',
+      'State_ROM_06_InputB_AirDash',
       'State_ROM_08_InputC_DLK',
+      'State_ROM_08_InputC_MK',
     ];
+    // write the files
+    for (var stateName in allStateNamesArray)
+    {
+      fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ allStateNamesArray[stateName] }.js`, `var result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
+    }
     // Explicitly named arrays to store the values of each State-Logic-Check
     var arrStateBeingHit = [[], [], []];
     var arrStateFlying_Screen_Air = [[], [], []];
@@ -642,7 +640,9 @@ function writeNewStates()
     var arrStateROM_02_ChoiceA = [[], [], []];
     var arrStateROM_03_InputA_LK = [[], [], []];
     var arrStateROM_03_InputA_MK = [[], [], []];
+    var arrStateROM_06_InputB_AirDash = [[], [], []];
     var arrStateROM_08_InputC_DLK = [[], [], []];
+    var arrStateROM_08_InputC_MK = [[], [], []];
 
     var allStatesArray = [
       arrStateBeingHit,
@@ -674,7 +674,9 @@ function writeNewStates()
       arrStateROM_02_ChoiceA,
       arrStateROM_03_InputA_LK,
       arrStateROM_03_InputA_MK,
+      arrStateROM_06_InputB_AirDash,
       arrStateROM_08_InputC_DLK,
+      arrStateROM_08_InputC_MK,
     ];
     // for each slot (abc) in a Player's side
     for (var playerSlotI = 0 /*0|1|2*/; playerSlotI < 3; playerSlotI++)
@@ -780,8 +782,8 @@ function writeNewStates()
 
 
         // ROM-Specific State Checks
-        // ROM_01_OpponentA (How far from the ground is the opponent?)
-        (((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] >= 150))
+        // ROM_01_OpponentA. Goal is to find if dummy is high or low. Starting wth setting the end-point of a ROM Cycle.
+        (getKnockdown_State)[playerSlotI][clipLen] == 4 // Magneto is landing from the air.
           ? arrStateROM_01_OpponentStateA[playerSlotI].push(1)
           : arrStateROM_01_OpponentStateA[playerSlotI].push(0);
         // "ROM_02_ChoiceA" (Did Magneto wait before doing a SJ.LK?)
@@ -797,13 +799,22 @@ function writeNewStates()
         (((getNormal_Strength)[playerSlotI][clipLen] == 1) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && ((getAttack_Number)[playerSlotI][clipLen] == 16) && (getAir_Dash_Count)[playerSlotI][clipLen] == 0
           ? arrStateROM_03_InputA_MK[playerSlotI].push(1)
           : arrStateROM_03_InputA_MK[playerSlotI].push(0);
+        // // "ROM_06_InputB_AirDash"
+        ((getAir_Dash_Count)[playerSlotI][clipLen] == 1)
+          ? arrStateROM_06_InputB_AirDash[playerSlotI].push(1)
+          : arrStateROM_06_InputB_AirDash[playerSlotI].push(0);
         // // "ROM_08_InputC_DLK"
         (((getNormal_Strength)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && ((getAttack_Number)[playerSlotI][clipLen] == 18) && (getAir_Dash_Count)[playerSlotI][clipLen] == 1
           ? arrStateROM_08_InputC_DLK[playerSlotI].push(1)
           : arrStateROM_08_InputC_DLK[playerSlotI].push(0);
+        // // "ROM_08_InputC_MK"
+        (((getNormal_Strength)[playerSlotI][clipLen] == 1) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && ((getAttack_Number)[playerSlotI][clipLen] == 16) && (getAir_Dash_Count)[playerSlotI][clipLen] == 1
+          ? arrStateROM_08_InputC_MK[playerSlotI].push(1)
+          : arrStateROM_08_InputC_MK[playerSlotI].push(0);
       }
 
       // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
+      // Applies to ROM cases as well!
       var counter = 0;
       for (let stateArray in allStatesArray)
       {
@@ -822,24 +833,133 @@ function writeNewStates()
           }
         });
       }
-      const ROMFILES = [
+      // Set Loop point for 01_OpponentStateA (Magneto lands from his Super Jump)
+      const ROM_OPPONENTSTATES = [
         arrStateROM_01_OpponentStateA,
-        arrStateROM_02_ChoiceA,
-        arrStateROM_03_InputA_LK,
-        arrStateROM_03_InputA_MK,
-        arrStateROM_08_InputC_DLK,
+        // in case of OpponentStateB at the end of the ROM cycle
       ];
-      // Set Grounded State in Infinite Files
-      for (let romFile in ROMFILES)
+
+      for (let romFile in ROM_OPPONENTSTATES)
       {
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 1)
+          {
+            ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 65535;
+          }
+        }
+      };
+
+      for (let romFile in ROM_OPPONENTSTATES)
+      {
+        // Checking when we are Rising-To-SuperJump (before we wait or not wait)
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          ((getKnockdown_State)[playerSlotI][clipLen] == 13)
+            ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 255 // Set to 255 to indicate that we are Rising-To-SuperJump
+            : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
+        }
+        // Checking when we are Rising-to-SuperJump AND the Enemy's distance being HIGHER to the ground
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          ((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] >= 155)
+            ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 888 // Turns 255 to 888 (high)
+            : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
+        }
+        // Checking when we are Rising-to-SuperJump AND the Enemy's distance being LOWER to the ground
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          ((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] <= 154)
+            ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 777 // Turns 255 to 777 (low)
+            : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
+        }
+
+        // Setting Booleans for ROM_OpponentStateA results per ROM cycle.
+        //High Air
+        var AirSwitch = 0;
         for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
         {
-          if ((getKnockdown_State)[playerSlotI][clipLen] == 13)
+          if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 888)
           {
-            ROMFILES[romFile][playerSlotI][clipLen] = 65535;
+            AirSwitch = 1;
+            ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 1;
+          }
+          else if (AirSwitch == 1)
+          {
+            if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] != 65535)
+            {
+              ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 1;
+            }
+            else if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 65535)
+            {
+              AirSwitch = 0;
+            }
+          }
+        }
+        //Low Air
+        AirSwitch = 0;
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 777)
+          {
+            AirSwitch = 1;
+            ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 2;
+          }
+          else if (AirSwitch == 1)
+          {
+            if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] != 65535)
+            {
+              ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 2;
+            }
+            else if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 65535)
+            {
+              AirSwitch = 0;
+            }
           }
         }
       }
+      // All Inputs during ROM infinite
+      const ROM_INPUTS = [
+        arrStateROM_03_InputA_LK,
+        arrStateROM_03_InputA_MK,
+        arrStateROM_06_InputB_AirDash,
+        arrStateROM_08_InputC_DLK,
+        arrStateROM_08_InputC_MK,
+      ];
+      // Setting the end-point of a ROM Cycle.
+      for (let romFile in ROM_INPUTS)
+      {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if ((getAirborne)[playerSlotI][clipLen] == 0)
+          {
+            ROM_INPUTS[romFile][playerSlotI][clipLen] = 65535;
+          }
+        }
+        // Sets the rest of the ROM cycle to active or inactive.
+        var GroundSwitch = 0;
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if (ROM_INPUTS[romFile][playerSlotI][clipLen] == 1) // Started a SJ.LK
+          {
+            GroundSwitch = 1;
+            ROM_INPUTS[romFile][playerSlotI][clipLen] = 1;
+          }
+          else if (GroundSwitch == 1)
+          {
+            if (ROM_INPUTS[romFile][playerSlotI][clipLen] != 65535) // if NOT grounded
+            {
+              ROM_INPUTS[romFile][playerSlotI][clipLen] = 1;
+            }
+            else if (ROM_INPUTS[romFile][playerSlotI][clipLen] == 65535) // On the ground; stop attacking
+            {
+              GroundSwitch = 0;
+            }
+          }
+        }
+      }
+
+
       // Append data arrays into files
       for (let stateTokenI = 0; stateTokenI < allStateNamesArray.length; stateTokenI++)
       {
