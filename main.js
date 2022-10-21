@@ -119,7 +119,7 @@ function writeTotalFrameCountCNV()
 function writeP1P2Addresses()
 {
   var miscAdrArray = [[]];
-  for (let miscAdrIterator in MISC_ADRS)
+  for (let miscAdrIterator of MISC_ADRS)
   {
     eval(`pMem.${ MISC_ADRS[miscAdrIterator] }`).split(',').forEach((address) =>
     {
@@ -235,8 +235,8 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
   {
     fs.mkdirSync(DIR_OUTPATH);
   }
-  // Check for Floating Point Addresses in order to truncate their trailing digits
-  for (let floatAddress in FLOATING_POINT_ADRS)
+  // Check for Floating Point Addresses so they can have their trailing digits cut off
+  for (let floatAddress of FLOATING_POINT_ADRS)
   {
     var toFixedDigitNumberZero = 0; //7 by default
     var floatArrayFixed = [[], [], []];
@@ -271,7 +271,7 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
       }
     }
   }
-  for (let floatAddress in FLOATING_POINT_ADRS)
+  for (let floatAddress of FLOATING_POINT_ADRS)
   {
     var toFixedDigitNumberTwo = 2; //7 by default
     var floatArrayFixed = [[], [], []];
@@ -306,7 +306,7 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
       }
     }
   }
-  for (let floatAddress in FLOATING_POINT_ADRS)
+  for (let floatAddress of FLOATING_POINT_ADRS)
   {
     var toFixedDigitNumberFour = 4; //7 by default
     var floatArrayFixed = [[], [], []];
@@ -351,7 +351,7 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
       (err => {}));
 
     // Append main data
-    for (let dataArrayPerCharacter in finalValuesArray)
+    for (let dataArrayPerCharacter of finalValuesArray)
     {
       fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`,
         `result[${ dataArrayPerCharacter }] = [${ finalValuesArray[dataArrayPerCharacter] }];\n`,
@@ -465,7 +465,7 @@ function writeInputCNV()
   {
     playersLen == 1 ? tempPlayerString = P1Inputs : tempPlayerString = P2Inputs;
     //Input Conversion Type 1
-    for (let input in tempPlayerString)
+    for (let input of tempPlayerString)
     {
       for (let button in Object.entries(buttonConversionVersion1))
       {
@@ -494,7 +494,7 @@ function writeInputCNV()
     playerInputsCNVArray = [];
 
     //Input Conversion Type 2
-    for (let input in tempPlayerString)
+    for (let input of tempPlayerString)
     {
       for (let button in Object.entries(buttonConversionVersion2))
       {
@@ -816,7 +816,7 @@ function writeNewStates()
       // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
       // Applies to ROM cases as well!
       var counter = 0;
-      for (let stateArray in allStatesArray)
+      for (let stateArray of allStatesArray)
       {
         allStatesArray[stateArray][playerSlotI].map((num, index) => // Go through all 3 arrays' values + keep track of the index
         {
@@ -833,13 +833,15 @@ function writeNewStates()
           }
         });
       }
+
+      // 01_Opponent State A Setup
       // Set Loop point for 01_OpponentStateA (Magneto lands from his Super Jump)
       const ROM_OPPONENTSTATES = [
         arrStateROM_01_OpponentStateA,
         // in case of OpponentStateB at the end of the ROM cycle
       ];
 
-      for (let romFile in ROM_OPPONENTSTATES)
+      for (let romFile of ROM_OPPONENTSTATES)
       {
         for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
         {
@@ -850,7 +852,7 @@ function writeNewStates()
         }
       };
 
-      for (let romFile in ROM_OPPONENTSTATES)
+      for (let romFile of ROM_OPPONENTSTATES)
       {
         // Checking when we are Rising-To-SuperJump (before we wait or not wait)
         for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
@@ -918,6 +920,8 @@ function writeNewStates()
           }
         }
       }
+
+      // 03_InputsA , 06_InputsB , 09_InputsC Setup
       // All Inputs during ROM infinite
       const ROM_INPUTS = [
         arrStateROM_03_InputA_LK,
@@ -927,7 +931,7 @@ function writeNewStates()
         arrStateROM_08_InputC_MK,
       ];
       // Setting the end-point of a ROM Cycle.
-      for (let romFile in ROM_INPUTS)
+      for (let romFile of ROM_INPUTS)
       {
         for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
         {
@@ -940,7 +944,7 @@ function writeNewStates()
         var GroundSwitch = 0;
         for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
         {
-          if (ROM_INPUTS[romFile][playerSlotI][clipLen] == 1) // Started a SJ.LK
+          if (ROM_INPUTS[romFile][playerSlotI][clipLen] == 1) // Started an input (air)
           {
             GroundSwitch = 1;
             ROM_INPUTS[romFile][playerSlotI][clipLen] = 1;
