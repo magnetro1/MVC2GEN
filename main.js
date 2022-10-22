@@ -608,6 +608,8 @@ function writeNewStates()
       'State_ROM_06_InputB_AirDash',
       'State_ROM_08_InputC_DLK',
       'State_ROM_08_InputC_MK',
+      'State_ROM_09_ChoiceE',
+
     ];
     // write the files
     for (var stateName in allStateNamesArray)
@@ -648,6 +650,7 @@ function writeNewStates()
     var arrStateROM_06_InputB_AirDash = [[], [], []];
     var arrStateROM_08_InputC_DLK = [[], [], []];
     var arrStateROM_08_InputC_MK = [[], [], []];
+    var arrStateROM_09_ChoiceE = [[], [], []];
 
     var allStatesArray = [
       arrStateBeingHit,
@@ -683,6 +686,7 @@ function writeNewStates()
       arrStateROM_06_InputB_AirDash,
       arrStateROM_08_InputC_DLK,
       arrStateROM_08_InputC_MK,
+      arrStateROM_09_ChoiceE,
     ];
     // for each slot (abc) in a Player's side
     for (var playerSlotI = 0 /*0|1|2*/; playerSlotI < 3; playerSlotI++)
@@ -821,7 +825,12 @@ function writeNewStates()
         (((getNormal_Strength)[playerSlotI][clipLen] == 1) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && ((getAttack_Number)[playerSlotI][clipLen] == 16) && (getAir_Dash_Count)[playerSlotI][clipLen] == 1
           ? arrStateROM_08_InputC_MK[playerSlotI].push(1)
           : arrStateROM_08_InputC_MK[playerSlotI].push(0);
-      }
+        (((getNormal_Strength)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && (getAttack_Number)[playerSlotI][clipLen] == 18 && ((getAir_Dash_Count)[playerSlotI][clipLen] == 1)
+          ? arrStateROM_09_ChoiceE[playerSlotI].push(1)
+          : arrStateROM_09_ChoiceE[playerSlotI].push(0);
+      } // clipLen Scope
+
+      // Slot Scope
 
       // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
       // Applies to ROM cases as well!
@@ -1049,7 +1058,7 @@ function writeNewStates()
                 {
                   tempSwitch = 0;
                 }
-                break
+                break //lookahead is done, we hit 65535
               }
             }
             //Lookbehind, expect the number of LKs to equal the tempCounter value
@@ -1078,8 +1087,148 @@ function writeNewStates()
             arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] = 0;
           }
         }
-        // Gonna need to make a new array for the AE Part2 ( Find-Replace the pertient values with the result of: If the time between LK to MK was less than or equal to 10 frames, the result is "No-Wait", else "Wait" )
+        // Clean up the values for AE Part2
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if ((arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] != 65535)
+            && (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] >= 10))
+          {
+            arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] = '\'Wait\''
+          }
+          else if (((arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] != 65535))
+            && (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] < 10)
+            && (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] > 0))
+          {
+            arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] = '\'No-Wait\''
+          }
+        }
       }
+      // 09_ChoiceE (time: LK -> MK)
+      for (let arrayWithROMData in arrStateROM_09_ChoiceE) // 3 arrays
+      {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if ((getAirborne)[arrayWithROMData][clipLen] == 0)
+          {
+            arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = 65535;
+          }
+        }
+        var GroundSwitch = 0
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if ((arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535) && (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] != 0))
+          {
+            GroundSwitch = 1;
+            arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = 1;
+          }
+          else if (GroundSwitch == 1)
+          {
+            if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535) // if NOT grounded
+            {
+              arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
+            }
+            else if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] == 65535) // On the ground; stop attacking
+            {
+              GroundSwitch = 0;
+            }
+          }
+        }
+        // Label the LKs & MKs
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] == 1)
+          {
+            // Am I MK?
+            if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) // MK
+            {
+              arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = "\'MK\'";
+            }
+            else if (((getAttack_Number)[arrayWithROMData][clipLen] == 18) && ((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) // 2LK
+            {
+              arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = "\'DLK\'";
+            }
+          }
+        }
+        // Count the frames of LKs using tempCounter
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] == '\'DLK\'')
+          {
+            tempCounter += 1;
+          }
+          // Stop on encountering a MK
+          else if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] == '\'MK\'') // We hit a MK
+          {
+            //Lookahead
+            for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++) // CLIP_LENGTH is used, but we will break out of the loop before it is reached
+            {
+              // Everything until 65535 is = tempCounter
+              if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen + positiveI] != 65535)
+              {
+                tempSwitch = 1
+                arrStateROM_09_ChoiceE[arrayWithROMData][clipLen + positiveI] = tempCounter;
+              }
+              else if (tempSwitch == 1)
+              {
+                arrStateROM_09_ChoiceE[arrayWithROMData][clipLen + positiveI] = tempCounter;
+                if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen + positiveI] == 65535)
+                {
+                  tempSwitch = 0;
+                }
+                break //lookahead is done, we hit 65535
+              }
+            }
+            //Lookbehind, expect the number of 2LKs to equal the tempCounter value
+            for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
+            {
+              if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen - negativeI] == '\'DLK\'')
+              {
+                arrStateROM_09_ChoiceE[arrayWithROMData][clipLen - negativeI] = tempCounter;
+              }
+            }
+          }
+          else // Reset the counters
+          {
+            tempCounter = 0;
+            tempSwitch = 0;
+          }
+        }
+        // Clean up the values for AE Part1
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if ((arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535)
+            && (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] >= 0)
+            && (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] < 3))
+          // || (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] == '\'DLK\''))
+          {
+            arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = 0;
+          }
+        }
+        // Clean up the values for AE Part2
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if ((arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535)
+            && (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] >= 13))
+          {
+            arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = '\'Wait\''
+          }
+          else if (((arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535))
+            && (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] < 13)
+            && (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] > 0))
+          {
+            arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = '\'No-Wait\''
+          }
+        }
+      } // End of 09_ChoiceE Scope 
+
+
+
+
+
+
+
+
+
       // Append data arrays into files
       for (let stateTokenI = 0; stateTokenI < allStateNamesArray.length; stateTokenI++)
       {
@@ -1088,7 +1237,6 @@ function writeNewStates()
     }
   }
 }
-
 
 writeMinMaxToNodeJSFile() // breaks next function on first-run; re-run program to get full results
 getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
