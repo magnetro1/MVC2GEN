@@ -574,6 +574,7 @@ function writeNewStates()
     //NEW_STATE_ADD_HERE : Define your SINGLE get-Address here
 
     // List of files to be written. Will have prefix of P1_ or P2_
+    //⭐ Start Adding New States as Strings here!
     var allStateNamesArray = [
       'State_Being_Hit',
       'State_Flying_Screen_Air',
@@ -598,13 +599,14 @@ function writeNewStates()
       'State_Tech_Hit',
       'State_Thrown_Air',
       'State_Thrown_Ground',
-      //NEW_STATE_ADD_HERE
+      //NEW_STATE_ADD_HERE ⏫
       //ROM-specific states
       'State_ROM_01_OpponentStateA',
       'State_ROM_02_ChoiceA',
       'State_ROM_03_InputA_LK',
       'State_ROM_03_InputA_MK',
       'State_ROM_04_ChoiceB',
+      'State_ROM_05_ChoiceC',
       'State_ROM_06_InputB_AirDash',
       'State_ROM_08_InputC_DLK',
       'State_ROM_08_InputC_MK',
@@ -640,13 +642,14 @@ function writeNewStates()
     var arrStateTech_Hit = [[], [], []];
     var arrStateThrown_Air = [[], [], []];
     var arrStateThrown_Ground = [[], [], []];
-    //NEW_STATE_ADD_HERE
+    //NEW_STATE_ADD_HERE ⏫
     //ROM-Specific States
     var arrStateROM_01_OpponentStateA = [[], [], []];
     var arrStateROM_02_ChoiceA = [[], [], []];
     var arrStateROM_03_InputA_LK = [[], [], []];
     var arrStateROM_03_InputA_MK = [[], [], []];
     var arrStateROM_04_ChoiceB = [[], [], []];
+    var arrStateROM_05_ChoiceC = [[], [], []];
     var arrStateROM_06_InputB_AirDash = [[], [], []];
     var arrStateROM_08_InputC_DLK = [[], [], []];
     var arrStateROM_08_InputC_MK = [[], [], []];
@@ -676,13 +679,14 @@ function writeNewStates()
       arrStateTech_Hit,
       arrStateThrown_Air,
       arrStateThrown_Ground,
-      //NEW_STATE_ADD_HERE
+      //NEW_STATE_ADD_HERE ⏫
       //ROM-Specific States
       arrStateROM_01_OpponentStateA,
       arrStateROM_02_ChoiceA,
       arrStateROM_03_InputA_LK,
       arrStateROM_03_InputA_MK,
       arrStateROM_04_ChoiceB,
+      arrStateROM_05_ChoiceC,
       arrStateROM_06_InputB_AirDash,
       arrStateROM_08_InputC_DLK,
       arrStateROM_08_InputC_MK,
@@ -787,8 +791,8 @@ function writeNewStates()
         (((getAirborne)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 31) && ((getIs_Prox_Block)[playerSlotI][clipLen] == 16))
           ? arrStateThrown_Ground[playerSlotI].push(1)
           : arrStateThrown_Ground[playerSlotI].push(0);
-        // // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
-        // NEW_STATE_ADD_HERE
+        // // "NEW_STATE_ADD_NAME_HERE" (its name in comments)⏫
+        // NEW_STATE_ADD_HERE ⏫
 
 
         // ROM-Specific State Checks
@@ -809,10 +813,14 @@ function writeNewStates()
         (((getNormal_Strength)[playerSlotI][clipLen] == 1) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && ((getAttack_Number)[playerSlotI][clipLen] == 16) && (getAir_Dash_Count)[playerSlotI][clipLen] == 0
           ? arrStateROM_03_InputA_MK[playerSlotI].push(1)
           : arrStateROM_03_InputA_MK[playerSlotI].push(0);
-        // "ROM_04_ChoiceB" (Did Magneto wait before doing a SJ.LK?)
+        // "ROM_04_ChoiceB" (Did Magneto wait before doing a SJ.MK after a SJ.LK?)
         (((getNormal_Strength)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && (getAttack_Number)[playerSlotI][clipLen] == 15 && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
           ? arrStateROM_04_ChoiceB[playerSlotI].push(1)
           : arrStateROM_04_ChoiceB[playerSlotI].push(0);
+        // "ROM_05_ChoiceC" (Did Magneto wait before doing AirDashing after a SJ.LK?)
+        (((getNormal_Strength)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && (getAttack_Number)[playerSlotI][clipLen] == 15 && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
+          ? arrStateROM_05_ChoiceC[playerSlotI].push(1)
+          : arrStateROM_05_ChoiceC[playerSlotI].push(0);
         // "ROM_06_InputB_AirDash"
         ((getAir_Dash_Count)[playerSlotI][clipLen] == 1)
           ? arrStateROM_06_InputB_AirDash[playerSlotI].push(1)
@@ -1103,6 +1111,140 @@ function writeNewStates()
           }
         }
       }
+      // 05_ChoiceC (time: LK -> AirDash)
+      for (let arrayWithROMData in arrStateROM_05_ChoiceC) // 3 arrays
+      {
+        // Find Grounded state for ROM loops
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if ((getAirborne)[arrayWithROMData][clipLen] == 0)
+          {
+            arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = 65535;
+          }
+        }
+        var GroundSwitch = 0
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if ((arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] != 65535) && (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] != 0))
+          {
+            GroundSwitch = 1;
+            arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = 1;
+          }
+          else if (GroundSwitch == 1)
+          {
+            if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] != 65535) // if NOT grounded
+            {
+              arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
+            }
+            else if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == 65535) // On the ground; stop attacking
+            {
+              GroundSwitch = 0;
+            }
+          }
+        }
+        // Label the LKs & AirDashes
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == 1)
+          {
+            // Am I AirDash
+            if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1))
+            {
+              arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = "\'AirDash\'";
+            }
+            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
+            {
+              arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = "\'LK\'";
+            }
+            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
+            {
+              arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = "\'MK\'"; // First MK
+            }
+            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1))
+            {
+              arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = "\'AirDash\'"; // Second MK
+            }
+          }
+        }
+        // Count LKs before AirDash
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'LK\'')
+          {
+            tempCounter += 1;
+          }
+          // Stop on encountering an AirDash
+          else if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'AirDash\'') // We hit an AirDash
+          {
+            //Lookahead
+            for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++)
+            {
+              // Everything until 65535 is = tempCounter
+              if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen + positiveI] != 65535)
+              {
+                tempSwitch = 1
+                arrStateROM_05_ChoiceC[arrayWithROMData][clipLen + positiveI] = tempCounter;
+              }
+              else if (tempSwitch == 1)
+              {
+                arrStateROM_05_ChoiceC[arrayWithROMData][clipLen + positiveI] = tempCounter;
+                if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen + positiveI] == 65535)
+                {
+                  tempSwitch = 0;
+                }
+                break //lookahead is done, we hit 65535
+              }
+            }
+            //Lookbehind, expect the number of LKs to equal the tempCounter value
+            for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
+            {
+              if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen - negativeI] == '\'LK\'')
+              {
+                arrStateROM_05_ChoiceC[arrayWithROMData][clipLen - negativeI] = tempCounter;
+              }
+            }
+          }
+          else // Reset the counters
+          {
+            tempCounter = 0;
+            tempSwitch = 0;
+          }
+        }
+        // Clean up the values for AE Part1
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if ((arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] != 65535)
+            && (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] >= 20))
+          {
+            arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = '\'Wait\''
+          }
+          else if (((arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] != 65535))
+            && (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] < 20)
+            && (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] > 1))
+          {
+            arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = '\'No-Wait\''
+          }
+        }
+        // Clean up the values for AE Part2
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        {
+          if ((arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'LK\'') || (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'MK\''))
+          {
+            arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = 0;
+          }
+        }
+      } // end of 05_ChoiceC
+
+      // 05_ChoiceC2 - ( MK to AirDash )
+
+
+
+
+
+
+
+
+
       // 09_ChoiceE (time: LK -> MK)
       for (let arrayWithROMData in arrStateROM_09_ChoiceE) // 3 arrays
       {
