@@ -1,5 +1,5 @@
 ﻿# Change $statePath directory & $destHead Folder Name
-$statePath = "G:\Emulators\PCSX2\pcsx2\sstates\" # !!! Insert path to SaveStates
+$statePath = "G:\PCSX2RR\sstates\" # !!! Insert path to SaveStates
 $replayPath = Split-Path -Path $statePath -Parent # goes up one directory
 $destHead = "$replayPath\StateBk\" # !!! "StateBk" can change name
 $states = "$statePath*.00*" #selects state files

@@ -1,0 +1,13 @@
+{#SingleInstance, Force
+#NoEnv
+}	
+F4::
+CoordMode, Mouse, Screen
+MouseGetPos, xVar, yVar
+MouseClick Left
+sleep 100
+MouseClick Left
+sleep 20
+CoordMode, Mouse, Screen
+MouseMove, xVar,yVar+21, 50,
+return

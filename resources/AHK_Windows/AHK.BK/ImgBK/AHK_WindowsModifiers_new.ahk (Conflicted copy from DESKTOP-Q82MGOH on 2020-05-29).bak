@@ -1,0 +1,995 @@
+﻿;header1 (Check & Run in Admin Mode
+{full_command_line := DllCall("GetCommandLine", "str")
+
+
+if not (A_IsAdmin or RegExMatch(full_command_line, " /restart(?!\S)"))
+{
+    try
+    {
+        if A_IsCompiled
+            Run *RunAs "%A_ScriptFullPath%" /restart
+        else
+            Run *RunAs "%A_AhkPath%" /restart "%A_ScriptFullPath%"
+    }
+}	
+}
+
+;header2 Environment stuff
+{
+#SingleInstance, Force
+#NoEnv
+SendMode Input
+SetWorkingDir %A_ScriptDir% 
+Menu, Tray, Icon, shell32.dll, 101 ;
+
+}
+;------------------------------------------------------------;
+;-----------------------Misc.Functions-----------------------;
+;------------------------------------------------------------;
+
+;Accel-Scroll V1.3				MWheel
+{
+#MaxHotkeysPerInterval 120
+Process, Priority, , H
+SendMode Input
+
+; Show scroll velocity as a tooltip while scrolling. 1 or 0.
+tooltips := 0
+
+; The length of a scrolling session.
+; Keep scrolling within this time to accumulate boost.
+; Default: 500. Recommended between 400 and 1000.
+timeout := 600
+
+; If you scroll a long distance in one session, apply additional boost factor.
+; The higher the value, the longer it takes to activate, and the slower it accumulates.
+; Set to zero to disable completely. Default: 30.
+boost := 60
+
+; Spamming applications with hundreds of individual scroll events can slow them down.
+; This sets the maximum number of scrolls sent per click, i.e. max velocity. Default: 60.
+limit := 60
+
+; Runtime variables. Do not modify.
+distance := 0
+vmax := 1
+
+; Key bindings
+WheelUp::    Goto Scroll
+WheelDown::  Goto Scroll
+#WheelUp::   Suspend
+#WheelDown:: Goto Quit
+
+Scroll:
+	t := A_TimeSincePriorHotkey
+	if (A_PriorHotkey = A_ThisHotkey && t < timeout)
+	{
+		; Remember how many times we've scrolled in the current direction
+		distance++
+
+		; Calculate acceleration factor using a 1/x curve
+		v := (t < 80 && t > 1) ? (250.0 / t) - 1 : 1
+
+		; Apply boost
+		if (boost > 1 && distance > boost)
+		{
+			; Hold onto the highest speed we've achieved during this boost
+			if (v > vmax)
+				vmax := v
+			else
+				v := vmax
+
+			v *= distance / boost
+		}
+
+		; Validate
+		v := (v > 1) ? ((v > limit) ? limit : Floor(v)) : 1
+
+		if (v > 1 && tooltips)
+			QuickToolTip("Ã—"v, timeout)
+		
+		
+
+		MouseClick, %A_ThisHotkey%, , , v
+	}
+	else
+	{
+		; Combo broken, so reset session variables
+		distance := 0
+		vmax := 1
+
+		MouseClick %A_ThisHotkey%
+	}
+	return
+
+Quit:
+	QuickToolTip("Exiting Accelerated Scrolling...", 1000)
+	Sleep 1000
+	ExitApp
+
+QuickToolTip(text, delay)
+{
+	ToolTip, %text%
+	SetTimer ToolTipOff, %delay%
+	return
+
+	ToolTipOff:
+	SetTimer ToolTipOff, Off
+	ToolTip
+	return
+}
+
+}
+
+; Clip() - Send and Retrieve Text Using the Clipboard
+{
+Clip(Text="", Reselect="")
+{
+	Static BackUpClip, Stored, LastClip
+	If (A_ThisLabel = A_ThisFunc) {
+		If (Clipboard == LastClip)
+			Clipboard := BackUpClip
+		BackUpClip := LastClip := Stored := ""
+	} Else {
+		If !Stored {
+			Stored := True
+			BackUpClip := ClipboardAll ; ClipboardAll must be on its own line
+		} Else
+			SetTimer, %A_ThisFunc%, Off
+		LongCopy := A_TickCount, Clipboard := "", LongCopy -= A_TickCount ; LongCopy gauges the amount of time it takes to empty the clipboard which can predict how long the subsequent clipwait will need
+		If (Text = "") {
+			SendInput, ^c
+			ClipWait, LongCopy ? 0.6 : 0.2, True
+		} Else {
+			Clipboard := LastClip := Text
+			ClipWait, 10
+			SendInput, ^v
+		}
+		SetTimer, %A_ThisFunc%, -700
+		Sleep 20 ; Short sleep in case Clip() is followed by more keystrokes such as {Enter}
+		If (Text = "")
+			Return LastClip := Clipboard
+		Else If ReSelect and ((ReSelect = True) or (StrLen(Text) < 3000))
+			SendInput, % "{Shift Down}{Left " StrLen(StrReplace(Text, "`r")) "}{Shift Up}"
+	}
+	Return
+	Clip:
+	Return Clip()
+}
+}
+;---------------------------------------------------------;
+;-----------------------MiscHotKeys-----------------------;
+;---------------------------------------------------------;
+
+;Always-on-Top					Win+Space
+{
+#SPACE::  Winset, Alwaysontop, , A
+}
+
+;#Notepad						Win+N
+{
+#n::
+IfWinNotExist, ahk_class Notepad
+Run, notepad.exe
+WinActivate ahk_class Notepad
+Return
+}
+
+;MoveWin to Mouse				^+F22
+{
+^+F22::
+Coordmode Mouse, screen
+MouseGetPos xPos, yPos
+WinMove,A, , %xPos%, %yPos%, DEFAULT, DEFAULT
+return
+}
+
+;Task Manager					RWin
+{
+RWin:: ^+Esc
+return
+}
+
+;---------------------------------------------------------;
+;----------------------forStreamDeck----------------------;
+;---------------------------------------------------------;
+
+;Launch Premiere Pro			^+F13
+{
+^+F13::
+switchToPremiere(){
+IfWinNotExist, ahk_class Premiere Pro
+	{
+	Run, Adobe Premiere Pro.exe
+	}
+if WinActive("ahk_class Premiere Pro")
+	{
+	IfWinNotExist, ahk_exe Premiere Pro.exe
+		{
+		Run, Premiere Pro.exe
+		sleep 200
+		}
+	WinActivate ahk_exe Premiere Pro.exe
+	sleep 10
+	WinActivate ahk_class Premiere Pro
+	}
+else
+	WinActivate ahk_class Premiere Pro
+sleep 2
+send, {Rctrl up}
+send, {Lctrl up}
+
+}
+}
+
+;Launch LGS						^+F15
+{
+^+F15::
+switchToLGS()
+{
+IfWinNotExist, ahk_exe LCore.exe
+Run, C:\Program Files\Logitech Gaming Software\LCore.exe
+WinWait, Logitech Gaming Software, 
+if WinActive("ahk_exe LCore.exe")
+	Sendinput ^{tab}
+else
+	WinActivate ahk_exe LCore.exe
+
+sleep 2
+send, {Rctrl up}
+send, {Lctrl up}
+WinWaitActive, Logitech Gaming Software, 
+	MouseClick, left,  223,  694
+	sleep 20
+	MouseClick, left,  223,  694
+	sleep 20
+	MouseClick, left,  355,  694
+	sleep 400
+	MouseClick, left,  535,  700
+	sleep 250
+	MouseClick, left,  535,  700
+	return
+
+}
+}
+
+;Launch Chrome					^+F16
+{
+^+F16::
+switchToChrome()
+{
+IfWinNotExist, ahk_exe chrome.exe
+	Run, chrome.exe
+
+if WinActive("ahk_exe chrome.exe")
+	Sendinput ^{tab}
+else
+	WinActivate ahk_exe chrome.exe
+
+sleep 2
+send, {Rctrl up}
+send, {Lctrl up}
+}
+}
+
+;Launch Stream Deck				^+F17
+{
+^+F17::
+switchToStreamDeck()
+{
+IfWinNotExist, ahk_exe StreamDeck.exe
+	{
+	Run, C:\Program Files\Elgato\StreamDeck\StreamDeck.exe
+	}
+else
+	{
+	WinActivate ahk_exe StreamDeck.exe
+	}
+	return
+}
+}
+
+;Launch Notepad++				^+F18
+{
+^+F18::
+switchToNotepad++()
+{
+IfWinNotExist, ahk_exe notepad++.exe
+	{
+	Run, C:\Program Files (x86)\Notepad++\notepad++.exe
+	}
+else
+	{
+	WinActivate ahk_exe notepad++.exe
+	}
+	return
+}
+}
+
+;Launch WinWord					^+F19
+{
+^+F19::
+switchToWord()
+{
+;tooltip, why
+Process, Exist, WINWORD.EXE
+	If errorLevel = 0
+		Run, WINWORD.EXE
+	else
+		WinActivate ahk_class OpusApp
+	}
+sleep 2
+send, {Rctrl up}
+send, {Lctrl up}
+}
+
+;Launch Excel					^+F20
+{
+^+F20::
+switchToExcel()
+{
+Process, Exist, EXCEL.EXE
+;msgbox errorLevel `n%errorLevel%
+	If errorLevel = 0
+		Run, EXCEL.EXE
+	else
+		WinActivate ahk_class XLMAIN
+	
+;maybe need to unstick modifiers
+sleep 2
+send, {Rctrl up}
+send, {Lctrl up}
+;IDK if that even works...
+}
+}
+
+;Clip() StreamDeckIconPath		#F2
+{
+#IfWinActive ahk_exe StreamDeck.exe
+#F2::
+#IfWinActive ahk_exe StreamDeck.exe
+Clip("H:\I\Progs-S\``PC(2016.Win10)\``P1 Software\Stream Deck\Icons")
+return
+}
+;---------------------------------------------------------;
+;------------------------forPCSX2RR-----------------------;
+;---------------------------------------------------------;
+
+;Lua Script Path for CE			#F3
+{
+#F4::
+SendRaw, E:\New Folder\Inchoate_CV\Main\Scripts\Lua
+return
+}
+;Clip() IncLua					#F2 - Writes a directory to the clipboard and pastes it if Cheat Engine is active
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+#F2::
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+Clip("E:\New Folder\Inchoate_CV\Main\Scripts\Lua")
+return
+}
+;Copy Pointer					^F3 - Copies the address derived by the pointer
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+^3::
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+copyPointer()
+{
+CoordMode, Mouse, Screen
+MouseGetpos xVar, yVar
+SendInput {LButton}
+Sleep 50
+SendInput {LButton}
+winwait, Change address
+sleep 10
+CoordMode, Mouse, Relative
+MouseClick, left,  37,  150, , 0
+MouseClick, left, 42, 49, 2, 0
+sleep 10
+send ^C
+sleep 10
+sendInput ^c
+sleep 10
+sendInput ^
+SendInput {esc}
+SendInput ^
+CoordMode, Mouse, Screen
+MouseMove, %xVar%, %yVar%
+Sleep 100
+return
+}
+}
+;LoadScript Function			Opens a Lua window and loads a Lua script, and then places and resizes the window
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+loadScript(name)
+{
+path = E:\New Folder\Inchoate_CV\Main\Scripts\Lua
+SendInput {LAlt Down}
+sleep 300
+Send, F,
+Sleep 100,
+Send, N,
+Sleep 300,
+SendInput {LAlt Up}
+sleep 300
+SendInput {LAlt Down}
+sleep 250
+Send, F,
+sleep 10
+Send, O
+SendInput {LAlt Up}
+Sleep 250
+WinWait, Open existing file
+sleep 100
+WinMove, A,, 1300,-720,700,500
+MouseMove, 390, 45
+Sleep 10,
+MouseClick
+Send %path%
+sleep 10
+SendInput {Enter}
+sleep 100
+MouseMove, 250, 440, 
+sleep 10
+MouseClick
+sleep 10
+Send %name%
+sleep 10
+SendInput {Enter}
+sleep 0
+}
+}
+;InvokeLoadScript x1			#h
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+ #h::
+{
+loadScript("01_AssistsOK.LUA")
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+return
+}
+}
+;Invoke LoadScript				#F8 - Opens a series of Lua scripts and moves them to designated coordinates
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+#F8::
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+myX = 911
+myY = -1080
+myW = 215
+myH = 240
+myWO = 200
+myHO = 230
+sL = 250
+loadScript("01_AssistsOK.LUA")
+sleep sL
+WinMove, A,, myX, myY, myW,myH
+sleep sL
+loadScript("02_Combo Meter & Message.LUA")
+sleep sL
+WinMove, A,, myX+myWO, myY, myW,myH 
+sleep sL
+loadScript("03_P1_A_Life.lua")
+sleep sL
+WinMove, A,, myX+myWO*2, myY, myW,myH
+sleep sL
+loadScript("04_Timer & Meter Models.LUA")
+sleep sL
+WinMove, A,, myX+myWO*3, myY, myW,myH
+sleep sL
+loadScript("05_IndicatorsA.LUA")
+sleep sL
+WinMove, A,, myX+myWO*4, myY, myW,myH
+sleep sL
+loadScript("06_Shadows.LUA")
+sleep sL
+WinMove, A,, myX+myWO*5, myY, myW,myH
+return
+}
+;findDesc Function				Searches the screen for Lua windows depending on where the mouse cursor is.
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+findDesc(nameA)
+{
+CoordMode Mouse,Screen 
+MouseGetPos varX, varY,
+nameA =
+If varX between 1050 and 1125
+	nameA = 1.png
+else if varX between 1245 and 1325
+	nameA = 2.png
+else if varX between 1450 and 1520
+	nameA = 3.png
+else if varX between 1650 and 1720
+	nameA = 4.png
+else if varX between 1850 and 1920
+	nameA = 5.png
+else if varX between 2050 and 2125
+	nameA = 6.png
+else nameA = 0.png
+sleep 100
+CoordMode, Mouse, Relative
+ImageSearch, FoundX, FoundY, 0, 0, A_ScreenWidth, A_ScreenHeight, %nameA%
+if (ErrorLevel = 2)
+    MsgBox Could not conduct the search.
+else if (ErrorLevel = 1)
+	MsgBox Could not find item.
+else
+   ;BlockInput, on
+   MouseMove, %FoundX%,%FoundY%
+   BlockInput, off
+   BlockInput, MouseMoveOff
+return
+}
+}
+;pasteClipboard Function		Recalculates and address by pasting the clipboard contents into the address field
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+pasteClip()
+{
+CoordMode, Mouse, Screen
+MouseGetPos xVar, yVar
+Send {RButton}
+sleep 100 
+SendInput r
+WinWait Recalculate addres
+sleep 200
+CoordMode, Mouse, Relative
+MouseClick, left,  160,  40
+Send, ^a
+sleep 10
+Send, ^v 
+sleep 30
+Send {Enter}
+CoordMode, Mouse, Screen
+MouseMove, %xVar%,%yVar%
+return
+}
+}
+;TapSpace & Switch Function 	Switches to PSCSX2 to press space once so as to trigger NOP recognition)
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+tapSpace()
+	{
+	WinActivate ahk_class GSWndDX
+	sleep 10
+	Send {space down}
+	sleep 90
+	send {space up}
+	sleep 50
+	WinActivate ahk_exe cheatengine-x86_64.exe
+	return
+	}
+}
+;Collapse SubGroup Function		Table-Prep. Presses Down, then Left to collapse a subgroup in Cheat Engine
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+
+collapseSubGroup()
+	{
+	Send {Down} ; to Character Group
+	sleep 50
+	Send {left} ; to collapse group
+	Sleep 50
+return
+	}
+}
+;Collapse 3D Function			Table-Prep. Presses Down (3) then Left to collapse a the 3D addresses subgroups
+{
+#IfWinActive 
+^F14::
+collapse3D()
+	{
+	Send {Down} ; to Group
+	sleep 10
+	Send {Down} ; to Red
+	Sleep 10
+	Send {Down} ; to SUBGROUP
+	sleep 10
+	Send {Left} ; collapse subgroup
+return
+	}
+}
+;Collapse Table Function		Table-Prep. Prepares the table for recalculation and image searches.
+{
+{
+#IfWinActive 
+^F15::
+collapseTable()
+	{
+	SetKeyDelay 10, 20
+	Send {Home} ; to Top
+	sleep 5
+	Send {Down}
+	sleep 5
+	Send {Down}
+	sleep 5
+		Loop, 6 {
+		collapse3D() ; to 06_Addresses subgroup
+		}
+		Send {Down}
+		Send {left}
+	sleep 5
+	Send {Down} ; to 3D-Extra
+	sleep 10
+	Loop, 6 {				; Goes-Through 3D-Extra~~~
+		collapseSubGroup()	; collapse 3D-Extra
+		}					; to VS Screen
+	sleep 10
+	Send {Down} ; to Pointers group
+	Send {Down} ; to 2D group
+	Send {Left} ; collapse 2D group
+	Send {Down} ; to 3D group
+	Send {Left} ; collapse 3D group
+	Send {Down} ; to Specific_Character_Values group
+	Send {Down} ; to 01_SCV_Aligmnet RED
+	Send {Down} ; to SCV_Addresses SUBGROUP
+		Loop, 16 {			; Goes-Through SCV_Addresses (Characters)~~~		
+		collapseSubGroup() ; to War Machine
+		}
+	sleep 10
+	Send {Down} ; to System & Camera Group
+	Send {Down} ; to A_2D_Game_Timer
+	Send {Down} ; to Duplicates Subgroup
+		Loop, 12 {			; Goes-Through Duplicates (Properties)~~~
+		collapseSubGroup() ; to Unfly_duplicate
+		}
+	sleep 10
+	Send {Down} ; to Win_Display_Toggle_dup
+	Send {Down} ; to Player_Character_Values group
+	Send {Down} ; to HUD_Cheats subgroup
+	Sleep 1000
+	Send {Left}
+	Send {Down}
+
+	Sleep 4000
+		Loop, 8 {			; Goes-Through Player Character Values (P1A-P2C)~~~ 
+		collapseSubGroup() ; to P2_C_Character_Values
+		}
+	Send {Down} ; to System Values
+	sleep 10
+		Loop, 8 { 			; Goes-Through System Values (Properties)~~~
+		collapseSubGroup() 	; to Misc_Game_Values
+		}
+	Send {End} ; to bottom
+	sleep 100
+	Send {Home} ; to Top
+	sleep 100
+		Loop, 20 {
+		Send {Down} ; to 3D-Extra
+		}
+	Send {Left} 	; collapse 3D-Extra
+	Loop, 6 {
+		Send {Down} ; to SCV_Address subgroup
+		}
+	Send {Left} 	; collapse 2D SCV subgroup
+	Loop, 3 {
+		Send {Down} ; to duplicates subgroup
+	}
+	Send {Left} ; collapse duplicates subgroup
+	Send {Down} ; to Player_Character_Values
+	Send {Left} ; collapse Player_Character_Values subgroup
+	Send {Down} ; to System_Values
+	Send {Left} ; collapse System_Values
+	Send {Home} ; to Top
+	Loop, 22 {
+		Send {Down} ; 2D Pointers group
+		}
+	sleep 100
+	Send {Right} ; expand 2D Pointers Group
+	Send {End} ; end
+return
+	}
+}
+}
+;MovePCSX2 Function				Moves PCSX2 Main, and then PCSX2 Console
+{
+#IfWinActive ahk_class PCSX2 Main
+movePCSX2()
+{
+WinMove ahk_class PCSX2 Main, , 1500,-260
+sleep 50
+WinActivate ahk_class ConsoleWindowClass
+WinMove, ahk_class ConsoleWindowClass,, 911, -841, 345,850
+sleep 10
+WinActivate ahk_class PCSX2 Main
+return
+}
+}
+;Invoke Function Move PCSX2		#m
+{
+#m::
+movePCSX2()
+return
+}
+;MoveCE_LUA Function
+{
+#IfWinActive Lua Engine
+moveLUA()
+{
+WinMove Lua Engine, , 911,-1080, 260, 240
+sleep 10
+return
+}
+}
+;Invoke MoveCE_LUA Function		#b
+{
+#b::
+moveLUA()
+return
+}
+;Switch PCSX2 for StreamDeck	Switches the active window from PCSX2-Console to the main game-window -- for Stream Deck
+{
+#IfWinActive ahk_class ConsoleWindowClass
+#F12::
+{
+WinActivate ahk_class PCSX2 Main
+return
+}
+}
+;Invoke collapseTable			#F11 - Sets up CE for SD macro and AHK searches
+{
+#IfWinActive ahk_class PCSX2 Main
+#F11::
+{
+WinActivate ahk_exe cheatengine-x86_64.exe
+Sleep 200
+Send {Down} ; first down-press
+sleep 100
+collapseTable() ; ~8.5 seconds to execute
+sleep 200
+Send ^b
+Sleep 500
+Send ^l 
+sleep 300
+;~ WinClose Memory Viewer
+;~ sleep 100
+;~ WinActivate Lua Engine
+;~ Sleep 10
+;~ ImageSearch, FoundX, FoundY, 0, 0, A_ScreenWidth, A_ScreenHeight, LuaEngine.png
+;~ if (ErrorLevel = 2)
+    ;~ MsgBox Could not conduct the search.
+;~ else if (ErrorLevel = 1)
+	;~ MsgBox Could not find item.
+;~ else
+   ;~ MouseMove, %FoundX%,%FoundY%
+;~ Sleep 100
+;~ MouseClick, Left, 20, 50
+;~ Sleep 50
+;~ moveLUA()
+;~ sleep 100
+return
+}
+}
+;Invoke findDesc				#F9 - Click over the Lua window's "Execute" button (from left to right)
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+#F9::
+{
+CoordMode, Mouse, Screen
+MouseGetPos, varX, varY
+MouseClick
+CoordMode, Mouse, Relative
+sleep 200
+findDesc(nameA)
+sleep 50
+pasteClip()
+sleep 50
+CoordMode, Mouse, Screen
+MouseMove, varX, varY
+return
+}
+}
+;Invoke pasteClip				#F1 - Executes pasteClip function (used in other places)
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+#F1::
+pasteClip()
+return
+}
+;NOP READ  |1| 					^F4 - NOPs out the first instruction that READS to this address.
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+^F4::
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+CoordMode Mouse, Screen
+MouseGetPos, myX, myY
+SendInput {F6}
+winwait,  The following
+sleep 200
+tapSpace()
+sleep 360
+CoordMode Mouse, Relative
+MouseClick, right, 40, 60
+MouseClick, left, 50, 65
+sleep 200
+SendInput {return}
+sleep 200
+SendInput {tab}
+sleep 100
+SendInput {tab}
+sleep 20
+SendInput {space}
+sleep 20
+SendInput {space}
+sleep 20
+CoordMode, Mouse, Screen
+MouseMove, myX, myY
+return
+sendinput ^
+}
+;NOP WRITE |1 & 3| 				^F6 - NOPs out the first and third instruction that writes to this address.
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+^F6::
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+CoordMode Mouse, Screen
+MouseGetPos, myX,myY
+SendInput {F5}
+winwait,  The following
+sleep 50
+tapSpace()
+sleep 100
+CoordMode Mouse, Relative
+MouseClick, right, 40, 60
+MouseClick, left, 50, 65
+sleep 10
+SendInput {return}
+sleep 100
+MouseClick, right, 40, 105
+MouseClick, left, 50, 115
+sleep 10
+SendInput {return}
+sleep 100
+SendInput {tab}
+sleep 20
+SendInput {tab}
+sleep 20
+SendInput {space}
+sleep 30
+SendInput {space}
+sleep 100
+CoordMode, Mouse, Screen
+MouseMove, myX, myY
+return
+sendinput ^
+}
+;NOP WRITE |3| 					^F7 - NOPs out the third instruction that writes to this address
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+^F7::
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+CoordMode Mouse, Screen
+MouseGetPos, myX,myY
+SendInput {F5}
+winwait,  The following
+sleep 50
+tapSpace()
+sleep 100
+CoordMode Mouse, Relative
+MouseClick, right, 40, 105
+MouseClick, left, 50, 115
+sleep 10
+SendInput {return}
+sleep 100
+SendInput {tab}
+sleep 20
+SendInput {tab}
+sleep 20
+SendInput {space}
+sleep 30
+SendInput {space}
+sleep 100
+CoordMode Mouse, Screen
+MouseMove, myX,myY
+return
+sendinput ^
+}
+;Invoke 2D Pointers				^F3 - Uses 4 Image-Searches and the pasteClip function to recalculate 2D offsets
+{
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+^F3::
+#IfWinActive ahk_exe cheatengine-x86_64.exe
+ImageSearch, FoundX, FoundY, 0, 0, A_ScreenWidth, A_ScreenHeight, A_GameTimer_Pointer.png
+if (ErrorLevel = 2)
+    MsgBox Could not conduct the search.
+else if (ErrorLevel = 1)
+	MsgBox Could not find item.
+else
+   MouseMove, %FoundX%,%FoundY%
+   MouseMove, 50, 2, 0, R
+sleep 100
+copyPointer()
+sleep 100
+CoordMode, Mouse, Relative
+ImageSearch, X, Y, 0, 0, A_ScreenWidth, A_ScreenHeight, GameTimer.png
+if (ErrorLevel = 2)
+    MsgBox Could not conduct the search.
+else if (ErrorLevel = 1)
+	MsgBox Could not find item.
+else
+	CoordMode, Mouse, Relative
+    MouseMove, %X%, %Y%
+	pasteClip()
+sleep 100
+CoordMode, Mouse, Relative
+ImageSearch, XX, YY, 0, 0, A_ScreenWidth, A_ScreenHeight, A_SCV_PointerB.png
+if (ErrorLevel = 2)
+    MsgBox Could not conduct the search.
+else if (ErrorLevel = 1)
+	MsgBox Could not find item.
+else
+   CoordMode, Mouse, Relative
+   MouseMove, %XX%, %YY%
+   MouseMove, 50, 2, 0, R
+copyPointer()
+sleep 100
+CoordMode, Mouse, Relative
+ImageSearch, XA, YA, 0, 0, A_ScreenWidth, A_ScreenHeight, A_SCV_.png
+if (ErrorLevel = 2)
+    MsgBox Could not conduct the search.
+else if (ErrorLevel = 1)
+	MsgBox Could not find item.
+else
+	CoordMode, Mouse, Relative
+    MouseMove, %XA%, %YA%
+	pasteClip()
+return
+}
+
+;---------------------------------------------------------;
+;----------------------After Effects----------------------;
+;---------------------------------------------------------;
+
+;Caps Lock						F12
+{
+#IfWinActive ahk_exe AfterFX.exe
+F12:: CapsLock
+return
+}
+
+; MainPath Edit (Paste Dir)		^F8
+{
+#IfWinActive ahk_exe AfterFX.exe
+^F8::
+SendInput {Click, right}
+sleep 10
+Send {E}
+WinWait, Edit Value
+sleep 10
+Send ^v
+sleep 10
+Send \
+sleep 10
+sendInput {NumpadEnter}
+return
+}
+
+; MasterProperties				^F9
+{
+#IfWinActive ahk_exe AfterFX.exe
+^F9::
+SendInput {Click, Left}
+sleep 150
+ImageSearch varSX, varSY, 0, 0, A_ScreenWidth, A_ScreenHeight, AfterFX_SelectedArrow.png
+if (ErrorLevel = 2)
+    MsgBox Could not conduct the search.
+else if (ErrorLevel = 1)
+	MsgBox Could not find item.
+else
+   MouseMove, varSX+5,varSY
+   SendInput {Click, Left}
+sleep 250
+CoordMode, Screen
+MouseGetPos, tX, tY
+ImageSearch varX, varY, 0, %tY%, A_ScreenWidth, A_ScreenHeight, AfterFX_MasterProperties.png
+	if (ErrorLevel = 2)
+    MsgBox Could not conduct the search.
+	else if (ErrorLevel = 1)
+	MsgBox Could not find item.
+	else
+	MouseMove, varX-18,varY+5
+return
+}
