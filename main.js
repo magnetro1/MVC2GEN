@@ -9,30 +9,20 @@ const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }Magneto_ROM100/`;
 const FILE_NAME_NO_EXT = DIR_OUTPATH.toString().match(/(\w+).$/)[1];
 const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js`; // Current-Active-Working-File
 const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
-
-if (!fs.existsSync(`${ DIR_OUTPATH }`))
+const POINT_OBJ_P1 =
 {
-  fs.mkdirSync(`${ DIR_OUTPATH }`), {recursive: true};
-}
-
-function writeAllJSForAE()
+  P1_A_: pMem.P1_A_Is_Point.split(","),
+  P1_B_: pMem.P1_B_Is_Point.split(","),
+  P1_C_: pMem.P1_C_Is_Point.split(",")
+};
+const POINT_OBJ_P2 =
 {
-  fs.readFileSync(`${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js`, 'utf8')
-    .toString().split(';').forEach((exportVar) =>
-    {
-      var allVariableInfoREGEX = /export var (\w+) = "(.*)"/gmi;
-      var nameOfVariable;
-      while (nameOfVariable = allVariableInfoREGEX.exec(exportVar))
-      {
-        if (!fs.existsSync(`${ DIR_OUTPATH }${ nameOfVariable[1] }.js`))
-          fs.writeFileSync(`${ DIR_OUTPATH }${ nameOfVariable[1] }.js`,
-            `export var result = [];\n result[0] = [${ nameOfVariable[2] }];\n`,
-            {encoding: 'utf8'}, (err => {}));
-      }
-    })
-}
-
-function writeMinMaxToNodeJSFile()
+  P2_A_: pMem.P2_A_Is_Point.split(","),
+  P2_B_: pMem.P2_B_Is_Point.split(","),
+  P2_C_: pMem.P2_C_Is_Point.split(","),
+};
+// Appending to Node JS File
+function writeMinMaxToNodeJSFile()//✅
 {
   for (var minMaxAddress in MIN_MAX_ADRS)
   {
@@ -64,43 +54,31 @@ function writeMinMaxToNodeJSFile()
     }
   }
 };
-writeMinMaxToNodeJSFile();
+writeMinMaxToNodeJSFile()
 
-const POINT_OBJ_P1 =
-{
-  P1_A_: pMem.P1_A_Is_Point.split(","),
-  P1_B_: pMem.P1_B_Is_Point.split(","),
-  P1_C_: pMem.P1_C_Is_Point.split(",")
-};
-const POINT_OBJ_P2 =
-{
-  P2_A_: pMem.P2_A_Is_Point.split(","),
-  P2_B_: pMem.P2_B_Is_Point.split(","),
-  P2_C_: pMem.P2_C_Is_Point.split(","),
-};
+// Writing Directories and JS Files from Node JS File
 
-function getLabelsfromJS(pathToFile)
+if (!fs.existsSync(`${ DIR_OUTPATH }`))
 {
-  var readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: 'utf8'});
-  if (readFileForChecking.match("P2_C_Y_Velocity_Max"))
-  {
-    var playerDataAll = []
-    var getFile = fs.readFileSync(pathToFile, 'utf8',);
-    getFile.toString().split(';').forEach((line) =>
+  fs.mkdirSync(`${ DIR_OUTPATH }`), {recursive: true};
+}
+
+function writeAllJSForAE()//✅
+{
+  fs.readFileSync(`${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js`, 'utf8')
+    .toString().split(';').forEach((exportVar) =>
     {
-      let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all player memory addresses; want capture group 2.
-      let tempRegexVar; // Temporary variable to run the exec method
-      while (tempRegexVar = playerMemoryRegex.exec(line)) // Exec needs to match true or false
+      var allVariableInfoREGEX = /export var (\w+) = "(.*)"/gmi;
+      var nameOfVariable;
+      while (nameOfVariable = allVariableInfoREGEX.exec(exportVar))
       {
-        playerDataAll.push(tempRegexVar[2]); // regex.exec returns array of all matches; item[2] is the address; has many duplicates
-        playerDataAll.join(','); // Converts array to string
-      };
-    });
-    var removeDuplicates = [...new Set(playerDataAll)];
-
-    return removeDuplicates
-  }
-};
+        if (!fs.existsSync(`${ DIR_OUTPATH }${ nameOfVariable[1] }.js`))
+          fs.writeFileSync(`${ DIR_OUTPATH }${ nameOfVariable[1] }.js`,
+            `export var result = [];\n result[0] = [${ nameOfVariable[2] }];\n`,
+            {encoding: 'utf8'}, (err => {}));
+      }
+    })
+}
 function writeTotalFrameCountCNV()
 {
   var totalFrameArr = [];
@@ -115,7 +93,6 @@ function writeTotalFrameCountCNV()
     fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `result[1] = [${ totalFrameArr }];\n`, {encoding: 'utf8'}, (err => {}));
   }
 };
-
 function writeP1P2Addresses()
 {
   var miscAdrArray = [[]];
@@ -149,17 +126,38 @@ function writeStageDataCNV()
 
     pMem.Stage_Selector.split(',').forEach((frame) =>
     {
-      stageData.push(`'${ Object.values(STAGES_OBJ)[frame] }FF'`)
+      stageData.push(`'${ Object.values(STAGES_OBJ)[frame] }FF'`) // color + 'FF' for alpha
     });
     fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`, `result[1] = [${ stageData }];\n`, {encoding: 'utf8'}, (err => {}));
     stageData = [];
   }
 };
-// Get unique-list of player memory addresses per clip to feed into main function. EX: P1_A/B/C_Health_Big
+function getLabelsfromJS(pathToFile)//✅
+{
+  var readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: 'utf8'});
+  if (readFileForChecking.match("P2_C_Y_Velocity_Max"))
+  {
+    var playerDataAll = []
+    var getFile = fs.readFileSync(pathToFile, 'utf8',);
+    getFile.toString().split(';').forEach((line) =>
+    {
+      let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all player memory addresses; want capture group 2.
+      let tempRegexVar; // Temporary variable to run the exec method
+      while (tempRegexVar = playerMemoryRegex.exec(line)) // Exec needs to match true or false
+      {
+        playerDataAll.push(tempRegexVar[2]); // regex.exec returns array of all matches; item[2] is the address; has many duplicates
+        playerDataAll.join(','); // Converts array to string
+      };
+    });
+    var removedDuplicatesArray = [...new Set(playerDataAll)];
+
+    return removedDuplicatesArray
+  }
+};
+
 
 // Main function to write data to files OR return finalValues array
-// Appends array if 2-character+ bug is on
-function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 'P1'/'P2', address from data-object, 1/0
+function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write)//✅ ('P1'/'P2', address from data-object, 1/0)
 {
   var finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
   var playerObjectSwitcher; // Switches between the Player1 and Player2 objects
@@ -306,42 +304,6 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
       }
     }
   }
-  for (let floatAddress in FLOATING_POINT_ADRS)
-  {
-    var toFixedDigitNumberFour = 4; //7 by default
-    var floatArrayFixed = [[], [], []];
-    if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
-    {
-      //ToFixed
-      if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberFour }.js`))
-      {
-        fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberFour }.js`, `result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
-
-        finalValuesArray[0].forEach((value) =>
-        {
-          value = parseFloat(value)
-          floatArrayFixed[0].push(value.toFixed(toFixedDigitNumberFour));
-        });
-        finalValuesArray[1].forEach((value) =>
-        {
-          value = parseFloat(value)
-          floatArrayFixed[1].push(value.toFixed(toFixedDigitNumberFour));
-        });
-        finalValuesArray[2].forEach((value) =>
-        {
-          value = parseFloat(value)
-          floatArrayFixed[2].push(value.toFixed(toFixedDigitNumberFour));
-        });
-        fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberFour }.js`,
-          `result[0]=[${ floatArrayFixed[0].toString() }];` + '\n' +
-          `result[1]=[${ floatArrayFixed[1].toString() }];` + '\n' +
-          `result[2]=[${ floatArrayFixed[2].toString() }];`
-          , {encoding: 'utf8'}
-          , (err => {}));
-      }
-    }
-  }
-
   // Check if files exist
   if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`))
   {
@@ -362,7 +324,7 @@ function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 
 }; // End of Mainfunction()
 
 // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
-function writeStaticDataCNV()
+function writeStaticDataCNV() //✅
 {
   const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
   const STATIC_DATA_ADRS = ['Knockdown_State', 'Is_Prox_Block', 'ID_2', 'ID_2']
@@ -599,7 +561,7 @@ function writeNewStates()
       'State_Tech_Hit',
       'State_Thrown_Air',
       'State_Thrown_Ground',
-      //NEW_STATE_ADD_HERE ⏫
+      //NEW_STATE_ADD_HERE
       //ROM-specific states
       'State_ROM_01_OpponentStateA',
       'State_ROM_02_ChoiceA',
@@ -1380,7 +1342,7 @@ function writeNewStates()
   }
 }
 
-writeMinMaxToNodeJSFile() // breaks next function on first-run; re-run program to get full results
+// writeMinMaxToNodeJSFile() // breaks next function on first-run; re-run program to get full results
 getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
 {
   writePlayerMemory(1, label.toString(), 1);

@@ -1,22 +1,549 @@
 import * as fs from "fs"
 import * as path from "path"
+import * as childProcess from "child_process"
+import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js"
+const MAIN_NAME = `Magneto_ROM100`;
 
-const DIR_CSVs = path.join(process.cwd(), `/main_files/CSV_to_JS`);
-const FILE_ROM100 = path.join(DIR_CSVs, `Magneto_ROM100_F.csv`);
-const READCSV = fs.readFileSync(FILE_ROM100, 'utf8');
-const READ_HEADERS = READCSV.split(`\n`)[0].split(`,`);
-const HEADERS_LENGTH = READCSV.split(`\n`)[0].split(`,`).length;
-const CLIP_LENGTH = READCSV.split(`\n`).length;
+const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`);
+const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
+const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ MAIN_NAME }/`;
+const FILE_NAME_NO_EXT = MAIN_NAME;
+const NODE_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }_node.js`; // Current-Active-Working-File
 
-var headersArray = [];
-var totalFramesArray = [];
-
-for (let i = 0; i < READ_HEADERS.length; i++)
+// Write Directory
+if (!fs.existsSync(`${ DIR_OUTPATH }`))
 {
-    headersArray.push(READ_HEADERS[i]);
+  fs.mkdirSync(`${ DIR_OUTPATH }`), {recursive: true};
 }
-for (let i = 1; i < CLIP_LENGTH; i++)
+
+// Append Min & Max values to Node.js file // THIS IS THE ONLY WRITING TO THE NODE FILE IN APP
+import(`./main_files/${ MAIN_NAME }_node.js`).then((pMem) =>
 {
-    totalFramesArray.push(READCSV.split(`\n`)[i].split(',')[0]);
-}
-console.log(HEADERS_LENGTH);
+  const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
+  for (var minMaxAddress in MIN_MAX_ADRS)
+  {
+    let tempAddress = eval(`pMem.${ MIN_MAX_ADRS[minMaxAddress] }.split(',')`);
+    let tempMinValue = (Math.min(...tempAddress));
+    let tempMaxValue = (Math.max(...tempAddress));
+    let prependStringMin = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
+    let prependStringMax = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Max = `;
+    let tempStringMin = "";
+    let tempStringMax = "";
+    for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+    {
+      //Get rid of final comma
+      clipLen == CLIP_LENGTH - 1 ? tempStringMin += `${ tempMinValue }` : tempStringMin += `${ tempMinValue },`;
+      clipLen == CLIP_LENGTH - 1 ? tempStringMax += `${ tempMaxValue }` : tempStringMax += `${ tempMaxValue },`;
+    }
+    // writeMinMaxToNodeJSFile();//✅
+    let readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: 'utf8'});
+    if (!readFileForChecking.includes(prependStringMin) && (!readFileForChecking.includes(prependStringMax)))
+    {
+      fs.appendFileSync(`${ NODE_JS_FILE }`, ` ${ prependStringMin.toString() }"${ tempStringMin.toString() }";\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
+      fs.appendFileSync(`${ NODE_JS_FILE }`, ` ${ prependStringMax.toString() }"${ tempStringMax.toString() }";\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
+    }
+  }
+});
+
+// Write individual JS files after node.js file has been updated
+setTimeout(() =>
+{
+  //writingMinMax values to individual files
+  import(`./main_files/${ MAIN_NAME }_node.js`).then((pMem) =>
+  {
+    const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
+    for (var minMaxAddress in MIN_MAX_ADRS)
+    {
+      let tempAddress = eval(`pMem.${ MIN_MAX_ADRS[minMaxAddress] }.split(',')`);
+      let tempMinValue = (Math.min(...tempAddress));
+      let tempMaxValue = (Math.max(...tempAddress));
+      let prependStringMin = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
+      let tempStringMin = "";
+      let tempStringMax = "";
+      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+      {
+        //Get rid of final comma
+        clipLen == CLIP_LENGTH - 1 ? tempStringMin += `${ tempMinValue }` : tempStringMin += `${ tempMinValue },`;
+        clipLen == CLIP_LENGTH - 1 ? tempStringMax += `${ tempMaxValue }` : tempStringMax += `${ tempMaxValue },`;
+      }
+
+      // Write individual Min/Max JS files for AE
+      if (prependStringMin.match(/P\d_Combo_Meter_Value/gm))
+      {
+        fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[minMaxAddress] }_Min.js`, `var result = [];\nresult[0] = [${ tempStringMin.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
+        fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[minMaxAddress] }_Max.js`, `var result = [];\nresult[0] = [${ tempStringMax.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
+      }
+    }
+    // writeAllJSForAE()//✅
+    // Extract & Write Node JS entries to individual files for AE
+    fs.readFileSync(`${ NODE_JS_FILE }`, 'utf8')
+      .toString().split(';').forEach((exportVar) =>
+      {
+        var allVariablesREGEX = /export var (\w+) = "(.*)"/gmi;
+        var tempRegExVar;
+        while (tempRegExVar = allVariablesREGEX.exec(exportVar))
+        {
+          if (!fs.existsSync(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`))
+            fs.writeFileSync(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`,
+              `export var result = [];\n result[0] = [${ tempRegExVar[2] }];\n`,
+              {encoding: 'utf8'}, (err => {}));
+        }
+      });
+  });
+}, 1000);
+
+// Main Function in another timeout
+setTimeout(() =>
+{
+  import(`./main_files/${ MAIN_NAME }_node.js`).then((pMem) =>
+  {
+    const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
+    const POINT_OBJ_P1 =
+    {
+      P1_A_: pMem.P1_A_Is_Point.split(","),
+      P1_B_: pMem.P1_B_Is_Point.split(","),
+      P1_C_: pMem.P1_C_Is_Point.split(",")
+    };
+    const POINT_OBJ_P2 =
+    {
+      P2_A_: pMem.P2_A_Is_Point.split(","),
+      P2_B_: pMem.P2_B_Is_Point.split(","),
+      P2_C_: pMem.P2_C_Is_Point.split(","),
+    };
+    // Main function to write data to files OR return finalValues array
+    // Appends array if 2-character+ bug is on
+    function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 'P1'/'P2', address from data-object, 1/0
+    {
+      var finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
+      var playerObjectSwitcher; // Switches between the Player1 and Player2 objects
+      var playerSwitcher; // Switches between "P1" and "P2"
+
+      if ((PlayerOneOrPlayerTwo == 1) || (PlayerOneOrPlayerTwo == "P1"))
+      {
+        playerObjectSwitcher = POINT_OBJ_P1;
+        playerSwitcher = "P1";
+      }
+      else if ((PlayerOneOrPlayerTwo == 2) || (PlayerOneOrPlayerTwo == "P2"))
+      {
+        playerObjectSwitcher = POINT_OBJ_P2;
+        playerSwitcher = "P2";
+      }
+      // Push all player memory addresses to finalValuesArray depending on the if-statement-logic
+      // Eval EX: eval(data.P1_A_Health_Big.split(','))[clipLen])
+      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) // length of clip
+      {
+        if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0) && (Object.values(playerObjectSwitcher)[1][clipLen] == 0) && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
+        {
+          // console.log( `${ playerString}: 3-Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
+          finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }.split(',')`)[clipLen]);
+          finalValuesArray[1].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }.split(',')`)[clipLen]);
+          finalValuesArray[2].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }.split(',')`)[clipLen]);
+        }
+        //2-Character Bug Logic
+        else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0) && (Object.values(playerObjectSwitcher)[1][clipLen] == 0) && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
+        {
+          // console.log( `${ playerString}: 2-Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
+          finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }.split(',')`)[clipLen]);
+          finalValuesArray[1].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }.split(',')`)[clipLen]);
+        }
+        else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0) && (Object.values(playerObjectSwitcher)[1][clipLen] != 0) && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
+        {
+          // console.log( `${ playerString}: 2-Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
+          finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }.split(',')`)[clipLen]);
+          finalValuesArray[1].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }.split(',')`)[clipLen]);
+        }
+        else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0) && (Object.values(playerObjectSwitcher)[1][clipLen] == 0) && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
+        {
+          // console.log( `${ playerString}: 2-Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
+          finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }.split(',')`)[clipLen]);
+          finalValuesArray[1].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }.split(',')`)[clipLen]);
+        }
+        //1-Character Logic
+        else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0) && (Object.values(playerObjectSwitcher)[1][clipLen] != 0) && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
+        {
+          // console.log( `${ playerString}: 1-Character Logic: A == 0 && B != 0 && C != 0        P1: A` );
+          finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }.split(',')`)[clipLen]);
+          //                          eval(data.P1_A_Health_Big.split(','))[clipLen])
+        }
+        else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0) && (Object.values(playerObjectSwitcher)[1][clipLen] == 0) && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
+        {
+          // console.log( `${ playerString}: 1-Character Logic: A != 0 && B == 0 && C != 0        P1: B` );
+          finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }.split( ',' )`)[clipLen]);
+          //                          eval(data.P1_B_Health_Big.split(','))[clipLen])
+        }
+        else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0) && (Object.values(playerObjectSwitcher)[1][clipLen] != 0) && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
+        {
+          // console.log( `${ playerString}: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C` );
+          finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }.split(',')`)[clipLen]);
+          //                          eval(data.P1_B_Health_Big.split(','))[clipLen])
+        }
+      }
+      // Return if not writing files
+      if (write == 0)
+      {
+        return finalValuesArray
+      }
+      // Write files - Check if directory exists
+      if (!fs.existsSync(DIR_OUTPATH))
+      {
+        fs.mkdirSync(DIR_OUTPATH);
+      }
+      // Check for Floating Point Addresses so they can have their trailing digits cut off
+      for (let floatAddress in FLOATING_POINT_ADRS)
+      {
+        var toFixedDigitNumberZero = 0; //7 by default
+        var floatArrayFixed = [[], [], []];
+        if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
+        {
+          //ToFixed
+          if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero }.js`))
+          {
+            fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero }.js`, `result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
+
+            finalValuesArray[0].forEach((value) =>
+            {
+              value = parseFloat(value)
+              floatArrayFixed[0].push(value.toFixed(toFixedDigitNumberZero));
+            });
+            finalValuesArray[1].forEach((value) =>
+            {
+              value = parseFloat(value)
+              floatArrayFixed[1].push(value.toFixed(toFixedDigitNumberZero));
+            });
+            finalValuesArray[2].forEach((value) =>
+            {
+              value = parseFloat(value)
+              floatArrayFixed[2].push(value.toFixed(toFixedDigitNumberZero));
+            });
+            fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero }.js`,
+              `result[0]=[${ floatArrayFixed[0].toString() }];` + '\n' +
+              `result[1]=[${ floatArrayFixed[1].toString() }];` + '\n' +
+              `result[2]=[${ floatArrayFixed[2].toString() }];`
+              , {encoding: 'utf8'}
+              , (err => {}));
+          }
+        }
+      }
+      for (let floatAddress in FLOATING_POINT_ADRS)
+      {
+        var toFixedDigitNumberTwo = 2; //7 by default
+        var floatArrayFixed = [[], [], []];
+        if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
+        {
+          //ToFixed
+          if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberTwo }.js`))
+          {
+            fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberTwo }.js`, `result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
+
+            finalValuesArray[0].forEach((value) =>
+            {
+              value = parseFloat(value)
+              floatArrayFixed[0].push(value.toFixed(toFixedDigitNumberTwo));
+            });
+            finalValuesArray[1].forEach((value) =>
+            {
+              value = parseFloat(value)
+              floatArrayFixed[1].push(value.toFixed(toFixedDigitNumberTwo));
+            });
+            finalValuesArray[2].forEach((value) =>
+            {
+              value = parseFloat(value)
+              floatArrayFixed[2].push(value.toFixed(toFixedDigitNumberTwo));
+            });
+            fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberTwo }.js`,
+              `result[0]=[${ floatArrayFixed[0].toString() }];` + '\n' +
+              `result[1]=[${ floatArrayFixed[1].toString() }];` + '\n' +
+              `result[2]=[${ floatArrayFixed[2].toString() }];`
+              , {encoding: 'utf8'}
+              , (err => {}));
+          }
+        }
+      }
+
+
+      // Check if files exist
+      if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`))
+      {
+        fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`,
+          `var result = [];` + '\n',
+          {flag: 'a+', encoding: 'utf8'},
+          (err => {}));
+
+        // Append main data
+        for (let dataArrayPerCharacter in finalValuesArray)
+        {
+          fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`,
+            `result[${ dataArrayPerCharacter }] = [${ finalValuesArray[dataArrayPerCharacter] }];\n`,
+            {encoding: 'utf8'},
+            (err => {}));
+        }
+      }
+    }; // End of Mainfunction()
+
+    // Get Player-Memory var Names for Main Function
+    function getLabelsfromJS(pathToFile)
+    {
+      var readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: 'utf8'});
+      if (readFileForChecking.match("P2_C_Y_Velocity_Max")) // Check if file has been updated with new memory addresses
+      {
+        var playerDataAll = []
+        var getFile = fs.readFileSync(pathToFile, 'utf8',);
+        getFile.toString().split(';').forEach((line) =>
+        {
+          let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all player memory addresses; want capture group 2.
+          let tempRegexVar; // Temporary variable to run the exec method
+          while (tempRegexVar = playerMemoryRegex.exec(line)) // Exec needs to match true or false
+          {
+            playerDataAll.push(tempRegexVar[2]); // regex.exec returns array of all matches; item[2] is the address; has many duplicates
+            playerDataAll.join(','); // Converts array to string
+          };
+        });
+        var removedDuplicatesArray = [...new Set(playerDataAll)];
+        return removedDuplicatesArray
+      }
+    };
+
+    // writePlayerMemory();
+    // getLabelsfromJS();
+    getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
+    {
+      writePlayerMemory(1, label.toString(), 1);
+      writePlayerMemory(2, label.toString(), 1);
+    });
+    // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
+    function writeStaticDataCNV()
+    {
+      const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
+      const STATIC_DATA_ADRS = ['Knockdown_State', 'Is_Prox_Block', 'ID_2', 'ID_2']
+      var staticLookupResultsArray = [[], [], []];
+
+      for (let playersLen = 1; playersLen < 3; playersLen++)
+      {
+        for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
+        {
+          // Make directories if they don't exist
+          if (!fs.existsSync(DIR_OUTPATH))
+            fs.mkdirSync(DIR_OUTPATH);
+          //Write base file
+          if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+          {
+            fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`,
+              `var result = [];` + '\n',
+              {encoding: 'utf8'},
+              (err => {}));
+          }
+          else
+          {
+            fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`,
+              `var result = [];` + '\n',
+              {encoding: 'utf8'},
+              (err => {}));
+          }
+        }
+        for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
+        {
+          var callPlayerMemoryFN = writePlayerMemory(`${ playersLen }`, STATIC_DATA_ADRS[staticDataLen], 0);
+          for (let playerMemLength = 0; playerMemLength < callPlayerMemoryFN.length; playerMemLength++)
+          {
+            //Push and convert all three arrays' values
+            for (let characterSlot = 0; characterSlot < callPlayerMemoryFN[playerMemLength].length; characterSlot++)
+            {
+              staticLookupResultsArray[playerMemLength].push(`'${ Object.values(STATIC_DATA_OBJS[staticDataLen])[callPlayerMemoryFN[playerMemLength][characterSlot]] }'`);
+            }
+
+            if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+            {
+              fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
+                {encoding: 'utf8'},
+                (err => {}));
+              staticLookupResultsArray = [[], [], []];
+            }
+            else
+            {
+              fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
+                {encoding: 'utf8'},
+                (err => {}));
+              staticLookupResultsArray = [[], [], []];
+            }
+          }
+        }
+      }
+    };// End of writeStaticDataCNV()
+    writeStaticDataCNV();
+  });//import-scope
+}, 1000);//timeout-scope
+
+
+// function writeTotalFrameCountCNV()
+// {
+//   var totalFrameArr = [];
+//   pMem.Total_Frames.split(',').forEach((frame, index) =>
+//   {
+//     totalFrameArr.push(index + 1);
+//   });
+//   if (!fs.existsSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`))
+//   {
+//     fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `var result = [];\nresult[0] = [${ totalFrameArr }];\n`, {encoding: 'utf8'}, (err => {}));
+//     totalFrameArr.reverse()
+//     fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `result[1] = [${ totalFrameArr }];\n`, {encoding: 'utf8'}, (err => {}));
+//   }
+// };
+// writeTotalFrameCountCNV();
+
+// function writeStageDataCNV()
+// {
+//   var stageData = [];
+//   pMem.Stage_Selector.split(',').forEach((frame) =>
+//   {
+//     stageData.push(frame)
+//   });
+
+//   if (!fs.existsSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`))
+//   {
+//     fs.writeFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`, `var result = [];\nresult[0] = [${ stageData }];\n`, {encoding: 'utf8'}, (err => {}));
+//     stageData = [];
+
+//     pMem.Stage_Selector.split(',').forEach((frame) =>
+//     {
+//       stageData.push(`'${ Object.values(STAGES_OBJ)[frame] }FF'`)
+//     });
+//     fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`, `result[1] = [${ stageData }];\n`, {encoding: 'utf8'}, (err => {}));
+//     stageData = [];
+//   }
+// };
+// writeStageDataCNV()
+// function writeInputCNV()
+// {
+//   var P1Inputs = pMem.P1_Input_DEC.split(',');
+//   var P2Inputs = pMem.P2_Input_DEC.split(',');
+//   let playerInputResults = ''; // holds each result for P1 and P2
+//   let playerInputsCNVArray = []; // contains transformed results for P1 and P2
+//   let tempPlayerString = ''; // Changes to "P1" or "P2"
+
+//   var buttonConversionVersion1 =
+//   {
+//     "6": 1024, 	// 6 = right
+//     "4": 2048, 	// 4 = left
+//     "2": 4096, 	// 2 = down
+//     "8": 8192, 	// 8 = up
+//     "u": 512, 	// LP = u
+//     "j": 64,	  // LK = j
+//     "i": 256,	  // HP = i
+//     "k": 32,	  // HK = k
+//     "o": 128,	  // A1 = o
+//     "l": 16,	  // A2 = l
+//     "(": 32768, // START = (
+//     ")": 2,		  // SELECT = )
+//   };
+
+//   var buttonConversionVersion2 =
+//   {
+//     "6": 1024, 	    // 6 = right
+//     "4": 2048, 	    // 4 = left
+//     "2": 4096, 	    // 2 = down
+//     "8": 8192, 	    // 8 = up
+//     "LP": 512, 	    // LP = u
+//     "LK": 64,	      // LK = j
+//     "HP": 256,	    // HP = i
+//     "HK": 32,	      // HK = k
+//     "AA": 128,	    // A1 = o
+//     "AB": 16,	      // A2 = l
+//     "START": 32768, // START = (
+//     "SELECT": 2,    // SELECT = )
+//   };
+
+//   for (let playersLen = 1; playersLen < 3; playersLen++)
+//   {
+//     playersLen == 1 ? tempPlayerString = P1Inputs : tempPlayerString = P2Inputs;
+//     //Input Conversion Type 1
+//     for (let input in tempPlayerString)
+//     {
+//       for (let button in Object.entries(buttonConversionVersion1))
+//       {
+//         if ((tempPlayerString[input] & Object.values(buttonConversionVersion1)[button]) != 0)
+//         {
+//           playerInputResults += `${ Object.keys(buttonConversionVersion1)[button] }`;
+//         }
+//       }
+//       playerInputsCNVArray.push(playerInputResults);
+//       playerInputResults = '';
+//     }
+//     fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
+//       `var result = [];` + '\n' + `result[0] = ['` +
+//       `${ playerInputsCNVArray.toString()
+//         .replace(/24/gi, '1')
+//         .replace(/42/gi, '1')
+//         .replace(/26/gi, '3')
+//         .replace(/62/gi, '3')
+//         .replace(/48/gi, '7')
+//         .replace(/84/gi, '7')
+//         .replace(/86/gi, '9')
+//         .replace(/68/gi, '9')
+//       }'];` + '\n',
+//       {encoding: 'utf8'},
+//       (err => {}));
+//     playerInputsCNVArray = [];
+
+//     //Input Conversion Type 2
+//     for (let input in tempPlayerString)
+//     {
+//       for (let button in Object.entries(buttonConversionVersion2))
+//       {
+//         if ((tempPlayerString[input] & Object.values(buttonConversionVersion2)[button]) != 0)
+//         {
+//           playerInputResults += Object.keys(buttonConversionVersion2)[button];
+//         }
+//       }
+//       playerInputsCNVArray.push(playerInputResults);
+//       playerInputResults = '';
+//     }
+//     fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
+//       `result[1] = ['${ playerInputsCNVArray.toString()
+//         //Fix diagonals
+//         .replace(/24/gi, '1')
+//         .replace(/42/gi, '1')
+//         .replace(/26/gi, '3')
+//         .replace(/62/gi, '3')
+//         .replace(/48/gi, '7')
+//         .replace(/84/gi, '7')
+//         .replace(/86/gi, '9')
+//         .replace(/68/gi, '9')
+//         //Add '+' to direction+button inputs
+//         .replace(/([1-9](?=\w+))/gm, '$1+')
+//         //Replace numbers with Letter-notation
+//         .replace(/2|2\+/gm, 'D')
+//         .replace(/6|6\+/gm, 'R')
+//         .replace(/8|8\+/gm, 'U')
+//         .replace(/4|4\+/gm, 'L')
+//         .replace(/1|1\+/gm, 'DL')
+//         .replace(/3|3\+/gm, 'DR')
+//         .replace(/9|9\+/gm, 'UR')
+//         .replace(/7|7\+/gm, 'UL')
+//         //Re-write assists' notation
+//         .replace(/AA/gi, 'A1')
+//         .replace(/AB/gi, 'A2')
+//       }'];`,
+//       {encoding: 'utf8'},
+//       (err => {}));
+//     playerInputsCNVArray = [];
+//   }
+// }
+// writeInputCNV()
+// function writeP1P2Addresses()
+// {
+//   var miscAdrArray = [[]];
+//   for (let miscAdrIterator in MISC_ADRS)
+//   {
+//     eval(`pMem.${ MISC_ADRS[miscAdrIterator] }`).split(',').forEach((address) =>
+//     {
+//       miscAdrArray[0].push(address);
+//     });
+
+//     if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`))
+//     {
+//       fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`, `var result = [];\nresult[0] = [${ miscAdrArray }];\n`, {encoding: 'utf8'}, (err => {}));
+//       miscAdrArray[0] = [];
+//     }
+//   }
+// };
+// writeP1P2Addresses()
