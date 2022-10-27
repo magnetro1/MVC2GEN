@@ -310,66 +310,66 @@ setTimeout(() =>
       writePlayerMemory(1, label.toString(), 1);
       writePlayerMemory(2, label.toString(), 1);
     });
-    // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
-    function writeStaticDataCNV()
-    {
-      const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
-      const STATIC_DATA_ADRS = ['Knockdown_State', 'Is_Prox_Block', 'ID_2', 'ID_2']
-      var staticLookupResultsArray = [[], [], []];
+    //     // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
+    //     function writeStaticDataCNV()
+    //     {
+    //       const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
+    //       const STATIC_DATA_ADRS = ['Knockdown_State', 'Is_Prox_Block', 'ID_2', 'ID_2']
+    //       var staticLookupResultsArray = [[], [], []];
 
-      for (let playersLen = 1; playersLen < 3; playersLen++)
-      {
-        for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
-        {
-          // Make directories if they don't exist
-          if (!fs.existsSync(DIR_OUTPATH))
-            fs.mkdirSync(DIR_OUTPATH);
-          //Write base file
-          if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
-          {
-            fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`,
-              `var result = [];` + '\n',
-              {encoding: 'utf8'},
-              (err => {}));
-          }
-          else
-          {
-            fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`,
-              `var result = [];` + '\n',
-              {encoding: 'utf8'},
-              (err => {}));
-          }
-        }
-        for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
-        {
-          var callPlayerMemoryFN = writePlayerMemory(`${ playersLen }`, STATIC_DATA_ADRS[staticDataLen], 0);
-          for (let playerMemLength = 0; playerMemLength < callPlayerMemoryFN.length; playerMemLength++)
-          {
-            //Push and convert all three arrays' values
-            for (let characterSlot = 0; characterSlot < callPlayerMemoryFN[playerMemLength].length; characterSlot++)
-            {
-              staticLookupResultsArray[playerMemLength].push(`'${ Object.values(STATIC_DATA_OBJS[staticDataLen])[callPlayerMemoryFN[playerMemLength][characterSlot]] }'`);
-            }
+    //       for (let playersLen = 1; playersLen < 3; playersLen++)
+    //       {
+    //         for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
+    //         {
+    //           // Make directories if they don't exist
+    //           if (!fs.existsSync(DIR_OUTPATH))
+    //             fs.mkdirSync(DIR_OUTPATH);
+    //           //Write base file
+    //           if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+    //           {
+    //             fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`,
+    //               `var result = [];` + '\n',
+    //               {encoding: 'utf8'},
+    //               (err => {}));
+    //           }
+    //           else
+    //           {
+    //             fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`,
+    //               `var result = [];` + '\n',
+    //               {encoding: 'utf8'},
+    //               (err => {}));
+    //           }
+    //         }
+    //         for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
+    //         {
+    //           var callPlayerMemoryFN = writePlayerMemory(`${ playersLen }`, STATIC_DATA_ADRS[staticDataLen], 0);
+    //           for (let playerMemLength = 0; playerMemLength < callPlayerMemoryFN.length; playerMemLength++)
+    //           {
+    //             //Push and convert all three arrays' values
+    //             for (let characterSlot = 0; characterSlot < callPlayerMemoryFN[playerMemLength].length; characterSlot++)
+    //             {
+    //               staticLookupResultsArray[playerMemLength].push(`'${ Object.values(STATIC_DATA_OBJS[staticDataLen])[callPlayerMemoryFN[playerMemLength][characterSlot]] }'`);
+    //             }
 
-            if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
-            {
-              fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
-                {encoding: 'utf8'},
-                (err => {}));
-              staticLookupResultsArray = [[], [], []];
-            }
-            else
-            {
-              fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
-                {encoding: 'utf8'},
-                (err => {}));
-              staticLookupResultsArray = [[], [], []];
-            }
-          }
-        }
-      }
-    };// End of writeStaticDataCNV()
-    writeStaticDataCNV();
+    //             if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+    //             {
+    //               fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
+    //                 {encoding: 'utf8'},
+    //                 (err => {}));
+    //               staticLookupResultsArray = [[], [], []];
+    //             }
+    //             else
+    //             {
+    //               fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
+    //                 {encoding: 'utf8'},
+    //                 (err => {}));
+    //               staticLookupResultsArray = [[], [], []];
+    //             }
+    //           }
+    //         }
+    //       }
+    //     };// End of writeStaticDataCNV()
+    //     writeStaticDataCNV();
   });//import-scope
 }, 1000);//timeout-scope
 
