@@ -1,7 +1,7 @@
-import * as fs from "fs"
-import * as path from "path"
-import * as childProcess from "child_process"
-import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js"
+import * as fs from 'fs'
+import * as path from 'path'
+import * as childProcess from 'child_process'
+import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from './main_files/staticData.js'
 const MAIN_NAME = `Magneto_ROM100`;
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`);
@@ -16,34 +16,39 @@ if (!fs.existsSync(`${ DIR_OUTPATH }`))
   fs.mkdirSync(`${ DIR_OUTPATH }`), {recursive: true};
 }
 
-// Append Min & Max values to Node.js file // THIS IS THE ONLY WRITING TO THE NODE FILE IN APP
-import(`./main_files/${ MAIN_NAME }_node.js`).then((pMem) =>
+//Append Min & Max values to Node.js file // THIS IS THE ONLY WRITING TO THE NODE FILE IN APP
+function writeToNodeFile()
 {
-  const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
-  for (var minMaxAddress in MIN_MAX_ADRS)
+  import(`./main_files/${ MAIN_NAME }_node.js`).then((pMem) =>
   {
-    let tempAddress = eval(`pMem.${ MIN_MAX_ADRS[minMaxAddress] }.split(',')`);
-    let tempMinValue = (Math.min(...tempAddress));
-    let tempMaxValue = (Math.max(...tempAddress));
-    let prependStringMin = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
-    let prependStringMax = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Max = `;
-    let tempStringMin = "";
-    let tempStringMax = "";
-    for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+    const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(',').length; // Used as clip-length frame tracker; address doesn't matter
+    for (var minMaxAddress in MIN_MAX_ADRS)
     {
-      //Get rid of final comma
-      clipLen == CLIP_LENGTH - 1 ? tempStringMin += `${ tempMinValue }` : tempStringMin += `${ tempMinValue },`;
-      clipLen == CLIP_LENGTH - 1 ? tempStringMax += `${ tempMaxValue }` : tempStringMax += `${ tempMaxValue },`;
+      let tempAddress = eval(`pMem.${ MIN_MAX_ADRS[minMaxAddress] }.split(',')`);
+      let tempMinValue = (Math.min(...tempAddress));
+      let tempMaxValue = (Math.max(...tempAddress));
+      let prependStringMin = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
+      let prependStringMax = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Max = `;
+      let tempStringMin = '';
+      let tempStringMax = '';
+      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+      {
+        //Get rid of final comma
+        clipLen == CLIP_LENGTH - 1 ? tempStringMin += `${ tempMinValue }` : tempStringMin += `${ tempMinValue },`;
+        clipLen == CLIP_LENGTH - 1 ? tempStringMax += `${ tempMaxValue }` : tempStringMax += `${ tempMaxValue },`;
+      }
+      // writeMinMaxToNodeJSFile();//✅
+      let readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: 'utf8'});
+      if (!readFileForChecking.includes(prependStringMin) && (!readFileForChecking.includes(prependStringMax)))
+      {
+        fs.appendFileSync(`${ NODE_JS_FILE }`, ` ${ prependStringMin.toString() }'${ tempStringMin.toString() }';\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
+        fs.appendFileSync(`${ NODE_JS_FILE }`, ` ${ prependStringMax.toString() }'${ tempStringMax.toString() }';\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
+      }
     }
-    // writeMinMaxToNodeJSFile();//✅
-    let readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: 'utf8'});
-    if (!readFileForChecking.includes(prependStringMin) && (!readFileForChecking.includes(prependStringMax)))
-    {
-      fs.appendFileSync(`${ NODE_JS_FILE }`, ` ${ prependStringMin.toString() }"${ tempStringMin.toString() }";\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
-      fs.appendFileSync(`${ NODE_JS_FILE }`, ` ${ prependStringMax.toString() }"${ tempStringMax.toString() }";\n`, {flag: 'a+', encoding: 'utf8'}, (err => {}));
-    }
-  }
-});
+  });
+}
+writeToNodeFile();
+
 
 // Write individual JS files after node.js file has been updated
 setTimeout(() =>
@@ -51,15 +56,15 @@ setTimeout(() =>
   //writingMinMax values to individual files
   import(`./main_files/${ MAIN_NAME }_node.js`).then((pMem) =>
   {
-    const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
+    const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(',').length; // Used as clip-length frame tracker; address doesn't matter
     for (var minMaxAddress in MIN_MAX_ADRS)
     {
       let tempAddress = eval(`pMem.${ MIN_MAX_ADRS[minMaxAddress] }.split(',')`);
       let tempMinValue = (Math.min(...tempAddress));
       let tempMaxValue = (Math.max(...tempAddress));
       let prependStringMin = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
-      let tempStringMin = "";
-      let tempStringMax = "";
+      let tempStringMin = '';
+      let tempStringMax = '';
       for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
       {
         //Get rid of final comma
@@ -74,59 +79,78 @@ setTimeout(() =>
         fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[minMaxAddress] }_Max.js`, `var result = [];\nresult[0] = [${ tempStringMax.toString() }];\n`, {encoding: 'utf8'}, (err => {}));
       }
     }
-    // writeAllJSForAE()//✅
     // Extract & Write Node JS entries to individual files for AE
-    fs.readFileSync(`${ NODE_JS_FILE }`, 'utf8')
+    fs.readFileSync(NODE_JS_FILE, 'utf8')
       .toString().split(';').forEach((exportVar) =>
       {
-        var allVariablesREGEX = /export var (\w+) = "(.*)"/gmi;
+        var allVariablesREGEX = /export var (\w+) = '(.*)'/gmi;
         var tempRegExVar;
         while (tempRegExVar = allVariablesREGEX.exec(exportVar))
         {
           if (!fs.existsSync(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`))
+          {
             fs.writeFileSync(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`,
               `export var result = [];\n result[0] = [${ tempRegExVar[2] }];\n`,
               {encoding: 'utf8'}, (err => {}));
+          }
         }
       });
-  });
-}, 1000);
+    // Get Player-Memory var Names for Main Function
+    function getLabelsfromJS()
+    {
+      var readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: 'utf8'});
+      if (readFileForChecking.match('P2_C_Y_Velocity_Max') && readFileForChecking.match('P1_A_X_Gravity_Min')) // Check if file has been updated with new memory addresses
+      {
+        console.log('✅ Node.js file has been updated with new memory addresses');
+        var playerDataAll = []
+        var getFile = fs.readFileSync(NODE_JS_FILE, 'utf8',);
+        getFile.toString().split(';').forEach((line) =>
+        {
+          let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all player memory addresses; want capture group 2.
+          let tempRegexVar; // Temporary variable to run the exec method
+          while (tempRegexVar = playerMemoryRegex.exec(line)) // Exec needs to match true or false
+          {
+            playerDataAll.push(tempRegexVar[2]); // regex.exec returns array of all matches; item[2] is the address; has many duplicates
+            playerDataAll.join(','); // Converts array to string
+          };
+        });
+        var removedDuplicatesArray = [...new Set(playerDataAll)];
+        return removedDuplicatesArray
+      }
+      else
+      {
+        console.log('Please wait for Node.js file to be updated before running AE script');
+      }
+    };
 
-// Main Function in another timeout
-setTimeout(() =>
-{
-  import(`./main_files/${ MAIN_NAME }_node.js`).then((pMem) =>
-  {
-    const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
     const POINT_OBJ_P1 =
     {
-      P1_A_: pMem.P1_A_Is_Point.split(","),
-      P1_B_: pMem.P1_B_Is_Point.split(","),
-      P1_C_: pMem.P1_C_Is_Point.split(",")
+      P1_A_: pMem.P1_A_Is_Point.split(','),
+      P1_B_: pMem.P1_B_Is_Point.split(','),
+      P1_C_: pMem.P1_C_Is_Point.split(',')
     };
     const POINT_OBJ_P2 =
     {
-      P2_A_: pMem.P2_A_Is_Point.split(","),
-      P2_B_: pMem.P2_B_Is_Point.split(","),
-      P2_C_: pMem.P2_C_Is_Point.split(","),
+      P2_A_: pMem.P2_A_Is_Point.split(','),
+      P2_B_: pMem.P2_B_Is_Point.split(','),
+      P2_C_: pMem.P2_C_Is_Point.split(','),
     };
     // Main function to write data to files OR return finalValues array
-    // Appends array if 2-character+ bug is on
     function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // 'P1'/'P2', address from data-object, 1/0
     {
       var finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
       var playerObjectSwitcher; // Switches between the Player1 and Player2 objects
-      var playerSwitcher; // Switches between "P1" and "P2"
+      var playerSwitcher; // Switches between 'P1' and 'P2'
 
-      if ((PlayerOneOrPlayerTwo == 1) || (PlayerOneOrPlayerTwo == "P1"))
+      if ((PlayerOneOrPlayerTwo == 1) || (PlayerOneOrPlayerTwo == 'P1'))
       {
         playerObjectSwitcher = POINT_OBJ_P1;
-        playerSwitcher = "P1";
+        playerSwitcher = 'P1';
       }
-      else if ((PlayerOneOrPlayerTwo == 2) || (PlayerOneOrPlayerTwo == "P2"))
+      else if ((PlayerOneOrPlayerTwo == 2) || (PlayerOneOrPlayerTwo == 'P2'))
       {
         playerObjectSwitcher = POINT_OBJ_P2;
-        playerSwitcher = "P2";
+        playerSwitcher = 'P2';
       }
       // Push all player memory addresses to finalValuesArray depending on the if-statement-logic
       // Eval EX: eval(data.P1_A_Health_Big.split(','))[clipLen])
@@ -191,77 +215,44 @@ setTimeout(() =>
       // Check for Floating Point Addresses so they can have their trailing digits cut off
       for (let floatAddress in FLOATING_POINT_ADRS)
       {
-        var toFixedDigitNumberZero = 0; //7 by default
-        var floatArrayFixed = [[], [], []];
+        var toFixedDigitNumberZero = [0, 2, 4]; //7 by default
+        // var floatArrayFixed = [[], [], []];
         if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
         {
-          //ToFixed
-          if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero }.js`))
+          for (let j = 0; j < toFixedDigitNumberZero.length; j++)
           {
-            fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero }.js`, `result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
+            var floatArrayFixed = [[], [], []];
+            //ToFixed
+            if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[j] }.js`))
+            {
+              fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[j] }.js`, `result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
 
-            finalValuesArray[0].forEach((value) =>
-            {
-              value = parseFloat(value)
-              floatArrayFixed[0].push(value.toFixed(toFixedDigitNumberZero));
-            });
-            finalValuesArray[1].forEach((value) =>
-            {
-              value = parseFloat(value)
-              floatArrayFixed[1].push(value.toFixed(toFixedDigitNumberZero));
-            });
-            finalValuesArray[2].forEach((value) =>
-            {
-              value = parseFloat(value)
-              floatArrayFixed[2].push(value.toFixed(toFixedDigitNumberZero));
-            });
-            fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero }.js`,
-              `result[0]=[${ floatArrayFixed[0].toString() }];` + '\n' +
-              `result[1]=[${ floatArrayFixed[1].toString() }];` + '\n' +
-              `result[2]=[${ floatArrayFixed[2].toString() }];`
-              , {encoding: 'utf8'}
-              , (err => {}));
+              finalValuesArray[0].forEach((value) =>
+              {
+                value = parseFloat(value)
+                floatArrayFixed[0].push(value.toFixed(toFixedDigitNumberZero[j]));
+              });
+              finalValuesArray[1].forEach((value) =>
+              {
+                value = parseFloat(value)
+                floatArrayFixed[1].push(value.toFixed(toFixedDigitNumberZero[j]));
+              });
+              finalValuesArray[2].forEach((value) =>
+              {
+                value = parseFloat(value)
+                floatArrayFixed[2].push(value.toFixed(toFixedDigitNumberZero[j]));
+              });
+              fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[j] }.js`,
+                `result[0]=[${ floatArrayFixed[0].toString() }];` + '\n' +
+                `result[1]=[${ floatArrayFixed[1].toString() }];` + '\n' +
+                `result[2]=[${ floatArrayFixed[2].toString() }];`
+                , {encoding: 'utf8'}
+                , (err => {}));
+            }
           }
         }
       }
-      for (let floatAddress in FLOATING_POINT_ADRS)
-      {
-        var toFixedDigitNumberTwo = 2; //7 by default
-        var floatArrayFixed = [[], [], []];
-        if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
-        {
-          //ToFixed
-          if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberTwo }.js`))
-          {
-            fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberTwo }.js`, `result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
-
-            finalValuesArray[0].forEach((value) =>
-            {
-              value = parseFloat(value)
-              floatArrayFixed[0].push(value.toFixed(toFixedDigitNumberTwo));
-            });
-            finalValuesArray[1].forEach((value) =>
-            {
-              value = parseFloat(value)
-              floatArrayFixed[1].push(value.toFixed(toFixedDigitNumberTwo));
-            });
-            finalValuesArray[2].forEach((value) =>
-            {
-              value = parseFloat(value)
-              floatArrayFixed[2].push(value.toFixed(toFixedDigitNumberTwo));
-            });
-            fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberTwo }.js`,
-              `result[0]=[${ floatArrayFixed[0].toString() }];` + '\n' +
-              `result[1]=[${ floatArrayFixed[1].toString() }];` + '\n' +
-              `result[2]=[${ floatArrayFixed[2].toString() }];`
-              , {encoding: 'utf8'}
-              , (err => {}));
-          }
-        }
-      }
-
-
-      // Check if files exist
+      // Writing AE JS File
       if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`))
       {
         fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`,
@@ -278,39 +269,32 @@ setTimeout(() =>
             (err => {}));
         }
       }
-    }; // End of Mainfunction()
+    }; // End of writePlayerMemory() function
 
-    // Get Player-Memory var Names for Main Function
-    function getLabelsfromJS(pathToFile)
+    var playerData = getLabelsfromJS();
+    // console.log(playerData);
+    playerData.forEach((playerData) => 
     {
-      var readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: 'utf8'});
-      if (readFileForChecking.match("P2_C_Y_Velocity_Max")) // Check if file has been updated with new memory addresses
-      {
-        var playerDataAll = []
-        var getFile = fs.readFileSync(pathToFile, 'utf8',);
-        getFile.toString().split(';').forEach((line) =>
-        {
-          let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all player memory addresses; want capture group 2.
-          let tempRegexVar; // Temporary variable to run the exec method
-          while (tempRegexVar = playerMemoryRegex.exec(line)) // Exec needs to match true or false
-          {
-            playerDataAll.push(tempRegexVar[2]); // regex.exec returns array of all matches; item[2] is the address; has many duplicates
-            playerDataAll.join(','); // Converts array to string
-          };
-        });
-        var removedDuplicatesArray = [...new Set(playerDataAll)];
-        return removedDuplicatesArray
-      }
-    };
-
-    // writePlayerMemory();
-    // getLabelsfromJS();
-    getLabelsfromJS(NODE_JS_FILE).forEach((label) =>
-    {
-      writePlayerMemory(1, label.toString(), 1);
-      writePlayerMemory(2, label.toString(), 1);
+      // console.log(playerData);
+      writePlayerMemory(1, playerData, 1);
+      writePlayerMemory(2, playerData, 1);
     });
-    //     // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
+
+    // getLabelsfromJS().forEach((label) =>
+    // {
+    //   console.log(label);
+    //   // writePlayerMemory(1, label.toString(), 1);
+    //   // writePlayerMemory(2, label.toString(), 1);
+    // });
+
+  });
+}, 1000);
+
+
+
+
+
+    //     // Write Static Data Conversion. Example ID_2: 01 turns into 'Ryu'
     //     function writeStaticDataCNV()
     //     {
     //       const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
@@ -370,8 +354,8 @@ setTimeout(() =>
     //       }
     //     };// End of writeStaticDataCNV()
     //     writeStaticDataCNV();
-  });//import-scope
-}, 1000);//timeout-scope
+//   });//import-scope
+// }, 1000);//timeout-scope
 
 
 // function writeTotalFrameCountCNV()
@@ -418,38 +402,38 @@ setTimeout(() =>
 //   var P2Inputs = pMem.P2_Input_DEC.split(',');
 //   let playerInputResults = ''; // holds each result for P1 and P2
 //   let playerInputsCNVArray = []; // contains transformed results for P1 and P2
-//   let tempPlayerString = ''; // Changes to "P1" or "P2"
+//   let tempPlayerString = ''; // Changes to 'P1' or 'P2'
 
 //   var buttonConversionVersion1 =
 //   {
-//     "6": 1024, 	// 6 = right
-//     "4": 2048, 	// 4 = left
-//     "2": 4096, 	// 2 = down
-//     "8": 8192, 	// 8 = up
-//     "u": 512, 	// LP = u
-//     "j": 64,	  // LK = j
-//     "i": 256,	  // HP = i
-//     "k": 32,	  // HK = k
-//     "o": 128,	  // A1 = o
-//     "l": 16,	  // A2 = l
-//     "(": 32768, // START = (
-//     ")": 2,		  // SELECT = )
+//     '6': 1024, 	// 6 = right
+//     '4': 2048, 	// 4 = left
+//     '2': 4096, 	// 2 = down
+//     '8': 8192, 	// 8 = up
+//     'u': 512, 	// LP = u
+//     'j': 64,	  // LK = j
+//     'i': 256,	  // HP = i
+//     'k': 32,	  // HK = k
+//     'o': 128,	  // A1 = o
+//     'l': 16,	  // A2 = l
+//     '(': 32768, // START = (
+//     ')': 2,		  // SELECT = )
 //   };
 
 //   var buttonConversionVersion2 =
 //   {
-//     "6": 1024, 	    // 6 = right
-//     "4": 2048, 	    // 4 = left
-//     "2": 4096, 	    // 2 = down
-//     "8": 8192, 	    // 8 = up
-//     "LP": 512, 	    // LP = u
-//     "LK": 64,	      // LK = j
-//     "HP": 256,	    // HP = i
-//     "HK": 32,	      // HK = k
-//     "AA": 128,	    // A1 = o
-//     "AB": 16,	      // A2 = l
-//     "START": 32768, // START = (
-//     "SELECT": 2,    // SELECT = )
+//     '6': 1024, 	    // 6 = right
+//     '4': 2048, 	    // 4 = left
+//     '2': 4096, 	    // 2 = down
+//     '8': 8192, 	    // 8 = up
+//     'LP': 512, 	    // LP = u
+//     'LK': 64,	      // LK = j
+//     'HP': 256,	    // HP = i
+//     'HK': 32,	      // HK = k
+//     'AA': 128,	    // A1 = o
+//     'AB': 16,	      // A2 = l
+//     'START': 32768, // START = (
+//     'SELECT': 2,    // SELECT = )
 //   };
 
 //   for (let playersLen = 1; playersLen < 3; playersLen++)
@@ -547,3 +531,5 @@ setTimeout(() =>
 //   }
 // };
 // writeP1P2Addresses()
+
+
