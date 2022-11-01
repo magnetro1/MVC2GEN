@@ -630,24 +630,6 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         'State_ROM_09_ChoiceE',
 
       ];
-
-      // write the files
-      for (var stateName in allStateNamesArray)
-      // TODO Add switch to exclude ROM-specific states
-      // if (doROMFiles == false)
-      // {
-      //   // console.log('False is Turned on');
-      //   if (allStateNamesArray[stateName].match('State_ROM'))
-      //   {
-      //     // console.log("Skipping ROM-specific state: " + allStateNamesArray[stateName]);
-      //     console.log('popping ' + allStateNamesArray[stateName]);
-      //     allStateNamesArray[stateName].pop = allStateNamesArray[stateName];
-      //     // continue;
-      //   }
-      // }
-      {
-        fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ allStateNamesArray[stateName] }.js`, `var result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
-      }
       // Explicitly named arrays to store the values of each State-Logic-Check
       var arrStateBeingHit = [[], [], []];
       var arrStateFlying_Screen_Air = [[], [], []];
@@ -868,8 +850,6 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
             : arrStateROM_09_ChoiceE[playerSlotI].push(0);
         } // clipLen Scope
 
-        // Slot Scope
-
         // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
         // Applies to ROM cases as well!
         var counter = 0;
@@ -891,6 +871,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           });
         }
 
+        // Start ROM Stuff
         // 01_Opponent State A Setup
         // Set Loop point for 01_OpponentStateA (Magneto lands from his Super Jump)
         const ROM_OPPONENTSTATES = [
@@ -977,7 +958,6 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
             }
           }
         }
-
         // 03_InputsA , 06_InputsB , 09_InputsC Setup
         // All Inputs during ROM infinite
         const ROM_INPUTS = [
@@ -1387,9 +1367,31 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           }
         } // End of 09_ChoiceE Scope 
 
-        // Append data arrays into files
-        for (let stateTokenI = 0; stateTokenI < allStateNamesArray.length; stateTokenI++)
+        // write the files
+        for (var stateName in allStateNamesArray)
         {
+          // TODO Add switch to exclude ROM-specific states
+          if (doROMFiles == false)
+          {
+            if (allStateNamesArray[stateName].match('ROM'))
+            {
+              continue;
+            }
+          }
+          fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ allStateNamesArray[stateName] }.js`, `var result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
+        }
+
+        // Append data arrays into files
+        for (let stateTokenI in allStateNamesArray)
+        {
+          // TODO Add switch to exclude ROM-specific states
+          if (doROMFiles == false)
+          {
+            if (allStateNamesArray[stateTokenI].match('ROM'))
+            {
+              continue;
+            }
+          }
           fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ allStateNamesArray[stateTokenI] }.js`,
             `result[${ playerSlotI }] = [${ allStatesArray[stateTokenI][playerSlotI] }];\n`,
             {encoding: 'utf8'});
