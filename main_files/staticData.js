@@ -296,23 +296,23 @@ export const MISC_ADRS =
 
 export const STAGES_OBJ =
 {
-  "0": "142030", //"Boat1",
-  "1": "E1540C", //"Desert1",
-  "2": "6D574F", //"Factory",
-  "3": "CF461B", //"Carnival1",
-  "4": "ECE4B9", //"Bridge1",
-  "5": "257B8A", //"Cave2",
-  "6": "D0C1AC", //"Clock2",
-  "7": "B764AA", //"Raft2",
-  "8": "263548", //"Abyss",
-  "9": "C09A71", //"Boat2",
-  "10": "3F5FFF", //"Desert2",
-  "11": "266D04", //"Training",
-  "12": "74566E", //"Carnival2",
-  "13": "E9797F", //"Bridge2",
-  "14": "A43812", //"Cave1",
-  "15": "888885", //"Clock1",
-  "16": "8CA7DF" //"Raft1"
+  "0": "142030FF", //"Boat1",
+  "1": "E1540CFF", //"Desert1",
+  "2": "6D574FFF", //"Factory",
+  "3": "CF461BFF", //"Carnival1",
+  "4": "ECE4B9FF", //"Bridge1",
+  "5": "257B8AFF", //"Cave2",
+  "6": "D0C1ACFF", //"Clock2",
+  "7": "B764AAFF", //"Raft2",
+  "8": "263548FF", //"Abyss",
+  "9": "C09A71FF", //"Boat2",
+  "10": "3F5FFFFF", //"Desert2",
+  "11": "266D04FF", //"Training",
+  "12": "74566EFF", //"Carnival2",
+  "13": "E9797FFF", //"Bridge2",
+  "14": "A43812FF", //"Cave1",
+  "15": "888885FF", //"Clock1",
+  "16": "8CA7DFFF" //"Raft1"
 };
 
 export const PORTRAITS_TO_TIME_OBJ =

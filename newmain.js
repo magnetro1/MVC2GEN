@@ -1,7 +1,7 @@
 import * as fs from "fs"
 import * as path from "path"
-import * as childProcess from "child_process"
 import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js"
+
 const FILE_NAME_NO_EXT = `Magneto_ROM100`;
 
 const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`);
@@ -40,21 +40,21 @@ import(`./main_files/${ FILE_NAME_NO_EXT }_node.js`).then((pMemZero) =>
     let readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: "utf8"});
     if (!readFileForChecking.includes(prependStringMin) && (!readFileForChecking.includes(prependStringMax)))
     {
-      fs.appendFileSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, ` ${ prependStringMin.toString() }"${ tempStringMin.toString() }";\n`, {flag: "a+", encoding: "utf8"}, (err => {}));
-      fs.appendFileSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, ` ${ prependStringMax.toString() }"${ tempStringMax.toString() }";\n`, {flag: "a+", encoding: "utf8"}, (err => {}));
+      fs.appendFileSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`,
+        `${ prependStringMin.toString() }"${ tempStringMin.toString() }";\n`,
+        {flag: "a+", encoding: "utf8"});
+      fs.appendFileSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`,
+        `${ prependStringMax.toString() }"${ tempStringMax.toString() }";\n`,
+        {flag: "a+", encoding: "utf8"});
     }
   }
 });
-
 fs.closeSync(2);
 
-await sleep(2000)
+await sleep(1000)
 function sleep(ms)
 {
-  return new Promise((resolve) =>
-  {
-    setTimeout(resolve, ms);
-  });
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 let newFile = fs.openSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, "r+");
@@ -66,16 +66,12 @@ newFileData
     var tempRegExVar;
     while (tempRegExVar = allVariablesREGEX.exec(exportVar))
     {
-      if (!fs.existsSync(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`))
+      if (!fs.existsSync(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`)) // If file doesn't exist, create it; array element[1] is $1 from REGEX
       {
         fs.writeFileSync(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`,
           `export var result = [];\n result[0] = [${ tempRegExVar[2] }];\n`,
-          {encoding: "utf8"}, (err => {}));
+          {encoding: "utf8"});
       }
-      // else
-      // {
-      //   console.log("Did not write file");
-      // }
     }
   });
 
@@ -102,42 +98,45 @@ if (newFileData.includes("export var P2_Combo_Meter_Value_Max ="))
       // Write Combo Meter Min & Max JS FILES
       if (prependStringMin.match(/P\d_Combo_Meter_Value/gm))
       {
-        fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[minMaxAddress] }_Min.js`, `var result = [];\nresult[0] = [${ tempStringMin.toString() }];\n`, {encoding: "utf8"}, (err => {}));
-        fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[minMaxAddress] }_Max.js`, `var result = [];\nresult[0] = [${ tempStringMax.toString() }];\n`, {encoding: "utf8"}, (err => {}));
+        fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[minMaxAddress] }_Min.js`,
+          `var result = [];\nresult[0] = [${ tempStringMin.toString() }];\n`,
+          {encoding: "utf8"});
+        fs.writeFileSync(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[minMaxAddress] }_Max.js`,
+          `var result = [];\nresult[0] = [${ tempStringMax.toString() }];\n`,
+          {encoding: "utf8"});
       }
     }
   })
 };
 
-// Get Player-Memory var Names for Main Function
+// Get Player-Memory var Names for Main Function. Example: "P1_A_Health_Big" => "P1_Health_Big". Dynamic var list as each JS file is not guaranteed to be the same
 function getLabelsfromJS()
 {
-  var readFileForChecking = fs.readFileSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, {encoding: "utf8"});
-  if (readFileForChecking.match("P2_C_Y_Velocity_Max") && readFileForChecking.match("P1_A_X_Gravity_Min")) // Check if file has been updated with new memory addresses
+  var readFileForChecking = fs.readFileSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, {encoding: "utf8"}); // Expected to exectute after synchronous pause & write
+  if (readFileForChecking.match("P2_C_Y_Velocity_Max") && readFileForChecking.match("P1_A_X_Gravity_Min"))
   {
-    // console.log("✅ Node.js file has been updated with new memory addresses");
     var playerDataAll = []
     var getFile = fs.readFileSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, "utf8",);
     getFile.toString().split(";").forEach((line) =>
     {
-      let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // regex to find all player memory addresses; want capture group 2.
-      let tempRegexVar; // Temporary variable to run the exec method
-      while (tempRegexVar = playerMemoryRegex.exec(line)) // Exec needs to match true or false
+      let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // Want capture group 2 (so [2]).
+      let tempRegExVar;
+      while (tempRegExVar = playerMemoryRegex.exec(line))
       {
-        playerDataAll.push(tempRegexVar[2]); // regex.exec returns array of all matches; item[2] is the address; has many duplicates
-        playerDataAll.join(","); // Converts array to string
+        playerDataAll.push(tempRegExVar[2]); // regex.exec returns array of all matches; item[2] has many duplicates
+        // playerDataAll.join(","); // Converts array to string
       };
     });
-    var removedDuplicatesArray = [...new Set(playerDataAll)];
+    var removedDuplicatesArray = [...new Set(playerDataAll)]; // Removes duplicates from array
     return removedDuplicatesArray
   }
   else
   {
-    console.log("Please wait for Node.js file to be updated before running AE script");
+    console.log("File not updated with new memory addresses");
   }
 };
-// console.log(getLabelsfromJS());
 
+// Second import() after synchronous pause
 import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
 {
   const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn"t matter
@@ -243,7 +242,8 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           //ToFixed
           if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[j] }.js`))
           {
-            fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[j] }.js`, `result = [];` + "\n", {encoding: "utf8"}, (err => {}));
+            fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[j] }.js`,
+              `result = [];` + "\n", {encoding: "utf8"});
 
             finalValuesArray[0].forEach((value) =>
             {
@@ -291,7 +291,6 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
 
   getLabelsfromJS().forEach((label) =>
   {
-    // console.log(label);
     writePlayerMemory(1, label.toString(), 1);
     writePlayerMemory(2, label.toString(), 1);
   });
@@ -314,15 +313,13 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         {
           fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`,
             `var result = [];` + "\n",
-            {encoding: "utf8"},
-            (err => {}));
+            {encoding: "utf8"});
         }
         else
         {
           fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`,
             `var result = [];` + "\n",
-            {encoding: "utf8"},
-            (err => {}));
+            {encoding: "utf8"});
         }
       }
       for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
@@ -353,11 +350,13 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         }
       }
     }
-  };// End of writeStaticDataCNV()
-  function writeP1P2Addresses()
+  };
+  writeStaticDataCNV();
+
+  function writeP1P2Addresses() 
   {
-    var miscAdrArray = [[]];
-    for (let miscAdrIterator in MISC_ADRS)
+    var miscAdrArray = [[]]; // Example: "P1_Meter_Big", "P2_Meter_Big"
+    for (let miscAdrIterator in MISC_ADRS) //MISC_ADRS has P1 & P2
     {
       eval(`pMem.${ MISC_ADRS[miscAdrIterator] }`).split(",").forEach((address) =>
       {
@@ -366,15 +365,16 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
 
       if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`))
       {
-        fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`, `var result = [];\nresult[0] = [${ miscAdrArray }];\n`, {encoding: "utf8"}, (err => {}));
-        miscAdrArray[0] = [];
+        fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`,
+          `var result = [];\nresult[0] = [${ miscAdrArray }];\n`,
+          {encoding: "utf8"});
+        miscAdrArray[0] = []; // clear the array for the next player iteration.
       }
     }
   };
   writeP1P2Addresses();
 
-  writeStaticDataCNV();
-  function writeTotalFrameCountCNV()
+  function writeTotalFrameCountCNV() //Fills out Total-Frame count in ascending order in result[1]
   {
     var totalFrameArr = [];
     pMem.Total_Frames.split(",").forEach((frame, index) =>
@@ -383,14 +383,18 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
     });
     if (!fs.existsSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`))
     {
-      fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `var result = [];\nresult[0] = [${ totalFrameArr }];\n`, {encoding: "utf8"}, (err => {}));
+      fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+        `var result = [];\nresult[0] = [${ totalFrameArr }];\n`,
+        {encoding: "utf8"});
       totalFrameArr.reverse()
-      fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`, `result[1] = [${ totalFrameArr }];\n`, {encoding: "utf8"}, (err => {}));
+      fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+        `result[1] = [${ totalFrameArr }];\n`,
+        {encoding: "utf8"});
     }
   };
   writeTotalFrameCountCNV();
 
-  function writeStageDataCNV()
+  function writeStageDataCNV() // Fills out color data for stages in Hex in result[1]
   {
     var stageData = [];
     pMem.Stage_Selector.split(",").forEach((frame) =>
@@ -400,25 +404,30 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
 
     if (!fs.existsSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`))
     {
-      fs.writeFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`, `var result = [];\nresult[0] = [${ stageData }];\n`, {encoding: "utf8"}, (err => {}));
+      fs.writeFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
+        `var result = [];\nresult[0] = [${ stageData }];\n`,
+        {encoding: "utf8"});
       stageData = [];
 
       pMem.Stage_Selector.split(",").forEach((frame) =>
       {
-        stageData.push(`"${ Object.values(STAGES_OBJ)[frame] }FF"`)
+        stageData.push(`"${ Object.values(STAGES_OBJ)[frame] }"`) // last 0xFF is for opacity
       });
-      fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`, `result[1] = [${ stageData }];\n`, {encoding: "utf8"}, (err => {}));
+      fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
+        `result[1] = [${ stageData }];\n`,
+        {encoding: "utf8"});
       stageData = [];
     }
   };
   writeStageDataCNV()
-  function writeInputCNV()
+
+  function writeInputCNV() // result[0] is in custom-fontn notation, result[1] is in FGC notation
   {
-    var P1Inputs = pMem.P1_Input_DEC.split(",");
-    var P2Inputs = pMem.P2_Input_DEC.split(",");
+    var P1_InputsVar = pMem.P1_Input_DEC.split(",");
+    var P2_InputsVar = pMem.P2_Input_DEC.split(",");
     let playerInputResults = ""; // holds each result for P1 and P2
     let playerInputsCNVArray = []; // contains transformed results for P1 and P2
-    let tempPlayerString = ""; // Changes to "P1" or "P2"
+    let tempP1OrP2 = ""; // Changes to "P1" or "P2"
 
     var buttonConversionVersion1 =
     {
@@ -438,29 +447,29 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
 
     var buttonConversionVersion2 =
     {
-      "6": 1024, 	    // 6 = right
-      "4": 2048, 	    // 4 = left
-      "2": 4096, 	    // 2 = down
-      "8": 8192, 	    // 8 = up
-      "LP": 512, 	    // LP = u
-      "LK": 64,	      // LK = j
-      "HP": 256,	    // HP = i
-      "HK": 32,	      // HK = k
-      "AA": 128,	    // A1 = o
-      "AB": 16,	      // A2 = l
-      "START": 32768, // START = (
-      "SELECT": 2,    // SELECT = )
+      "6": 1024,
+      "4": 2048,
+      "2": 4096,
+      "8": 8192,
+      "LP": 512,
+      "LK": 64,
+      "HP": 256,
+      "HK": 32,
+      "AA": 128,
+      "AB": 16,
+      "START": 32768,
+      "SELECT": 2,
     };
 
     for (let playersLen = 1; playersLen < 3; playersLen++)
     {
-      playersLen == 1 ? tempPlayerString = P1Inputs : tempPlayerString = P2Inputs;
+      playersLen == 1 ? tempP1OrP2 = P1_InputsVar : tempP1OrP2 = P2_InputsVar;
       //Input Conversion Type 1
-      for (let input in tempPlayerString)
+      for (let input in tempP1OrP2)
       {
         for (let button in Object.entries(buttonConversionVersion1))
         {
-          if ((tempPlayerString[input] & Object.values(buttonConversionVersion1)[button]) != 0)
+          if ((tempP1OrP2[input] & Object.values(buttonConversionVersion1)[button]) != 0)
           {
             playerInputResults += `${ Object.keys(buttonConversionVersion1)[button] }`;
           }
@@ -485,11 +494,11 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
       playerInputsCNVArray = [];
 
       //Input Conversion Type 2
-      for (let input in tempPlayerString)
+      for (let input in tempP1OrP2)
       {
         for (let button in Object.entries(buttonConversionVersion2))
         {
-          if ((tempPlayerString[input] & Object.values(buttonConversionVersion2)[button]) != 0)
+          if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, then the value is converted
           {
             playerInputResults += Object.keys(buttonConversionVersion2)[button];
           }
@@ -508,37 +517,54 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           .replace(/84/gi, "7")
           .replace(/86/gi, "9")
           .replace(/68/gi, "9")
-          //Add "+" to direction+button inputs
-          .replace(/([1-9](?=\w+))/gm, "$1+")
+          // Add "+" to each button
+          .replace(/LP/gi, "LP+")
+          .replace(/LK/gi, "LK+")
+          .replace(/HP/gi, "HP+")
+          .replace(/HK/gi, "HK+")
+          .replace(/AA/gi, "AA+")
+          .replace(/AB/gi, "AB+")
+          .replace(/START/gi, "START+")
+          .replace(/SELECT/gi, "SELECT+")
+          //Add "+" to multiple button inputs
+          .replace(/([1-9](?=\w+))/gm, "$1+") // Looking ahead for a button+ input
           //Replace numbers with Letter-notation
-          .replace(/2|2\+/gm, "D")
-          .replace(/6|6\+/gm, "R")
-          .replace(/8|8\+/gm, "U")
-          .replace(/4|4\+/gm, "L")
-          .replace(/1|1\+/gm, "DL")
-          .replace(/3|3\+/gm, "DR")
-          .replace(/9|9\+/gm, "UR")
-          .replace(/7|7\+/gm, "UL")
+          .replace(/2|2\+/gm, "D+")
+          .replace(/6|6\+/gm, "R+")
+          .replace(/8|8\+/gm, "U+")
+          .replace(/4|4\+/gm, "L+")
+          .replace(/1|1\+/gm, "DL+")
+          .replace(/3|3\+/gm, "DR+")
+          .replace(/9|9\+/gm, "UR+")
+          .replace(/7|7\+/gm, "UL+")
           //Re-write assists" notation
           .replace(/AA/gi, "A1")
           .replace(/AB/gi, "A2")
+          //Remove trailing "+" if a comma follows
+          .replace(/\+(?=,)/gm, "")
+          //Replace "++" with "+"
+          .replace(/\+\+/gm, "+")
         }"];`,
-        {encoding: "utf8"},
-        (err => {}));
+        {encoding: "utf8"}
+      );
       playerInputsCNVArray = [];
     }
   }
   writeInputCNV()
+
   //Boolean results for particular game-states
   //Search for "NEW_STATE_ADD_HERE" to add new states properly
-  var tempCounter = 0;
-  var tempSwitch = 0;
 
+  // TODO split off ROM functions into their own file ?
   function writeNewStates()
   {
+    var doROMFiles = false
     //Temps for switching P1 and P2
     var tempPlayerValue;
     var tempPlayerString;
+    // Temps for ROM data
+    var tempCounter = 0;
+    var tempSwitch = 0;
     // P1 and P2
     for (tempPlayerValue = 1; tempPlayerValue < 3; tempPlayerValue++)
     {
@@ -604,8 +630,21 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         'State_ROM_09_ChoiceE',
 
       ];
+
       // write the files
       for (var stateName in allStateNamesArray)
+      // TODO Add switch to exclude ROM-specific states
+      // if (doROMFiles == false)
+      // {
+      //   // console.log('False is Turned on');
+      //   if (allStateNamesArray[stateName].match('State_ROM'))
+      //   {
+      //     // console.log("Skipping ROM-specific state: " + allStateNamesArray[stateName]);
+      //     console.log('popping ' + allStateNamesArray[stateName]);
+      //     allStateNamesArray[stateName].pop = allStateNamesArray[stateName];
+      //     // continue;
+      //   }
+      // }
       {
         fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ allStateNamesArray[stateName] }.js`, `var result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
       }
@@ -1226,13 +1265,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           }
         } // end of 05_ChoiceC
 
-        // 05_ChoiceC2 - ( MK to AirDash )
-
-
-
-
-
-
+        // 05_ChoiceC2 - ( MK to AirDash ) TODO
 
 
 
@@ -1357,7 +1390,9 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         // Append data arrays into files
         for (let stateTokenI = 0; stateTokenI < allStateNamesArray.length; stateTokenI++)
         {
-          fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ allStateNamesArray[stateTokenI] }.js`, `result[${ playerSlotI }] = [${ allStatesArray[stateTokenI][playerSlotI] }];\n`, {encoding: 'utf8'}, (err => {}));
+          fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ allStateNamesArray[stateTokenI] }.js`,
+            `result[${ playerSlotI }] = [${ allStatesArray[stateTokenI][playerSlotI] }];\n`,
+            {encoding: 'utf8'});
         }
       }
     }
