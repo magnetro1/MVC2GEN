@@ -264,8 +264,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
               `result[0]=[${ floatArrayFixed[0].toString() }];` + "\n" +
               `result[1]=[${ floatArrayFixed[1].toString() }];` + "\n" +
               `result[2]=[${ floatArrayFixed[2].toString() }];`
-              , {encoding: "utf8"}
-              , (err => {}));
+              , {encoding: "utf8"});
           }
         }
       }
@@ -275,16 +274,14 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
     {
       fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(",") }.js`,
         `var result = [];` + "\n",
-        {flag: "a+", encoding: "utf8"},
-        (err => {}));
+        {flag: "a+", encoding: "utf8"});
 
       // Append main data
       for (let dataArrayPerCharacter in finalValuesArray)
       {
         fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(",") }.js`,
           `result[${ dataArrayPerCharacter }] = [${ finalValuesArray[dataArrayPerCharacter] }];\n`,
-          {encoding: "utf8"},
-          (err => {}));
+          {encoding: "utf8"});
       }
     }
   }; // End of writePlayerMemory() function
@@ -336,15 +333,13 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
           {
             fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
-              {encoding: "utf8"},
-              (err => {}));
+              {encoding: "utf8"});
             staticLookupResultsArray = [[], [], []];
           }
           else
           {
             fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
-              {encoding: "utf8"},
-              (err => {}));
+              {encoding: "utf8"});
             staticLookupResultsArray = [[], [], []];
           }
         }
@@ -489,8 +484,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           .replace(/86/gi, "9")
           .replace(/68/gi, "9")
         }"];` + "\n",
-        {encoding: "utf8"},
-        (err => {}));
+        {encoding: "utf8"});
       playerInputsCNVArray = [];
 
       //Input Conversion Type 2
@@ -1378,7 +1372,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
               continue;
             }
           }
-          fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ allStateNamesArray[stateName] }.js`, `var result = [];` + '\n', {encoding: 'utf8'}, (err => {}));
+          fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ allStateNamesArray[stateName] }.js`, `var result = [];` + '\n', {encoding: 'utf8'});
         }
 
         // Append data arrays into files
