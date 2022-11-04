@@ -211,8 +211,9 @@ public class FileF // here
 	public static boolean readFile( String pFilePath, ArrayList<String> pRet , String pCodePage )
 	{ // so the function above called this, and it's going to read in the file with a BufferedReader. im not directly familiar with BufferedReader, but I assume it's a builtin java class, and i've used things like this before in other languages
 		BufferedReader br = null; // im not sure why it is initialized to null here, instead of just, down on line 283
-		try // this is a try {} catch {} block, it's a Java feature to catch ex -- ah ok
+		try 
 		{
+			// this is a try {} catch {} block, it's a Java feature to catch ex -- ah ok
 			File file = new File( pFilePath ); // probably builtin Java functionality, i feel like this and the !file.exists() are explanatory
 			if( !file.exists() )
 			{
