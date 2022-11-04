@@ -1,0 +1,11 @@
+Missing data entry after Total_Frame #: 13812
+Missing data entry after Total_Frame #: 13814
+Missing data entry after Total_Frame #: 13816
+Missing data entry after Total_Frame #: 13818
+Missing data entry after Total_Frame #: 13837
+Missing data entry after Total_Frame #: 13907
+Missing data entry after Total_Frame #: 13919
+Missing data entry after Total_Frame #: 13922
+
+Final entry in Total_Frames: 13947
+Total_Frames in Clip: 2347

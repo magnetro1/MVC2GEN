@@ -15,19 +15,19 @@ public class RunCnv
 	public static void main( String[] args )
 	{
 		System.out.println("Program Start");
-//		for( int i = 0; i < args.length; i++ )
-//		{
-//			System.out.println(args[i]);
-//		}
+	//		for( int i = 0; i < args.length; i++ )
+	//		{
+	//			System.out.println(args[i]);
+	//		}
 
-		String fileName = args[0];
-//		String fileName = "Combo_Anakaris_Magneto77_F.csv";
-//		String fileName = "Situation_Gambit-Psylocke_Dan_Original.csv";
-//		String fileName = "Combo_Ryu30_Original.csv";
-//		String fileName = "Combo_Storm70_Original.csv";
-//		String fileName = "Combo_Magneto32_Original.csv";
-				
-		
+			String fileName = args[0];
+	//		String fileName = "Combo_Anakaris_Magneto77_F.csv";
+	//		String fileName = "Situation_Gambit-Psylocke_Dan_Original.csv";
+	//		String fileName = "Combo_Ryu30_Original.csv";
+	//		String fileName = "Combo_Storm70_Original.csv";
+	//		String fileName = "Combo_Magneto32_Original.csv";
+					
+			
 		ArrayList<String> data =  new ArrayList<String>(); 
 		ArrayList<String> cnvTable =  new ArrayList<String>(); 
 		if( !FileF.readFile( fileName, data ) )
@@ -56,42 +56,42 @@ public class RunCnv
 			}
 		}
 
-//		for( int i = 0; i < data.size() - 1; i++ )
-//		{
-//			int a = Integer.parseInt( data.get(i).split(",")[0] );
-//			for( int k = i + 1; k < data.size(); k++ )
-//			{
-//				int b = Integer.parseInt( data.get(k).split(",")[0] );
-//				if( a == b )
-//				{
-//					data.remove(k);
-//					k--;
-//					continue;
-//				}
-//			}
-//		}
+	//		for( int i = 0; i < data.size() - 1; i++ )
+	//		{
+	//			int a = Integer.parseInt( data.get(i).split(",")[0] );
+	//			for( int k = i + 1; k < data.size(); k++ )
+	//			{
+	//				int b = Integer.parseInt( data.get(k).split(",")[0] );
+	//				if( a == b )
+	//				{
+	//					data.remove(k);
+	//					k--;
+	//					continue;
+	//				}
+	//			}
+	//		}
 
-//		for( int i = 0; i < data.size() - 1; i++ )
-//		{
-//			String a = data.get(i).split(",")[0];
-//			for( int k = i + 1; k < data.size(); k++ )
-//			{
-//				String  b = data.get(k).split(",")[0];
-//				if( a.equals(b) )
-//				{
-//					data.remove(k);
-//					k--;
-//					continue;
-//				}
-//			}
-//		}
+	//		for( int i = 0; i < data.size() - 1; i++ )
+	//		{
+	//			String a = data.get(i).split(",")[0];
+	//			for( int k = i + 1; k < data.size(); k++ )
+	//			{
+	//				String  b = data.get(k).split(",")[0];
+	//				if( a.equals(b) )
+	//				{
+	//					data.remove(k);
+	//					k--;
+	//					continue;
+	//				}
+	//			}
+	//		}
 
 
-//		for( int i = 0; i < data.size() - 1; i++ )
-//		{
-//			String g = data.get(i).replace( "0000000000000000","0");
-//			data.set( i, g );
-//		}
+	//		for( int i = 0; i < data.size() - 1; i++ )
+	//		{
+	//			String g = data.get(i).replace( "0000000000000000","0");
+	//			data.set( i, g );
+	//		}
 
 		
 		// search index
@@ -114,27 +114,27 @@ public class RunCnv
 		Collections.sort( data, new ComparatorB() );
 
 		//　重複削除してデータ空白行などの補完
-//		int nowFrame = Integer.parseInt( data.get(0).split(",")[0] );
-//		int nowFrameIndex = 0;
-//		for( int i = 1; i < data.size(); i++ )
-//		{
-//			int b = Integer.parseInt( data.get(i).split(",")[0] );
-//			if( b == nowFrame )
-//			{
-//				if( !data.get(i).equals( data.get(nowFrameIndex) ) )
-//				{
-//					if( !data.get(i).split(",")[p1].equals( "0" ) || !data.get(i).split(",")[p2].equals( "0" ))
-//					{
-//						data.set(nowFrameIndex,data.get(i));
-//					}
-//				}
-//				data.remove(i);
-//				i--;
-//				continue;
-//			}
-//			nowFrame = Integer.parseInt( data.get(i).split(",")[0] );
-//			nowFrameIndex = i;
-//		}
+	//		int nowFrame = Integer.parseInt( data.get(0).split(",")[0] );
+	//		int nowFrameIndex = 0;
+	//		for( int i = 1; i < data.size(); i++ )
+	//		{
+	//			int b = Integer.parseInt( data.get(i).split(",")[0] );
+	//			if( b == nowFrame )
+	//			{
+	//				if( !data.get(i).equals( data.get(nowFrameIndex) ) )
+	//				{
+	//					if( !data.get(i).split(",")[p1].equals( "0" ) || !data.get(i).split(",")[p2].equals( "0" ))
+	//					{
+	//						data.set(nowFrameIndex,data.get(i));
+	//					}
+	//				}
+	//				data.remove(i);
+	//				i--;
+	//				continue;
+	//			}
+	//			nowFrame = Integer.parseInt( data.get(i).split(",")[0] );
+	//			nowFrameIndex = i;
+	//		}
 	
 
 		int nowFrame = Integer.parseInt( data.get(0).split(",")[0] );
@@ -188,7 +188,7 @@ public class RunCnv
 		
 		data.remove( data.size() - 1 );
 		
-//		String fileNameOut = fileName.replace( ".csv", "_F.csv" );
+		//		String fileNameOut = fileName.replace( ".csv", "_F.csv" );
 		String fileNameOut = fileName.replace( "_Original.csv", "_F.csv" );
 		FileF.writeFile( fileNameOut, data, false );
 		System.out.println("Program End");

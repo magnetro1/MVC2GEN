@@ -1,12 +1,14 @@
 import * as fs from "fs"
 import * as path from "path"
+const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`);
+const FILENAME_NO_EXT = `Magneto_ROM100`;
 const DIR_CSVs = path.join(process.cwd(), `/main_files/CSV_to_JS`);
-const FILE_ROM100 = path.join(DIR_CSVs, `Magneto_ROM100_Original.csv`);
-// const FILE_ROM100 = path.join(DIR_CSVs, `Magneto_ROM100_F.csv`);
+const FILE = path.join(DIR_CSVs, `${ FILENAME_NO_EXT }_Original.csv`); // Working with _Original
+// const FILE_ROM100 = `${ NAME_NO_EXT }_F.csv`; // Working with _F
 
-var headersArray = []; // 559 entries
-var allDataArray = []; // 16,750 lines
-fs.readFileSync(FILE_ROM100, 'utf8').split(`\r\n`).map((line, index) =>
+var headersArray = [];
+var allDataArray = [];
+fs.readFileSync(FILE, 'utf8').split(`\r\n`).map((line, index) =>
 {
   if (index === 0)
   {
@@ -16,36 +18,63 @@ fs.readFileSync(FILE_ROM100, 'utf8').split(`\r\n`).map((line, index) =>
   {
     allDataArray.push(line.split(`,`)); //ideally, check if each line is the same length as the headerArray
   }
-})
-
+});
 //Sorting by the first column's value (Total_Frames)
-allDataArray.sort(
-  (a, b) => a[0] - b[0]
-);
+allDataArray.sort((a, b) => a[0] - b[0]);
+
 //Removing duplicates using the first column's value (Total_Frames)
-for (let check = 0; check < allDataArray.length - 1; check++)
+for (let check = 0; check < allDataArray.length - 1; check++) //length-1 because we will run a check on the next line
 {
-  if (allDataArray[check + 1][0] == allDataArray[check][0]) // line number is the same
+  if (((allDataArray[check + 1][0] == allDataArray[check][0]))) // line number is the same
   {
     allDataArray.splice(check + 1, 1); // remove the next line
-    check--; // look at the same line again
+    check--; // go back to original line
   }
-}
+};
 
-// Transpose the array
+// Transpose the array by columns
 var out = [];
+// Create the array of arrays
 for (let j = 0; j < headersArray.length; j++)
 {
   out.push(new Array());
 }
-for (let rowIdx = 1; rowIdx < allDataArray.length; ++rowIdx) // for each row (16k lines)
+// Fill the array of arrays with the data separated by column
+for (let rowIdx = 1; rowIdx < allDataArray.length; ++rowIdx) // for each row/line, which contains the data for each column
 {
-  for (let colIdx = 0; colIdx < headersArray.length; ++colIdx) // for each column in the current row (559 entries)
+  for (let colIdx = 0; colIdx < headersArray.length; ++colIdx) // for each column in the current row
   {
     out[colIdx].push(allDataArray[rowIdx][colIdx]);
     // -*-----
     // --*-----
     // ---*----
   }
+};
+// Write the Sorted_Node.JS file for the clip data
+var stringArray = [];
+fs.writeFileSync(`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Sorted_Node.js`, '');
+
+for (let i = 0; i < headersArray.length; i++)
+{
+  stringArray.push(`export var ${ headersArray[i] } = "${ out[i] }";`);
 }
-console.log(out);
+fs.appendFileSync(`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Sorted_Node.js`, stringArray.join(`\n`));
+
+
+// Check if there are missing entries in out[0]
+// Write Missing Entries to a file
+export function writeMissingEntries()
+{
+  let missingEntries = [];
+  for (let i = 0; i < out[0].length - 1; i++)
+  {
+    if (out[0][i + 1] - out[0][i] != 1)
+    {
+      missingEntries.push(`Missing data entry after Total_Frame #: ${ out[0][i] }\n`);
+    }
+  }
+  fs.writeFileSync((`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_MissingEntries.txt`), (`${ missingEntries }\nFinal entry in Total_Frames: ${ out[0][out[0].length - 1] }\nTotal_Frames in Clip: ${ out[0].length }`)
+    .replace(/,/g, ``));
+}
+
+writeMissingEntries();
