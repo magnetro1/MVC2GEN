@@ -17,27 +17,28 @@ if (!fs.existsSync(`${ DIR_OUTPATH }`))
 
 fs.copyFileSync(`${ NODE_JS_FILE }`, `${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`);
 
-//Append Min & Max values to Node.js file // THIS IS THE ONLY WRITING TO THE NODE FILE IN APP
+// Append Min & Max values to Node.js file. THIS IS THE ONLY WRITING TO THE NODE FILE IN APP
+
 import(`./main_files/${ FILE_NAME_NO_EXT }_node.js`).then((pMemZero) =>
 {
   fs.openSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, "r+");
   const CLIP_LENGTH = pMemZero.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn"t matter
-  for (let minMaxAddress in MIN_MAX_ADRS)
+  for (const minMaxAddress in MIN_MAX_ADRS)
   {
-    let tempAddress = eval(`pMemZero.${ MIN_MAX_ADRS[minMaxAddress] }.split(",")`);
-    let tempMinValue = (Math.min(...tempAddress));
-    let tempMaxValue = (Math.max(...tempAddress));
-    let prependStringMin = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
-    let prependStringMax = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Max = `;
+    const tempAddress = eval(`pMemZero.${ MIN_MAX_ADRS[minMaxAddress] }.split(",")`);
+    const tempMinValue = (Math.min(...tempAddress));
+    const tempMaxValue = (Math.max(...tempAddress));
+    const prependStringMin = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
+    const prependStringMax = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Max = `;
     let tempStringMin = "";
     let tempStringMax = "";
     for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
     {
-      //Get rid of final comma
+      // Get rid of final comma
       clipLen == CLIP_LENGTH - 1 ? tempStringMin += `${ tempMinValue }` : tempStringMin += `${ tempMinValue },`;
       clipLen == CLIP_LENGTH - 1 ? tempStringMax += `${ tempMaxValue }` : tempStringMax += `${ tempMaxValue },`;
     }
-    let readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: "utf8"});
+    const readFileForChecking = fs.readFileSync(NODE_JS_FILE, {encoding: "utf8"});
     if (!readFileForChecking.includes(prependStringMin) && (!readFileForChecking.includes(prependStringMax)))
     {
       fs.appendFileSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`,
@@ -57,13 +58,13 @@ function sleep(ms)
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-let newFile = fs.openSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, "r+");
-let newFileData = fs.readFileSync(newFile, {encoding: "utf8"})
+const newFile = fs.openSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, "r+");
+const newFileData = fs.readFileSync(newFile, {encoding: "utf8"})
 newFileData
   .toString().split(";").forEach((exportVar) =>
   {
-    var allVariablesREGEX = /export var (\w+) = "(.*)"/gmi; // ALL VAR REGEX
-    var tempRegExVar;
+    const allVariablesREGEX = /export var (\w+) = "(.*)"/gmi; // ALL VAR REGEX
+    let tempRegExVar;
     while (tempRegExVar = allVariablesREGEX.exec(exportVar))
     {
       if (!fs.existsSync(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`)) // If file doesn't exist, create it; array element[1] is $1 from REGEX
@@ -80,17 +81,17 @@ if (newFileData.includes("export var P2_Combo_Meter_Value_Max ="))
   import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
   {
     const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn"t matter
-    for (var minMaxAddress in MIN_MAX_ADRS)
+    for (const minMaxAddress in MIN_MAX_ADRS)
     {
-      let tempAddress = eval(`pMem.${ MIN_MAX_ADRS[minMaxAddress] }.split(",")`);
-      let tempMinValue = (Math.min(...tempAddress));
-      let tempMaxValue = (Math.max(...tempAddress));
-      let prependStringMin = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
+      const tempAddress = eval(`pMem.${ MIN_MAX_ADRS[minMaxAddress] }.split(",")`);
+      const tempMinValue = (Math.min(...tempAddress));
+      const tempMaxValue = (Math.max(...tempAddress));
+      const prependStringMin = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
       let tempStringMin = "";
       let tempStringMax = "";
       for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
       {
-        //Get rid of final comma
+        // Get rid of final comma
         clipLen == CLIP_LENGTH - 1 ? tempStringMin += `${ tempMinValue }` : tempStringMin += `${ tempMinValue },`;
         clipLen == CLIP_LENGTH - 1 ? tempStringMax += `${ tempMaxValue }` : tempStringMax += `${ tempMaxValue },`;
       }
@@ -112,14 +113,14 @@ if (newFileData.includes("export var P2_Combo_Meter_Value_Max ="))
 // Get Player-Memory var Names for Main Function. Example: "P1_A_Health_Big" => "P1_Health_Big". Dynamic var list as each JS file is not guaranteed to be the same
 function getLabelsfromJS()
 {
-  var readFileForChecking = fs.readFileSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, {encoding: "utf8"}); // Expected to exectute after synchronous pause & write
+  const readFileForChecking = fs.readFileSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, {encoding: "utf8"}); // Expected to exectute after synchronous pause & write
   if (readFileForChecking.match("P2_C_Y_Velocity_Max") && readFileForChecking.match("P1_A_X_Gravity_Min"))
   {
-    var playerDataAll = []
-    var getFile = fs.readFileSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, "utf8",);
+    const playerDataAll = []
+    const getFile = fs.readFileSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }_node.js`, "utf8",);
     getFile.toString().split(";").forEach((line) =>
     {
-      let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // Want capture group 2 (so [2]).
+      const playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; // Want capture group 2 (so [2]).
       let tempRegExVar;
       while (tempRegExVar = playerMemoryRegex.exec(line))
       {
@@ -127,15 +128,14 @@ function getLabelsfromJS()
         // playerDataAll.join(","); // Converts array to string
       };
     });
-    var removedDuplicatesArray = [...new Set(playerDataAll)]; // Removes duplicates from array
+    const removedDuplicatesArray = [...new Set(playerDataAll)]; // Removes duplicates from array
     return removedDuplicatesArray
   }
-  else
-  {
-    console.log("File not updated with new memory addresses");
-  }
-};
-
+  // else
+  // {
+  //   console.log("File not updated with new memory addresses");
+  // }
+}
 // Second import() after synchronous pause
 import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
 {
@@ -155,9 +155,9 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
   // Main function to write data to files OR return finalValues array
   function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // "P1"/"P2", address from data-object, 1/0
   {
-    var finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
-    var playerObjectSwitcher;// Switches between the Player1 and Player2 objects
-    var playerSwitcher; // Switches between "P1" and "P2"
+    const finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
+    let playerObjectSwitcher;// Switches between the Player1 and Player2 objects
+    let playerSwitcher; // Switches between "P1" and "P2"
 
     if ((PlayerOneOrPlayerTwo == 1) || (PlayerOneOrPlayerTwo == "P1"))
     {
@@ -180,7 +180,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         finalValuesArray[1].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }.split(",")`)[clipLen]);
         finalValuesArray[2].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }.split(",")`)[clipLen]);
       }
-      //2-Character Bug Logic
+      // 2-Character Bug Logic
       else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0) && (Object.values(playerObjectSwitcher)[1][clipLen] == 0) && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
       {
         // console.log( `${ playerString}: 2-Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
@@ -199,7 +199,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }.split(",")`)[clipLen]);
         finalValuesArray[1].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }.split(",")`)[clipLen]);
       }
-      //1-Character Logic
+      // 1-Character Logic
       else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0) && (Object.values(playerObjectSwitcher)[1][clipLen] != 0) && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
       {
         // console.log( `${ playerString}: 1-Character Logic: A == 0 && B != 0 && C != 0        P1: A` );
@@ -230,16 +230,16 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
       fs.mkdirSync(DIR_OUTPATH);
     }
     // Check for Floating Point Addresses so they can have their trailing digits cut off
-    for (let floatAddress in FLOATING_POINT_ADRS)
+    for (const floatAddress in FLOATING_POINT_ADRS)
     {
-      var toFixedDigitNumberZero = [0, 2, 4]; //7 by default
+      var toFixedDigitNumberZero = [0, 2, 4]; // 7 by default
       // var floatArrayFixed = [[], [], []];
       if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
       {
         for (let j = 0; j < toFixedDigitNumberZero.length; j++)
         {
           var floatArrayFixed = [[], [], []];
-          //ToFixed
+          // ToFixed
           if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[j] }.js`))
           {
             fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[j] }.js`,
@@ -277,7 +277,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         {flag: "a+", encoding: "utf8"});
 
       // Append main data
-      for (let dataArrayPerCharacter in finalValuesArray)
+      for (const dataArrayPerCharacter in finalValuesArray)
       {
         fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(",") }.js`,
           `result[${ dataArrayPerCharacter }] = [${ finalValuesArray[dataArrayPerCharacter] }];\n`,
@@ -296,7 +296,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
   {
     const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
     const STATIC_DATA_ADRS = ["Knockdown_State", "Is_Prox_Block", "ID_2", "ID_2"]
-    var staticLookupResultsArray = [[], [], []];
+    let staticLookupResultsArray = [[], [], []];
 
     for (let playersLen = 1; playersLen < 3; playersLen++)
     {
@@ -305,7 +305,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         // Make directories if they don"t exist
         if (!fs.existsSync(DIR_OUTPATH))
           fs.mkdirSync(DIR_OUTPATH);
-        //Write base file
+        // Write base file
         if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
         {
           fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`,
@@ -321,10 +321,10 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
       }
       for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
       {
-        var callPlayerMemoryFN = writePlayerMemory(`${ playersLen }`, STATIC_DATA_ADRS[staticDataLen], 0);
+        const callPlayerMemoryFN = writePlayerMemory(`${ playersLen }`, STATIC_DATA_ADRS[staticDataLen], 0);
         for (let playerMemLength = 0; playerMemLength < callPlayerMemoryFN.length; playerMemLength++)
         {
-          //Push and convert all three arrays" values
+          // Push and convert all three arrays" values
           for (let characterSlot = 0; characterSlot < callPlayerMemoryFN[playerMemLength].length; characterSlot++)
           {
             staticLookupResultsArray[playerMemLength].push(`"${ Object.values(STATIC_DATA_OBJS[staticDataLen])[callPlayerMemoryFN[playerMemLength][characterSlot]] }"`);
@@ -350,8 +350,8 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
 
   function writeP1P2Addresses() 
   {
-    var miscAdrArray = [[]]; // Example: "P1_Meter_Big", "P2_Meter_Big"
-    for (let miscAdrIterator in MISC_ADRS) //MISC_ADRS has P1 & P2
+    const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "P2_Meter_Big"
+    for (const miscAdrIterator in MISC_ADRS) // MISC_ADRS has P1 & P2
     {
       eval(`pMem.${ MISC_ADRS[miscAdrIterator] }`).split(",").forEach((address) =>
       {
@@ -369,9 +369,9 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
   };
   writeP1P2Addresses();
 
-  function writeTotalFrameCountCNV() //Fills out Total-Frame count in ascending order in result[1]
+  function writeTotalFrameCountCNV() // Fills out Total-Frame count in ascending order in result[1]
   {
-    var totalFrameArr = [];
+    const totalFrameArr = [];
     pMem.Total_Frames.split(",").forEach((frame, index) =>
     {
       totalFrameArr.push(index + 1);
@@ -391,7 +391,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
 
   function writeStageDataCNV() // Fills out color data for stages in Hex in result[1]
   {
-    var stageData = [];
+    let stageData = [];
     pMem.Stage_Selector.split(",").forEach((frame) =>
     {
       stageData.push(frame)
@@ -418,13 +418,13 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
 
   function writeInputCNV() // result[0] is in custom-fontn notation, result[1] is in FGC notation
   {
-    var P1_InputsVar = pMem.P1_Input_DEC.split(",");
-    var P2_InputsVar = pMem.P2_Input_DEC.split(",");
+    const P1_InputsVar = pMem.P1_Input_DEC.split(",");
+    const P2_InputsVar = pMem.P2_Input_DEC.split(",");
     let playerInputResults = ""; // holds each result for P1 and P2
     let playerInputsCNVArray = []; // contains transformed results for P1 and P2
     let tempP1OrP2 = ""; // Changes to "P1" or "P2"
 
-    var buttonConversionVersion1 =
+    const buttonConversionVersion1 =
     {
       "6": 1024, 	// 6 = right
       "4": 2048, 	// 4 = left
@@ -440,7 +440,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
       ")": 2,		  // SELECT = )
     };
 
-    var buttonConversionVersion2 =
+    const buttonConversionVersion2 =
     {
       "6": 1024,
       "4": 2048,
@@ -459,10 +459,10 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
     for (let playersLen = 1; playersLen < 3; playersLen++)
     {
       playersLen == 1 ? tempP1OrP2 = P1_InputsVar : tempP1OrP2 = P2_InputsVar;
-      //Input Conversion Type 1
-      for (let input in tempP1OrP2)
+      // Input Conversion Type 1
+      for (const input in tempP1OrP2)
       {
-        for (let button in Object.entries(buttonConversionVersion1))
+        for (const button in Object.entries(buttonConversionVersion1))
         {
           if ((tempP1OrP2[input] & Object.values(buttonConversionVersion1)[button]) != 0)
           {
@@ -473,7 +473,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         playerInputResults = "";
       }
       fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
-        `var result = [];` + "\n" + `result[0] = ["` +
+        `var result = [];\nresult[0] = ["` +
         `${ playerInputsCNVArray.toString()
           .replace(/24/gi, "1")
           .replace(/42/gi, "1")
@@ -483,14 +483,14 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           .replace(/84/gi, "7")
           .replace(/86/gi, "9")
           .replace(/68/gi, "9")
-        }"];` + "\n",
+        }"];"\n"`,
         {encoding: "utf8"});
       playerInputsCNVArray = [];
 
-      //Input Conversion Type 2
-      for (let input in tempP1OrP2)
+      // Input Conversion Type 2
+      for (const input in tempP1OrP2)
       {
-        for (let button in Object.entries(buttonConversionVersion2))
+        for (const button in Object.entries(buttonConversionVersion2))
         {
           if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, then the value is converted
           {
@@ -502,7 +502,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
       }
       fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
         `result[1] = ["${ playerInputsCNVArray.toString()
-          //Fix diagonals
+          // Fix diagonals
           .replace(/24/gi, "1")
           .replace(/42/gi, "1")
           .replace(/26/gi, "3")
@@ -520,9 +520,9 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           .replace(/AB/gi, "AB+")
           .replace(/START/gi, "START+")
           .replace(/SELECT/gi, "SELECT+")
-          //Add "+" to multiple button inputs
+          // Add "+" to multiple button inputs
           .replace(/([1-9](?=\w+))/gm, "$1+") // Looking ahead for a button+ input
-          //Replace numbers with Letter-notation
+          // Replace numbers with Letter-notation
           .replace(/2|2\+/gm, "D+")
           .replace(/6|6\+/gm, "R+")
           .replace(/8|8\+/gm, "U+")
@@ -531,12 +531,12 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           .replace(/3|3\+/gm, "DR+")
           .replace(/9|9\+/gm, "UR+")
           .replace(/7|7\+/gm, "UL+")
-          //Re-write assists" notation
+          // Re-write assists" notation
           .replace(/AA/gi, "A1")
           .replace(/AB/gi, "A2")
-          //Remove trailing "+" if a comma follows
+          // Remove trailing "+" if a comma follows
           .replace(/\+(?=,)/gm, "")
-          //Replace "++" with "+"
+          // Replace "++" with "+"
           .replace(/\+\+/gm, "+")
         }"];`,
         {encoding: "utf8"}
@@ -546,47 +546,47 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
   }
   writeInputCNV()
 
-  //Boolean results for particular game-states
-  //Search for "NEW_STATE_ADD_HERE" to add new states properly
+  // Boolean results for particular game-states
+  // Search for "NEW_STATE_ADD_HERE" to add new states properly
 
   // TODO split off ROM functions into their own file ?
   function writeNewStates()
   {
-    var doROMFiles = false
-    //Temps for switching P1 and P2
-    var tempPlayerValue;
-    var tempPlayerString;
+    const doROMFiles = false
+    // Temps for switching P1 and P2
+    let tempPlayerValue;
+    let tempPlayerString;
     // Temps for ROM data
-    var tempCounter = 0;
-    var tempSwitch = 0;
+    let tempCounter = 0;
+    let tempSwitch = 0;
     // P1 and P2
     for (tempPlayerValue = 1; tempPlayerValue < 3; tempPlayerValue++)
     {
       tempPlayerValue == 1 ? tempPlayerString = 'P1' : tempPlayerString = 'P2';
 
       // Fetches relevant SINGLE addresses for State-Logic-Checking
-      var getAction_Flags = writePlayerMemory(tempPlayerString, 'Action_Flags', 0);
-      var getAirborne = writePlayerMemory(tempPlayerString, 'Airborne', 0);
-      var getAnimation_Timer_Main = writePlayerMemory(tempPlayerString, 'Animation_Timer_Main', 0);
-      var getAttack_Immune = writePlayerMemory(tempPlayerString, 'Attack_Immune', 0);
-      var getBlock_Meter = writePlayerMemory(tempPlayerString, 'Block_Meter', 0);
-      var getHitStop = writePlayerMemory(tempPlayerString, 'Hitstop2', 0);
-      var getKnockdown_State = writePlayerMemory(tempPlayerString, 'Knockdown_State', 0);
-      var getFlyingScreen = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
-      var getFSI_Points = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
-      var getIs_Prox_Block = writePlayerMemory(tempPlayerString, 'Is_Prox_Block', 0);
-      var getSJ_Counter = writePlayerMemory(tempPlayerString, 'SJ_Counter', 0);
-      var getNormal_Strength = writePlayerMemory(tempPlayerString, 'Normal_Strength', 0);
-      var getPunchKick = writePlayerMemory(tempPlayerString, 'PunchKick', 0);
-      var getAttack_Number = writePlayerMemory(tempPlayerString, 'Attack_Number', 0);
-      var getAir_Dash_Count = writePlayerMemory(tempPlayerString, 'Air_Dash_Count', 0);
-      var getY_Position_Arena = writePlayerMemory(tempPlayerString, 'Y_Position_Arena', 0);
-      var getY_Position_From_Enemy = writePlayerMemory(tempPlayerString, 'Y_Position_From_Enemy', 0);
-      //NEW_STATE_ADD_HERE : Define your SINGLE get-Address here
+      const getAction_Flags = writePlayerMemory(tempPlayerString, 'Action_Flags', 0);
+      const getAirborne = writePlayerMemory(tempPlayerString, 'Airborne', 0);
+      const getAnimation_Timer_Main = writePlayerMemory(tempPlayerString, 'Animation_Timer_Main', 0);
+      const getAttack_Immune = writePlayerMemory(tempPlayerString, 'Attack_Immune', 0);
+      const getBlock_Meter = writePlayerMemory(tempPlayerString, 'Block_Meter', 0);
+      const getHitStop = writePlayerMemory(tempPlayerString, 'Hitstop2', 0);
+      const getKnockdown_State = writePlayerMemory(tempPlayerString, 'Knockdown_State', 0);
+      const getFlyingScreen = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
+      const getFSI_Points = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
+      const getIs_Prox_Block = writePlayerMemory(tempPlayerString, 'Is_Prox_Block', 0);
+      const getSJ_Counter = writePlayerMemory(tempPlayerString, 'SJ_Counter', 0);
+      const getNormal_Strength = writePlayerMemory(tempPlayerString, 'Normal_Strength', 0);
+      const getPunchKick = writePlayerMemory(tempPlayerString, 'PunchKick', 0);
+      const getAttack_Number = writePlayerMemory(tempPlayerString, 'Attack_Number', 0);
+      const getAir_Dash_Count = writePlayerMemory(tempPlayerString, 'Air_Dash_Count', 0);
+      const getY_Position_Arena = writePlayerMemory(tempPlayerString, 'Y_Position_Arena', 0);
+      const getY_Position_From_Enemy = writePlayerMemory(tempPlayerString, 'Y_Position_From_Enemy', 0);
+      // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here
 
       // List of files to be written. Will have prefix of P1_ or P2_
-      //⭐ Start Adding New States as Strings here!
-      var allStateNamesArray = [
+      // ⭐ Start Adding New States as Strings here!
+      const allStateNamesArray = [
         'State_Being_Hit',
         'State_Flying_Screen_Air',
         'State_Flying_Screen_OTG',
@@ -610,8 +610,8 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         'State_Tech_Hit',
         'State_Thrown_Air',
         'State_Thrown_Ground',
-        //NEW_STATE_ADD_HERE
-        //ROM-specific states
+        // NEW_STATE_ADD_HERE
+        // ROM-specific states
         'State_ROM_01_OpponentStateA',
         'State_ROM_02_ChoiceA',
         'State_ROM_03_InputA_LK',
@@ -625,43 +625,43 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
 
       ];
       // Explicitly named arrays to store the values of each State-Logic-Check
-      var arrStateBeingHit = [[], [], []];
-      var arrStateFlying_Screen_Air = [[], [], []];
-      var arrStateFlyingScreen_OTG = [[], [], []];
-      var arrStateFS_Install_1 = [[], [], []];
-      var arrStateFS_Install_2 = [[], [], []];
-      var arrStateNJ_Air = [[], [], []];
-      var arrStateNJ_Rising = [[], [], []];
-      var arrStateOTG_Extra_Stun = [[], [], []];
-      var arrStateOTG_Forced_Stun = [[], [], []];
-      var arrStateOTG_Hit = [[], [], []];
-      var arrStateOTG_Roll_Invincible = [[], [], []];
-      var arrStateOTG_Roll_Stunned = [[], [], []];
-      var arrStateProxBlock_Air = [[], [], []];
-      var arrStateProxBlock_Ground = [[], [], []];
-      var arrStatePushblock_Air = [[], [], []];
-      var arrStatePushblock_Ground = [[], [], []];
-      var arrStateRising_Invincibility = [[], [], []];
-      var arrStateSJ_Air = [[], [], []];
-      var arrStateSJ_Counter = [[], [], []];
-      var arrStateStun = [[], [], []];
-      var arrStateTech_Hit = [[], [], []];
-      var arrStateThrown_Air = [[], [], []];
-      var arrStateThrown_Ground = [[], [], []];
-      //NEW_STATE_ADD_HERE ⏫
-      //ROM-Specific States
-      var arrStateROM_01_OpponentStateA = [[], [], []];
-      var arrStateROM_02_ChoiceA = [[], [], []];
-      var arrStateROM_03_InputA_LK = [[], [], []];
-      var arrStateROM_03_InputA_MK = [[], [], []];
-      var arrStateROM_04_ChoiceB = [[], [], []];
-      var arrStateROM_05_ChoiceC = [[], [], []];
-      var arrStateROM_06_InputB_AirDash = [[], [], []];
-      var arrStateROM_08_InputC_DLK = [[], [], []];
-      var arrStateROM_08_InputC_MK = [[], [], []];
-      var arrStateROM_09_ChoiceE = [[], [], []];
+      const arrStateBeingHit = [[], [], []];
+      const arrStateFlying_Screen_Air = [[], [], []];
+      const arrStateFlyingScreen_OTG = [[], [], []];
+      const arrStateFS_Install_1 = [[], [], []];
+      const arrStateFS_Install_2 = [[], [], []];
+      const arrStateNJ_Air = [[], [], []];
+      const arrStateNJ_Rising = [[], [], []];
+      const arrStateOTG_Extra_Stun = [[], [], []];
+      const arrStateOTG_Forced_Stun = [[], [], []];
+      const arrStateOTG_Hit = [[], [], []];
+      const arrStateOTG_Roll_Invincible = [[], [], []];
+      const arrStateOTG_Roll_Stunned = [[], [], []];
+      const arrStateProxBlock_Air = [[], [], []];
+      const arrStateProxBlock_Ground = [[], [], []];
+      const arrStatePushblock_Air = [[], [], []];
+      const arrStatePushblock_Ground = [[], [], []];
+      const arrStateRising_Invincibility = [[], [], []];
+      const arrStateSJ_Air = [[], [], []];
+      const arrStateSJ_Counter = [[], [], []];
+      const arrStateStun = [[], [], []];
+      const arrStateTech_Hit = [[], [], []];
+      const arrStateThrown_Air = [[], [], []];
+      const arrStateThrown_Ground = [[], [], []];
+      // NEW_STATE_ADD_HERE ⏫
+      // ROM-Specific States
+      const arrStateROM_01_OpponentStateA = [[], [], []];
+      const arrStateROM_02_ChoiceA = [[], [], []];
+      const arrStateROM_03_InputA_LK = [[], [], []];
+      const arrStateROM_03_InputA_MK = [[], [], []];
+      const arrStateROM_04_ChoiceB = [[], [], []];
+      const arrStateROM_05_ChoiceC = [[], [], []];
+      const arrStateROM_06_InputB_AirDash = [[], [], []];
+      const arrStateROM_08_InputC_DLK = [[], [], []];
+      const arrStateROM_08_InputC_MK = [[], [], []];
+      const arrStateROM_09_ChoiceE = [[], [], []];
 
-      var allStatesArray = [
+      const allStatesArray = [
         arrStateBeingHit,
         arrStateFlying_Screen_Air,
         arrStateFlyingScreen_OTG,
@@ -685,8 +685,8 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         arrStateTech_Hit,
         arrStateThrown_Air,
         arrStateThrown_Ground,
-        //NEW_STATE_ADD_HERE ⏫
-        //ROM-Specific States
+        // NEW_STATE_ADD_HERE ⏫
+        // ROM-Specific States
         arrStateROM_01_OpponentStateA,
         arrStateROM_02_ChoiceA,
         arrStateROM_03_InputA_LK,
@@ -699,13 +699,13 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         arrStateROM_09_ChoiceE,
       ];
       // for each slot (abc) in a Player's side
-      for (var playerSlotI = 0 /*0|1|2*/; playerSlotI < 3; playerSlotI++)
+      for (let playerSlotI = 0; playerSlotI < 3; playerSlotI++)
       {
         // for each frame in a clip
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
         {
           // Pushing the boolean-results for each State. E.g. BeingHit result = [ 0,0,0,1,1,1,1,1... ]
-          //Being_Hit
+          // Being_Hit
           ((getKnockdown_State)[playerSlotI][clipLen] == 32) && ((getHitStop)[playerSlotI][clipLen] > 0)
             ? arrStateBeingHit[playerSlotI].push(1)
             : arrStateBeingHit[playerSlotI].push(0);
@@ -847,11 +847,11 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
         // Applies to ROM cases as well!
         var counter = 0;
-        for (let stateArray in allStatesArray)
+        for (const stateArray in allStatesArray)
         {
           allStatesArray[stateArray][playerSlotI].map((num, index) => // Go through all 3 arrays' values + keep track of the index
           {
-            if (num === 0)
+            if (num == 0)
             {
               counter = 0
               return allStatesArray[stateArray][playerSlotI][index] // returns the extant value inside of the array
@@ -873,7 +873,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           // in case of OpponentStateB at the end of the ROM cycle
         ];
 
-        for (let romFile in ROM_OPPONENTSTATES)
+        for (const romFile in ROM_OPPONENTSTATES)
         {
           for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
           {
@@ -884,7 +884,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           }
         };
 
-        for (let romFile in ROM_OPPONENTSTATES)
+        for (const romFile in ROM_OPPONENTSTATES)
         {
           // Checking when we are Rising-To-SuperJump (before we wait or not wait)
           for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
@@ -909,8 +909,8 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           }
 
           // Setting Booleans for ROM_OpponentStateA results per ROM cycle.
-          //High Air
-          var AirSwitch = 0;
+          // High Air
+          let AirSwitch = 0;
           for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
           {
             if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 888)
@@ -930,7 +930,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
               }
             }
           }
-          //Low Air
+          // Low Air
           AirSwitch = 0;
           for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
           {
@@ -962,7 +962,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           arrStateROM_08_InputC_MK,
         ];
         // Setting the end-point of a ROM Cycle.
-        for (let romFile in ROM_INPUTS)
+        for (const romFile in ROM_INPUTS)
         {
           for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
           {
@@ -994,7 +994,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           }
         }
         // 04_ChoiceB (time: LK -> MK)
-        for (let arrayWithROMData in arrStateROM_04_ChoiceB) // 3 arrays
+        for (const arrayWithROMData in arrStateROM_04_ChoiceB) // 3 arrays
         {
           // Find Grounded state for ROM loops
           for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
@@ -1054,7 +1054,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
             // Stop on encountering a MK
             else if (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] == '\'MK\'') // We hit a MK
             {
-              //Lookahead
+              // Lookahead
               for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++)
               {
                 // Everything until 65535 is = tempCounter
@@ -1070,10 +1070,10 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
                   {
                     tempSwitch = 0;
                   }
-                  break //lookahead is done, we hit 65535
+                  break // lookahead is done, we hit 65535
                 }
               }
-              //Lookbehind, expect the number of LKs to equal the tempCounter value
+              // Lookbehind, expect the number of LKs to equal the tempCounter value
               for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
               {
                 if (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen - negativeI] == '\'LK\'')
@@ -1116,7 +1116,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
           }
         }
         // 05_ChoiceC (time: LK -> AirDash)
-        for (let arrayWithROMData in arrStateROM_05_ChoiceC) // 3 arrays
+        for (const arrayWithROMData in arrStateROM_05_ChoiceC) // 3 arrays
         {
           // Find Grounded state for ROM loops
           for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
@@ -1180,7 +1180,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
             // Stop on encountering an AirDash
             else if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'AirDash\'') // We hit an AirDash
             {
-              //Lookahead
+              // Lookahead
               for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++)
               {
                 // Everything until 65535 is = tempCounter
@@ -1196,10 +1196,10 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
                   {
                     tempSwitch = 0;
                   }
-                  break //lookahead is done, we hit 65535
+                  break // lookahead is done, we hit 65535
                 }
               }
-              //Lookbehind, expect the number of LKs to equal the tempCounter value
+              // Lookbehind, expect the number of LKs to equal the tempCounter value
               for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
               {
                 if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen - negativeI] == '\'LK\'')
@@ -1244,7 +1244,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
 
 
         // 09_ChoiceE (time: LK -> MK)
-        for (let arrayWithROMData in arrStateROM_09_ChoiceE) // 3 arrays
+        for (const arrayWithROMData in arrStateROM_09_ChoiceE) // 3 arrays
         {
           for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
           {
@@ -1299,7 +1299,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
             // Stop on encountering a MK
             else if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] == '\'MK\'') // We hit a MK
             {
-              //Lookahead
+              // Lookahead
               for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++) // CLIP_LENGTH is used, but we will break out of the loop before it is reached
               {
                 // Everything until 65535 is = tempCounter
@@ -1315,10 +1315,10 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
                   {
                     tempSwitch = 0;
                   }
-                  break //lookahead is done, we hit 65535
+                  break // lookahead is done, we hit 65535
                 }
               }
-              //Lookbehind, expect the number of 2LKs to equal the tempCounter value
+              // Lookbehind, expect the number of 2LKs to equal the tempCounter value
               for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
               {
                 if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen - negativeI] == '\'DLK\'')
@@ -1362,7 +1362,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         } // End of 09_ChoiceE Scope 
 
         // write the files
-        for (var stateName in allStateNamesArray)
+        for (const stateName in allStateNamesArray)
         {
           // TODO Add switch to exclude ROM-specific states
           if (doROMFiles == false)
@@ -1376,7 +1376,7 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         }
 
         // Append data arrays into files
-        for (let stateTokenI in allStateNamesArray)
+        for (const stateTokenI in allStateNamesArray)
         {
           // TODO Add switch to exclude ROM-specific states
           if (doROMFiles == false)
