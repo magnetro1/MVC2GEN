@@ -795,6 +795,7 @@ function writeNewStates()
         (((getNormal_Strength)[playerSlotI][clipLen] == 1) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && ((getAttack_Number)[playerSlotI][clipLen] == 16) && (getAir_Dash_Count)[playerSlotI][clipLen] == 1
           ? arrStateROM_08_InputC_MK[playerSlotI].push(1)
           : arrStateROM_08_InputC_MK[playerSlotI].push(0);
+        // // "ROM_09_ChoiceE"
         (((getNormal_Strength)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && (getAttack_Number)[playerSlotI][clipLen] == 18 && ((getAir_Dash_Count)[playerSlotI][clipLen] == 1)
           ? arrStateROM_09_ChoiceE[playerSlotI].push(1)
           : arrStateROM_09_ChoiceE[playerSlotI].push(0);

@@ -76,8 +76,11 @@ function writeMissingEntries()
       missingEntries.push(`Missing data entry after Total_Frame #: ${ out[0][i] }\n`);
     }
   }
-  fs.writeFileSync((`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_MissingEntries.txt`), (`${ missingEntries }\nFinal entry in Total_Frames: ${ out[0][out[0].length - 1] }\nTotal_Frames in Clip: ${ out[0].length }`)
+  fs.writeFileSync((`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Missing_Frames.txt`), (`${ missingEntries }\nFinal entry in Total_Frames: ${ out[0][out[0].length - 1] }\nTotal_Frames in Clip: ${ out[0].length }`)
     .replace(/,/g, ''));
 }
 
 writeMissingEntries();
+
+
+// regex to find for in loops
