@@ -28,8 +28,8 @@ import(`./main_files/${ FILE_NAME_NO_EXT }_node.js`).then((pMemZero) =>
     const tempAddress = eval(`pMemZero.${ MIN_MAX_ADRS[minMaxAddress] }.split(",")`);
     const tempMinValue = (Math.min(...tempAddress));
     const tempMaxValue = (Math.max(...tempAddress));
-    const prependStringMin = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
-    const prependStringMax = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Max = `;
+    const prependStringMin = `var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
+    const prependStringMax = `var ${ MIN_MAX_ADRS[minMaxAddress] }_Max = `;
     let tempStringMin = "";
     let tempStringMax = "";
     for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
@@ -70,7 +70,7 @@ newFileData
       if (!fs.existsSync(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`)) // If file doesn't exist, create it; array element[1] is $1 from REGEX
       {
         fs.writeFileSync(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`,
-          `export var result = [];\n result[0] = [${ tempRegExVar[2] }];\n`,
+          `var result = [];\n result[0] = [${ tempRegExVar[2] }];\n`,
           {encoding: "utf8"});
       }
     }
@@ -86,7 +86,7 @@ if (newFileData.includes("export var P2_Combo_Meter_Value_Max ="))
       const tempAddress = eval(`pMem.${ MIN_MAX_ADRS[minMaxAddress] }.split(",")`);
       const tempMinValue = (Math.min(...tempAddress));
       const tempMaxValue = (Math.max(...tempAddress));
-      const prependStringMin = `export var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
+      const prependStringMin = `var ${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
       let tempStringMin = "";
       let tempStringMax = "";
       for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
@@ -548,11 +548,9 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
 
   // Boolean results for particular game-states
   // Search for "NEW_STATE_ADD_HERE" to add new states properly
-
-  // TODO split off ROM functions into their own file ?
   function writeNewStates()
   {
-    const doROMFiles = false
+    const DO_ROM_FILES = true // Skip ROM logic files
     // Temps for switching P1 and P2
     let tempPlayerValue;
     let tempPlayerString;
@@ -565,139 +563,65 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
       tempPlayerValue == 1 ? tempPlayerString = 'P1' : tempPlayerString = 'P2';
 
       // Fetches relevant SINGLE addresses for State-Logic-Checking
-      const getAction_Flags = writePlayerMemory(tempPlayerString, 'Action_Flags', 0);
-      const getAirborne = writePlayerMemory(tempPlayerString, 'Airborne', 0);
-      const getAnimation_Timer_Main = writePlayerMemory(tempPlayerString, 'Animation_Timer_Main', 0);
-      const getAttack_Immune = writePlayerMemory(tempPlayerString, 'Attack_Immune', 0);
-      const getBlock_Meter = writePlayerMemory(tempPlayerString, 'Block_Meter', 0);
-      const getHitStop = writePlayerMemory(tempPlayerString, 'Hitstop2', 0);
-      const getKnockdown_State = writePlayerMemory(tempPlayerString, 'Knockdown_State', 0);
-      const getFlyingScreen = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
-      const getFSI_Points = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
-      const getIs_Prox_Block = writePlayerMemory(tempPlayerString, 'Is_Prox_Block', 0);
-      const getSJ_Counter = writePlayerMemory(tempPlayerString, 'SJ_Counter', 0);
-      const getNormal_Strength = writePlayerMemory(tempPlayerString, 'Normal_Strength', 0);
-      const getPunchKick = writePlayerMemory(tempPlayerString, 'PunchKick', 0);
-      const getAttack_Number = writePlayerMemory(tempPlayerString, 'Attack_Number', 0);
-      const getAir_Dash_Count = writePlayerMemory(tempPlayerString, 'Air_Dash_Count', 0);
-      const getY_Position_Arena = writePlayerMemory(tempPlayerString, 'Y_Position_Arena', 0);
-      const getY_Position_From_Enemy = writePlayerMemory(tempPlayerString, 'Y_Position_From_Enemy', 0);
+      var getAction_Flags = writePlayerMemory(tempPlayerString, 'Action_Flags', 0);
+      var getAirborne = writePlayerMemory(tempPlayerString, 'Airborne', 0);
+      var getAnimation_Timer_Main = writePlayerMemory(tempPlayerString, 'Animation_Timer_Main', 0);
+      var getAttack_Immune = writePlayerMemory(tempPlayerString, 'Attack_Immune', 0);
+      var getBlock_Meter = writePlayerMemory(tempPlayerString, 'Block_Meter', 0);
+      var getHitStop = writePlayerMemory(tempPlayerString, 'Hitstop2', 0);
+      var getKnockdown_State = writePlayerMemory(tempPlayerString, 'Knockdown_State', 0);
+      var getFlyingScreen = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
+      var getFSI_Points = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
+      var getIs_Prox_Block = writePlayerMemory(tempPlayerString, 'Is_Prox_Block', 0);
+      var getSJ_Counter = writePlayerMemory(tempPlayerString, 'SJ_Counter', 0);
+      var getNormal_Strength = writePlayerMemory(tempPlayerString, 'Normal_Strength', 0);
+      var getPunchKick = writePlayerMemory(tempPlayerString, 'PunchKick', 0);
+      var getAttack_Number = writePlayerMemory(tempPlayerString, 'Attack_Number', 0);
+      var getAir_Dash_Count = writePlayerMemory(tempPlayerString, 'Air_Dash_Count', 0);
+      var getY_Position_Arena = writePlayerMemory(tempPlayerString, 'Y_Position_Arena', 0);
+      var getY_Position_From_Enemy = writePlayerMemory(tempPlayerString, 'Y_Position_From_Enemy', 0);
       // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here
 
       // List of files to be written. Will have prefix of P1_ or P2_
-      // ⭐ Start Adding New States as Strings here!
-      const allStateNamesArray = [
-        'State_Being_Hit',
-        'State_Flying_Screen_Air',
-        'State_Flying_Screen_OTG',
-        'State_FS_Install_1',
-        'State_FS_Install_2',
-        'State_NJ_Air',
-        'State_NJ_Rising',
-        'State_OTG_Extra_Stun',
-        'State_OTG_Forced_Stun',
-        'State_OTG_Hit',
-        'State_OTG_Roll_Invincible',
-        'State_OTG_Roll_Stunned',
-        'State_ProxBlock_Air',
-        'State_ProxBlock_Ground',
-        'State_Pushblock_Air',
-        'State_Pushblock_Ground',
-        'State_Rising_Invincibility',
-        'State_SJ_Air',
-        'State_SJ_Counter',
-        'State_Stun',
-        'State_Tech_Hit',
-        'State_Thrown_Air',
-        'State_Thrown_Ground',
-        // NEW_STATE_ADD_HERE
-        // ROM-specific states
-        'State_ROM_01_OpponentStateA',
-        'State_ROM_02_ChoiceA',
-        'State_ROM_03_InputA_LK',
-        'State_ROM_03_InputA_MK',
-        'State_ROM_04_ChoiceB',
-        'State_ROM_05_ChoiceC',
-        'State_ROM_06_InputB_AirDash',
-        'State_ROM_08_InputC_DLK',
-        'State_ROM_08_InputC_MK',
-        'State_ROM_09_ChoiceE',
-
-      ];
-      // Explicitly named arrays to store the values of each State-Logic-Check
-      const arrStateBeingHit = [[], [], []];
-      const arrStateFlying_Screen_Air = [[], [], []];
-      const arrStateFlyingScreen_OTG = [[], [], []];
-      const arrStateFS_Install_1 = [[], [], []];
-      const arrStateFS_Install_2 = [[], [], []];
-      const arrStateNJ_Air = [[], [], []];
-      const arrStateNJ_Rising = [[], [], []];
-      const arrStateOTG_Extra_Stun = [[], [], []];
-      const arrStateOTG_Forced_Stun = [[], [], []];
-      const arrStateOTG_Hit = [[], [], []];
-      const arrStateOTG_Roll_Invincible = [[], [], []];
-      const arrStateOTG_Roll_Stunned = [[], [], []];
-      const arrStateProxBlock_Air = [[], [], []];
-      const arrStateProxBlock_Ground = [[], [], []];
-      const arrStatePushblock_Air = [[], [], []];
-      const arrStatePushblock_Ground = [[], [], []];
-      const arrStateRising_Invincibility = [[], [], []];
-      const arrStateSJ_Air = [[], [], []];
-      const arrStateSJ_Counter = [[], [], []];
-      const arrStateStun = [[], [], []];
-      const arrStateTech_Hit = [[], [], []];
-      const arrStateThrown_Air = [[], [], []];
-      const arrStateThrown_Ground = [[], [], []];
-      // NEW_STATE_ADD_HERE ⏫
-      // ROM-Specific States
-      const arrStateROM_01_OpponentStateA = [[], [], []];
-      const arrStateROM_02_ChoiceA = [[], [], []];
-      const arrStateROM_03_InputA_LK = [[], [], []];
-      const arrStateROM_03_InputA_MK = [[], [], []];
-      const arrStateROM_04_ChoiceB = [[], [], []];
-      const arrStateROM_05_ChoiceC = [[], [], []];
-      const arrStateROM_06_InputB_AirDash = [[], [], []];
-      const arrStateROM_08_InputC_DLK = [[], [], []];
-      const arrStateROM_08_InputC_MK = [[], [], []];
-      const arrStateROM_09_ChoiceE = [[], [], []];
-
-      const allStatesArray = [
-        arrStateBeingHit,
-        arrStateFlying_Screen_Air,
-        arrStateFlyingScreen_OTG,
-        arrStateFS_Install_1,
-        arrStateFS_Install_2,
-        arrStateNJ_Air,
-        arrStateNJ_Rising,
-        arrStateOTG_Extra_Stun,
-        arrStateOTG_Forced_Stun,
-        arrStateOTG_Hit,
-        arrStateOTG_Roll_Invincible,
-        arrStateOTG_Roll_Stunned,
-        arrStateProxBlock_Air,
-        arrStateProxBlock_Ground,
-        arrStatePushblock_Air,
-        arrStatePushblock_Ground,
-        arrStateRising_Invincibility,
-        arrStateSJ_Air,
-        arrStateSJ_Counter,
-        arrStateStun,
-        arrStateTech_Hit,
-        arrStateThrown_Air,
-        arrStateThrown_Ground,
+      var allDataObject = {
+        State_Being_Hit: [[], [], []],
+        State_Flying_Screen_Air: [[], [], []],
+        State_Flying_Screen_OTG: [[], [], []],
+        State_FS_Install_1: [[], [], []],
+        State_FS_Install_2: [[], [], []],
+        State_NJ_Air: [[], [], []],
+        State_NJ_Rising: [[], [], []],
+        State_OTG_Extra_Stun: [[], [], []],
+        State_OTG_Forced_Stun: [[], [], []],
+        State_OTG_Hit: [[], [], []],
+        State_OTG_Roll_Invincible: [[], [], []],
+        State_OTG_Roll_Stunned: [[], [], []],
+        State_ProxBlock_Air: [[], [], []],
+        State_ProxBlock_Ground: [[], [], []],
+        State_Pushblock_Air: [[], [], []],
+        State_Pushblock_Ground: [[], [], []],
+        State_Rising_Invincibility: [[], [], []],
+        State_SJ_Air: [[], [], []],
+        State_SJ_Counter: [[], [], []],
+        State_Stun: [[], [], []],
+        State_Tech_Hit: [[], [], []],
+        State_Thrown_Air: [[], [], []],
+        State_Thrown_Ground: [[], [], []],
         // NEW_STATE_ADD_HERE ⏫
+
         // ROM-Specific States
-        arrStateROM_01_OpponentStateA,
-        arrStateROM_02_ChoiceA,
-        arrStateROM_03_InputA_LK,
-        arrStateROM_03_InputA_MK,
-        arrStateROM_04_ChoiceB,
-        arrStateROM_05_ChoiceC,
-        arrStateROM_06_InputB_AirDash,
-        arrStateROM_08_InputC_DLK,
-        arrStateROM_08_InputC_MK,
-        arrStateROM_09_ChoiceE,
-      ];
+        State_ROM_01_OpponentStateA: [[], [], []],
+        State_ROM_02_ChoiceA: [[], [], []],
+        State_ROM_03_InputA_LK: [[], [], []],
+        State_ROM_03_InputA_MK: [[], [], []],
+        State_ROM_04_ChoiceB: [[], [], []],
+        State_ROM_05_ChoiceC: [[], [], []],
+        State_ROM_06_InputB_AirDash: [[], [], []],
+        State_ROM_08_InputC_DLK: [[], [], []],
+        State_ROM_08_InputC_MK: [[], [], []],
+        State_ROM_09_ChoiceE: [[], [], []],
+      }
+
       // for each slot (abc) in a Player's side
       for (let playerSlotI = 0; playerSlotI < 3; playerSlotI++)
       {
@@ -706,689 +630,773 @@ import(`./main_files/New_${ FILE_NAME_NO_EXT }_node.js`).then((pMem) =>
         {
           // Pushing the boolean-results for each State. E.g. BeingHit result = [ 0,0,0,1,1,1,1,1... ]
           // Being_Hit
-          ((getKnockdown_State)[playerSlotI][clipLen] == 32) && ((getHitStop)[playerSlotI][clipLen] > 0)
-            ? arrStateBeingHit[playerSlotI].push(1)
-            : arrStateBeingHit[playerSlotI].push(0);
-          // // "Flying_Screen_Air"
-          ((getFlyingScreen)[playerSlotI][clipLen] == 1) && ((getKnockdown_State)[playerSlotI][clipLen] == 32) && ((getAirborne)[playerSlotI][clipLen] == 2)
-            ? arrStateFlying_Screen_Air[playerSlotI].push(1)
-            : arrStateFlying_Screen_Air[playerSlotI].push(0);
-          // // // "Flying_Screen_OTG"
-          ((getFlyingScreen)[playerSlotI][clipLen] == 1) && ((getKnockdown_State)[playerSlotI][clipLen] == 32) && ((getAirborne)[playerSlotI][clipLen] == 3)
-            ? arrStateFlyingScreen_OTG[playerSlotI].push(1)
-            : arrStateFlyingScreen_OTG[playerSlotI].push(0);
-          // // // "FS_Install_1"
-          ((getFSI_Points)[playerSlotI][clipLen] == 8) || ((getFSI_Points)[playerSlotI][clipLen] == 9)
-            ? arrStateFS_Install_1[playerSlotI].push(1)
-            : arrStateFS_Install_1[playerSlotI].push(0);
-          // // "FS_Install_2"
+          ((getKnockdown_State)[playerSlotI][clipLen] == 32)
+            && ((getHitStop)[playerSlotI][clipLen] > 0)
+            ? allDataObject.State_Being_Hit[playerSlotI].push(1)
+            : allDataObject.State_Being_Hit[playerSlotI].push(0);
+          // "Flying_Screen_Air"
+          ((getFlyingScreen)[playerSlotI][clipLen] == 1)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 32)
+            && ((getAirborne)[playerSlotI][clipLen] == 2)
+            ? allDataObject.State_Flying_Screen_Air[playerSlotI].push(1)
+            : allDataObject.State_Flying_Screen_Air[playerSlotI].push(0);
+          // "Flying_Screen_OTG"
+          ((getFlyingScreen)[playerSlotI][clipLen] == 1)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 32)
+            && ((getAirborne)[playerSlotI][clipLen] == 3)
+            ? allDataObject.State_Flying_Screen_OTG[playerSlotI].push(1)
+            : allDataObject.State_Flying_Screen_OTG[playerSlotI].push(0);
+          // "FS_Install_1"
+          ((getFSI_Points)[playerSlotI][clipLen] == 8)
+            || ((getFSI_Points)[playerSlotI][clipLen] == 9)
+            ? allDataObject.State_FS_Install_1[playerSlotI].push(1)
+            : allDataObject.State_FS_Install_1[playerSlotI].push(0);
+          // "FS_Install_2"
           ((getFSI_Points)[playerSlotI][clipLen] > 9)
-            ? arrStateFS_Install_2[playerSlotI].push(1)
-            : arrStateFS_Install_2[playerSlotI].push(0);
-          // // "NJ_Air"
-          ((getAirborne)[playerSlotI][clipLen] == 2) && ((getKnockdown_State)[playerSlotI][clipLen] == 3) && ((getSJ_Counter)[playerSlotI][clipLen] == 0)
-            ? arrStateNJ_Air[playerSlotI].push(1)
-            : arrStateNJ_Air[playerSlotI].push(0);
-          // // "NJ_Rising
-          ((getAirborne)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 2) && ((getSJ_Counter)[playerSlotI][clipLen] == 0)
-            ? arrStateNJ_Rising[playerSlotI].push(1)
-            : arrStateNJ_Rising[playerSlotI].push(0);
-          // // "OTG_Extra_Stun"
-          ((getKnockdown_State)[playerSlotI][clipLen] == 23) && (((getAirborne)[playerSlotI][clipLen] == 3))
-            ? arrStateOTG_Extra_Stun[playerSlotI].push(1)
-            : arrStateOTG_Extra_Stun[playerSlotI].push(0);
-          // // "OTG_Forced_Stun"
-          ((getKnockdown_State)[playerSlotI][clipLen] == 32) && (((getAirborne)[playerSlotI][clipLen] == 3))
-            ? arrStateOTG_Forced_Stun[playerSlotI].push(1)
-            : arrStateOTG_Forced_Stun[playerSlotI].push(0);
-          // // "OTG_Hit"
-          ((getAction_Flags)[playerSlotI][clipLen] == 0) && ((getAirborne)[playerSlotI][clipLen] == 3) && (((getKnockdown_State)[playerSlotI][clipLen] == 32))
-            ? arrStateOTG_Hit[playerSlotI].push(1)
-            : arrStateOTG_Hit[playerSlotI].push(0);
-          // // "OTG_Roll_Invincible"
-          ((getAction_Flags)[playerSlotI][clipLen] == 2) && ((getAirborne)[playerSlotI][clipLen] == 1) && (((getAttack_Immune)[playerSlotI][clipLen] == 1) && ((getKnockdown_State)[playerSlotI][clipLen] == 17))
-            ? arrStateOTG_Roll_Invincible[playerSlotI].push(1)
-            : arrStateOTG_Roll_Invincible[playerSlotI].push(0);
-          // // "OTG_Roll_Stunned"
-          ((getAction_Flags)[playerSlotI][clipLen] == 1) && ((getAirborne)[playerSlotI][clipLen] == 3) && (((getKnockdown_State)[playerSlotI][clipLen] == 32))
-            ? arrStateOTG_Roll_Stunned[playerSlotI].push(1)
-            : arrStateOTG_Roll_Stunned[playerSlotI].push(0);
-          // // "ProxBlock_Air"
-          (((getIs_Prox_Block)[playerSlotI][clipLen] == 6) && ((getKnockdown_State)[playerSlotI][clipLen] == 19))
-            ? arrStateProxBlock_Air[playerSlotI].push(1)
-            : arrStateProxBlock_Air[playerSlotI].push(0);
-          // // "ProxBlock_Ground"
-          (((getIs_Prox_Block)[playerSlotI][clipLen] == 5) && ((getKnockdown_State)[playerSlotI][clipLen] == 18))
-            ? arrStateProxBlock_Ground[playerSlotI].push(1)
-            : arrStateProxBlock_Ground[playerSlotI].push(0);
-          // // "Pushblock_Air"
-          (((getBlock_Meter)[playerSlotI][clipLen] > 0) && ((getAnimation_Timer_Main)[playerSlotI][clipLen] < 28) && ((getIs_Prox_Block)[playerSlotI][clipLen] == 6) && ((getAction_Flags)[playerSlotI][clipLen] == 2))
-            ? arrStatePushblock_Air[playerSlotI].push(1)
-            : arrStatePushblock_Air[playerSlotI].push(0);
-          // // "Pushblock_Ground"
-          ((getBlock_Meter)[playerSlotI][clipLen] > 0) && ((getAnimation_Timer_Main)[playerSlotI][clipLen] < 28) && ((getIs_Prox_Block)[playerSlotI][clipLen] == 5) && (((getAction_Flags)[playerSlotI][clipLen] == 3))
-            ? arrStatePushblock_Ground[playerSlotI].push(1)
-            : arrStatePushblock_Ground[playerSlotI].push(0);
-          // // "Rising_Invincibility"
-          (((getAirborne)[playerSlotI][clipLen] == 0) && ((getAttack_Immune)[playerSlotI][clipLen] == 1) && ((getKnockdown_State)[playerSlotI][clipLen] == 17))
-            ? arrStateRising_Invincibility[playerSlotI].push(1)
-            : arrStateRising_Invincibility[playerSlotI].push(0);
-          // // "SJ_Air"
-          (((getAirborne)[playerSlotI][clipLen] == 2) && ((getKnockdown_State)[playerSlotI][clipLen] == 14) && ((getSJ_Counter)[playerSlotI][clipLen] == 1))
-            ? arrStateSJ_Air[playerSlotI].push(1)
-            : arrStateSJ_Air[playerSlotI].push(0);
-          // // "SJ_Counter"
+            ? allDataObject.State_FS_Install_2[playerSlotI].push(1)
+            : allDataObject.State_FS_Install_2[playerSlotI].push(0);
+          // "NJ_Air"
+          ((getAirborne)[playerSlotI][clipLen] == 2)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 3)
+            && ((getSJ_Counter)[playerSlotI][clipLen] == 0)
+            ? allDataObject.State_NJ_Air[playerSlotI].push(1)
+            : allDataObject.State_NJ_Air[playerSlotI].push(0);
+          // "NJ_Rising
+          ((getAirborne)[playerSlotI][clipLen] == 0)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 2)
+            && ((getSJ_Counter)[playerSlotI][clipLen] == 0)
+            ? allDataObject.State_NJ_Rising[playerSlotI].push(1)
+            : allDataObject.State_NJ_Rising[playerSlotI].push(0);
+          // "OTG_Extra_Stun"
+          ((getKnockdown_State)[playerSlotI][clipLen] == 23)
+            && (((getAirborne)[playerSlotI][clipLen] == 3))
+            ? allDataObject.State_OTG_Extra_Stun[playerSlotI].push(1)
+            : allDataObject.State_OTG_Extra_Stun[playerSlotI].push(0);
+
+          // "OTG_Forced_Stun"
+          ((getKnockdown_State)[playerSlotI][clipLen] == 32)
+            && (((getAirborne)[playerSlotI][clipLen] == 3))
+            ? allDataObject.State_OTG_Forced_Stun[playerSlotI].push(1)
+            : allDataObject.State_OTG_Forced_Stun[playerSlotI].push(0);
+          // "OTG_Hit"
+          ((getAction_Flags)[playerSlotI][clipLen] == 0)
+            && ((getAirborne)[playerSlotI][clipLen] == 3)
+            && (((getKnockdown_State)[playerSlotI][clipLen] == 32))
+            ? allDataObject.State_OTG_Hit[playerSlotI].push(1)
+            : allDataObject.State_OTG_Hit[playerSlotI].push(0);
+          // "OTG_Roll_Invincible"
+          ((getAction_Flags)[playerSlotI][clipLen] == 2)
+            && ((getAirborne)[playerSlotI][clipLen] == 1)
+            && (((getAttack_Immune)[playerSlotI][clipLen] == 1)
+              && ((getKnockdown_State)[playerSlotI][clipLen] == 17))
+            ? allDataObject.State_OTG_Roll_Invincible[playerSlotI].push(1)
+            : allDataObject.State_OTG_Roll_Invincible[playerSlotI].push(0);
+
+          // "OTG_Roll_Stunned"
+          ((getAction_Flags)[playerSlotI][clipLen] == 1)
+            && ((getAirborne)[playerSlotI][clipLen] == 3)
+            && (((getKnockdown_State)[playerSlotI][clipLen] == 32))
+            ? allDataObject.State_OTG_Roll_Stunned[playerSlotI].push(1)
+            : allDataObject.State_OTG_Roll_Stunned[playerSlotI].push(0);
+          // "ProxBlock_Air"
+          (((getIs_Prox_Block)[playerSlotI][clipLen] == 6)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 19))
+            ? allDataObject.State_ProxBlock_Air[playerSlotI].push(1)
+            : allDataObject.State_ProxBlock_Air[playerSlotI].push(0);
+          // "ProxBlock_Ground"
+          (((getIs_Prox_Block)[playerSlotI][clipLen] == 5)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 18))
+            ? allDataObject.State_ProxBlock_Ground[playerSlotI].push(1)
+            : allDataObject.State_ProxBlock_Ground[playerSlotI].push(0);
+          // "Pushblock_Air"
+          (((getBlock_Meter)[playerSlotI][clipLen] > 0)
+            && ((getAnimation_Timer_Main)[playerSlotI][clipLen] < 28)
+            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 6)
+            && ((getAction_Flags)[playerSlotI][clipLen] == 2))
+            ? allDataObject.State_Pushblock_Air[playerSlotI].push(1)
+            : allDataObject.State_Pushblock_Air[playerSlotI].push(0);
+          // "Pushblock_Ground"
+          ((getBlock_Meter)[playerSlotI][clipLen] > 0)
+            && ((getAnimation_Timer_Main)[playerSlotI][clipLen] < 28)
+            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 5)
+            && (((getAction_Flags)[playerSlotI][clipLen] == 3))
+            ? allDataObject.State_Pushblock_Ground[playerSlotI].push(1)
+            : allDataObject.State_Pushblock_Ground[playerSlotI].push(0);
+          // "Rising_Invincibility"
+          (((getAirborne)[playerSlotI][clipLen] == 0)
+            && ((getAttack_Immune)[playerSlotI][clipLen] == 1)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 17))
+            ? allDataObject.State_Rising_Invincibility[playerSlotI].push(1)
+            : allDataObject.State_Rising_Invincibility[playerSlotI].push(0);
+          // "SJ_Air"
+          (((getAirborne)[playerSlotI][clipLen] == 2)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 14)
+            && ((getSJ_Counter)[playerSlotI][clipLen] == 1))
+            ? allDataObject.State_SJ_Air[playerSlotI].push(1)
+            : allDataObject.State_SJ_Air[playerSlotI].push(0);
+          // "SJ_Counter"
           ((getSJ_Counter)[playerSlotI][clipLen] == 2)
-            ? arrStateSJ_Counter[playerSlotI].push(1)
-            : arrStateSJ_Counter[playerSlotI].push(0);
-          // // "Stun"
-          (((getKnockdown_State)[playerSlotI][clipLen] == 32) && ((getIs_Prox_Block)[playerSlotI][clipLen] == 13))
-            ? arrStateStun[playerSlotI].push(1)
-            : arrStateStun[playerSlotI].push(0);
-          // // "Tech_Hit"
+            ? allDataObject.State_SJ_Counter[playerSlotI].push(1)
+            : allDataObject.State_SJ_Counter[playerSlotI].push(0);
+          // "Stun"
+          (((getKnockdown_State)[playerSlotI][clipLen] == 32)
+            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 13))
+            ? allDataObject.State_Stun[playerSlotI].push(1)
+            : allDataObject.State_Stun[playerSlotI].push(0);
+          // "Tech_Hit"
           (((getKnockdown_State)[playerSlotI][clipLen] == 27))
-            ? arrStateTech_Hit[playerSlotI].push(1)
-            : arrStateTech_Hit[playerSlotI].push(0);
-          // // "Thrown_Air"
-          (((getAirborne)[playerSlotI][clipLen] == 2) && ((getKnockdown_State)[playerSlotI][clipLen] == 31) && ((getIs_Prox_Block)[playerSlotI][clipLen] == 16))
-            ? arrStateThrown_Air[playerSlotI].push(1)
-            : arrStateThrown_Air[playerSlotI].push(0);
-          // // "Thrown_Ground"
-          (((getAirborne)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 31) && ((getIs_Prox_Block)[playerSlotI][clipLen] == 16))
-            ? arrStateThrown_Ground[playerSlotI].push(1)
-            : arrStateThrown_Ground[playerSlotI].push(0);
-          // // "NEW_STATE_ADD_NAME_HERE" (its name in comments)⏫
-          // NEW_STATE_ADD_HERE ⏫
+            ? allDataObject.State_Tech_Hit[playerSlotI].push(1)
+            : allDataObject.State_Tech_Hit[playerSlotI].push(0);
+          // "Thrown_Air"
+          (((getAirborne)[playerSlotI][clipLen] == 2)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 31)
+            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 16))
+            ? allDataObject.State_Thrown_Air[playerSlotI].push(1)
+            : allDataObject.State_Thrown_Air[playerSlotI].push(0);
+          // "Thrown_Ground"
+          (((getAirborne)[playerSlotI][clipLen] == 0)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 31)
+            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 16))
+            ? allDataObject.State_Thrown_Ground[playerSlotI].push(1)
+            : allDataObject.State_Thrown_Ground[playerSlotI].push(0);
+          // // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
+          // NEW_STATE_ADD_HERE
 
+          // // ROM-Specific State Checks
 
-          // ROM-Specific State Checks
           // ROM_01_OpponentA. Goal is to find if dummy is high or low. Starting wth setting the end-point of a ROM Cycle.
           (getKnockdown_State)[playerSlotI][clipLen] == 4 // Magneto is landing from the air.
-            ? arrStateROM_01_OpponentStateA[playerSlotI].push(1)
-            : arrStateROM_01_OpponentStateA[playerSlotI].push(0);
+            ? allDataObject.State_ROM_01_OpponentStateA[playerSlotI].push(1)
+            : allDataObject.State_ROM_01_OpponentStateA[playerSlotI].push(0);
           // "ROM_02_ChoiceA" (Did Magneto wait before doing a SJ.LK?)
-          (((getKnockdown_State)[playerSlotI][clipLen] == 14) && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0) && ((getY_Position_Arena)[playerSlotI][clipLen] <= 160))
-            ? arrStateROM_02_ChoiceA[playerSlotI].push(1)
-            : arrStateROM_02_ChoiceA[playerSlotI].push(0);
+          (((getKnockdown_State)[playerSlotI][clipLen] == 14)
+            && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
+            && ((getY_Position_Arena)[playerSlotI][clipLen] <= 160))
+            ? allDataObject.State_ROM_02_ChoiceA[playerSlotI].push(1)
+            : allDataObject.State_ROM_02_ChoiceA[playerSlotI].push(0);
           // ROM_03_InputA
           // "ROM_03_InputA_LK"
-          (((getNormal_Strength)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && (getAttack_Number)[playerSlotI][clipLen] == 15 && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
-            ? arrStateROM_03_InputA_LK[playerSlotI].push(1)
-            : arrStateROM_03_InputA_LK[playerSlotI].push(0);
+          (((getNormal_Strength)[playerSlotI][clipLen] == 0)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
+            && ((getPunchKick)[playerSlotI][clipLen] == 1))
+            && (getAttack_Number)[playerSlotI][clipLen] == 15
+            && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
+            ? allDataObject.State_ROM_03_InputA_LK[playerSlotI].push(1)
+            : allDataObject.State_ROM_03_InputA_LK[playerSlotI].push(0);
           // "ROM_03_InputA_MK"
-          (((getNormal_Strength)[playerSlotI][clipLen] == 1) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && ((getAttack_Number)[playerSlotI][clipLen] == 16) && (getAir_Dash_Count)[playerSlotI][clipLen] == 0
-            ? arrStateROM_03_InputA_MK[playerSlotI].push(1)
-            : arrStateROM_03_InputA_MK[playerSlotI].push(0);
+          (((getNormal_Strength)[playerSlotI][clipLen] == 1)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
+            && ((getPunchKick)[playerSlotI][clipLen] == 1))
+            && ((getAttack_Number)[playerSlotI][clipLen] == 16)
+            && (getAir_Dash_Count)[playerSlotI][clipLen] == 0
+            ? allDataObject.State_ROM_03_InputA_MK[playerSlotI].push(1)
+            : allDataObject.State_ROM_03_InputA_MK[playerSlotI].push(0);
           // "ROM_04_ChoiceB" (Did Magneto wait before doing a SJ.MK after a SJ.LK?)
-          (((getNormal_Strength)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && (getAttack_Number)[playerSlotI][clipLen] == 15 && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
-            ? arrStateROM_04_ChoiceB[playerSlotI].push(1)
-            : arrStateROM_04_ChoiceB[playerSlotI].push(0);
+          (((getNormal_Strength)[playerSlotI][clipLen] == 0)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
+            && ((getPunchKick)[playerSlotI][clipLen] == 1))
+            && (getAttack_Number)[playerSlotI][clipLen] == 15
+            && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
+            ? allDataObject.State_ROM_04_ChoiceB[playerSlotI].push(1)
+            : allDataObject.State_ROM_04_ChoiceB[playerSlotI].push(0);
           // "ROM_05_ChoiceC" (Did Magneto wait before doing AirDashing after a SJ.LK?)
-          (((getNormal_Strength)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && (getAttack_Number)[playerSlotI][clipLen] == 15 && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
-            ? arrStateROM_05_ChoiceC[playerSlotI].push(1)
-            : arrStateROM_05_ChoiceC[playerSlotI].push(0);
+          (((getNormal_Strength)[playerSlotI][clipLen] == 0)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
+            && ((getPunchKick)[playerSlotI][clipLen] == 1))
+            && (getAttack_Number)[playerSlotI][clipLen] == 15
+            && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
+            ? allDataObject.State_ROM_05_ChoiceC[playerSlotI].push(1)
+            : allDataObject.State_ROM_05_ChoiceC[playerSlotI].push(0);
           // "ROM_06_InputB_AirDash"
           ((getAir_Dash_Count)[playerSlotI][clipLen] == 1)
-            ? arrStateROM_06_InputB_AirDash[playerSlotI].push(1)
-            : arrStateROM_06_InputB_AirDash[playerSlotI].push(0);
+            ? allDataObject.State_ROM_06_InputB_AirDash[playerSlotI].push(1)
+            : allDataObject.State_ROM_06_InputB_AirDash[playerSlotI].push(0);
           // // "ROM_08_InputC_DLK"
-          (((getNormal_Strength)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && ((getAttack_Number)[playerSlotI][clipLen] == 18) && (getAir_Dash_Count)[playerSlotI][clipLen] == 1
-            ? arrStateROM_08_InputC_DLK[playerSlotI].push(1)
-            : arrStateROM_08_InputC_DLK[playerSlotI].push(0);
+          (((getNormal_Strength)[playerSlotI][clipLen] == 0)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
+            && ((getPunchKick)[playerSlotI][clipLen] == 1))
+            && ((getAttack_Number)[playerSlotI][clipLen] == 18)
+            && (getAir_Dash_Count)[playerSlotI][clipLen] == 1
+            ? allDataObject.State_ROM_08_InputC_DLK[playerSlotI].push(1)
+            : allDataObject.State_ROM_08_InputC_DLK[playerSlotI].push(0);
           // // "ROM_08_InputC_MK"
-          (((getNormal_Strength)[playerSlotI][clipLen] == 1) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && ((getAttack_Number)[playerSlotI][clipLen] == 16) && (getAir_Dash_Count)[playerSlotI][clipLen] == 1
-            ? arrStateROM_08_InputC_MK[playerSlotI].push(1)
-            : arrStateROM_08_InputC_MK[playerSlotI].push(0);
-          (((getNormal_Strength)[playerSlotI][clipLen] == 0) && ((getKnockdown_State)[playerSlotI][clipLen] == 20) && ((getPunchKick)[playerSlotI][clipLen] == 1)) && (getAttack_Number)[playerSlotI][clipLen] == 18 && ((getAir_Dash_Count)[playerSlotI][clipLen] == 1)
-            ? arrStateROM_09_ChoiceE[playerSlotI].push(1)
-            : arrStateROM_09_ChoiceE[playerSlotI].push(0);
+          (((getNormal_Strength)[playerSlotI][clipLen] == 1)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
+            && ((getPunchKick)[playerSlotI][clipLen] == 1))
+            && ((getAttack_Number)[playerSlotI][clipLen] == 16)
+            && (getAir_Dash_Count)[playerSlotI][clipLen] == 1
+            ? allDataObject.State_ROM_08_InputC_MK[playerSlotI].push(1)
+            : allDataObject.State_ROM_08_InputC_MK[playerSlotI].push(0);
+          // // "ROM_09_ChoiceE"
+          (((getNormal_Strength)[playerSlotI][clipLen] == 0)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
+            && ((getPunchKick)[playerSlotI][clipLen] == 1))
+            && (getAttack_Number)[playerSlotI][clipLen] == 18
+            && ((getAir_Dash_Count)[playerSlotI][clipLen] == 1)
+            ? allDataObject.State_ROM_09_ChoiceE[playerSlotI].push(1)
+            : allDataObject.State_ROM_09_ChoiceE[playerSlotI].push(0);
         } // clipLen Scope
 
         // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
         // Applies to ROM cases as well!
         var counter = 0;
-        for (const stateArray in allStatesArray)
+
+        for (let i = 0; i < Object.entries(allDataObject).length; i++) // number of entries in the object
         {
-          allStatesArray[stateArray][playerSlotI].map((num, index) => // Go through all 3 arrays' values + keep track of the index
+          // console.log(Object.values(allDataObject)[i][playerSlotI][2000]);
+
+          Object.values(allDataObject)[i][playerSlotI].forEach((element, index) =>
           {
-            if (num == 0)
+            if (element == 0)
             {
               counter = 0
-              return allStatesArray[stateArray][playerSlotI][index] // returns the extant value inside of the array
+              return Object.values(allDataObject)[i][playerSlotI][index]
             }
             else
             {
-              allStatesArray[stateArray][playerSlotI][index] = num + counter
+              Object.values(allDataObject)[i][playerSlotI][index] = element + counter
               counter++
-              return allStatesArray[stateArray][playerSlotI][index + counter]
+              return Object.values(allDataObject)[i][playerSlotI][index + counter]
             }
           });
         }
 
-        // Start ROM Stuff
-        // 01_Opponent State A Setup
-        // Set Loop point for 01_OpponentStateA (Magneto lands from his Super Jump)
-        const ROM_OPPONENTSTATES = [
-          arrStateROM_01_OpponentStateA,
-          // in case of OpponentStateB at the end of the ROM cycle
-        ];
+        // // Start ROM Stuff
+        // // 01_Opponent State A Setup
+        // // Set Loop point for 01_OpponentStateA (Magneto lands from his Super Jump)
+        // const ROM_OPPONENTSTATES = [
+        //   arr_State_ROM_01_OpponentStateA,
+        //   // in case of OpponentStateB at the end of the ROM cycle
+        // ];
 
-        for (const romFile in ROM_OPPONENTSTATES)
-        {
-          for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 1)
-            {
-              ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 65535;
-            }
-          }
-        };
+        // for (const romFile in ROM_OPPONENTSTATES)
+        // {
+        //   for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 1)
+        //     {
+        //       ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 65535;
+        //     }
+        //   }
+        // };
 
-        for (const romFile in ROM_OPPONENTSTATES)
-        {
-          // Checking when we are Rising-To-SuperJump (before we wait or not wait)
-          for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            ((getKnockdown_State)[playerSlotI][clipLen] == 13)
-              ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 255 // Set to 255 to indicate that we are Rising-To-SuperJump
-              : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
-          }
-          // Checking when we are Rising-to-SuperJump AND the Enemy's distance being HIGHER to the ground
-          for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            ((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] >= 155)
-              ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 888 // Turns 255 to 888 (high)
-              : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
-          }
-          // Checking when we are Rising-to-SuperJump AND the Enemy's distance being LOWER to the ground
-          for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            ((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] <= 154)
-              ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 777 // Turns 255 to 777 (low)
-              : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
-          }
+        // for (const romFile in ROM_OPPONENTSTATES)
+        // {
+        //   // Checking when we are Rising-To-SuperJump (before we wait or not wait)
+        //   for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     ((getKnockdown_State)[playerSlotI][clipLen] == 13)
+        //       ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 255 // Set to 255 to indicate that we are Rising-To-SuperJump
+        //       : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
+        //   }
+        //   // Checking when we are Rising-to-SuperJump AND the Enemy's distance being HIGHER to the ground
+        //   for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     ((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] >= 155)
+        //       ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 888 // Turns 255 to 888 (high)
+        //       : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
+        //   }
+        //   // Checking when we are Rising-to-SuperJump AND the Enemy's distance being LOWER to the ground
+        //   for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     ((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] <= 154)
+        //       ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 777 // Turns 255 to 777 (low)
+        //       : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
+        //   }
 
-          // Setting Booleans for ROM_OpponentStateA results per ROM cycle.
-          // High Air
-          let AirSwitch = 0;
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 888)
-            {
-              AirSwitch = 1;
-              ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 1;
-            }
-            else if (AirSwitch == 1)
-            {
-              if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] != 65535)
-              {
-                ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 1;
-              }
-              else if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 65535)
-              {
-                AirSwitch = 0;
-              }
-            }
-          }
-          // Low Air
-          AirSwitch = 0;
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 777)
-            {
-              AirSwitch = 1;
-              ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 2;
-            }
-            else if (AirSwitch == 1)
-            {
-              if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] != 65535)
-              {
-                ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 2;
-              }
-              else if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 65535)
-              {
-                AirSwitch = 0;
-              }
-            }
-          }
-        }
-        // 03_InputsA , 06_InputsB , 09_InputsC Setup
-        // All Inputs during ROM infinite
-        const ROM_INPUTS = [
-          arrStateROM_03_InputA_LK,
-          arrStateROM_03_InputA_MK,
-          arrStateROM_06_InputB_AirDash,
-          arrStateROM_08_InputC_DLK,
-          arrStateROM_08_InputC_MK,
-        ];
-        // Setting the end-point of a ROM Cycle.
-        for (const romFile in ROM_INPUTS)
-        {
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((getAirborne)[playerSlotI][clipLen] == 0)
-            {
-              ROM_INPUTS[romFile][playerSlotI][clipLen] = 65535;
-            }
-          }
-          // Sets the rest of the ROM cycle to active or inactive.
-          var GroundSwitch = 0;
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if (ROM_INPUTS[romFile][playerSlotI][clipLen] == 1) // Started an input (air)
-            {
-              GroundSwitch = 1;
-              ROM_INPUTS[romFile][playerSlotI][clipLen] = 1;
-            }
-            else if (GroundSwitch == 1)
-            {
-              if (ROM_INPUTS[romFile][playerSlotI][clipLen] != 65535) // if NOT grounded
-              {
-                ROM_INPUTS[romFile][playerSlotI][clipLen] = 1;
-              }
-              else if (ROM_INPUTS[romFile][playerSlotI][clipLen] == 65535) // On the ground; stop attacking
-              {
-                GroundSwitch = 0;
-              }
-            }
-          }
-        }
-        // 04_ChoiceB (time: LK -> MK)
-        for (const arrayWithROMData in arrStateROM_04_ChoiceB) // 3 arrays
-        {
-          // Find Grounded state for ROM loops
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((getAirborne)[arrayWithROMData][clipLen] == 0)
-            {
-              arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] = 65535;
-            }
-          }
-          var GroundSwitch = 0
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] != 65535) && (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] != 0))
-            {
-              GroundSwitch = 1;
-              arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] = 1;
-            }
-            else if (GroundSwitch == 1)
-            {
-              if (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] != 65535) // if NOT grounded
-              {
-                arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
-              }
-              else if (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] == 65535) // On the ground; stop attacking
-              {
-                GroundSwitch = 0;
-              }
-            }
-          }
-          // Label the LKs & MKs
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] == 1)
-            {
-              // Am I MK?
-              if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
-              {
-                arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] = "\'MK\'";
-              }
-              else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
-              {
-                arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] = "\'LK\'";
-              }
-              else if (((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1) && ((getKnockdown_State)[arrayWithROMData][clipLen] != 20))
-              {
-                arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] = 0;
-              }
-            }
-          }
-          // Count the frames of LKs using tempCounter
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] == '\'LK\'')
-            {
-              tempCounter += 1;
-            }
-            // Stop on encountering a MK
-            else if (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] == '\'MK\'') // We hit a MK
-            {
-              // Lookahead
-              for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++)
-              {
-                // Everything until 65535 is = tempCounter
-                if (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen + positiveI] != 65535)
-                {
-                  tempSwitch = 1
-                  arrStateROM_04_ChoiceB[arrayWithROMData][clipLen + positiveI] = tempCounter;
-                }
-                else if (tempSwitch == 1)
-                {
-                  arrStateROM_04_ChoiceB[arrayWithROMData][clipLen + positiveI] = tempCounter;
-                  if (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen + positiveI] == 65535)
-                  {
-                    tempSwitch = 0;
-                  }
-                  break // lookahead is done, we hit 65535
-                }
-              }
-              // Lookbehind, expect the number of LKs to equal the tempCounter value
-              for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
-              {
-                if (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen - negativeI] == '\'LK\'')
-                {
-                  arrStateROM_04_ChoiceB[arrayWithROMData][clipLen - negativeI] = tempCounter;
-                }
-              }
-            }
-            else // Reset the counters
-            {
-              tempCounter = 0;
-              tempSwitch = 0;
-            }
-          }
-          // Clean up the values for AE Part1
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] != 65535)
-              && (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] >= 0)
-              && (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] < 3)
-              || (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] == '\'LK\''))
-            {
-              arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] = 0;
-            }
-          }
-          // Clean up the values for AE Part2
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] != 65535)
-              && (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] >= 10))
-            {
-              arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] = '\'Wait\''
-            }
-            else if (((arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] != 65535))
-              && (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] < 10)
-              && (arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] > 0))
-            {
-              arrStateROM_04_ChoiceB[arrayWithROMData][clipLen] = '\'No-Wait\''
-            }
-          }
-        }
-        // 05_ChoiceC (time: LK -> AirDash)
-        for (const arrayWithROMData in arrStateROM_05_ChoiceC) // 3 arrays
-        {
-          // Find Grounded state for ROM loops
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((getAirborne)[arrayWithROMData][clipLen] == 0)
-            {
-              arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = 65535;
-            }
-          }
-          var GroundSwitch = 0
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] != 65535) && (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] != 0))
-            {
-              GroundSwitch = 1;
-              arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = 1;
-            }
-            else if (GroundSwitch == 1)
-            {
-              if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] != 65535) // if NOT grounded
-              {
-                arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
-              }
-              else if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == 65535) // On the ground; stop attacking
-              {
-                GroundSwitch = 0;
-              }
-            }
-          }
-          // Label the LKs & AirDashes
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == 1)
-            {
-              // Am I AirDash
-              if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1))
-              {
-                arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = "\'AirDash\'";
-              }
-              else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
-              {
-                arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = "\'LK\'";
-              }
-              else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
-              {
-                arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = "\'MK\'"; // First MK
-              }
-              else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1))
-              {
-                arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = "\'AirDash\'"; // Second MK
-              }
-            }
-          }
-          // Count LKs before AirDash
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'LK\'')
-            {
-              tempCounter += 1;
-            }
-            // Stop on encountering an AirDash
-            else if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'AirDash\'') // We hit an AirDash
-            {
-              // Lookahead
-              for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++)
-              {
-                // Everything until 65535 is = tempCounter
-                if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen + positiveI] != 65535)
-                {
-                  tempSwitch = 1
-                  arrStateROM_05_ChoiceC[arrayWithROMData][clipLen + positiveI] = tempCounter;
-                }
-                else if (tempSwitch == 1)
-                {
-                  arrStateROM_05_ChoiceC[arrayWithROMData][clipLen + positiveI] = tempCounter;
-                  if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen + positiveI] == 65535)
-                  {
-                    tempSwitch = 0;
-                  }
-                  break // lookahead is done, we hit 65535
-                }
-              }
-              // Lookbehind, expect the number of LKs to equal the tempCounter value
-              for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
-              {
-                if (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen - negativeI] == '\'LK\'')
-                {
-                  arrStateROM_05_ChoiceC[arrayWithROMData][clipLen - negativeI] = tempCounter;
-                }
-              }
-            }
-            else // Reset the counters
-            {
-              tempCounter = 0;
-              tempSwitch = 0;
-            }
-          }
-          // Clean up the values for AE Part1
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] != 65535)
-              && (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] >= 20))
-            {
-              arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = '\'Wait\''
-            }
-            else if (((arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] != 65535))
-              && (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] < 20)
-              && (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] > 1))
-            {
-              arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = '\'No-Wait\''
-            }
-          }
-          // Clean up the values for AE Part2
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'LK\'') || (arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'MK\''))
-            {
-              arrStateROM_05_ChoiceC[arrayWithROMData][clipLen] = 0;
-            }
-          }
-        } // end of 05_ChoiceC
+        //   // Setting Booleans for ROM_OpponentStateA results per ROM cycle.
+        //   // High Air
+        //   let AirSwitch = 0;
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 888)
+        //     {
+        //       AirSwitch = 1;
+        //       ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 1;
+        //     }
+        //     else if (AirSwitch == 1)
+        //     {
+        //       if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] != 65535)
+        //       {
+        //         ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 1;
+        //       }
+        //       else if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 65535)
+        //       {
+        //         AirSwitch = 0;
+        //       }
+        //     }
+        //   }
+        //   // Low Air
+        //   AirSwitch = 0;
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 777)
+        //     {
+        //       AirSwitch = 1;
+        //       ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 2;
+        //     }
+        //     else if (AirSwitch == 1)
+        //     {
+        //       if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] != 65535)
+        //       {
+        //         ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 2;
+        //       }
+        //       else if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 65535)
+        //       {
+        //         AirSwitch = 0;
+        //       }
+        //     }
+        //   }
+        // }
+        // // 03_InputsA , 06_InputsB , 09_InputsC Setup
+        // // All Inputs during ROM infinite
+        // const ROM_INPUTS = [
+        //   arr_State_ROM_03_InputA_LK,
+        //   arr_State_ROM_03_InputA_MK,
+        //   arr_State_ROM_06_InputB_AirDash,
+        //   arr_State_ROM_08_InputC_DLK,
+        //   arr_State_ROM_08_InputC_MK,
+        // ];
+        // // Setting the end-point of a ROM Cycle.
+        // for (const romFile in ROM_INPUTS)
+        // {
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((getAirborne)[playerSlotI][clipLen] == 0)
+        //     {
+        //       ROM_INPUTS[romFile][playerSlotI][clipLen] = 65535;
+        //     }
+        //   }
+        //   // Sets the rest of the ROM cycle to active or inactive.
+        //   var GroundSwitch = 0;
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if (ROM_INPUTS[romFile][playerSlotI][clipLen] == 1) // Started an input (air)
+        //     {
+        //       GroundSwitch = 1;
+        //       ROM_INPUTS[romFile][playerSlotI][clipLen] = 1;
+        //     }
+        //     else if (GroundSwitch == 1)
+        //     {
+        //       if (ROM_INPUTS[romFile][playerSlotI][clipLen] != 65535) // if NOT grounded
+        //       {
+        //         ROM_INPUTS[romFile][playerSlotI][clipLen] = 1;
+        //       }
+        //       else if (ROM_INPUTS[romFile][playerSlotI][clipLen] == 65535) // On the ground; stop attacking
+        //       {
+        //         GroundSwitch = 0;
+        //       }
+        //     }
+        //   }
+        // }
+        // // 04_ChoiceB (time: LK -> MK)
+        // for (const arrayWithROMData in arr_State_ROM_04_ChoiceB) // 3 arrays
+        // {
+        //   // Find Grounded state for ROM loops
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((getAirborne)[arrayWithROMData][clipLen] == 0)
+        //     {
+        //       arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] = 65535;
+        //     }
+        //   }
+        //   var GroundSwitch = 0
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] != 65535) && (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] != 0))
+        //     {
+        //       GroundSwitch = 1;
+        //       arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] = 1;
+        //     }
+        //     else if (GroundSwitch == 1)
+        //     {
+        //       if (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] != 65535) // if NOT grounded
+        //       {
+        //         arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
+        //       }
+        //       else if (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] == 65535) // On the ground; stop attacking
+        //       {
+        //         GroundSwitch = 0;
+        //       }
+        //     }
+        //   }
+        //   // Label the LKs & MKs
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] == 1)
+        //     {
+        //       // Am I MK?
+        //       if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
+        //       {
+        //         arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] = "\'MK\'";
+        //       }
+        //       else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
+        //       {
+        //         arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] = "\'LK\'";
+        //       }
+        //       else if (((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1) && ((getKnockdown_State)[arrayWithROMData][clipLen] != 20))
+        //       {
+        //         arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] = 0;
+        //       }
+        //     }
+        //   }
+        //   // Count the frames of LKs using tempCounter
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] == '\'LK\'')
+        //     {
+        //       tempCounter += 1;
+        //     }
+        //     // Stop on encountering a MK
+        //     else if (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] == '\'MK\'') // We hit a MK
+        //     {
+        //       // Lookahead
+        //       for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++)
+        //       {
+        //         // Everything until 65535 is = tempCounter
+        //         if (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen + positiveI] != 65535)
+        //         {
+        //           tempSwitch = 1
+        //           arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen + positiveI] = tempCounter;
+        //         }
+        //         else if (tempSwitch == 1)
+        //         {
+        //           arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen + positiveI] = tempCounter;
+        //           if (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen + positiveI] == 65535)
+        //           {
+        //             tempSwitch = 0;
+        //           }
+        //           break // lookahead is done, we hit 65535
+        //         }
+        //       }
+        //       // Lookbehind, expect the number of LKs to equal the tempCounter value
+        //       for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
+        //       {
+        //         if (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen - negativeI] == '\'LK\'')
+        //         {
+        //           arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen - negativeI] = tempCounter;
+        //         }
+        //       }
+        //     }
+        //     else // Reset the counters
+        //     {
+        //       tempCounter = 0;
+        //       tempSwitch = 0;
+        //     }
+        //   }
+        //   // Clean up the values for AE Part1
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] != 65535)
+        //       && (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] >= 0)
+        //       && (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] < 3)
+        //       || (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] == '\'LK\''))
+        //     {
+        //       arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] = 0;
+        //     }
+        //   }
+        //   // Clean up the values for AE Part2
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] != 65535)
+        //       && (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] >= 10))
+        //     {
+        //       arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] = '\'Wait\''
+        //     }
+        //     else if (((arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] != 65535))
+        //       && (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] < 10)
+        //       && (arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] > 0))
+        //     {
+        //       arr_State_ROM_04_ChoiceB[arrayWithROMData][clipLen] = '\'No-Wait\''
+        //     }
+        //   }
+        // }
+        // // 05_ChoiceC (time: LK -> AirDash)
+        // for (const arrayWithROMData in arr_State_ROM_05_ChoiceC) // 3 arrays
+        // {
+        //   // Find Grounded state for ROM loops
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((getAirborne)[arrayWithROMData][clipLen] == 0)
+        //     {
+        //       arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] = 65535;
+        //     }
+        //   }
+        //   var GroundSwitch = 0
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] != 65535) && (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] != 0))
+        //     {
+        //       GroundSwitch = 1;
+        //       arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] = 1;
+        //     }
+        //     else if (GroundSwitch == 1)
+        //     {
+        //       if (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] != 65535) // if NOT grounded
+        //       {
+        //         arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
+        //       }
+        //       else if (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] == 65535) // On the ground; stop attacking
+        //       {
+        //         GroundSwitch = 0;
+        //       }
+        //     }
+        //   }
+        //   // Label the LKs & AirDashes
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] == 1)
+        //     {
+        //       // Am I AirDash
+        //       if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1))
+        //       {
+        //         arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] = "\'AirDash\'";
+        //       }
+        //       else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
+        //       {
+        //         arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] = "\'LK\'";
+        //       }
+        //       else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
+        //       {
+        //         arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] = "\'MK\'"; // First MK
+        //       }
+        //       else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1))
+        //       {
+        //         arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] = "\'AirDash\'"; // Second MK
+        //       }
+        //     }
+        //   }
+        //   // Count LKs before AirDash
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'LK\'')
+        //     {
+        //       tempCounter += 1;
+        //     }
+        //     // Stop on encountering an AirDash
+        //     else if (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'AirDash\'') // We hit an AirDash
+        //     {
+        //       // Lookahead
+        //       for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++)
+        //       {
+        //         // Everything until 65535 is = tempCounter
+        //         if (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen + positiveI] != 65535)
+        //         {
+        //           tempSwitch = 1
+        //           arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen + positiveI] = tempCounter;
+        //         }
+        //         else if (tempSwitch == 1)
+        //         {
+        //           arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen + positiveI] = tempCounter;
+        //           if (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen + positiveI] == 65535)
+        //           {
+        //             tempSwitch = 0;
+        //           }
+        //           break // lookahead is done, we hit 65535
+        //         }
+        //       }
+        //       // Lookbehind, expect the number of LKs to equal the tempCounter value
+        //       for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
+        //       {
+        //         if (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen - negativeI] == '\'LK\'')
+        //         {
+        //           arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen - negativeI] = tempCounter;
+        //         }
+        //       }
+        //     }
+        //     else // Reset the counters
+        //     {
+        //       tempCounter = 0;
+        //       tempSwitch = 0;
+        //     }
+        //   }
+        //   // Clean up the values for AE Part1
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] != 65535)
+        //       && (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] >= 20))
+        //     {
+        //       arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] = '\'Wait\''
+        //     }
+        //     else if (((arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] != 65535))
+        //       && (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] < 20)
+        //       && (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] > 1))
+        //     {
+        //       arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] = '\'No-Wait\''
+        //     }
+        //   }
+        //   // Clean up the values for AE Part2
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'LK\'') || (arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] == '\'MK\''))
+        //     {
+        //       arr_State_ROM_05_ChoiceC[arrayWithROMData][clipLen] = 0;
+        //     }
+        //   }
+        // } // end of 05_ChoiceC
 
-        // 05_ChoiceC2 - ( MK to AirDash ) TODO
+        // // 05_ChoiceC2 - ( MK to AirDash ) TODO
 
 
 
-        // 09_ChoiceE (time: LK -> MK)
-        for (const arrayWithROMData in arrStateROM_09_ChoiceE) // 3 arrays
-        {
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((getAirborne)[arrayWithROMData][clipLen] == 0)
-            {
-              arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = 65535;
-            }
-          }
-          var GroundSwitch = 0
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535) && (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] != 0))
-            {
-              GroundSwitch = 1;
-              arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = 1;
-            }
-            else if (GroundSwitch == 1)
-            {
-              if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535) // if NOT grounded
-              {
-                arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
-              }
-              else if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] == 65535) // On the ground; stop attacking
-              {
-                GroundSwitch = 0;
-              }
-            }
-          }
-          // Label the LKs & MKs
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] == 1)
-            {
-              // Am I MK?
-              if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) // MK
-              {
-                arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = "\'MK\'";
-              }
-              else if (((getAttack_Number)[arrayWithROMData][clipLen] == 18) && ((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) // 2LK
-              {
-                arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = "\'DLK\'";
-              }
-            }
-          }
-          // Count the frames of LKs using tempCounter
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] == '\'DLK\'')
-            {
-              tempCounter += 1;
-            }
-            // Stop on encountering a MK
-            else if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] == '\'MK\'') // We hit a MK
-            {
-              // Lookahead
-              for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++) // CLIP_LENGTH is used, but we will break out of the loop before it is reached
-              {
-                // Everything until 65535 is = tempCounter
-                if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen + positiveI] != 65535)
-                {
-                  tempSwitch = 1
-                  arrStateROM_09_ChoiceE[arrayWithROMData][clipLen + positiveI] = tempCounter;
-                }
-                else if (tempSwitch == 1)
-                {
-                  arrStateROM_09_ChoiceE[arrayWithROMData][clipLen + positiveI] = tempCounter;
-                  if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen + positiveI] == 65535)
-                  {
-                    tempSwitch = 0;
-                  }
-                  break // lookahead is done, we hit 65535
-                }
-              }
-              // Lookbehind, expect the number of 2LKs to equal the tempCounter value
-              for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
-              {
-                if (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen - negativeI] == '\'DLK\'')
-                {
-                  arrStateROM_09_ChoiceE[arrayWithROMData][clipLen - negativeI] = tempCounter;
-                }
-              }
-            }
-            else // Reset the counters
-            {
-              tempCounter = 0;
-              tempSwitch = 0;
-            }
-          }
-          // Clean up the values for AE Part1
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535)
-              && (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] >= 0)
-              && (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] < 3))
-            // || (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] == '\'DLK\''))
-            {
-              arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = 0;
-            }
-          }
-          // Clean up the values for AE Part2
-          for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-          {
-            if ((arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535)
-              && (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] >= 13))
-            {
-              arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = '\'Wait\''
-            }
-            else if (((arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535))
-              && (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] < 13)
-              && (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] > 0))
-            {
-              arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] = '\'No-Wait\''
-            }
-          }
-        } // End of 09_ChoiceE Scope 
+        // // 09_ChoiceE (time: LK -> MK)
+        // for (const arrayWithROMData in arr_State_ROM_09_ChoiceE) // 3 arrays
+        // {
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((getAirborne)[arrayWithROMData][clipLen] == 0)
+        //     {
+        //       arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] = 65535;
+        //     }
+        //   }
+        //   var GroundSwitch = 0
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535) && (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] != 0))
+        //     {
+        //       GroundSwitch = 1;
+        //       arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] = 1;
+        //     }
+        //     else if (GroundSwitch == 1)
+        //     {
+        //       if (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535) // if NOT grounded
+        //       {
+        //         arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
+        //       }
+        //       else if (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] == 65535) // On the ground; stop attacking
+        //       {
+        //         GroundSwitch = 0;
+        //       }
+        //     }
+        //   }
+        //   // Label the LKs & MKs
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] == 1)
+        //     {
+        //       // Am I MK?
+        //       if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) // MK
+        //       {
+        //         arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] = "\'MK\'";
+        //       }
+        //       else if (((getAttack_Number)[arrayWithROMData][clipLen] == 18) && ((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) // 2LK
+        //       {
+        //         arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] = "\'DLK\'";
+        //       }
+        //     }
+        //   }
+        //   // Count the frames of LKs using tempCounter
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] == '\'DLK\'')
+        //     {
+        //       tempCounter += 1;
+        //     }
+        //     // Stop on encountering a MK
+        //     else if (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] == '\'MK\'') // We hit a MK
+        //     {
+        //       // Lookahead
+        //       for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++) // CLIP_LENGTH is used, but we will break out of the loop before it is reached
+        //       {
+        //         // Everything until 65535 is = tempCounter
+        //         if (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen + positiveI] != 65535)
+        //         {
+        //           tempSwitch = 1
+        //           arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen + positiveI] = tempCounter;
+        //         }
+        //         else if (tempSwitch == 1)
+        //         {
+        //           arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen + positiveI] = tempCounter;
+        //           if (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen + positiveI] == 65535)
+        //           {
+        //             tempSwitch = 0;
+        //           }
+        //           break // lookahead is done, we hit 65535
+        //         }
+        //       }
+        //       // Lookbehind, expect the number of 2LKs to equal the tempCounter value
+        //       for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
+        //       {
+        //         if (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen - negativeI] == '\'DLK\'')
+        //         {
+        //           arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen - negativeI] = tempCounter;
+        //         }
+        //       }
+        //     }
+        //     else // Reset the counters
+        //     {
+        //       tempCounter = 0;
+        //       tempSwitch = 0;
+        //     }
+        //   }
+        //   // Clean up the values for AE Part1
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535)
+        //       && (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] >= 0)
+        //       && (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] < 3))
+        //     // || (arrStateROM_09_ChoiceE[arrayWithROMData][clipLen] == '\'DLK\''))
+        //     {
+        //       arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] = 0;
+        //     }
+        //   }
+        //   // Clean up the values for AE Part2
+        //   for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+        //   {
+        //     if ((arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535)
+        //       && (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] >= 13))
+        //     {
+        //       arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] = '\'Wait\''
+        //     }
+        //     else if (((arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] != 65535))
+        //       && (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] < 13)
+        //       && (arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] > 0))
+        //     {
+        //       arr_State_ROM_09_ChoiceE[arrayWithROMData][clipLen] = '\'No-Wait\''
+        //     }
+        //   }
+        // } // End of 09_ChoiceE Scope 
 
         // write the files
-        for (const stateName in allStateNamesArray)
+
+        // const variableToString = varObj => Object.keys(varObj)[0]
+        // const num = 10;
+
+        // const variableNameStr = variableToString({mainDataObject:});
+        // console.log(variableNameStr);
+
+        for (let k = 0; k < Object.entries(allDataObject).length; k++)
         {
-          // TODO Add switch to exclude ROM-specific states
-          if (doROMFiles == false)
+          if (DO_ROM_FILES == false)
           {
-            if (allStateNamesArray[stateName].match('ROM'))
+            if (Object.keys(allDataObject)[k].toString().match('ROM'))
             {
               continue;
             }
           }
-          fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ allStateNamesArray[stateName] }.js`, `var result = [];` + '\n', {encoding: 'utf8'});
+          fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ Object.keys(allDataObject)[k] }.js`,
+            `var result = [];` + '\n', {encoding: 'utf8'});
         }
 
+        // fs.writeFileSync(`./main_files/${ tempPlayerString }${ Object.keys(allDataObject)[i] }.json`, 
+        //   JSON.stringify(Object.values(allDataObject)[i]));
+
         // Append data arrays into files
-        for (const stateTokenI in allStateNamesArray)
+        for (let k = 0; k < Object.entries(allDataObject).length; k++)
         {
-          // TODO Add switch to exclude ROM-specific states
-          if (doROMFiles == false)
+          if (DO_ROM_FILES == false)
           {
-            if (allStateNamesArray[stateTokenI].match('ROM'))
+            if (Object.keys(allDataObject)[k].toString().match('ROM'))
             {
               continue;
             }
           }
-          fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ allStateNamesArray[stateTokenI] }.js`,
-            `result[${ playerSlotI }] = [${ allStatesArray[stateTokenI][playerSlotI] }];\n`,
-            {encoding: 'utf8'});
+          fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ Object.keys(allDataObject)[k] }.js`,
+            JSON.stringify(Object.values(allDataObject)[k])
+              .replace('[[', '[')
+              .replace(']]', ']')
+              .replace(/],\[/g, '],\n\[')
+          );
         }
       }
     }
