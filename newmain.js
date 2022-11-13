@@ -52,7 +52,7 @@ import(`./main_files/${ FILE_NAME_NO_EXT }_node.js`).then((pMemZero) =>
 });
 fs.closeSync(2);
 
-await sleep(1000)
+await sleep(500)
 function sleep(ms)
 {
   return new Promise((resolve) => setTimeout(resolve, ms));

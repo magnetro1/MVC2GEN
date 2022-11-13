@@ -160,14 +160,3 @@ else if (txtSlot == 0)
     , 'utf8');
   console.log(txtSlot);
 }
-
-// // if the file doesn't contain textToWrite, append it
-// if (!fs.readFileSync(`${ CE_DIR }${ newestCTFile }_addresses.txt`, 'utf8').includes(textToWrite))
-// {
-//   fs.appendFileSync(`${ CE_DIR }${ newestCTFile }_addresses.txt`, textToWrite, 'utf8');
-//   // console.log('File already contains the text!');
-// }
-// else
-// {
-//   console.log('File already contains the text!');
-// };
