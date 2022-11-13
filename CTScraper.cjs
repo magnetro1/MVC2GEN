@@ -1,7 +1,15 @@
 // Scrape a Cheat Engine XML file for the address description of the table
-import * as fs from 'fs';
-import path from 'path';
-import {UNUSED_ADDRESSES} from './main_files/staticData.js';
+const fs = require('fs');
+const path = require('path');
+const {KNOCKDOWN_STATE_OBJ} = require("./main_files/staticData.js");
+const {PROX_BLOCK_OBJ} = require("./main_files/staticData.js");
+const {NAME_TABLE_OBJ} = require("./main_files/staticData.js");
+const {FLOATING_POINT_ADRS} = require("./main_files/staticData.js");
+const {MIN_MAX_ADRS} = require("./main_files/staticData.js");
+const {MISC_ADRS} = require("./main_files/staticData.js");
+const {STAGES_OBJ} = require("./main_files/staticData.js");
+const {PORTRAITS_TO_TIME_OBJ} = require("./main_files/staticData.js");
+const {UNUSED_ADDRESSES} = require("./main_files/staticData.js");
 
 const RESOURCES_DIR = path.join(process.cwd(), '/resources/');
 const CE_DIR = `${ RESOURCES_DIR }PCSX2RR_and_CheatEngine/CheatTables.BK/`;
@@ -13,7 +21,6 @@ fs.readdirSync(CE_DIR).forEach((file) =>
 {
   allFileNames.push(file);
 });
-
 
 // Find the newest CT file using fs.stats
 var newestCTFile = '';
@@ -27,28 +34,28 @@ fs.readdirSync(CE_DIR).forEach((file) =>
     {
       newestCTFileDate = stats.mtimeMs;
       newestCTFile = file;
-      // console.log(newestCTFile);
+      console.log(newestCTFile);
     }
   }
 });
 
-// // Get the newest CT file using file number
-// var regexForCTFileNumber = /(<?_)(\d+)\.CT/m; // has to be multi-line to match the end of the string
-// var CTFileNumbersArray = [];
-// for (let i = 0; i < allFileNames.length; i++)
-// {
-//   if (regexForCTFileNumber.test(allFileNames[i]))
-//   {
-//     allFileNames[i] = regexForCTFileNumber.exec(allFileNames[i])[2];
-//     CTFileNumbersArray.push(allFileNames[i]);
-//   }
-// }
-// var FindNewestCTFile = Math.max(...CTFileNumbersArray);
+// // // Get the newest CT file using file number
+// // var regexForCTFileNumber = /(<?_)(\d+)\.CT/m; // has to be multi-line to match the end of the string
+// // var CTFileNumbersArray = [];
+// // for (let i = 0; i < allFileNames.length; i++)
+// // {
+// //   if (regexForCTFileNumber.test(allFileNames[i]))
+// //   {
+// //     allFileNames[i] = regexForCTFileNumber.exec(allFileNames[i])[2];
+// //     CTFileNumbersArray.push(allFileNames[i]);
+// //   }
+// // }
+// // var FindNewestCTFile = Math.max(...CTFileNumbersArray);
 
 const MAIN_CT_FILE = `${ newestCTFile }`; // Stats method
 
 // file number method // needs granular file name building
-// const MAIN_CT_FILE = `${ CT_FILE_PREFIX }${ FindNewestCTFile }${ CT_FILE_SUFFIX }`; 
+// const MAIN_CT_FILE = `${ CT_FILE_PREFIX }${ FindNewestCTFile }${ CT_FILE_SUFFIX }`;
 
 const READ_CT_FILE = fs.readFileSync(`${ CE_DIR }${ MAIN_CT_FILE }`.toString(), 'utf8');
 var readFlag = false;
@@ -160,3 +167,7 @@ else if (txtSlot == 0)
     , 'utf8');
   console.log(txtSlot);
 }
+setTimeout(() =>
+{
+  console.log('Done!');
+}, 2000);

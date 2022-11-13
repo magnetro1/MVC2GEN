@@ -1,4 +1,4 @@
-export const KNOCKDOWN_STATE_OBJ =
+const KNOCKDOWN_STATE_OBJ =
 {
   "0": "Neutral",
   "1": "Walking",
@@ -36,7 +36,7 @@ export const KNOCKDOWN_STATE_OBJ =
   "33": "???",
   "34": "OC Launcher"
 };
-export const PROX_BLOCK_OBJ =
+const PROX_BLOCK_OBJ =
 {
   "0": "Neutral",
   "1": "Air",
@@ -67,7 +67,7 @@ export const PROX_BLOCK_OBJ =
   "26": "Air Dash"
 };
 
-export const NAME_TABLE_OBJ =
+const NAME_TABLE_OBJ =
 {
   "0": "Ryu",
   "1": "Zangief",
@@ -130,7 +130,7 @@ export const NAME_TABLE_OBJ =
   "58": "Servbot"
 };
 
-export const FLOATING_POINT_ADRS =
+const FLOATING_POINT_ADRS =
   [
     "X_Gravity",
     "X_Position_Arena",
@@ -142,7 +142,7 @@ export const FLOATING_POINT_ADRS =
     "Y_Position_Screen",
     "Y_Velocity"
   ];
-export const MIN_MAX_ADRS =
+const MIN_MAX_ADRS =
   [
     "P1_A_X_Gravity",
     "P1_A_X_Position_Arena",
@@ -255,7 +255,7 @@ export const MIN_MAX_ADRS =
     "P1_Combo_Meter_Value",
     "P2_Combo_Meter_Value"
   ];
-export const MISC_ADRS =
+const MISC_ADRS =
   [
     "Total_Frames",
     "Camera_Field_of_View",
@@ -294,7 +294,7 @@ export const MISC_ADRS =
     "Timer_Secondary"
   ];
 
-export const STAGES_OBJ =
+const STAGES_OBJ =
 {
   "0": "142030FF", //"Boat1",
   "1": "E1540CFF", //"Desert1",
@@ -315,7 +315,7 @@ export const STAGES_OBJ =
   "16": "8CA7DFFF" //"Raft1"
 };
 
-export const PORTRAITS_TO_TIME_OBJ =
+const PORTRAITS_TO_TIME_OBJ =
 {
   "24": 1,  //Abyss-"1"
   "25": 2,  //Abyss-"2"
@@ -378,7 +378,7 @@ export const PORTRAITS_TO_TIME_OBJ =
   "1": 59 //Zangief
 };
 
-export const UNUSED_ADDRESSES = [
+const UNUSED_ADDRESSES = [
   "FOV",
   "X_Rot_NOP",
   "Y_Pos_NOP",
@@ -525,3 +525,13 @@ export const UNUSED_ADDRESSES = [
   "P2_B_Sprite_Scale_Z",
   "P2_C_Sprite_Scale_Z",
 ];
+
+exports.KNOCKDOWN_STATE_OBJ = KNOCKDOWN_STATE_OBJ;
+exports.PROX_BLOCK_OBJ = PROX_BLOCK_OBJ;
+exports.NAME_TABLE_OBJ = NAME_TABLE_OBJ;
+exports.FLOATING_POINT_ADRS = FLOATING_POINT_ADRS;
+exports.MIN_MAX_ADRS = MIN_MAX_ADRS;
+exports.MISC_ADRS = MISC_ADRS;
+exports.STAGES_OBJ = STAGES_OBJ;
+exports.PORTRAITS_TO_TIME_OBJ = PORTRAITS_TO_TIME_OBJ;
+exports.UNUSED_ADDRESSES = UNUSED_ADDRESSES;

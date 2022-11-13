@@ -1,6 +1,5 @@
 {
-  "main": "newmain.js",
-  "type": "module",
+  "main": "CTScraper.cjs",
   "name": "mvc2gen",
   "version": "1.2.0",
   "description": "alternate branch of MVC2GEN",
@@ -11,5 +10,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "homepage": "https://github.com/magnetro1/MVC2GEN"
+  "homepage": "https://github.com/magnetro1/MVC2GEN",
+  "devDependencies": {
+    "pkg": "^5.8.0"
+  }
 }
