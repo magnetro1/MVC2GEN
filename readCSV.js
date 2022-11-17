@@ -1,13 +1,14 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as readline from 'readline';
+const fs = require('fs');
+const path = require('path');
+const readline = require('readline');
+
 const rl = readline.createInterface(
   {
     input: process.stdin,
     output: process.stdout,
   }
 );
-rl.question('Enter the name of the file to read (without the extension): ', (FILENAME_NO_EXT) =>
+rl.question('Enter the name of the file to read (without the extension):', (FILENAME_NO_EXT) =>
 {
   // FILENAME_NO_EXT
   const DIR_MAIN_FILES = path.join(process.cwd(), '/main_files/');
@@ -15,7 +16,7 @@ rl.question('Enter the name of the file to read (without the extension): ', (FIL
   const FILE = path.join(DIR_CSVS, `${ FILENAME_NO_EXT }_Original.csv`); // Working with _Original
   // const FILE_ROM100 = `${ NAME_NO_EXT }_F.csv`; // Working with _F
 
-  let headersArray = [];
+  var headersArray = [];
   var allDataArray = [];
   fs.readFileSync(FILE, 'utf8').split('\r\n').map(
     (line, index) =>
@@ -63,7 +64,7 @@ rl.question('Enter the name of the file to read (without the extension): ', (FIL
 
   for (let i = 0; i < headersArray.length; i++)
   {
-    stringArray.push(`export const ${ headersArray[i] } = "${ out[i] }";`);
+    stringArray.push(`exports.${ headersArray[i] } = "${ out[i] }";`);
   }
   fs.appendFileSync(`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Sorted_Node.js`, stringArray.join('\n'));
 
@@ -84,4 +85,3 @@ rl.question('Enter the name of the file to read (without the extension): ', (FIL
   writeMissingEntries();
   rl.close();
 });
-// const FILENAME_NO_EXT = 'Magneto_ROM100';

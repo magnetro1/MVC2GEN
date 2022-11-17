@@ -1,16 +1,7 @@
 // Scrape a Cheat Engine XML file for the address description of the table
 const fs = require('fs');
 const path = require('path');
-const {KNOCKDOWN_STATE_OBJ} = require("./main_files/staticData.js");
-const {PROX_BLOCK_OBJ} = require("./main_files/staticData.js");
-const {NAME_TABLE_OBJ} = require("./main_files/staticData.js");
-const {FLOATING_POINT_ADRS} = require("./main_files/staticData.js");
-const {MIN_MAX_ADRS} = require("./main_files/staticData.js");
-const {MISC_ADRS} = require("./main_files/staticData.js");
-const {STAGES_OBJ} = require("./main_files/staticData.js");
-const {PORTRAITS_TO_TIME_OBJ} = require("./main_files/staticData.js");
-const {UNUSED_ADDRESSES} = require("./main_files/staticData.js");
-
+const {UNUSED_ADDRESSES} = require("./main_files/staticData");
 const RESOURCES_DIR = path.join(process.cwd(), '/resources/');
 const CE_DIR = `${ RESOURCES_DIR }PCSX2RR_and_CheatEngine/CheatTables.BK/`;
 const CT_FILE_PREFIX = 'pcsx2_entelechy_';
@@ -34,7 +25,7 @@ fs.readdirSync(CE_DIR).forEach((file) =>
     {
       newestCTFileDate = stats.mtimeMs;
       newestCTFile = file;
-      console.log(newestCTFile);
+      // console.log(newestCTFile);
     }
   }
 });
@@ -100,7 +91,6 @@ for (let k = 0; k < 5; k++) // duplicate entry across CT file safeguard
     }
   }
 }
-
 
 // Write the addresses to the main CT file
 var mainScriptVarCreator = '';

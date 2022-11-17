@@ -1,4 +1,4 @@
-const KNOCKDOWN_STATE_OBJ =
+exports.KNOCKDOWN_STATE_OBJ =
 {
   "0": "Neutral",
   "1": "Walking",
@@ -36,7 +36,8 @@ const KNOCKDOWN_STATE_OBJ =
   "33": "???",
   "34": "OC Launcher"
 };
-const PROX_BLOCK_OBJ =
+
+exports.PROX_BLOCK_OBJ =
 {
   "0": "Neutral",
   "1": "Air",
@@ -67,7 +68,7 @@ const PROX_BLOCK_OBJ =
   "26": "Air Dash"
 };
 
-const NAME_TABLE_OBJ =
+exports.NAME_TABLE_OBJ =
 {
   "0": "Ryu",
   "1": "Zangief",
@@ -130,7 +131,7 @@ const NAME_TABLE_OBJ =
   "58": "Servbot"
 };
 
-const FLOATING_POINT_ADRS =
+exports.FLOATING_POINT_ADRS =
   [
     "X_Gravity",
     "X_Position_Arena",
@@ -142,7 +143,7 @@ const FLOATING_POINT_ADRS =
     "Y_Position_Screen",
     "Y_Velocity"
   ];
-const MIN_MAX_ADRS =
+exports.MIN_MAX_ADRS =
   [
     "P1_A_X_Gravity",
     "P1_A_X_Position_Arena",
@@ -255,7 +256,7 @@ const MIN_MAX_ADRS =
     "P1_Combo_Meter_Value",
     "P2_Combo_Meter_Value"
   ];
-const MISC_ADRS =
+exports.MISC_ADRS =
   [
     "Total_Frames",
     "Camera_Field_of_View",
@@ -294,7 +295,7 @@ const MISC_ADRS =
     "Timer_Secondary"
   ];
 
-const STAGES_OBJ =
+exports.STAGES_OBJ =
 {
   "0": "142030FF", //"Boat1",
   "1": "E1540CFF", //"Desert1",
@@ -315,14 +316,14 @@ const STAGES_OBJ =
   "16": "8CA7DFFF" //"Raft1"
 };
 
-const PORTRAITS_TO_TIME_OBJ =
+exports.PORTRAITS_TO_TIME_OBJ =
 {
   "24": 1,  //Abyss-"1"
   "25": 2,  //Abyss-"2"
   "26": 3,  //Abyss-"3"
   "30": 4,  //Akuma
   "21": 5,  //Amingo
-  "4": 6,  //Anakaris
+  "4": 6,   //Anakaris
   "31": 7,  //B.B. Hood
   "53": 8,  //Blackheart
   "23": 9,  //Cable
@@ -332,16 +333,16 @@ const PORTRAITS_TO_TIME_OBJ =
   "33": 13, //Charlie
   "27": 14, //Chun-Li
   "50": 15, //Colossus
-  "6": 16, //Cyclops
+  "6": 16,  //Cyclops
   "35": 17, //Dan
   "37": 18, //Dhalsim
   "15": 19, //Doctor Doom
   "32": 20, //Felicia
   "40": 21, //Gambit
-  "2": 22, //Guile
+  "2": 22,  //Guile
   "18": 23, //Hayato
   "13": 24, //Hulk
-  "9": 25, //Iceman
+  "9": 25,  //Iceman
   "51": 26, //Iron Man
   "17": 27, //Jill
   "55": 28, //Jin
@@ -351,13 +352,13 @@ const PORTRAITS_TO_TIME_OBJ =
   "44": 32, //Magneto
   "22": 33, //Marrow
   "28": 34, //Megaman
-  "3": 35, //Morrigan
+  "3": 35,  //Morrigan
   "48": 36, //Omega Red
-  "8": 37, //Psylocke
+  "8": 37,  //Psylocke
   "10": 38, //Rogue
   "29": 39, //Roll
   "19": 40, //Ruby Heart
-  "0": 41, //Ryu
+  "0": 41,  //Ryu
   "43": 42, //Sabretooth
   "34": 43, //Sakura
   "52": 44, //Sentinel
@@ -368,17 +369,17 @@ const PORTRAITS_TO_TIME_OBJ =
   "12": 49, //Spider-Man
   "49": 50, //Spiral
   "42": 51, //Storm
-  "5": 52, //Strider Hiryu
+  "5": 52,  //Strider Hiryu
   "54": 53, //Thanos
   "16": 54, //Tron Bonne
   "14": 55, //Venom
   "46": 56, //War Machine
-  "7": 57, //Wolverine (Adamantium)
+  "7": 57,  //Wolverine (Adamantium)
   "57": 58, //Wolverine (Bone)
-  "1": 59 //Zangief
+  "1": 59   //Zangief
 };
 
-const UNUSED_ADDRESSES = [
+exports.UNUSED_ADDRESSES = [
   "FOV",
   "X_Rot_NOP",
   "Y_Pos_NOP",
@@ -525,13 +526,3 @@ const UNUSED_ADDRESSES = [
   "P2_B_Sprite_Scale_Z",
   "P2_C_Sprite_Scale_Z",
 ];
-
-exports.KNOCKDOWN_STATE_OBJ = KNOCKDOWN_STATE_OBJ;
-exports.PROX_BLOCK_OBJ = PROX_BLOCK_OBJ;
-exports.NAME_TABLE_OBJ = NAME_TABLE_OBJ;
-exports.FLOATING_POINT_ADRS = FLOATING_POINT_ADRS;
-exports.MIN_MAX_ADRS = MIN_MAX_ADRS;
-exports.MISC_ADRS = MISC_ADRS;
-exports.STAGES_OBJ = STAGES_OBJ;
-exports.PORTRAITS_TO_TIME_OBJ = PORTRAITS_TO_TIME_OBJ;
-exports.UNUSED_ADDRESSES = UNUSED_ADDRESSES;
