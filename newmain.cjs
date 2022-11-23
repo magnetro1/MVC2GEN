@@ -66,9 +66,7 @@ import(`./main_files/${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`)
       })
     })
   )
-  // .catch((err) => console.log(err));
   .then(() =>
-    // Second import() after synchronous pause
     import(`./main_files/New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`).then((pMem) =>
     {
 
