@@ -245,7 +245,7 @@ import(pathToOrgFile).then((pMemZero) =>
         {
           for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
           {
-            // Make directories if they don"t exist
+            // Make directories if they don't exist
             if (!fs.existsSync(DIR_OUTPATH))
               fs.mkdirSync(DIR_OUTPATH);
             // Write base file
@@ -262,18 +262,18 @@ import(pathToOrgFile).then((pMemZero) =>
                 {encoding: "utf8"});
             }
           }
-          for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
+          for (let staticDataEntry = 0; staticDataEntry < STATIC_DATA_ADRS.length; staticDataEntry++)
           {
-            const callPlayerMemoryFN = writePlayerMemory(`${ playersLen }`, STATIC_DATA_ADRS[staticDataLen], 0);
+            const callPlayerMemoryFN = writePlayerMemory(`${ playersLen }`, STATIC_DATA_ADRS[staticDataEntry], 0);
             for (let playerMemLength = 0; playerMemLength < callPlayerMemoryFN.length; playerMemLength++)
             {
-              // Push and convert all three arrays" values
+              // Push and convert all three arrays' values
               for (let characterSlot = 0; characterSlot < callPlayerMemoryFN[playerMemLength].length; characterSlot++)
               {
-                staticLookupResultsArray[playerMemLength].push(`"${ Object.values(STATIC_DATA_OBJS[staticDataLen])[callPlayerMemoryFN[playerMemLength][characterSlot]] }"`);
+                staticLookupResultsArray[playerMemLength].push(`"${ Object.values(STATIC_DATA_OBJS[staticDataEntry])[callPlayerMemoryFN[playerMemLength][characterSlot]] }"`);
               }
 
-              if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+              if (STATIC_DATA_OBJS[staticDataEntry] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
               {
                 fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
                   {encoding: "utf8"});
@@ -281,7 +281,7 @@ import(pathToOrgFile).then((pMemZero) =>
               }
               else
               {
-                fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
+                fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataEntry] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
                   {encoding: "utf8"});
                 staticLookupResultsArray = [[], [], []];
               }
@@ -426,7 +426,7 @@ import(pathToOrgFile).then((pMemZero) =>
               .replace(/84/gi, "7")
               .replace(/86/gi, "9")
               .replace(/68/gi, "9")
-            }"];"\n"`,
+            }"];\n`,
             {encoding: "utf8"});
           playerInputsCNVArray = [];
 
