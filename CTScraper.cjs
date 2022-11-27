@@ -13,7 +13,7 @@ fs.readdirSync(CE_DIR).forEach((file) =>
   allFileNames.push(file);
 });
 
-// Find the newest CT file using fs.stats
+// Find the newest CT file
 var newestCTFile = '';
 var newestCTFileDate = 0;
 fs.readdirSync(CE_DIR).forEach((file) =>
@@ -62,7 +62,7 @@ for (let line = 0; line < cheatTableBuffer.length; line++)
   }
   if (cheatTableBuffer[line].match(regexCTDescription) && readFlag)
   {
-    for (let i = 1; i < 4; i++)
+    for (let i = 1; i < 4; i++) // Look ahead 3 lines for the address
     {
       if (cheatTableBuffer[line + i].match(regexCTAddress))
       {
@@ -80,13 +80,13 @@ for (let line = 0; line < cheatTableBuffer.length; line++)
 var cheatEntryArrayFixedSet = [...new Set(cheatEntryArray)];
 for (let k = 0; k < 5; k++) // duplicate entry across CT file safeguard
 {
-  for (let i = 0; i < cheatEntryArrayFixedSet.length; i++)
+  for (entry in cheatEntryArrayFixedSet)
   {
-    for (let j = 0; j < UNUSED_ADDRESSES.length; j++)
+    for (unusedAddress in UNUSED_ADDRESSES)
     {
-      if (cheatEntryArrayFixedSet[i] == UNUSED_ADDRESSES[j])
+      if (cheatEntryArrayFixedSet[entry] == UNUSED_ADDRESSES[unusedAddress])
       {
-        cheatEntryArrayFixedSet.splice(i, 1);
+        cheatEntryArrayFixedSet.splice(entry, 1);
       }
     }
   }
@@ -109,10 +109,10 @@ while (currentFrame ~= v0.Value) and contScript do
 var mainScriptVarCaller = '';
 var txtSlot = 0;
 // Create the Lua Buffer
-for (let i = 0; i < cheatEntryArrayFixedSet.length; i++)
+for (let valueIndex = 0; valueIndex < cheatEntryArrayFixedSet.length; valueIndex++)
 {
-  mainScriptVarCreator += `v${ i } = address_list.getMemoryRecordByDescription("${ cheatEntryArrayFixedSet[i] }")\n`;
-  mainScriptVarCaller += `\tdata_table[${ i }] = {desc = v${ i }.Description,val = v${ i }.Value}\n`;
+  mainScriptVarCreator += `v${ valueIndex } = address_list.getMemoryRecordByDescription("${ cheatEntryArrayFixedSet[valueIndex] }")\n`;
+  mainScriptVarCaller += `\tdata_table[${ valueIndex }] = {desc = v${ valueIndex }.Description,val = v${ valueIndex }.Value}\n`;
 }
 
 var textToWrite = `\n\n// Lua Capture Data Script:\n\n${ mainScriptVarCreator }\n${ mainScriptVarMiddleText }\n${ mainScriptVarCaller }`;
@@ -157,7 +157,3 @@ else if (txtSlot == 0)
     , 'utf8');
   console.log(txtSlot);
 }
-setTimeout(() =>
-{
-  console.log('Done!');
-}, 2000);

@@ -36,35 +36,35 @@ rl.question('Enter the name of the file to read (without the extension):', (FILE
   // Removing duplicates using the first column's value (Total_Frames)
   for (let check = 0; check < allDataArray.length - 1; check++) // length-1 because we're checking the next element
   {
-    if (((allDataArray[check + 1][0] === allDataArray[check][0]))) // line number is the same
+    if ((allDataArray[check + 1][0] === allDataArray[check][0])) // line number is the same
     {
       allDataArray.splice(check + 1, 1); // remove the next line
-      check--; // go back to original line
+      check--; // go back to original line in order to check the next line again
     }
   }
 
   // Transpose the array by columns
-  var out = [];
-  // Create the array of arrays
+  var allArrayStructure = [];
   for (let j = 0; j < headersArray.length; j++)
   {
-    out.push([]);
+    allArrayStructure.push([]);
   }
   // Fill the array of arrays with the data separated by column
-  for (let rowIdx = 1; rowIdx < allDataArray.length; ++rowIdx) // for each row/line, which contains the data for each column
+  for (let rowIdx = 1; rowIdx < allDataArray.length; ++rowIdx) 
   {
-    for (let colIdx = 0; colIdx < headersArray.length; ++colIdx) // for each column in the current row
+    for (let colIdx = 0; colIdx < headersArray.length; ++colIdx)
     {
-      out[colIdx].push(allDataArray[rowIdx][colIdx]);
+      allArrayStructure[colIdx].push(allDataArray[rowIdx][colIdx]);
     }
   }
+
   // Write the Sorted_Node.JS file for the clip data
   var stringArray = [];
   fs.writeFileSync(`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Sorted_Node.js`, '');
 
-  for (let i = 0; i < headersArray.length; i++)
+  for (header in headersArray)
   {
-    stringArray.push(`exports.${ headersArray[i] } = "${ out[i] }";`);
+    stringArray.push(`exports.${ headersArray[header] } = "${ allArrayStructure[header] }";`);
   }
   fs.appendFileSync(`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Sorted_Node.js`, stringArray.join('\n'));
 
@@ -72,14 +72,14 @@ rl.question('Enter the name of the file to read (without the extension):', (FILE
   function writeMissingEntries()
   {
     var missingEntries = [];
-    for (let i = 0; i < out[0].length - 1; i++)
+    for (let i = 0; i < allArrayStructure[0].length - 1; i++)
     {
-      if (out[0][i + 1] - out[0][i] !== 1)
+      if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1)
       {
-        missingEntries.push(`Missing data entry after Total_Frame #: ${ out[0][i] }\n`);
+        missingEntries.push(`Missing data entry after Total_Frame #: ${ allArrayStructure[0][i] }\n`);
       }
     }
-    fs.writeFileSync((`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Missing_Frames.txt`), (`${ missingEntries }\nFinal entry in Total_Frames: ${ out[0][out[0].length - 1] }\nTotal_Frames in Clip: ${ out[0].length }`)
+    fs.writeFileSync((`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Missing_Frames.txt`), (`${ missingEntries }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }`)
       .replace(/,/g, ''));
   }
   writeMissingEntries();

@@ -9,52 +9,49 @@ const DO_ROM_FILES = true; // Skip ROM logic files
 const FILE_NAME_NO_EXT = `Magneto_ROM100`; // replace with a read-line-sync prompt
 
 const TAIL_TEXT = `_Sorted_Node.js`;
-const DIR_MAIN_FILES = path.join(process.cwd(), `/main_files/`);
+const DIR_MAIN_FILES = path.join(process.cwd(), `./main_files/`);
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
 const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ FILE_NAME_NO_EXT }/`;
 const ORG_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`; // Current-Active-Working-File
 const NEW_JS_FILE = `${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
+const pathToOrgFile = `./main_files/${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`
+const pathToNewFile = `./main_files/New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`
 
-// Write Directory
 if (!fs.existsSync(`${ DIR_OUTPATH }`))
 {
   fs.mkdirSync(`${ DIR_OUTPATH }`), {recursive: true};
 }
 
-// Append Min & Max values to Node-file. THIS IS THE ONLY WRITING TO THE NODE FILE IN APP
+// Copy & Write Temp File
 var tempMinMaxBuffer = '\n';
-import(`./main_files/${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`)
+import(pathToOrgFile).then((pMemZero) =>
+{
+  const CLIP_LENGTH = pMemZero.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
 
-  .then((pMemZero) =>
+  for (const minMaxAddress in MIN_MAX_ADRS)
   {
-    const CLIP_LENGTH = pMemZero.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
-
-    for (const minMaxAddress in MIN_MAX_ADRS)
+    const tempAddress = eval(`pMemZero.${ MIN_MAX_ADRS[minMaxAddress] }.split(",")`);
+    const tempMinValue = (Math.min(...tempAddress));
+    const tempMaxValue = (Math.max(...tempAddress));
+    const prependStringMin = `exports.${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
+    const prependStringMax = `exports.${ MIN_MAX_ADRS[minMaxAddress] }_Max = `;
+    let tempStringMin = "";
+    let tempStringMax = "";
+    for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
     {
-      const tempAddress = eval(`pMemZero.${ MIN_MAX_ADRS[minMaxAddress] }.split(",")`);
-      const tempMinValue = (Math.min(...tempAddress));
-      const tempMaxValue = (Math.max(...tempAddress));
-      const prependStringMin = `exports.${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
-      const prependStringMax = `exports.${ MIN_MAX_ADRS[minMaxAddress] }_Max = `;
-      let tempStringMin = "";
-      let tempStringMax = "";
-      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-      {
-        // Get rid of final comma
-        clipLen == CLIP_LENGTH - 1 ? tempStringMin += `${ tempMinValue }` : tempStringMin += `${ tempMinValue },`;
-        clipLen == CLIP_LENGTH - 1 ? tempStringMax += `${ tempMaxValue }` : tempStringMax += `${ tempMaxValue },`;
-      }
-      tempMinMaxBuffer += `${ prependStringMin }"${ tempStringMin }";` + '\n' + `${ prependStringMax }"${ tempStringMax }";\n`;
+      // eliminate final comma
+      clipLen == CLIP_LENGTH - 1 ? tempStringMin += `${ tempMinValue }` : tempStringMin += `${ tempMinValue },`;
+      clipLen == CLIP_LENGTH - 1 ? tempStringMax += `${ tempMaxValue }` : tempStringMax += `${ tempMaxValue },`;
     }
-  })
+    tempMinMaxBuffer += `${ prependStringMin }"${ tempStringMin }";` + '\n' + `${ prependStringMax }"${ tempStringMax }";\n`;
+  }
+})
   .then(() => fs.promises.copyFile(`${ ORG_JS_FILE }`, NEW_JS_FILE).then(() =>
     fs.promises.appendFile(NEW_JS_FILE, tempMinMaxBuffer)).then(() =>
     {
-      var readNewFile = fs.promises.readFile(NEW_JS_FILE, 'utf8').then((newFile) =>
+      fs.promises.readFile(NEW_JS_FILE, 'utf8').then((newFile) =>
       {
         let allVariablesREGEX = /exports\.(\w+) = "(.*)";\n/gmi; // ALL variable regex
-        // let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; //[1] = P1A, etc. [2] = variable name
-        // let playerDataAll = []
         let tempRegExVar;
         while (tempRegExVar = allVariablesREGEX.exec(newFile))
         {
@@ -67,12 +64,9 @@ import(`./main_files/${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`)
     })
   )
   .then(() =>
-    import(`./main_files/New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`).then((pMem) =>
+    import(pathToNewFile).then((pMem) =>
     {
-
-      // import(NEW_JS_FILE).then((pMem) =>
-      // {
-      // Get Player-Memory var Names for Main Function. Example: "P1_A_Health_Big" => "P1_Health_Big". Dynamic var list as each JS file is not guaranteed to be the same
+      // Dynamic var list as each JS file is not guaranteed to be the same
       function getLabelsfromJS()
       {
         let playerDataAll = []
@@ -89,7 +83,7 @@ import(`./main_files/${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`)
         return removedDuplicatesArray
       }
       getLabelsfromJS();
-      const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn"t matter
+      const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
       const POINT_OBJ_P1 =
       {
         P1_A_: pMem.P1_A_Is_Point.split(","),
@@ -183,34 +177,33 @@ import(`./main_files/${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`)
         for (const floatAddress in FLOATING_POINT_ADRS)
         {
           var toFixedDigitNumberZero = [0, 2, 4]; // 7 by default
-          // var floatArrayFixed = [[], [], []];
           if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
           {
-            for (let j = 0; j < toFixedDigitNumberZero.length; j++)
+            for (fixedDigitType in toFixedDigitNumberZero)
             {
               var floatArrayFixed = [[], [], []];
               // ToFixed
-              if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[j] }.js`))
+              if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[fixedDigitType] }.js`))
               {
-                fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[j] }.js`,
+                fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[fixedDigitType] }.js`,
                   `result = [];` + "\n", {encoding: "utf8"});
 
                 finalValuesArray[0].forEach((value) =>
                 {
                   value = parseFloat(value)
-                  floatArrayFixed[0].push(value.toFixed(toFixedDigitNumberZero[j]));
+                  floatArrayFixed[0].push(value.toFixed(toFixedDigitNumberZero[fixedDigitType]));
                 });
                 finalValuesArray[1].forEach((value) =>
                 {
                   value = parseFloat(value)
-                  floatArrayFixed[1].push(value.toFixed(toFixedDigitNumberZero[j]));
+                  floatArrayFixed[1].push(value.toFixed(toFixedDigitNumberZero[fixedDigitType]));
                 });
                 finalValuesArray[2].forEach((value) =>
                 {
                   value = parseFloat(value)
-                  floatArrayFixed[2].push(value.toFixed(toFixedDigitNumberZero[j]));
+                  floatArrayFixed[2].push(value.toFixed(toFixedDigitNumberZero[fixedDigitType]));
                 });
-                fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[j] }.js`,
+                fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[fixedDigitType] }.js`,
                   `result[0]=[${ floatArrayFixed[0].toString() }];` + "\n" +
                   `result[1]=[${ floatArrayFixed[1].toString() }];` + "\n" +
                   `result[2]=[${ floatArrayFixed[2].toString() }];`
@@ -356,7 +349,7 @@ import(`./main_files/${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`)
 
           pMem.Stage_Selector.split(",").forEach((frame) =>
           {
-            stageData.push(`"${ Object.values(STAGES_OBJ)[frame] }"`) // last 0xFF is for opacity
+            stageData.push(`"${ Object.values(STAGES_OBJ)[frame] }"`)
           });
           fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
             `result[1] = [${ stageData }];\n`,
@@ -366,7 +359,7 @@ import(`./main_files/${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`)
       };
       writeStageDataCNV()
 
-      function writeInputCNV() // result[0] is in custom-fontn notation, result[1] is in FGC notation
+      function writeInputCNV() // result[0] is in custom-font notation, result[1] is in FGC notation
       {
         const P1_InputsVar = pMem.P1_Input_DEC.split(",");
         const P2_InputsVar = pMem.P2_Input_DEC.split(",");
@@ -442,7 +435,7 @@ import(`./main_files/${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`)
           {
             for (const button in Object.entries(buttonConversionVersion2))
             {
-              if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, then the value is converted
+              if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, the value is converted
               {
                 playerInputResults += Object.keys(buttonConversionVersion2)[button];
               }
@@ -533,7 +526,8 @@ import(`./main_files/${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`)
           // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here
 
           // List of files to be written. Will have prefix of P1_ or P2_
-          var allDataObject = {
+          var allDataObject =
+          {
             State_Being_Hit: [[], [], []],
             State_Flying_Screen_Air: [[], [], []],
             State_Flying_Screen_OTG: [[], [], []],
@@ -791,22 +785,21 @@ import(`./main_files/${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`)
             // Applies to ROM cases as well!
             var counter = 0;
 
-            for (let i = 0; i < Object.entries(allDataObject).length; i++) // number of entries in the object
+            // for (let stateDataEntryI = 0; stateDataEntryI < Object.entries(allDataObject).length; stateDataEntryI++)
+            for (let stateDataEntryI in Object.entries(allDataObject))
             {
-              // console.log(Object.values(allDataObject)[i][playerSlotI][2000]);
-
-              Object.values(allDataObject)[i][playerSlotI].forEach((element, index) =>
+              Object.values(allDataObject)[stateDataEntryI][playerSlotI].forEach((element, index) =>
               {
                 if (element == 0)
                 {
                   counter = 0
-                  return Object.values(allDataObject)[i][playerSlotI][index]
+                  return Object.values(allDataObject)[stateDataEntryI][playerSlotI][index];
                 }
                 else
                 {
-                  Object.values(allDataObject)[i][playerSlotI][index] = element + counter
+                  Object.values(allDataObject)[stateDataEntryI][playerSlotI][index] = (element + counter);
                   counter++
-                  return Object.values(allDataObject)[i][playerSlotI][index + counter]
+                  return Object.values(allDataObject)[stateDataEntryI][playerSlotI][index + counter]
                 }
               });
             }
@@ -1349,7 +1342,6 @@ import(`./main_files/${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`)
       writeNewStates()
       fs.closeSync(1);
       fs.unlinkSync(NEW_JS_FILE);
-      // fs.unlinkSync(`${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`)
     })
   )
 // */
