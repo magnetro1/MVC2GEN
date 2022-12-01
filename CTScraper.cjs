@@ -1,7 +1,7 @@
 // Scrape a Cheat Engine XML file for the address description of the table
 const fs = require('fs');
 const path = require('path');
-const {UNUSED_ADDRESSES} = require("./main_files/staticData");
+const {UNUSED_CT_ADDRESSES} = require("./main_files/staticData");
 const RESOURCES_DIR = path.join(process.cwd(), '/resources/');
 const CE_DIR = `${ RESOURCES_DIR }PCSX2RR_and_CheatEngine/CheatTables.BK/`;
 const CT_FILE_PREFIX = 'pcsx2_entelechy_';
@@ -25,23 +25,23 @@ fs.readdirSync(CE_DIR).forEach((file) =>
     {
       newestCTFileDate = stats.mtimeMs;
       newestCTFile = file;
-      // console.log(newestCTFile);
     }
   }
 });
+console.log(`Newest CT File: ${ newestCTFile }`);
 
-// // // Get the newest CT file using file number
-// // var regexForCTFileNumber = /(<?_)(\d+)\.CT/m; // has to be multi-line to match the end of the string
-// // var CTFileNumbersArray = [];
-// // for (let i = 0; i < allFileNames.length; i++)
-// // {
-// //   if (regexForCTFileNumber.test(allFileNames[i]))
-// //   {
-// //     allFileNames[i] = regexForCTFileNumber.exec(allFileNames[i])[2];
-// //     CTFileNumbersArray.push(allFileNames[i]);
-// //   }
-// // }
-// // var FindNewestCTFile = Math.max(...CTFileNumbersArray);
+// // Get the newest CT file using file number
+// var regexForCTFileNumber = /(<?_)(\d+)\.CT/m; // has to be multi-line to match the end of the string
+// var CTFileNumbersArray = [];
+// for (let i = 0; i < allFileNames.length; i++)
+// {
+//   if (regexForCTFileNumber.test(allFileNames[i]))
+//   {
+//     allFileNames[i] = regexForCTFileNumber.exec(allFileNames[i])[2];
+//     CTFileNumbersArray.push(allFileNames[i]);
+//   }
+// }
+// var FindNewestCTFile = Math.max(...CTFileNumbersArray);
 
 const MAIN_CT_FILE = `${ newestCTFile }`; // Stats method
 
@@ -82,9 +82,9 @@ for (let k = 0; k < 5; k++) // duplicate entry across CT file safeguard
 {
   for (entry in cheatEntryArrayFixedSet)
   {
-    for (unusedAddress in UNUSED_ADDRESSES)
+    for (unusedAddress in UNUSED_CT_ADDRESSES)
     {
-      if (cheatEntryArrayFixedSet[entry] == UNUSED_ADDRESSES[unusedAddress])
+      if (cheatEntryArrayFixedSet[entry] == UNUSED_CT_ADDRESSES[unusedAddress])
       {
         cheatEntryArrayFixedSet.splice(entry, 1);
       }
@@ -148,12 +148,12 @@ if (txtSlot == 1)
   fs.writeFileSync(`${ CE_DIR }${ CTFileNamePlusOne }_addresses.txt`, ((`${ cheatEntryArrayFixedSet }`)
     .replace(/,/gmi, '\n') + textToWrite)
     , 'utf8');
-  console.log(txtSlot);
+  // console.log(txtSlot);
 }
 else if (txtSlot == 0)
 {
   fs.writeFileSync(`${ CE_DIR }${ newestCTFile }_addresses.txt`, ((`${ cheatEntryArrayFixedSet }`)
     .replace(/,/gmi, '\n') + textToWrite)
     , 'utf8');
-  console.log(txtSlot);
+  // console.log(txtSlot);
 }

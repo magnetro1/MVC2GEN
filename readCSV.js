@@ -2,19 +2,49 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
+const DIR_MAIN_FILES = path.join(process.cwd(), '/main_files/');
+const DIR_CSVS = path.join(process.cwd(), '/main_files/CSV_to_JS/');
+
 const rl = readline.createInterface(
   {
     input: process.stdin,
     output: process.stdout,
   }
 );
-rl.question('Enter the name of the file to read (without the extension):', (FILENAME_NO_EXT) =>
+
+rl.question('Enter original CSV name without extension:', (FILENAME_NO_EXT) =>
 {
-  // FILENAME_NO_EXT
-  const DIR_MAIN_FILES = path.join(process.cwd(), '/main_files/');
-  const DIR_CSVS = path.join(process.cwd(), '/main_files/CSV_to_JS');
+  if (FILENAME_NO_EXT.trim().includes("_Original"))
+  {
+    FILENAME_NO_EXT = FILENAME_NO_EXT.replace("_Original", "");
+    if (!fs.existsSync(path.join(`${ DIR_CSVS }${ FILENAME_NO_EXT }_Original.csv`)))
+    {
+      console.log("Original CSV file not found.")
+      rl.close();
+    }
+    else
+    {
+      console.log("Removed '_Original' from filename");
+      // console.log("Processing...");
+    }
+  }
+  else if (FILENAME_NO_EXT.trim().includes("_F"))
+  {
+    console.log('Use the Original CSV file, not _F');
+    process.exit();
+  }
+  else if (!fs.existsSync(path.join(`${ DIR_CSVS }${ FILENAME_NO_EXT }_Original.csv`)))
+  {
+    console.log('File does not exist! Exiting.');
+    process.exit();
+  }
+  else
+  {
+    FILENAME_NO_EXT = FILENAME_NO_EXT
+    console.log('Processing...');
+  }
+
   const FILE = path.join(DIR_CSVS, `${ FILENAME_NO_EXT }_Original.csv`); // Working with _Original
-  // const FILE_ROM100 = `${ NAME_NO_EXT }_F.csv`; // Working with _F
 
   var headersArray = [];
   var allDataArray = [];
@@ -30,7 +60,7 @@ rl.question('Enter the name of the file to read (without the extension):', (FILE
       } return null;
     },
   );
-  // Sorting by the first column's value (Total_Frames)
+  // Sorting by the first column's first value (Total_Frames)
   allDataArray.sort((a, b) => a[0] - b[0]);
 
   // Removing duplicates using the first column's value (Total_Frames)
@@ -69,19 +99,33 @@ rl.question('Enter the name of the file to read (without the extension):', (FILE
   fs.appendFileSync(`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Sorted_Node.js`, stringArray.join('\n'));
 
   // Write missing data entries to a file
-  function writeMissingEntries()
+
+  var missingEntries = [];
+  for (let i = 0; i < allArrayStructure[0].length - 1; i++)
   {
-    var missingEntries = [];
-    for (let i = 0; i < allArrayStructure[0].length - 1; i++)
+    if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1)
     {
-      if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1)
-      {
-        missingEntries.push(`Missing data entry after Total_Frame #: ${ allArrayStructure[0][i] }\n`);
-      }
+      missingEntries.push(`Missing data entry after Total_Frame #: ${ allArrayStructure[0][i] }\n`);
     }
-    fs.writeFileSync((`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Missing_Frames.txt`), (`${ missingEntries }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }`)
-      .replace(/,/g, ''));
   }
-  writeMissingEntries();
+  if (missingEntries.length > 0)
+  {
+    fs.writeFileSync((`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Missing_Frames.txt`),
+      (`${ missingEntries }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }`)
+        .replace(/,/g, ''));
+    console.log('Missing entries logged.');
+  }
+  else
+  {
+    fs.writeFileSync((`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Missing_Frames.txt`),
+      (`No missing data entries\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }`)
+        .replace(/,/g, ''));
+    console.log('No missing data entries');
+  }
   rl.close();
+});
+rl.on('close', () =>
+{
+  console.log('Finished');
+  process.exit();
 });

@@ -1,0 +1,3 @@
+No missing data entries
+Final entry in Total_Frames: 12782
+Total_Frames in Clip: 739

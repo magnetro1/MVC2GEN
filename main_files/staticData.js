@@ -379,7 +379,7 @@ exports.PORTRAITS_TO_TIME_OBJ =
   1: 59   //Zangief
 };
 
-exports.UNUSED_ADDRESSES = [
+exports.UNUSED_CT_ADDRESSES = [
   "FOV",
   "X_Rot_NOP",
   "Y_Pos_NOP",
