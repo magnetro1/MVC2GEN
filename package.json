@@ -1,6 +1,7 @@
 {
   "main": "newmain.cjs",
-  "name": "mvc2gen",
+  "type": "commonjs",
+  "name": "newmain.cjs",
   "version": "1.2.0",
   "description": "CJS branch",
   "repository": {
