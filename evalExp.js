@@ -21,7 +21,7 @@ import(ORG_JS_FILE)
   .then((orgData) => // Imports Object with key : value pairs
   {
     const CLIP_LENGTH = orgData.A_2D_Game_Timer.split(',').length;
-    for (adr in MIN_MAX_ADRS)
+    for (let adr in MIN_MAX_ADRS)
     {
       const KEY = MIN_MAX_ADRS[adr];
       const VALUE = orgData[MIN_MAX_ADRS[adr]];
@@ -30,7 +30,7 @@ import(ORG_JS_FILE)
       let tempMin = [];
       let tempMax = [];
 
-      for (clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
       {
         tempMax[clipLen] = MAX;
         tempMin[clipLen] = MIN;
@@ -38,5 +38,5 @@ import(ORG_JS_FILE)
       tempMinMaxBuffer += `exports.${ KEY }_Max = '${ tempMax }';\n`;
       tempMinMaxBuffer += `exports.${ KEY }_Min = '${ tempMin }';\n`;
     }
-    console.log(tempMinMaxBuffer);
+    // console.log(tempMinMaxBuffer);
   });

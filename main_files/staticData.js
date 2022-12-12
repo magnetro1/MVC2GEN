@@ -1,4 +1,4 @@
-exports.KNOCKDOWN_STATE_OBJ =
+export const KNOCKDOWN_STATE_OBJ =
 {
   0: "Neutral",
   1: "Walking",
@@ -37,7 +37,7 @@ exports.KNOCKDOWN_STATE_OBJ =
   34: "OC Launcher"
 };
 
-exports.PROX_BLOCK_OBJ =
+export const PROX_BLOCK_OBJ =
 {
   0: "Neutral",
   1: "Air",
@@ -68,7 +68,7 @@ exports.PROX_BLOCK_OBJ =
   26: "Air Dash"
 };
 
-exports.NAME_TABLE_OBJ =
+export const NAME_TABLE_OBJ =
 {
   0: "Ryu",
   1: "Zangief",
@@ -131,7 +131,7 @@ exports.NAME_TABLE_OBJ =
   58: "Servbot"
 };
 
-exports.FLOATING_POINT_ADRS =
+export const FLOATING_POINT_ADRS =
   [
     "X_Gravity",
     "X_Position_Arena",
@@ -143,7 +143,7 @@ exports.FLOATING_POINT_ADRS =
     "Y_Position_Screen",
     "Y_Velocity"
   ];
-exports.MIN_MAX_ADRS =
+export const MIN_MAX_ADRS =
   [
     "P1_A_X_Gravity",
     "P1_A_X_Position_Arena",
@@ -256,7 +256,7 @@ exports.MIN_MAX_ADRS =
     "P1_Combo_Meter_Value",
     "P2_Combo_Meter_Value"
   ];
-exports.MISC_ADRS =
+export const MISC_ADRS =
   [
     "Total_Frames",
     "Camera_Field_of_View",
@@ -295,7 +295,7 @@ exports.MISC_ADRS =
     "Timer_Secondary"
   ];
 
-exports.STAGES_OBJ =
+export const STAGES_OBJ =
 {
   0: "142030FF", //"Boat1",
   1: "E1540CFF", //"Desert1",
@@ -316,7 +316,7 @@ exports.STAGES_OBJ =
   16: "8CA7DFFF" //"Raft1"
 };
 
-exports.PORTRAITS_TO_TIME_OBJ =
+export const PORTRAITS_TO_TIME_OBJ =
 {
   24: 1,  //Abyss-"1"
   25: 2,  //Abyss-"2"
@@ -379,7 +379,7 @@ exports.PORTRAITS_TO_TIME_OBJ =
   1: 59   //Zangief
 };
 
-exports.UNUSED_CT_ADDRESSES = [
+export const UNUSED_CT_ADDRESSES = [
   "FOV",
   "X_Rot_NOP",
   "Y_Pos_NOP",

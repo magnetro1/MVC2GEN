@@ -1,7 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-// test push9
-const {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} = require("./main_files/staticData");
+
+import * as fs from 'fs';
+import * as path from 'path';
+
+import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js";
 
 // Figure out which variables need to be prompts
 const DO_ROM_FILES = true; // Skip ROM logic files
@@ -23,26 +24,25 @@ if (!fs.existsSync(`${ DIR_OUTPATH }`))
 // Copy & Write Temp File
 var tempMinMaxBuffer = '\n';
 import(ORG_JS_FILE)
-  .then((pMemZero) =>
+  .then((orgData) => // Imports Object with key : value pairs
   {
-    const CLIP_LENGTH = pMemZero.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
-
-    for (const minMaxAddress in MIN_MAX_ADRS)
+    const CLIP_LENGTH = orgData.A_2D_Game_Timer.split(',').length;
+    for (let adr in MIN_MAX_ADRS)
     {
-      const tempAddress = eval(`pMemZero.${ MIN_MAX_ADRS[minMaxAddress] }.split(",")`);
-      const tempMinValue = (Math.min(...tempAddress));
-      const tempMaxValue = (Math.max(...tempAddress));
-      const prependStringMin = `exports.${ MIN_MAX_ADRS[minMaxAddress] }_Min = `;
-      const prependStringMax = `exports.${ MIN_MAX_ADRS[minMaxAddress] }_Max = `;
-      let tempStringMin = "";
-      let tempStringMax = "";
+      const KEY = MIN_MAX_ADRS[adr];
+      const VALUE = orgData[MIN_MAX_ADRS[adr]];
+      const MIN = Math.min(...VALUE.split(','));
+      const MAX = Math.max(...VALUE.split(','));
+      let tempMin = [];
+      let tempMax = [];
+
       for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
       {
-        // eliminate final comma
-        clipLen == CLIP_LENGTH - 1 ? tempStringMin += `${ tempMinValue }` : tempStringMin += `${ tempMinValue },`;
-        clipLen == CLIP_LENGTH - 1 ? tempStringMax += `${ tempMaxValue }` : tempStringMax += `${ tempMaxValue },`;
+        tempMax[clipLen] = MAX;
+        tempMin[clipLen] = MIN;
       }
-      tempMinMaxBuffer += `${ prependStringMin }"${ tempStringMin }";` + '\n' + `${ prependStringMax }"${ tempStringMax }";\n`;
+      tempMinMaxBuffer += `export const ${ KEY }_Max = '${ tempMax }';\n`;
+      tempMinMaxBuffer += `export const ${ KEY }_Min = '${ tempMin }';\n`;
     }
   })
   .then(() => fs.promises.copyFile(`${ ORG_JS_FILE }`, NEW_JS_FILE) // Copy, append, write JS files, then bring back in
@@ -53,7 +53,7 @@ import(ORG_JS_FILE)
       fs.promises.readFile(NEW_JS_FILE, 'utf8')
         .then((newFile) => // Write all JS files
         {
-          let allVariablesREGEX = /exports\.(\w+) = "(.*)";\n/gmi; // ALL variable regex
+          let allVariablesREGEX = /export const (\w+) = "(.*)";\n/gmi; // ALL variable regex
           let tempRegExVar;
           while (tempRegExVar = allVariablesREGEX.exec(newFile))
           {
@@ -181,7 +181,7 @@ import(ORG_JS_FILE)
             var toFixedDigitNumberZero = [0, 2, 4]; // 7 by default
             if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
             {
-              for (fixedDigitType in toFixedDigitNumberZero)
+              for (let fixedDigitType in toFixedDigitNumberZero)
               {
                 var floatArrayFixed = [[], [], []];
                 // ToFixed

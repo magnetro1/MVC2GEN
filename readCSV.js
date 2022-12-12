@@ -1,9 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const readline = require('readline');
+// const fs = require('fs');
+// const path = require('path');
+// const readline = require('readline');
 
+import * as fs from 'fs';
+import * as path from 'path';
+import * as readline from 'readline';
 const DIR_MAIN_FILES = path.join(process.cwd(), '/main_files/');
 const DIR_CSVS = path.join(process.cwd(), '/main_files/CSV_to_JS/');
+// console.log(DIR_CSVS)
 
 const rl = readline.createInterface(
   {
@@ -92,9 +96,9 @@ rl.question('Enter original CSV name without extension:', (FILENAME_NO_EXT) =>
   var stringArray = [];
   fs.writeFileSync(`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Sorted_Node.js`, '');
 
-  for (header in headersArray)
+  for (let header in headersArray)
   {
-    stringArray.push(`exports.${ headersArray[header] } = "${ allArrayStructure[header] }";`);
+    stringArray.push(`export const ${ headersArray[header] } = "${ allArrayStructure[header] }";`);
   }
   fs.appendFileSync(`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Sorted_Node.js`, stringArray.join('\n'));
 
