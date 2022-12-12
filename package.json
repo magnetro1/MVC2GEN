@@ -1,7 +1,7 @@
 {
-  "main": "newmain.cjs",
+  "main": "newmain.js",
   "type": "commonjs",
-  "name": "newmain.cjs",
+  "name": "newmain.js",
   "version": "1.2.0",
   "description": "CJS branch",
   "repository": {
