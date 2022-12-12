@@ -14,7 +14,7 @@ const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ FILE_NAME_NO_EXT }/`;
 const ORG_JS_FILE = `${ DIR_MAIN_FILES }${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`; // Current-Active-Working-File
 const NEW_JS_FILE = `${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
 
-var tempMinMaxBuffer = '';
+let tempMinMaxBuffer = '';
 
 
 import(ORG_JS_FILE)

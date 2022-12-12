@@ -75,7 +75,7 @@ rl.question('Enter original CSV name without extension:', (FILENAME_NO_EXT) =>
 
   // Transpose the array by columns
   var allArrayStructure = [];
-  for (let j = 0; j < headersArray.length; j++)
+  for (let headerIndex = 0; headerIndex < headersArray.length; headerIndex++)
   {
     allArrayStructure.push([]);
   }

@@ -4,9 +4,9 @@ const path = require('path');
 const {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} = require("./main_files/staticData");
 
 // Figure out which variables need to be prompts
-const DO_ROM_FILES = false; // Skip ROM logic files
+const DO_ROM_FILES = true; // Skip ROM logic files
 
-const FILE_NAME_NO_EXT = `Combo_Sentinel10`; // replace with a read-line-sync prompt
+const FILE_NAME_NO_EXT = `Magneto_ROM100`; // replace with a read-line-sync prompt
 
 const TAIL_TEXT = `_Sorted_Node.js`;
 const DIR_MAIN_FILES = `./main_files/`;
@@ -17,7 +17,7 @@ const NEW_JS_FILE = `${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`
 
 if (!fs.existsSync(`${ DIR_OUTPATH }`))
 {
-  fs.mkdirSync(`${ DIR_OUTPATH }`), {recursive: true};
+  fs.mkdirSync(`${ DIR_OUTPATH }`);
 }
 
 // Copy & Write Temp File
@@ -45,7 +45,7 @@ import(ORG_JS_FILE)
       tempMinMaxBuffer += `${ prependStringMin }"${ tempStringMin }";` + '\n' + `${ prependStringMax }"${ tempStringMax }";\n`;
     }
   })
-  .then(() => fs.promises.copyFile(`${ ORG_JS_FILE }`, NEW_JS_FILE) // Copy, append, write JS files, then re-import
+  .then(() => fs.promises.copyFile(`${ ORG_JS_FILE }`, NEW_JS_FILE) // Copy, append, write JS files, then bring back in
     .then(() =>
       fs.promises.appendFile(NEW_JS_FILE, tempMinMaxBuffer))
     .then(() =>
@@ -1072,6 +1072,7 @@ import(ORG_JS_FILE)
                     ROM_CHOICEC[arrayWithROMData][clipLen] = 65535;
                   }
                 }
+                // Find 1 ROM Cycle after establishing ground state
                 var GroundSwitch = 0
                 for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
                 {
@@ -1185,7 +1186,7 @@ import(ORG_JS_FILE)
                 }
               } // end of 05_ChoiceC
 
-              // 05_ChoiceC2 - ( MK to AirDash ) TODO
+              // 05_ChoiceC2 - ( upwards MK to AirDash ) TODO
 
 
               // 09_ChoiceE (time: LK -> MK)
