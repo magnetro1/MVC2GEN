@@ -14,7 +14,7 @@ fs.readdirSync(CE_DIR).forEach((file) =>
 });
 
 // Find the newest CT file
-var newestCTFile = '';
+var newestCTFile = ``;
 var newestCTFileDate = 0;
 fs.readdirSync(CE_DIR).forEach((file) =>
 {
