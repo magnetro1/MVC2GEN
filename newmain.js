@@ -70,6 +70,10 @@ import(ORG_JS_FILE)
       .then((pMem) =>
       {
         // Dynamic var list as each JS file is not guaranteed to be the same
+
+        /**
+         * @returns {Array} Array of all entries from the replay JS file.
+         **/
         function getLabelsfromJS()
         {
           let playerDataAll = []
@@ -79,9 +83,8 @@ import(ORG_JS_FILE)
           while (tempRegExVar = playerMemoryRegex.exec(newFile))
           {
             playerDataAll.push(tempRegExVar[2]); // regex.exec returns array of all matches; item[2] has many duplicates
-            // playerDataAll.join(","); // Converts array to string
           };
-          var removedDuplicatesArray = [...new Set(playerDataAll)]; // Removes duplicates from array, uses playerDataAll as source
+          var removedDuplicatesArray = [...new Set(playerDataAll)]; // Removes duplicates from array
           // console.log(removedDuplicatesArray);
           return removedDuplicatesArray
         }
@@ -100,6 +103,13 @@ import(ORG_JS_FILE)
           P2_C_: pMem.P2_C_Is_Point.split(",")
         };
         // Main function to write data to files OR return finalValues array
+        /**
+         * @param {number|string} PlayerOneOrPlayerTwo number or string, ex: 1 or "P1"
+         * @param {string} playerMemoryAddress string, ex: "P1_A_Health_Big"
+         * @param {number} write flag to return array or write to file
+         * @returns {Number[]} returns an array of numbers or writes a file for the playerMemoryAddress in the clip.
+         * @description Finds the point character, and returns an array of numbers for the playerMemoryAddress in the clip.
+         */
         function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // "P1"/"P2", address from data-object, 1/0
         {
           const finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
@@ -294,12 +304,16 @@ import(ORG_JS_FILE)
         };
         writeStaticDataCNV();
 
+        /**
+         * @description Writes P1 & P2 addresses to their own JS files. Ex: P1_Combo_Meter_Value.js. One array per entry.
+         */
         function writeP1P2Addresses() 
         {
-          const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "P2_Meter_Big"
-          for (const miscAdrIterator in MISC_ADRS) // MISC_ADRS has P1 & P2
+          const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View"
+          for (const miscAdrIterator in MISC_ADRS)
           {
-            eval(`pMem.${ MISC_ADRS[miscAdrIterator] }`).split(",").forEach((address) =>
+            pMem[MISC_ADRS[miscAdrIterator]].split(",").forEach((address) =>
+            // eval(`pMem.${ MISC_ADRS[miscAdrIterator] }`).split(",").forEach((address) =>
             {
               miscAdrArray[0].push(address);
             });
@@ -307,12 +321,13 @@ import(ORG_JS_FILE)
             if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`))
             {
               fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`,
-                `var result = [];\nresult[0] = [${ miscAdrArray }];\n`,
+                `var = [];\nresult[0] = [${ miscAdrArray }];//onearray`,
                 {encoding: "utf8"});
               miscAdrArray[0] = []; // clear the array for the next player iteration.
             }
           }
         };
+
         writeP1P2Addresses();
 
         function writeTotalFrameCountCNV() // Ascending and Descending order output
@@ -803,7 +818,6 @@ import(ORG_JS_FILE)
               // Applies to ROM cases as well!
               var counter = 0;
 
-              // for (let stateDataEntryI = 0; stateDataEntryI < Object.entries(allDataObject).length; stateDataEntryI++)
               for (let stateDataEntryI in Object.entries(allDataObject))
               {
                 Object.values(allDataObject)[stateDataEntryI][playerSlotI].forEach((element, index) =>
@@ -811,7 +825,8 @@ import(ORG_JS_FILE)
                   if (element == 0)
                   {
                     counter = 0
-                    return Object.values(allDataObject)[stateDataEntryI][playerSlotI][index];
+                    return 0;
+                    // return Object.values(allDataObject)[stateDataEntryI][playerSlotI][index];
                   }
                   else
                   {
@@ -1595,9 +1610,8 @@ import(ORG_JS_FILE)
             }
           }
         }
-        writeNewStates()
         fs.closeSync(1);
         fs.unlinkSync(NEW_JS_FILE);
+        writeNewStates()
       })
   )
-// */

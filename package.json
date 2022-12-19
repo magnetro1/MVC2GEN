@@ -12,9 +12,6 @@
   "author": "",
   "license": "ISC",
   "homepage": "https://github.com/magnetro1/MVC2GEN",
-  "devDependencies": {
-    "pkg": "^5.8.0"
-  },
   "dependencies": {
     "readline": "^1.3.0",
     "readline-sync": "^1.4.10"

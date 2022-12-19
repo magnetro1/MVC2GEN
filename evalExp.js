@@ -16,7 +16,6 @@ const NEW_JS_FILE = `${ DIR_MAIN_FILES }New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`
 
 let tempMinMaxBuffer = '';
 
-
 import(ORG_JS_FILE)
   .then((orgData) => // Imports Object with key : value pairs
   {

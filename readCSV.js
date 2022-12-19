@@ -1,13 +1,8 @@
-// const fs = require('fs');
-// const path = require('path');
-// const readline = require('readline');
-
 import * as fs from 'fs';
 import * as path from 'path';
 import * as readline from 'readline';
 const DIR_MAIN_FILES = path.join(process.cwd(), '/main_files/');
 const DIR_CSVS = path.join(process.cwd(), '/main_files/CSV_to_JS/');
-// console.log(DIR_CSVS)
 
 const rl = readline.createInterface(
   {
@@ -29,7 +24,6 @@ rl.question('Enter original CSV name without extension:', (FILENAME_NO_EXT) =>
     else
     {
       console.log("Removed '_Original' from filename");
-      // console.log("Processing...");
     }
   }
   else if (FILENAME_NO_EXT.trim().includes("_F"))
@@ -52,17 +46,17 @@ rl.question('Enter original CSV name without extension:', (FILENAME_NO_EXT) =>
 
   var headersArray = [];
   var allDataArray = [];
-  fs.readFileSync(FILE, 'utf8').split('\r\n').map(
-    (line, index) =>
+  fs.readFileSync(FILE, 'utf8').split('\r\n').map((line, index) =>
+  {
+    if (index === 0)
     {
-      if (index === 0)
-      {
-        headersArray = line.split(',');
-      } else
-      {
-        allDataArray.push(line.split(',')); // ideally, check if each line is the same length as the headerArray
-      } return null;
-    },
+      headersArray = line.split(',');
+    }
+    else
+    {
+      allDataArray.push(line.split(',')); // ideally, check if each line is the same length as the headerArray
+    } return null;
+  },
   );
   // Sorting by the first column's first value (Total_Frames)
   allDataArray.sort((a, b) => a[0] - b[0]);
