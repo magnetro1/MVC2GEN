@@ -1,13 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js";
+import {FLOATING_POINT_ADRS, KNOCKDOWN_STATE_OBJ, MIN_MAX_ADRS, MISC_ADRS, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ, PROX_BLOCK_OBJ, STAGES_OBJ} from "./main_files/staticData.js";
 
 // Figure out which variables need to be prompts
-const DO_ROM_FILES = true; // Do or Skip ROM logic files
+const DO_ROM_FILES = false; // Do or Skip ROM logic files
 
-const FILE_NAME_NO_EXT = `ROM_01`; // replace with a read-line-sync prompt
-
+const FILE_NAME_NO_EXT = `ROM_01`;
 const TAIL_TEXT = `_Sorted_Node.js`;
 const DIR_MAIN_FILES = `./main_files/`;
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
@@ -23,13 +22,13 @@ if (!fs.existsSync(`${ DIR_OUTPATH }`))
 // Copy & Write Temp File
 var tempMinMaxBuffer = '\n';
 import(ORG_JS_FILE)
-  .then((orgData) => // Imports Object with key : value pairs
+  .then((orgData) => // Imports SortedJS file as Object with key-value pairs
   {
     const CLIP_LENGTH = orgData.A_2D_Game_Timer.split(',').length;
     for (let adr in MIN_MAX_ADRS)
     {
       const KEY = MIN_MAX_ADRS[adr];
-      const VALUE = orgData[MIN_MAX_ADRS[adr]].split(',');
+      const VALUE = orgData[MIN_MAX_ADRS[adr]].split(','); // Get key using string name, then get value by splitting.
       const MIN = Math.min(...VALUE);
       const MAX = Math.max(...VALUE);
       let tempMin = [];
@@ -68,23 +67,21 @@ import(ORG_JS_FILE)
     import(NEW_JS_FILE)
       .then((pMem) =>
       {
-        // Dynamic variable list as each JS file is not guaranteed to be the same
-
         /**
+         * @description Dynamic variable list as each JS file is not guaranteed to be the same
          * @returns {Array} Array of all unique Cheat Table entries from the replay in the JS file.
          **/
         function getLabelsfromJS()
         {
           let playerDataAll = []
-          let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; //[1] = P1A, etc. [2] = variable name
+          let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; //[1] = P1_A, [2] = cheat entry description
           let tempRegExVar;
           let newFile = fs.readFileSync(NEW_JS_FILE, 'utf8');
           while (tempRegExVar = playerMemoryRegex.exec(newFile))
           {
             playerDataAll.push(tempRegExVar[2]); // regex.exec returns array of all matches; item[2] has many duplicates
           };
-          var removedDuplicatesArray = [...new Set(playerDataAll)]; // Removes duplicates from array
-          // console.log(removedDuplicatesArray);
+          var removedDuplicatesArray = [...new Set(playerDataAll)];
           return removedDuplicatesArray
         }
         getLabelsfromJS();
@@ -113,6 +110,7 @@ import(ORG_JS_FILE)
         {
           const finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
           let playerObjectSwitcher;// Switches between the Player1 and Player2 objects
+          /**@description P1 | P2 */
           let playerSwitcher; // Switches between "P1" and "P2"
 
           if ((PlayerOneOrPlayerTwo == 1) || (PlayerOneOrPlayerTwo == "P1"))
@@ -317,8 +315,8 @@ import(ORG_JS_FILE)
           const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View"
           for (const miscAdrIterator in MISC_ADRS)
           {
-            pMem[MISC_ADRS[miscAdrIterator]].split(",").forEach((address) =>
-            // eval(`pMem.${ MISC_ADRS[miscAdrIterator] }`).split(",").forEach((address) =>
+            pMem[MISC_ADRS[miscAdrIterator]].split(",").forEach((address) => // accessing pMem object key by string, splitting its content, and pushing each array element
+            // eval(`pMem.${ MISC_ADRS[miscAdrIterator] }`).split(",").forEach((address) => *** Example of how not to use eval()
             {
               miscAdrArray[0].push(address);
             });
@@ -332,10 +330,12 @@ import(ORG_JS_FILE)
             }
           }
         };
-
         writeP1P2Addresses();
 
-        function writeTotalFrameCountCNV() // Ascending and Descending order output
+        /**
+         * @description outputs 3 arrays containing Total_Frames in ascending and then descending order, and Max number in clip.
+         */
+        function writeTotalFrameCountCNV()
         {
           const totalFrameArr = [];
           pMem.Total_Frames.split(",").forEach((frame, index) =>
@@ -350,6 +350,13 @@ import(ORG_JS_FILE)
             totalFrameArr.reverse()
             fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
               `result[1] = [${ totalFrameArr }];\n`,
+              {encoding: "utf8"});
+            for (let idx in totalFrameArr)
+            {
+              totalFrameArr[idx] = totalFrameArr[0]
+            }
+            fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+              `result[2] = [${ totalFrameArr }];\n`,
               {encoding: "utf8"});
           }
         };
@@ -385,7 +392,7 @@ import(ORG_JS_FILE)
         /**
         * @description Converts and writes inputs to one file that contains formatting for a custom-font and US FGC notation
         **/
-        function writeInputCNV() // result[0] is in custom-font notation, result[1] is in FGC notation
+        function writeInputCNV()
         {
           const P1_InputsVar = pMem.P1_Input_DEC.split(",");
           const P2_InputsVar = pMem.P2_Input_DEC.split(",");
@@ -515,11 +522,13 @@ import(ORG_JS_FILE)
         }
         writeInputCNV()
 
-        // Boolean results for particular game-states
-        // Search for "NEW_STATE_ADD_HERE" to add new states properly
+
+        /**
+         * @description Writes State-Files that count and increment consecutive true values. 
+         * Search for "NEW_STATE_ADD_HERE" across the function to append address fetches and new states.
+         */
         function writeNewStates()
         {
-
           // Temps for switching P1 and P2
           let tempPlayerValue;
           let tempPlayerString;
@@ -550,10 +559,10 @@ import(ORG_JS_FILE)
             var getY_Position_Arena = writePlayerMemory(tempPlayerString, 'Y_Position_Arena', 0);
             var getY_Position_From_Enemy = writePlayerMemory(tempPlayerString, 'Y_Position_From_Enemy', 0);
             var getY_VELOCITY = writePlayerMemory(tempPlayerString, 'Y_Velocity', 0);
-            // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here
+            // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here if you need something that isn't on the list.
 
             // List of files to be written. Will have prefix of P1_ or P2_
-            var allDataObject =
+            var allNewStateObject =
             {
               State_Being_Hit: [[], [], []],
               State_Flying_Screen_Air: [[], [], []],
@@ -580,19 +589,19 @@ import(ORG_JS_FILE)
               State_Thrown_Ground: [[], [], []],
               // NEW_STATE_ADD_HERE ⏫
 
-              // ROM-Specific States
-              State_ROM_01_OpponentStateA: [], // does this work?
-              State_ROM_02_ChoiceA: [], // does this work?
-              State_ROM_03_InputA_LK: [], // does this work?
-              State_ROM_03_InputA_MK: [], // does this work?
-              State_ROM_04_ChoiceB: [], // does this work?
-              State_ROM_05_ChoiceC: [], // does this work?
-              State_ROM_05_ChoiceD: [], // does this work?
-              State_ROM_06_InputB_AirDash: [], // does this work?
-              State_ROM_07_ChoiceE: [], // does this work?
-              State_ROM_08_InputC_DLK: [], // does this work?
-              State_ROM_08_InputC_MK: [], // does this work?
-              State_ROM_09_ChoiceF: [], // does this work?
+              // ROM-Specific States | Will write if DO_ROM_FILES == true
+              State_ROM_01_OpponentStateA: [[], [], []],
+              State_ROM_02_ChoiceA: [[], [], []],
+              State_ROM_03_InputA_LK: [[], [], []],
+              State_ROM_03_InputA_MK: [[], [], []],
+              State_ROM_04_ChoiceB: [[], [], []],
+              State_ROM_05_ChoiceC: [[], [], []],
+              State_ROM_05_ChoiceD: [[], [], []],
+              State_ROM_06_InputB_AirDash: [[], [], []],
+              State_ROM_07_ChoiceE: [[], [], []],
+              State_ROM_08_InputC_DLK: [[], [], []],
+              State_ROM_08_InputC_MK: [[], [], []],
+              State_ROM_09_ChoiceF: [[], [], []],
             }
 
             // for each slot (abc) in a Player's side
@@ -601,137 +610,137 @@ import(ORG_JS_FILE)
               // for each frame in a clip
               for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
               {
-                // Pushing the boolean-results for each State. E.g. BeingHit result = [ 0,0,0,1,1,1,1,1... ]
+                // Pushing the boolean-results for each State. Example BeingHit result = [ 0,0,0,1,1,1,1,1... ]
                 // Being_Hit
                 ((getKnockdown_State)[playerSlotI][clipLen] == 32)
                   && ((getHitStop)[playerSlotI][clipLen] > 0)
-                  ? allDataObject.State_Being_Hit[playerSlotI].push(1)
-                  : allDataObject.State_Being_Hit[playerSlotI].push(0);
+                  ? allNewStateObject.State_Being_Hit[playerSlotI].push(1)
+                  : allNewStateObject.State_Being_Hit[playerSlotI].push(0);
                 // "Flying_Screen_Air"
                 ((getFlyingScreen)[playerSlotI][clipLen] == 1)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 32)
                   && ((getAirborne)[playerSlotI][clipLen] == 2)
-                  ? allDataObject.State_Flying_Screen_Air[playerSlotI].push(1)
-                  : allDataObject.State_Flying_Screen_Air[playerSlotI].push(0);
+                  ? allNewStateObject.State_Flying_Screen_Air[playerSlotI].push(1)
+                  : allNewStateObject.State_Flying_Screen_Air[playerSlotI].push(0);
                 // "Flying_Screen_OTG"
                 ((getFlyingScreen)[playerSlotI][clipLen] == 1)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 32)
                   && ((getAirborne)[playerSlotI][clipLen] == 3)
-                  ? allDataObject.State_Flying_Screen_OTG[playerSlotI].push(1)
-                  : allDataObject.State_Flying_Screen_OTG[playerSlotI].push(0);
+                  ? allNewStateObject.State_Flying_Screen_OTG[playerSlotI].push(1)
+                  : allNewStateObject.State_Flying_Screen_OTG[playerSlotI].push(0);
                 // "FS_Install_1"
                 ((getFSI_Points)[playerSlotI][clipLen] == 8)
                   || ((getFSI_Points)[playerSlotI][clipLen] == 9)
-                  ? allDataObject.State_FS_Install_1[playerSlotI].push(1)
-                  : allDataObject.State_FS_Install_1[playerSlotI].push(0);
+                  ? allNewStateObject.State_FS_Install_1[playerSlotI].push(1)
+                  : allNewStateObject.State_FS_Install_1[playerSlotI].push(0);
                 // "FS_Install_2"
                 ((getFSI_Points)[playerSlotI][clipLen] > 9)
-                  ? allDataObject.State_FS_Install_2[playerSlotI].push(1)
-                  : allDataObject.State_FS_Install_2[playerSlotI].push(0);
+                  ? allNewStateObject.State_FS_Install_2[playerSlotI].push(1)
+                  : allNewStateObject.State_FS_Install_2[playerSlotI].push(0);
                 // "NJ_Air"
                 ((getAirborne)[playerSlotI][clipLen] == 2)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 3)
                   && ((getSJ_Counter)[playerSlotI][clipLen] == 0)
-                  ? allDataObject.State_NJ_Air[playerSlotI].push(1)
-                  : allDataObject.State_NJ_Air[playerSlotI].push(0);
+                  ? allNewStateObject.State_NJ_Air[playerSlotI].push(1)
+                  : allNewStateObject.State_NJ_Air[playerSlotI].push(0);
                 // "NJ_Rising
                 ((getAirborne)[playerSlotI][clipLen] == 0)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 2)
                   && ((getSJ_Counter)[playerSlotI][clipLen] == 0)
-                  ? allDataObject.State_NJ_Rising[playerSlotI].push(1)
-                  : allDataObject.State_NJ_Rising[playerSlotI].push(0);
+                  ? allNewStateObject.State_NJ_Rising[playerSlotI].push(1)
+                  : allNewStateObject.State_NJ_Rising[playerSlotI].push(0);
                 // "OTG_Extra_Stun"
                 ((getKnockdown_State)[playerSlotI][clipLen] == 23)
                   && (((getAirborne)[playerSlotI][clipLen] == 3))
-                  ? allDataObject.State_OTG_Extra_Stun[playerSlotI].push(1)
-                  : allDataObject.State_OTG_Extra_Stun[playerSlotI].push(0);
+                  ? allNewStateObject.State_OTG_Extra_Stun[playerSlotI].push(1)
+                  : allNewStateObject.State_OTG_Extra_Stun[playerSlotI].push(0);
 
                 // "OTG_Forced_Stun"
                 ((getKnockdown_State)[playerSlotI][clipLen] == 32)
                   && (((getAirborne)[playerSlotI][clipLen] == 3))
-                  ? allDataObject.State_OTG_Forced_Stun[playerSlotI].push(1)
-                  : allDataObject.State_OTG_Forced_Stun[playerSlotI].push(0);
+                  ? allNewStateObject.State_OTG_Forced_Stun[playerSlotI].push(1)
+                  : allNewStateObject.State_OTG_Forced_Stun[playerSlotI].push(0);
                 // "OTG_Hit"
                 ((getAction_Flags)[playerSlotI][clipLen] == 0)
                   && ((getAirborne)[playerSlotI][clipLen] == 3)
                   && (((getKnockdown_State)[playerSlotI][clipLen] == 32))
-                  ? allDataObject.State_OTG_Hit[playerSlotI].push(1)
-                  : allDataObject.State_OTG_Hit[playerSlotI].push(0);
+                  ? allNewStateObject.State_OTG_Hit[playerSlotI].push(1)
+                  : allNewStateObject.State_OTG_Hit[playerSlotI].push(0);
                 // "OTG_Roll_Invincible"
                 ((getAction_Flags)[playerSlotI][clipLen] == 2)
                   && ((getAirborne)[playerSlotI][clipLen] == 1)
                   && (((getAttack_Immune)[playerSlotI][clipLen] == 1)
                     && ((getKnockdown_State)[playerSlotI][clipLen] == 17))
-                  ? allDataObject.State_OTG_Roll_Invincible[playerSlotI].push(1)
-                  : allDataObject.State_OTG_Roll_Invincible[playerSlotI].push(0);
+                  ? allNewStateObject.State_OTG_Roll_Invincible[playerSlotI].push(1)
+                  : allNewStateObject.State_OTG_Roll_Invincible[playerSlotI].push(0);
 
                 // "OTG_Roll_Stunned"
                 ((getAction_Flags)[playerSlotI][clipLen] == 1)
                   && ((getAirborne)[playerSlotI][clipLen] == 3)
                   && (((getKnockdown_State)[playerSlotI][clipLen] == 32))
-                  ? allDataObject.State_OTG_Roll_Stunned[playerSlotI].push(1)
-                  : allDataObject.State_OTG_Roll_Stunned[playerSlotI].push(0);
+                  ? allNewStateObject.State_OTG_Roll_Stunned[playerSlotI].push(1)
+                  : allNewStateObject.State_OTG_Roll_Stunned[playerSlotI].push(0);
                 // "ProxBlock_Air"
                 (((getIs_Prox_Block)[playerSlotI][clipLen] == 6)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 19))
-                  ? allDataObject.State_ProxBlock_Air[playerSlotI].push(1)
-                  : allDataObject.State_ProxBlock_Air[playerSlotI].push(0);
+                  ? allNewStateObject.State_ProxBlock_Air[playerSlotI].push(1)
+                  : allNewStateObject.State_ProxBlock_Air[playerSlotI].push(0);
                 // "ProxBlock_Ground"
                 (((getIs_Prox_Block)[playerSlotI][clipLen] == 5)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 18))
-                  ? allDataObject.State_ProxBlock_Ground[playerSlotI].push(1)
-                  : allDataObject.State_ProxBlock_Ground[playerSlotI].push(0);
+                  ? allNewStateObject.State_ProxBlock_Ground[playerSlotI].push(1)
+                  : allNewStateObject.State_ProxBlock_Ground[playerSlotI].push(0);
                 // "Pushblock_Air"
                 (((getBlock_Meter)[playerSlotI][clipLen] > 0)
                   && ((getAnimation_Timer_Main)[playerSlotI][clipLen] < 28)
                   && ((getIs_Prox_Block)[playerSlotI][clipLen] == 6)
                   && ((getAction_Flags)[playerSlotI][clipLen] == 2))
-                  ? allDataObject.State_Pushblock_Air[playerSlotI].push(1)
-                  : allDataObject.State_Pushblock_Air[playerSlotI].push(0);
+                  ? allNewStateObject.State_Pushblock_Air[playerSlotI].push(1)
+                  : allNewStateObject.State_Pushblock_Air[playerSlotI].push(0);
                 // "Pushblock_Ground"
                 ((getBlock_Meter)[playerSlotI][clipLen] > 0)
                   && ((getAnimation_Timer_Main)[playerSlotI][clipLen] < 28)
                   && ((getIs_Prox_Block)[playerSlotI][clipLen] == 5)
                   && (((getAction_Flags)[playerSlotI][clipLen] == 3))
-                  ? allDataObject.State_Pushblock_Ground[playerSlotI].push(1)
-                  : allDataObject.State_Pushblock_Ground[playerSlotI].push(0);
+                  ? allNewStateObject.State_Pushblock_Ground[playerSlotI].push(1)
+                  : allNewStateObject.State_Pushblock_Ground[playerSlotI].push(0);
                 // "Rising_Invincibility"
                 (((getAirborne)[playerSlotI][clipLen] == 0)
                   && ((getAttack_Immune)[playerSlotI][clipLen] == 1)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 17))
-                  ? allDataObject.State_Rising_Invincibility[playerSlotI].push(1)
-                  : allDataObject.State_Rising_Invincibility[playerSlotI].push(0);
+                  ? allNewStateObject.State_Rising_Invincibility[playerSlotI].push(1)
+                  : allNewStateObject.State_Rising_Invincibility[playerSlotI].push(0);
                 // "SJ_Air"
                 (((getAirborne)[playerSlotI][clipLen] == 2)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 14)
                   && ((getSJ_Counter)[playerSlotI][clipLen] == 1))
-                  ? allDataObject.State_SJ_Air[playerSlotI].push(1)
-                  : allDataObject.State_SJ_Air[playerSlotI].push(0);
+                  ? allNewStateObject.State_SJ_Air[playerSlotI].push(1)
+                  : allNewStateObject.State_SJ_Air[playerSlotI].push(0);
                 // "SJ_Counter"
                 ((getSJ_Counter)[playerSlotI][clipLen] == 2)
-                  ? allDataObject.State_SJ_Counter[playerSlotI].push(1)
-                  : allDataObject.State_SJ_Counter[playerSlotI].push(0);
+                  ? allNewStateObject.State_SJ_Counter[playerSlotI].push(1)
+                  : allNewStateObject.State_SJ_Counter[playerSlotI].push(0);
                 // "Stun"
                 (((getKnockdown_State)[playerSlotI][clipLen] == 32)
                   && ((getIs_Prox_Block)[playerSlotI][clipLen] == 13))
-                  ? allDataObject.State_Stun[playerSlotI].push(1)
-                  : allDataObject.State_Stun[playerSlotI].push(0);
+                  ? allNewStateObject.State_Stun[playerSlotI].push(1)
+                  : allNewStateObject.State_Stun[playerSlotI].push(0);
                 // "Tech_Hit"
                 (((getKnockdown_State)[playerSlotI][clipLen] == 27))
-                  ? allDataObject.State_Tech_Hit[playerSlotI].push(1)
-                  : allDataObject.State_Tech_Hit[playerSlotI].push(0);
+                  ? allNewStateObject.State_Tech_Hit[playerSlotI].push(1)
+                  : allNewStateObject.State_Tech_Hit[playerSlotI].push(0);
                 // "Thrown_Air"
                 (((getAirborne)[playerSlotI][clipLen] == 2)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 31)
                   && ((getIs_Prox_Block)[playerSlotI][clipLen] == 16))
-                  ? allDataObject.State_Thrown_Air[playerSlotI].push(1)
-                  : allDataObject.State_Thrown_Air[playerSlotI].push(0);
+                  ? allNewStateObject.State_Thrown_Air[playerSlotI].push(1)
+                  : allNewStateObject.State_Thrown_Air[playerSlotI].push(0);
                 // "Thrown_Ground"
                 (((getAirborne)[playerSlotI][clipLen] == 0)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 31)
                   && ((getIs_Prox_Block)[playerSlotI][clipLen] == 16))
-                  ? allDataObject.State_Thrown_Ground[playerSlotI].push(1)
-                  : allDataObject.State_Thrown_Ground[playerSlotI].push(0);
+                  ? allNewStateObject.State_Thrown_Ground[playerSlotI].push(1)
+                  : allNewStateObject.State_Thrown_Ground[playerSlotI].push(0);
                 // // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
                 // NEW_STATE_ADD_HERE
 
@@ -739,14 +748,14 @@ import(ORG_JS_FILE)
 
                 // ROM_01_OpponentA. Goal is to find if dummy is high or low. Starting wth setting the end-point of a ROM Cycle.
                 (getKnockdown_State)[playerSlotI][clipLen] == 4 // Magneto is landing from the air.
-                  ? allDataObject.State_ROM_01_OpponentStateA[playerSlotI].push(1)
-                  : allDataObject.State_ROM_01_OpponentStateA[playerSlotI].push(0);
+                  ? allNewStateObject.State_ROM_01_OpponentStateA[playerSlotI].push(1)
+                  : allNewStateObject.State_ROM_01_OpponentStateA[playerSlotI].push(0);
                 // "ROM_02_ChoiceA" (Did Magneto wait before doing a SJ.LK?)
                 (((getKnockdown_State)[playerSlotI][clipLen] == 14)
                   && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
                   && ((getY_Position_Arena)[playerSlotI][clipLen] <= 160))
-                  ? allDataObject.State_ROM_02_ChoiceA[playerSlotI].push(1)
-                  : allDataObject.State_ROM_02_ChoiceA[playerSlotI].push(0);
+                  ? allNewStateObject.State_ROM_02_ChoiceA[playerSlotI].push(1)
+                  : allNewStateObject.State_ROM_02_ChoiceA[playerSlotI].push(0);
                 // ROM_03_InputA
                 // "ROM_03_InputA_LK"
                 (((getNormal_Strength)[playerSlotI][clipLen] == 0)
@@ -754,81 +763,81 @@ import(ORG_JS_FILE)
                   && ((getPunchKick)[playerSlotI][clipLen] == 1))
                   && (getAttack_Number)[playerSlotI][clipLen] == 15
                   && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
-                  ? allDataObject.State_ROM_03_InputA_LK[playerSlotI].push(1)
-                  : allDataObject.State_ROM_03_InputA_LK[playerSlotI].push(0);
+                  ? allNewStateObject.State_ROM_03_InputA_LK[playerSlotI].push(1)
+                  : allNewStateObject.State_ROM_03_InputA_LK[playerSlotI].push(0);
                 // "ROM_03_InputA_MK"
                 (((getNormal_Strength)[playerSlotI][clipLen] == 1)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
                   && ((getPunchKick)[playerSlotI][clipLen] == 1))
                   && ((getAttack_Number)[playerSlotI][clipLen] == 16)
                   && (getAir_Dash_Count)[playerSlotI][clipLen] == 0
-                  ? allDataObject.State_ROM_03_InputA_MK[playerSlotI].push(1)
-                  : allDataObject.State_ROM_03_InputA_MK[playerSlotI].push(0);
+                  ? allNewStateObject.State_ROM_03_InputA_MK[playerSlotI].push(1)
+                  : allNewStateObject.State_ROM_03_InputA_MK[playerSlotI].push(0);
                 // "ROM_04_ChoiceB" (Did Magneto wait before doing a SJ.MK after a SJ.LK?)
                 (((getNormal_Strength)[playerSlotI][clipLen] == 0)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
                   && ((getPunchKick)[playerSlotI][clipLen] == 1))
                   && (getAttack_Number)[playerSlotI][clipLen] == 15
                   && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
-                  ? allDataObject.State_ROM_04_ChoiceB[playerSlotI].push(1)
-                  : allDataObject.State_ROM_04_ChoiceB[playerSlotI].push(0);
+                  ? allNewStateObject.State_ROM_04_ChoiceB[playerSlotI].push(1)
+                  : allNewStateObject.State_ROM_04_ChoiceB[playerSlotI].push(0);
                 // "ROM_05_ChoiceC" (Did Magneto wait before doing AirDashing after a SJ.LK?)
                 (((getNormal_Strength)[playerSlotI][clipLen] == 0)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
                   && ((getPunchKick)[playerSlotI][clipLen] == 1))
                   && (getAttack_Number)[playerSlotI][clipLen] == 15
                   && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
-                  ? allDataObject.State_ROM_05_ChoiceC[playerSlotI].push(1)
-                  : allDataObject.State_ROM_05_ChoiceC[playerSlotI].push(0);
+                  ? allNewStateObject.State_ROM_05_ChoiceC[playerSlotI].push(1)
+                  : allNewStateObject.State_ROM_05_ChoiceC[playerSlotI].push(0);
                 // "ROM_05_ChoiceD" (Did Magneto wait before doing AirDashing after a SJ.MK?)
                 (((getNormal_Strength)[playerSlotI][clipLen] == 1)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
                   && ((getPunchKick)[playerSlotI][clipLen] == 1))
                   && (getAttack_Number)[playerSlotI][clipLen] == 16
                   && ((getAir_Dash_Count)[playerSlotI][clipLen] == 0)
-                  ? allDataObject.State_ROM_05_ChoiceD[playerSlotI].push(1)
-                  : allDataObject.State_ROM_05_ChoiceD[playerSlotI].push(0);
+                  ? allNewStateObject.State_ROM_05_ChoiceD[playerSlotI].push(1)
+                  : allNewStateObject.State_ROM_05_ChoiceD[playerSlotI].push(0);
                 // "ROM_06_InputB_AirDash"
                 ((getAir_Dash_Count)[playerSlotI][clipLen] == 1)
-                  ? allDataObject.State_ROM_06_InputB_AirDash[playerSlotI].push(1)
-                  : allDataObject.State_ROM_06_InputB_AirDash[playerSlotI].push(0);
+                  ? allNewStateObject.State_ROM_06_InputB_AirDash[playerSlotI].push(1)
+                  : allNewStateObject.State_ROM_06_InputB_AirDash[playerSlotI].push(0);
                 // // "ROM_07_ChoiceE" (Did Magneto wait after AirDashing before doing a SJ.DLK?)
                 ((getKnockdown_State)[playerSlotI][clipLen] == 26) // Magneto is Air Dash
-                  ? allDataObject.State_ROM_07_ChoiceE[playerSlotI].push(1)
-                  : allDataObject.State_ROM_07_ChoiceE[playerSlotI].push(0);
+                  ? allNewStateObject.State_ROM_07_ChoiceE[playerSlotI].push(1)
+                  : allNewStateObject.State_ROM_07_ChoiceE[playerSlotI].push(0);
                 // // "ROM_08_InputC_DLK"
                 (((getNormal_Strength)[playerSlotI][clipLen] == 0)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
                   && ((getPunchKick)[playerSlotI][clipLen] == 1))
                   && ((getAttack_Number)[playerSlotI][clipLen] == 18)
                   && (getAir_Dash_Count)[playerSlotI][clipLen] == 1
-                  ? allDataObject.State_ROM_08_InputC_DLK[playerSlotI].push(1)
-                  : allDataObject.State_ROM_08_InputC_DLK[playerSlotI].push(0);
+                  ? allNewStateObject.State_ROM_08_InputC_DLK[playerSlotI].push(1)
+                  : allNewStateObject.State_ROM_08_InputC_DLK[playerSlotI].push(0);
                 // // "ROM_08_InputC_MK"
                 (((getNormal_Strength)[playerSlotI][clipLen] == 1)
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 20)
                   && ((getPunchKick)[playerSlotI][clipLen] == 1))
                   && ((getAttack_Number)[playerSlotI][clipLen] == 16)
                   && (getAir_Dash_Count)[playerSlotI][clipLen] == 1
-                  ? allDataObject.State_ROM_08_InputC_MK[playerSlotI].push(1)
-                  : allDataObject.State_ROM_08_InputC_MK[playerSlotI].push(0);
+                  ? allNewStateObject.State_ROM_08_InputC_MK[playerSlotI].push(1)
+                  : allNewStateObject.State_ROM_08_InputC_MK[playerSlotI].push(0);
                 // // "ROM_09_ChoiceF" (Did Magneto wait before doing a SJ.MK after a SJ.DLK?)
                 (((getNormal_Strength)[playerSlotI][clipLen] == 0) // Weak
                   && ((getKnockdown_State)[playerSlotI][clipLen] == 20) // Normal Attacks
                   && ((getPunchKick)[playerSlotI][clipLen] == 1))  // Medium
                   && (getAttack_Number)[playerSlotI][clipLen] == 18 // DLK
                   && ((getAir_Dash_Count)[playerSlotI][clipLen] == 1) // Air Dash = true
-                  ? allDataObject.State_ROM_09_ChoiceF[playerSlotI].push(1)
-                  : allDataObject.State_ROM_09_ChoiceF[playerSlotI].push(0);
+                  ? allNewStateObject.State_ROM_09_ChoiceF[playerSlotI].push(1)
+                  : allNewStateObject.State_ROM_09_ChoiceF[playerSlotI].push(0);
               } // clipLen Scope
 
               // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
               // Applies to ROM cases as well!
               var counter = 0;
 
-              for (let stateDataEntryI in Object.entries(allDataObject))
+              for (let stateDataEntryI in Object.entries(allNewStateObject))
               {
-                Object.values(allDataObject)[stateDataEntryI][playerSlotI].forEach((element, index) =>
+                Object.values(allNewStateObject)[stateDataEntryI][playerSlotI].forEach((element, index) =>
                 {
                   if (element == 0)
                   {
@@ -838,9 +847,9 @@ import(ORG_JS_FILE)
                   }
                   else
                   {
-                    Object.values(allDataObject)[stateDataEntryI][playerSlotI][index] = (element + counter);
+                    Object.values(allNewStateObject)[stateDataEntryI][playerSlotI][index] = (element + counter);
                     counter++
-                    return Object.values(allDataObject)[stateDataEntryI][playerSlotI][index + counter]
+                    return Object.values(allNewStateObject)[stateDataEntryI][playerSlotI][index + counter]
                   }
                 });
               }
@@ -858,7 +867,7 @@ import(ORG_JS_FILE)
               // 01_Opponent State A Setup. Set Loop point for 01_OpponentStateA (Magneto lands from his Super Jump)
               const ROM_OPPONENTSTATES =
                 [
-                  Object.values(allDataObject.State_ROM_01_OpponentStateA),
+                  Object.values(allNewStateObject.State_ROM_01_OpponentStateA),
                 ];
               // console.log(ROM_OPPONENTSTATES);
               for (let romFile in ROM_OPPONENTSTATES)
@@ -955,11 +964,11 @@ import(ORG_JS_FILE)
               // 03_InputsA , 06_InputsB , 09_InputsC Setup
               // All Inputs during ROM infinite
               const ROM_INPUTS = [
-                Object.values(allDataObject.State_ROM_03_InputA_LK),
-                Object.values(allDataObject.State_ROM_03_InputA_MK),
-                Object.values(allDataObject.State_ROM_06_InputB_AirDash),
-                Object.values(allDataObject.State_ROM_08_InputC_DLK),
-                Object.values(allDataObject.State_ROM_08_InputC_MK),
+                Object.values(allNewStateObject.State_ROM_03_InputA_LK),
+                Object.values(allNewStateObject.State_ROM_03_InputA_MK),
+                Object.values(allNewStateObject.State_ROM_06_InputB_AirDash),
+                Object.values(allNewStateObject.State_ROM_08_InputC_DLK),
+                Object.values(allNewStateObject.State_ROM_08_InputC_MK),
               ];
               // Setting the end-point of a ROM Cycle.
               for (const romFile in ROM_INPUTS)
@@ -999,7 +1008,7 @@ import(ORG_JS_FILE)
               }
 
               // 04_ChoiceB (time: LK -> MK)
-              var ROM_CHOICEB = Object.values(allDataObject.State_ROM_04_ChoiceB);
+              var ROM_CHOICEB = Object.values(allNewStateObject.State_ROM_04_ChoiceB);
               for (var arrayWithROMData in ROM_CHOICEB)// 3 arrays
               {
                 // Find Grounded state for ROM loops
@@ -1123,7 +1132,7 @@ import(ORG_JS_FILE)
               }
 
               // 05_ChoiceC (time: LK -> AirDash)
-              var ROM_CHOICEC = Object.values(allDataObject.State_ROM_05_ChoiceC);
+              var ROM_CHOICEC = Object.values(allNewStateObject.State_ROM_05_ChoiceC);
               for (let arrayWithROMData in ROM_CHOICEC) // 3 arrays
               {
                 // Find Grounded state for ROM loops
@@ -1253,7 +1262,7 @@ import(ORG_JS_FILE)
               } // end of 05_ChoiceC
 
               // 05_ChoiceD (time: MK -> AirDash)
-              var ROM_CHOICED = Object.values(allDataObject.State_ROM_05_ChoiceD);
+              var ROM_CHOICED = Object.values(allNewStateObject.State_ROM_05_ChoiceD);
               for (let arrayWithROMData in ROM_CHOICED) // 3 arrays
               {
                 // Find Grounded state for ROM loops
@@ -1382,7 +1391,7 @@ import(ORG_JS_FILE)
               } // end of 05_ChoiceD
 
               // 07_ChoiceE (AirDash to DLK time)
-              var ROM_CHOICEE = Object.values(allDataObject.State_ROM_07_ChoiceE);
+              var ROM_CHOICEE = Object.values(allNewStateObject.State_ROM_07_ChoiceE);
               for (let arrayWithROMData in ROM_CHOICEE) // 3 arrays
               {
                 // Find Grounded state for ROM loops
@@ -1476,7 +1485,7 @@ import(ORG_JS_FILE)
               // End of 07_ChoiceE
 
               // 09_ChoiceF (time: LK -> MK)
-              var ROM_ChoiceF = Object.values(allDataObject.State_ROM_09_ChoiceF);
+              var ROM_ChoiceF = Object.values(allNewStateObject.State_ROM_09_ChoiceF);
               for (const arrayWithROMData in ROM_ChoiceF) // 3 arrays
               {
                 for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
@@ -1599,38 +1608,38 @@ import(ORG_JS_FILE)
                     ROM_ChoiceF[arrayWithROMData][clipLen] = `No-Wait`
                   }
                 }
-              } // End of 09_ChoiceF Scope 
+              } // End of 09_ChoiceF Scope
 
               // End ROMStuff End ROM Stuff
-              // write the files
 
-              for (let k = 0; k < Object.entries(allDataObject).length; k++)
+              // Write the files
+              for (let k = 0; k < Object.entries(allNewStateObject).length; k++)
               {
                 if (DO_ROM_FILES == false)
                 {
-                  if (Object.keys(allDataObject)[k].toString().match('ROM'))
+                  if (Object.keys(allNewStateObject)[k].toString().match('ROM'))
                   {
                     continue;
                   }
                 }
-                fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ Object.keys(allDataObject)[k] }.js`,
+                fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ Object.keys(allNewStateObject)[k] }.js`,
                   `var result = []; ` + '\n', {encoding: 'utf8'});
               }
 
               // Append data arrays into files
-              for (let k = 0; k < Object.entries(allDataObject).length; k++)
+              for (let k = 0; k < Object.entries(allNewStateObject).length; k++)
               {
                 if (DO_ROM_FILES == false)
                 {
-                  if (Object.keys(allDataObject)[k].toString().match('ROM'))
+                  if (Object.keys(allNewStateObject)[k].toString().match('ROM'))
                   {
                     continue;
                   }
                 }
 
-                fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ Object.keys(allDataObject)[k] }.js`,
-                  JSON.stringify(Object.values(allDataObject)[k]) // converts into a specially-formatted string
-                    .replace('[[', `result[0] = [`) // non-global/multi-regex in order to get result0/1/2.
+                fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ Object.keys(allNewStateObject)[k] }.js`,
+                  JSON.stringify(Object.values(allNewStateObject)[k])
+                    .replace('[[', `result[0] = [`)
                     .replace(',[', '\nresult[1] = [')
                     .replace(',[', '\nresult[2] = [')
                     .replace(']]', ']')
