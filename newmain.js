@@ -28,7 +28,7 @@ import(ORG_JS_FILE)
     for (let adr in MIN_MAX_ADRS)
     {
       const KEY = MIN_MAX_ADRS[adr];
-      const VALUE = orgData[MIN_MAX_ADRS[adr]].split(','); // Get key using string name, then get value by splitting.
+      const VALUE = orgData[MIN_MAX_ADRS[adr]].split(','); // Fetch the value by finding the key using its string name, then make into an array by splitting it.
       const MIN = Math.min(...VALUE);
       const MAX = Math.max(...VALUE);
       let tempMin = [];
@@ -394,8 +394,8 @@ import(ORG_JS_FILE)
         **/
         function writeInputCNV()
         {
-          const P1_InputsVar = pMem.P1_Input_DEC.split(",");
-          const P2_InputsVar = pMem.P2_Input_DEC.split(",");
+          const P1_InputsDECSplit = pMem.P1_Input_DEC.split(",");
+          const P2_InputsDECSplit = pMem.P2_Input_DEC.split(",");
           let playerInputResults = ""; // holds each result for P1 and P2
           let playerInputsCNVArray = []; // contains transformed results for P1 and P2
           let tempP1OrP2 = ""; // Changes to "P1" or "P2"
@@ -434,7 +434,7 @@ import(ORG_JS_FILE)
 
           for (let playersLen = 1; playersLen < 3; playersLen++)
           {
-            playersLen == 1 ? tempP1OrP2 = P1_InputsVar : tempP1OrP2 = P2_InputsVar;
+            playersLen == 1 ? tempP1OrP2 = P1_InputsDECSplit : tempP1OrP2 = P2_InputsDECSplit;
             // Input Conversion Type 1
             for (const input in tempP1OrP2)
             {
