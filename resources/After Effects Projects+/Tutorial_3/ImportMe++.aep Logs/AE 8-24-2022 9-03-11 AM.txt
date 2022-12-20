@@ -1,17 +1,0 @@
-Adobe After Effects v22.5 Windows 64 render log for project “ImportMe++.aep”
-
-Rendering started on 8/24/2022 at 9:03:11 AM
-
-  8/24/2022 9:03:12 AM: Starting composition “Normal_Composition”.
-
-  Output To: F:\Ruby34_New_HUD.mov  After Effects warning: Could not open the file 'C:\Users\David\AppData\Local\Temp\Adobe\After Effects\22.5\Disk Cache - DESKTOP-4S59ICA.noindex\a5\a5a287b2-d506-f0d5-235f-7a1986b4b7fb.ADBE LCV.B328635.LAQAADkAAADGCgAAOQgAACwEAAA5AAAAxgoAADkIAAAsBAAAOQAAAMYKAAA5CAAAAAAAAAAAAAAADwAAcAgAAAAAAAA=.aecache'.  8/24/2022 9:32:24 AM: Finished composition “Normal_Composition”.
-
-
-  8/24/2022 9:32:24 AM: Starting composition “Normal_Composition”.
-
-  Output To: F:\Normal_Composition.mov    8/24/2022 9:58:32 AM: Finished composition “Normal_Composition”.
-
-
-  Total Time Elapsed: 55 Min, 21 Sec
-Log closed on 8/24/2022 at 9:58:32 AM
-

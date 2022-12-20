@@ -67,7 +67,9 @@ export const PROX_BLOCK_OBJ =
   25: "???",
   26: "Air Dash"
 };
-
+/**
+ * @description Character Decimal ID to string.
+ */
 export const NAME_TABLE_OBJ =
 {
   0: "Ryu",
@@ -297,7 +299,9 @@ export const MISC_ADRS =
     "Stage_Selector",
     "Timer_Secondary"
   ];
-
+/**
+* @description Contains the decimal value of each stage as a key, and the color hex code for After Effects to use for it
+**/
 export const STAGES_OBJ =
 {
   0: "142030FF", //"Boat1",
@@ -318,7 +322,9 @@ export const STAGES_OBJ =
   15: "888885FF", //"Clock1",
   16: "8CA7DFFF" //"Raft1"
 };
-
+/**
+* @description Contains the decimal value of each character, and its alphabetical value in time for an After Effects timeline. Ex: decimal: 30, second: 4 (Akuma)
+**/
 export const PORTRAITS_TO_TIME_OBJ =
 {
   24: 1,  //Abyss-"1"

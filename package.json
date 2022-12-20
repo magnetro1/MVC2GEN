@@ -1,15 +1,15 @@
 {
   "main": "newmain.js",
   "name": "newmain.js",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "type": "module",
-  "description": "CJS branch",
+  "description": "Finished all functionality",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/magnetro1/MVC2GEN.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Magnetro",
   "license": "ISC",
   "homepage": "https://github.com/magnetro1/MVC2GEN",
   "dependencies": {
