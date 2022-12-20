@@ -382,6 +382,9 @@ import(ORG_JS_FILE)
         };
         writeStageDataCNV()
 
+        /**
+        * @description Converts and writes inputs to one file that contains formatting for a custom-font and US FGC notation
+        **/
         function writeInputCNV() // result[0] is in custom-font notation, result[1] is in FGC notation
         {
           const P1_InputsVar = pMem.P1_Input_DEC.split(",");
@@ -521,8 +524,8 @@ import(ORG_JS_FILE)
           let tempPlayerValue;
           let tempPlayerString;
           // Temps for ROM data
-          let tempCounter = 0;
-          let tempSwitch = 0;
+          let tempROMCounter = 0;
+          let tempROMSwitch = 0;
           // P1 and P2
           for (tempPlayerValue = 1; tempPlayerValue < 3; tempPlayerValue++)
           {
@@ -578,18 +581,18 @@ import(ORG_JS_FILE)
               // NEW_STATE_ADD_HERE ⏫
 
               // ROM-Specific States
-              State_ROM_01_OpponentStateA: [[], [], []],
-              State_ROM_02_ChoiceA: [[], [], []],
-              State_ROM_03_InputA_LK: [[], [], []],
-              State_ROM_03_InputA_MK: [[], [], []],
-              State_ROM_04_ChoiceB: [[], [], []],
-              State_ROM_05_ChoiceC: [[], [], []],
-              State_ROM_05_ChoiceD: [[], [], []],
-              State_ROM_06_InputB_AirDash: [[], [], []],
-              State_ROM_07_ChoiceE: [[], [], []],
-              State_ROM_08_InputC_DLK: [[], [], []],
-              State_ROM_08_InputC_MK: [[], [], []],
-              State_ROM_09_ChoiceF: [[], [], []],
+              State_ROM_01_OpponentStateA: [], // does this work?
+              State_ROM_02_ChoiceA: [], // does this work?
+              State_ROM_03_InputA_LK: [], // does this work?
+              State_ROM_03_InputA_MK: [], // does this work?
+              State_ROM_04_ChoiceB: [], // does this work?
+              State_ROM_05_ChoiceC: [], // does this work?
+              State_ROM_05_ChoiceD: [], // does this work?
+              State_ROM_06_InputB_AirDash: [], // does this work?
+              State_ROM_07_ChoiceE: [], // does this work?
+              State_ROM_08_InputC_DLK: [], // does this work?
+              State_ROM_08_InputC_MK: [], // does this work?
+              State_ROM_09_ChoiceF: [], // does this work?
             }
 
             // for each slot (abc) in a Player's side
@@ -1052,7 +1055,7 @@ import(ORG_JS_FILE)
                 {
                   if (ROM_CHOICEB[arrayWithROMData][clipLen] == `LK`)
                   {
-                    tempCounter += 1;
+                    tempROMCounter += 1;
                   }
                   // Stop on encountering a MK
                   else if (ROM_CHOICEB[arrayWithROMData][clipLen] == `MK`) // We hit a MK
@@ -1063,32 +1066,32 @@ import(ORG_JS_FILE)
                       // Everything until 65535 is = tempCounter
                       if (ROM_CHOICEB[arrayWithROMData][clipLen + positiveI] != 65535)
                       {
-                        tempSwitch = 1
-                        ROM_CHOICEB[arrayWithROMData][clipLen + positiveI] = tempCounter;
+                        tempROMSwitch = 1
+                        ROM_CHOICEB[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
                       }
-                      else if (tempSwitch == 1)
+                      else if (tempROMSwitch == 1)
                       {
-                        ROM_CHOICEB[arrayWithROMData][clipLen + positiveI] = tempCounter;
+                        ROM_CHOICEB[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
                         if (ROM_CHOICEB[arrayWithROMData][clipLen + positiveI] == 65535)
                         {
-                          tempSwitch = 0;
+                          tempROMSwitch = 0;
                         }
                         break // lookahead is done, we hit 65535
                       }
                     }
                     // Lookbehind, expect the number of LKs to equal the tempCounter value
-                    for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
+                    for (let negativeI = 1; negativeI < tempROMCounter + 1; negativeI++)
                     {
                       if (ROM_CHOICEB[arrayWithROMData][clipLen - negativeI] == `LK`)
                       {
-                        ROM_CHOICEB[arrayWithROMData][clipLen - negativeI] = tempCounter;
+                        ROM_CHOICEB[arrayWithROMData][clipLen - negativeI] = tempROMCounter;
                       }
                     }
                   }
                   else // Reset the counters
                   {
-                    tempCounter = 0;
-                    tempSwitch = 0;
+                    tempROMCounter = 0;
+                    tempROMSwitch = 0;
                   }
                 }
                 // Clean up the values for AE Part1
@@ -1185,7 +1188,7 @@ import(ORG_JS_FILE)
                 {
                   if (ROM_CHOICEC[arrayWithROMData][clipLen] == `LK`)
                   {
-                    tempCounter += 1;
+                    tempROMCounter += 1;
                   }
                   // Stop on encountering an AirDash
                   else if (ROM_CHOICEC[arrayWithROMData][clipLen] == `AirDash`) // We hit an AirDash
@@ -1196,32 +1199,32 @@ import(ORG_JS_FILE)
                       // Everything until 65535 is = tempCounter
                       if (ROM_CHOICEC[arrayWithROMData][clipLen + positiveI] != 65535)
                       {
-                        tempSwitch = 1
-                        ROM_CHOICEC[arrayWithROMData][clipLen + positiveI] = tempCounter;
+                        tempROMSwitch = 1
+                        ROM_CHOICEC[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
                       }
-                      else if (tempSwitch == 1)
+                      else if (tempROMSwitch == 1)
                       {
-                        ROM_CHOICEC[arrayWithROMData][clipLen + positiveI] = tempCounter;
+                        ROM_CHOICEC[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
                         if (ROM_CHOICEC[arrayWithROMData][clipLen + positiveI] == 65535)
                         {
-                          tempSwitch = 0;
+                          tempROMSwitch = 0;
                         }
                         break // lookahead is done, we hit 65535
                       }
                     }
                     // Lookbehind, expect the number of LKs to equal the tempCounter value
-                    for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
+                    for (let negativeI = 1; negativeI < tempROMCounter + 1; negativeI++)
                     {
                       if (ROM_CHOICEC[arrayWithROMData][clipLen - negativeI] == `LK`)
                       {
-                        ROM_CHOICEC[arrayWithROMData][clipLen - negativeI] = tempCounter;
+                        ROM_CHOICEC[arrayWithROMData][clipLen - negativeI] = tempROMCounter;
                       }
                     }
                   }
                   else // Reset the counters
                   {
-                    tempCounter = 0;
-                    tempSwitch = 0;
+                    tempROMCounter = 0;
+                    tempROMSwitch = 0;
                   }
                 }
                 // Clean up the values for AE Part1
@@ -1314,7 +1317,7 @@ import(ORG_JS_FILE)
                 {
                   if (ROM_CHOICED[arrayWithROMData][clipLen] == `MK`)
                   {
-                    tempCounter += 1;
+                    tempROMCounter += 1;
                   }
                   // Stop on encountering an AirDash
                   else if (ROM_CHOICED[arrayWithROMData][clipLen] == `AirDash`) // We hit an AirDash
@@ -1325,32 +1328,32 @@ import(ORG_JS_FILE)
                       // Everything until 65535 is = tempCounter
                       if (ROM_CHOICED[arrayWithROMData][clipLen + positiveI] != 65535)
                       {
-                        tempSwitch = 1
-                        ROM_CHOICED[arrayWithROMData][clipLen + positiveI] = tempCounter;
+                        tempROMSwitch = 1
+                        ROM_CHOICED[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
                       }
-                      else if (tempSwitch == 1)
+                      else if (tempROMSwitch == 1)
                       {
-                        ROM_CHOICED[arrayWithROMData][clipLen + positiveI] = tempCounter;
+                        ROM_CHOICED[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
                         if (ROM_CHOICED[arrayWithROMData][clipLen + positiveI] == 65535)
                         {
-                          tempSwitch = 0;
+                          tempROMSwitch = 0;
                         }
                         break // lookahead is done, we hit 65535
                       }
                     }
                     // Lookbehind, expect the number of MKs to equal the tempCounter value. Wipe the values until we hit the ground.
-                    for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
+                    for (let negativeI = 1; negativeI < tempROMCounter + 1; negativeI++)
                     {
                       if (ROM_CHOICED[arrayWithROMData][clipLen - negativeI] == `MK`)
                       {
-                        ROM_CHOICED[arrayWithROMData][clipLen - negativeI] = tempCounter;
+                        ROM_CHOICED[arrayWithROMData][clipLen - negativeI] = tempROMCounter;
                       }
                     }
                   }
                   else // Reset the counters
                   {
-                    tempCounter = 0;
-                    tempSwitch = 0;
+                    tempROMCounter = 0;
+                    tempROMSwitch = 0;
                   }
                 }
                 // Clean up the values for AE Part1
@@ -1421,8 +1424,8 @@ import(ORG_JS_FILE)
                   {
                     if ((getKnockdown_State)[arrayWithROMData][clipLen] == 26)
                     {
-                      tempCounter += 1;
-                      ROM_CHOICEE[arrayWithROMData][clipLen] = tempCounter;
+                      tempROMCounter += 1;
+                      ROM_CHOICEE[arrayWithROMData][clipLen] = tempROMCounter;
                     }
                     else if (ROM_CHOICEE[arrayWithROMData][clipLen] == 1)
                     {
@@ -1431,7 +1434,7 @@ import(ORG_JS_FILE)
                       {
                         if (ROM_CHOICEE[arrayWithROMData][clipLen - negativeI] != 0)
                         {
-                          ROM_CHOICEE[arrayWithROMData][clipLen - negativeI] = tempCounter;
+                          ROM_CHOICEE[arrayWithROMData][clipLen - negativeI] = tempROMCounter;
                         }
                         else if (ROM_CHOICEE[arrayWithROMData][clipLen - negativeI] == 0)
                         {
@@ -1443,11 +1446,11 @@ import(ORG_JS_FILE)
                       {
                         if (ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] != 65535)
                         {
-                          ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] = tempCounter;
+                          ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
                         }
                         else if (ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] == 65535)
                         {
-                          tempCounter = 0;
+                          tempROMCounter = 0;
                           break
                         }
                       }
@@ -1531,7 +1534,7 @@ import(ORG_JS_FILE)
                 {
                   if (ROM_ChoiceF[arrayWithROMData][clipLen] == `DLK`)
                   {
-                    tempCounter += 1;
+                    tempROMCounter += 1;
                   }
                   // Stop on encountering a MK
                   else if (ROM_ChoiceF[arrayWithROMData][clipLen] == `MK`) // We hit a MK
@@ -1542,32 +1545,32 @@ import(ORG_JS_FILE)
                       // Everything until 65535 is = tempCounter
                       if (ROM_ChoiceF[arrayWithROMData][clipLen + positiveI] != 65535)
                       {
-                        tempSwitch = 1
-                        ROM_ChoiceF[arrayWithROMData][clipLen + positiveI] = tempCounter;
+                        tempROMSwitch = 1
+                        ROM_ChoiceF[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
                       }
-                      else if (tempSwitch == 1)
+                      else if (tempROMSwitch == 1)
                       {
-                        ROM_ChoiceF[arrayWithROMData][clipLen + positiveI] = tempCounter;
+                        ROM_ChoiceF[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
                         if (ROM_ChoiceF[arrayWithROMData][clipLen + positiveI] == 65535)
                         {
-                          tempSwitch = 0;
+                          tempROMSwitch = 0;
                         }
                         break // lookahead is done, we hit 65535
                       }
                     }
                     // Lookbehind, expect the number of 2LKs to equal the tempCounter value
-                    for (let negativeI = 1; negativeI < tempCounter + 1; negativeI++)
+                    for (let negativeI = 1; negativeI < tempROMCounter + 1; negativeI++)
                     {
                       if (ROM_ChoiceF[arrayWithROMData][clipLen - negativeI] == `DLK`)
                       {
-                        ROM_ChoiceF[arrayWithROMData][clipLen - negativeI] = tempCounter;
+                        ROM_ChoiceF[arrayWithROMData][clipLen - negativeI] = tempROMCounter;
                       }
                     }
                   }
                   else // Reset the counters
                   {
-                    tempCounter = 0;
-                    tempSwitch = 0;
+                    tempROMCounter = 0;
+                    tempROMSwitch = 0;
                   }
                 }
                 // Clean up the values for AE Part1
