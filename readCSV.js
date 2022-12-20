@@ -11,7 +11,7 @@ const rl = readline.createInterface(
   }
 );
 
-rl.question('Enter original CSV name without extension:', (FILENAME_NO_EXT) =>
+rl.question('Enter original CSV name without \'_Original\' or extension:', (FILENAME_NO_EXT) =>
 {
   if (FILENAME_NO_EXT.trim().includes("_Original"))
   {

@@ -256,6 +256,9 @@ export const MIN_MAX_ADRS =
     "P1_Combo_Meter_Value",
     "P2_Combo_Meter_Value"
   ];
+/**
+* @description Miscellaneous addresses for which special calculations are not necessary. Example: P1_Combo_Meter_Value, P2_Meter_Big
+**/
 export const MISC_ADRS =
   [
     "Total_Frames",

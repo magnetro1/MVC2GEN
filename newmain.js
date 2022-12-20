@@ -1,13 +1,12 @@
-
 import * as fs from 'fs';
 import * as path from 'path';
 
 import {KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, FLOATING_POINT_ADRS, MIN_MAX_ADRS, MISC_ADRS, STAGES_OBJ, PORTRAITS_TO_TIME_OBJ} from "./main_files/staticData.js";
 
 // Figure out which variables need to be prompts
-const DO_ROM_FILES = true; // Skip ROM logic files
+const DO_ROM_FILES = true; // Do or Skip ROM logic files
 
-const FILE_NAME_NO_EXT = `Magneto_ROM100`; // replace with a read-line-sync prompt
+const FILE_NAME_NO_EXT = `ROM_01`; // replace with a read-line-sync prompt
 
 const TAIL_TEXT = `_Sorted_Node.js`;
 const DIR_MAIN_FILES = `./main_files/`;
@@ -30,9 +29,9 @@ import(ORG_JS_FILE)
     for (let adr in MIN_MAX_ADRS)
     {
       const KEY = MIN_MAX_ADRS[adr];
-      const VALUE = orgData[MIN_MAX_ADRS[adr]];
-      const MIN = Math.min(...VALUE.split(','));
-      const MAX = Math.max(...VALUE.split(','));
+      const VALUE = orgData[MIN_MAX_ADRS[adr]].split(',');
+      const MIN = Math.min(...VALUE);
+      const MAX = Math.max(...VALUE);
       let tempMin = [];
       let tempMax = [];
 
@@ -69,10 +68,10 @@ import(ORG_JS_FILE)
     import(NEW_JS_FILE)
       .then((pMem) =>
       {
-        // Dynamic var list as each JS file is not guaranteed to be the same
+        // Dynamic variable list as each JS file is not guaranteed to be the same
 
         /**
-         * @returns {Array} Array of all entries from the replay JS file.
+         * @returns {Array} Array of all unique Cheat Table entries from the replay in the JS file.
          **/
         function getLabelsfromJS()
         {
@@ -131,6 +130,7 @@ import(ORG_JS_FILE)
           {
             if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0) && (Object.values(playerObjectSwitcher)[1][clipLen] == 0) && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
             {
+              // 3-Character Bug Logic
               // console.log( `${ playerString}: 3-Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
               finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }.split(",")`)[clipLen]);
               finalValuesArray[1].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }.split(",")`)[clipLen]);
@@ -172,7 +172,8 @@ import(ORG_JS_FILE)
             {
               // console.log( `${ playerString}: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C` );
               finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }.split(",")`)[clipLen]);
-              //                          eval(data.P1_B_Health_Big.split(","))[clipLen])
+              //                          eval(data.P1_C
+
             }
           }
           // Return if not writing files
@@ -248,6 +249,10 @@ import(ORG_JS_FILE)
         });
 
         // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
+        /**
+         * @returns {Number[]} returns an array of numbers and writes a file with _CNV appended to its name
+         * @description Writes and converts the point character's values for Knockdown State, Is_Prox_Block, ID_2 and _PortraitsToTime
+        */
         function writeStaticDataCNV()
         {
           const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
@@ -837,8 +842,16 @@ import(ORG_JS_FILE)
                 });
               }
 
-              // Start ROM Stuff
-
+              // StartROMStuff
+              /*AttackNumber
+                12: j.LP
+                13: j.MP
+                14: j.HP
+                15: j.LK
+                16: j.MK
+                17: j.HK
+                18: J.DLK
+              */
               // 01_Opponent State A Setup. Set Loop point for 01_OpponentStateA (Magneto lands from his Super Jump)
               const ROM_OPPONENTSTATES =
                 [
@@ -849,11 +862,22 @@ import(ORG_JS_FILE)
               {
                 for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
                 {
-                  if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 1)
+                  if ((getAirborne)[playerSlotI][clipLen] == 0)
+                  {
+                    ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 65535;
+                  }
+                  else if ((getY_VELOCITY)[playerSlotI][clipLen] == 0)
                   {
                     ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 65535;
                   }
                 }
+                // for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+                // {
+                //   if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 1)
+                //   {
+                //     ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 65535;
+                //   }
+                // }
               };
 
               for (let romFile in ROM_OPPONENTSTATES)
@@ -861,21 +885,21 @@ import(ORG_JS_FILE)
                 // Checking when we are Rising-To-SuperJump (before we wait or not wait)
                 for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
                 {
-                  ((getKnockdown_State)[playerSlotI][clipLen] == 13)
+                  ((getKnockdown_State)[playerSlotI][clipLen] == 13) // 13: "Rising to Super Jump",
                     ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 255 // Set to 255 to indicate that we are Rising-To-SuperJump
                     : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
                 }
                 // Checking when we are Rising-to-SuperJump AND the Enemy's distance being HIGHER to the ground
                 for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
                 {
-                  ((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] >= 155)
+                  ((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] >= 140)
                     ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 888 // Turns 255 to 888 (high)
                     : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
                 }
                 // Checking when we are Rising-to-SuperJump AND the Enemy's distance being LOWER to the ground
                 for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
                 {
-                  ((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] <= 154)
+                  ((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] <= 139)
                     ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 777 // Turns 255 to 777 (low)
                     : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
                 }
@@ -888,13 +912,13 @@ import(ORG_JS_FILE)
                   if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 888)
                   {
                     AirSwitch = 1;
-                    ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 1;
+                    ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = "High"; // High
                   }
                   else if (AirSwitch == 1)
                   {
                     if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] != 65535)
                     {
-                      ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 1;
+                      ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = "High";
                     }
                     else if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 65535)
                     {
@@ -909,13 +933,13 @@ import(ORG_JS_FILE)
                   if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 777)
                   {
                     AirSwitch = 1;
-                    ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 2;
+                    ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = "Low";
                   }
                   else if (AirSwitch == 1)
                   {
                     if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] != 65535)
                     {
-                      ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 2;
+                      ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = "Low";
                     }
                     else if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 65535)
                     {
@@ -1204,12 +1228,12 @@ import(ORG_JS_FILE)
                 for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
                 {
                   if ((ROM_CHOICEC[arrayWithROMData][clipLen] != 65535)
-                    && (ROM_CHOICEC[arrayWithROMData][clipLen] >= 20))
+                    && (ROM_CHOICEC[arrayWithROMData][clipLen] >= 18))
                   {
                     ROM_CHOICEC[arrayWithROMData][clipLen] = `Wait`
                   }
                   else if (((ROM_CHOICEC[arrayWithROMData][clipLen] != 65535))
-                    && (ROM_CHOICEC[arrayWithROMData][clipLen] < 20)
+                    && (ROM_CHOICEC[arrayWithROMData][clipLen] < 18)
                     && (ROM_CHOICEC[arrayWithROMData][clipLen] > 1))
                   {
                     ROM_CHOICEC[arrayWithROMData][clipLen] = `No-Wait`
@@ -1483,17 +1507,20 @@ import(ORG_JS_FILE)
                     }
                   }
                 }
+
                 // Label the LKs & MKs
                 for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
                 {
                   if (ROM_ChoiceF[arrayWithROMData][clipLen] == 1)
                   {
                     // Am I MK?
-                    if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) // MK
+                    if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1)
+                      && ((getAttack_Number)[arrayWithROMData][clipLen] == 16)
+                      && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) // MK
                     {
                       ROM_ChoiceF[arrayWithROMData][clipLen] = `MK`;
                     }
-                    else if (((getAttack_Number)[arrayWithROMData][clipLen] == 18) && ((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) // 2LK
+                    else if (((getAttack_Number)[arrayWithROMData][clipLen] == 18) && ((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) // DLK
                     {
                       ROM_ChoiceF[arrayWithROMData][clipLen] = `DLK`;
                     }
@@ -1558,12 +1585,12 @@ import(ORG_JS_FILE)
                 for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
                 {
                   if ((ROM_ChoiceF[arrayWithROMData][clipLen] != 65535)
-                    && (ROM_ChoiceF[arrayWithROMData][clipLen] >= 13))
+                    && (ROM_ChoiceF[arrayWithROMData][clipLen] >= 17))
                   {
                     ROM_ChoiceF[arrayWithROMData][clipLen] = `Wait`
                   }
                   else if (((ROM_ChoiceF[arrayWithROMData][clipLen] != 65535))
-                    && (ROM_ChoiceF[arrayWithROMData][clipLen] < 13)
+                    && (ROM_ChoiceF[arrayWithROMData][clipLen] < 17)
                     && (ROM_ChoiceF[arrayWithROMData][clipLen] > 0))
                   {
                     ROM_ChoiceF[arrayWithROMData][clipLen] = `No-Wait`
@@ -1571,6 +1598,7 @@ import(ORG_JS_FILE)
                 }
               } // End of 09_ChoiceF Scope 
 
+              // End ROMStuff End ROM Stuff
               // write the files
 
               for (let k = 0; k < Object.entries(allDataObject).length; k++)
