@@ -58,7 +58,7 @@ import(ORG_JS_FILE)
             // console.log(tempRegExVar[1]);
             fs.promises.writeFile(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`,
               `var result = [];\n result[0] = [${ tempRegExVar[2] }];\n`,
-              {encoding: "utf8"});
+              {encoding: 'utf8'});
           }
         })
     })
@@ -85,18 +85,18 @@ import(ORG_JS_FILE)
           return removedDuplicatesArray
         }
         getLabelsfromJS();
-        const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(",").length; // Used as clip-length frame tracker; address doesn't matter
+        const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(',').length; // Used as clip-length frame tracker; address doesn't matter
         const POINT_OBJ_P1 =
         {
-          P1_A_: pMem.P1_A_Is_Point.split(","),
-          P1_B_: pMem.P1_B_Is_Point.split(","),
-          P1_C_: pMem.P1_C_Is_Point.split(",")
+          P1_A_: pMem.P1_A_Is_Point.split(','),
+          P1_B_: pMem.P1_B_Is_Point.split(','),
+          P1_C_: pMem.P1_C_Is_Point.split(',')
         };
         const POINT_OBJ_P2 =
         {
-          P2_A_: pMem.P2_A_Is_Point.split(","),
-          P2_B_: pMem.P2_B_Is_Point.split(","),
-          P2_C_: pMem.P2_C_Is_Point.split(",")
+          P2_A_: pMem.P2_A_Is_Point.split(','),
+          P2_B_: pMem.P2_B_Is_Point.split(','),
+          P2_C_: pMem.P2_C_Is_Point.split(',')
         };
         // Main function to write data to files OR return finalValues array
         /**
@@ -126,52 +126,62 @@ import(ORG_JS_FILE)
           // Push all player memory addresses to finalValuesArray depending on the if-statement-logic
           for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) // length of clip
           {
-            if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0) && (Object.values(playerObjectSwitcher)[1][clipLen] == 0) && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
+            if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
+              && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
+              && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
             {
               // 3-Character Bug Logic
               // console.log( `${ playerString}: 3-Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
-              finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }.split(",")`)[clipLen]);
-              finalValuesArray[1].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }.split(",")`)[clipLen]);
-              finalValuesArray[2].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }.split(",")`)[clipLen]);
+              finalValuesArray[0].push(pMem[`${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }`].split(',')[clipLen]);
+              finalValuesArray[1].push(pMem[`${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }`].split(',')[clipLen]);
+              finalValuesArray[2].push(pMem[`${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }`].split(',')[clipLen]);
             }
             // 2-Character Bug Logic
-            else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0) && (Object.values(playerObjectSwitcher)[1][clipLen] == 0) && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
+            else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
+              && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
+              && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
             {
               // console.log( `${ playerString}: 2-Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
-              finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }.split(",")`)[clipLen]);
-              finalValuesArray[1].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }.split(",")`)[clipLen]);
+              finalValuesArray[0].push(pMem[`${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }`].split(',')[clipLen]);
+              finalValuesArray[1].push(pMem[`${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }`].split(',')[clipLen]);
             }
-            else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0) && (Object.values(playerObjectSwitcher)[1][clipLen] != 0) && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
+            else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
+              && (Object.values(playerObjectSwitcher)[1][clipLen] != 0)
+              && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
             {
               // console.log( `${ playerString}: 2-Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
-              finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }.split(",")`)[clipLen]);
-              finalValuesArray[1].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }.split(",")`)[clipLen]);
+              finalValuesArray[0].push(pMem[`${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }`].split(',')[clipLen]);
+              finalValuesArray[1].push(pMem[`${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }`].split(',')[clipLen]);
             }
-            else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0) && (Object.values(playerObjectSwitcher)[1][clipLen] == 0) && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
+            else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0)
+              && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
+              && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
             {
               // console.log( `${ playerString}: 2-Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
-              finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }.split(",")`)[clipLen]);
-              finalValuesArray[1].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }.split(",")`)[clipLen]);
+              finalValuesArray[0].push(pMem[`${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }`].split(',')[clipLen]);
+              finalValuesArray[1].push(pMem[`${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }`].split(',')[clipLen]);
             }
             // 1-Character Logic
-            else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0) && (Object.values(playerObjectSwitcher)[1][clipLen] != 0) && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
+            else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
+              && (Object.values(playerObjectSwitcher)[1][clipLen] != 0)
+              && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
             {
               // console.log( `${ playerString}: 1-Character Logic: A == 0 && B != 0 && C != 0        P1: A` );
-              finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }.split(",")`)[clipLen]);
-              //                          eval(data.P1_A_Health_Big.split(","))[clipLen])
+              finalValuesArray[0].push(pMem[`${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }`].split(',')[clipLen]);
             }
-            else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0) && (Object.values(playerObjectSwitcher)[1][clipLen] == 0) && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
+            else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0)
+              && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
+              && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
             {
               // console.log( `${ playerString}: 1-Character Logic: A != 0 && B == 0 && C != 0        P1: B` );
-              finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }.split( "," )`)[clipLen]);
-              //                          eval(data.P1_B_Health_Big.split(","))[clipLen])
+              finalValuesArray[0].push(pMem[`${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }`].split(',')[clipLen]);
             }
-            else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0) && (Object.values(playerObjectSwitcher)[1][clipLen] != 0) && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
+            else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0)
+              && (Object.values(playerObjectSwitcher)[1][clipLen] != 0)
+              && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
             {
               // console.log( `${ playerString}: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C` );
-              finalValuesArray[0].push(eval(`pMem.${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }.split(",")`)[clipLen]);
-              //                          eval(data.P1_C
-
+              finalValuesArray[0].push(pMem[`${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }`].split(',')[clipLen]);
             }
           }
           // Return if not writing files
@@ -187,55 +197,44 @@ import(ORG_JS_FILE)
           // Check for Floating Point Addresses so they can have their trailing digits cut off
           for (const floatAddress in FLOATING_POINT_ADRS)
           {
-            var toFixedDigitNumberZero = [0, 2, 4]; // 7 by default
+            const toFixedDigitNumberZero = [0, 2, 4]; // 7 by default
             if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
             {
               for (let fixedDigitType in toFixedDigitNumberZero)
               {
                 var floatArrayFixed = [[], [], []];
-                // ToFixed
                 if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[fixedDigitType] }.js`))
                 {
                   fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[fixedDigitType] }.js`,
-                    `result = [];` + "\n", {encoding: "utf8"});
-
-                  finalValuesArray[0].forEach((value) =>
+                    `result = [];` + "\n", {encoding: 'utf8'});
+                  for (let playerSlotI = 0; playerSlotI < 3; playerSlotI++)
                   {
-                    value = parseFloat(value)
-                    floatArrayFixed[0].push(value.toFixed(toFixedDigitNumberZero[fixedDigitType]));
-                  });
-                  finalValuesArray[1].forEach((value) =>
-                  {
-                    value = parseFloat(value)
-                    floatArrayFixed[1].push(value.toFixed(toFixedDigitNumberZero[fixedDigitType]));
-                  });
-                  finalValuesArray[2].forEach((value) =>
-                  {
-                    value = parseFloat(value)
-                    floatArrayFixed[2].push(value.toFixed(toFixedDigitNumberZero[fixedDigitType]));
-                  });
+                    finalValuesArray[playerSlotI].forEach((value) =>
+                    {
+                      value = parseFloat(value)
+                      floatArrayFixed[playerSlotI].push(value.toFixed(toFixedDigitNumberZero[fixedDigitType]))
+                    });
+                  }
                   fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[fixedDigitType] }.js`,
-                    `result[0]=[${ floatArrayFixed[0].toString() }];` + "\n" +
-                    `result[1]=[${ floatArrayFixed[1].toString() }];` + "\n" +
-                    `result[2]=[${ floatArrayFixed[2].toString() }];`
-                    , {encoding: "utf8"});
+                    `result[0]=[${ floatArrayFixed[0].toString() }];\nresult[1]=[${ floatArrayFixed[1].toString() }];\nresult[2]=[${ floatArrayFixed[2].toString() }];`,
+                    {encoding: 'utf8'});
                 }
               }
             }
           }
           // Writing AE JS File
-          if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(",") }.js`))
+          if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`))
           {
-            fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(",") }.js`,
+            fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`,
               `var result = [];` + "\n",
-              {flag: "a+", encoding: "utf8"});
+              {flag: "a+", encoding: 'utf8'});
 
             // Append main data
             for (const dataArrayPerCharacter in finalValuesArray)
             {
-              fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(",") }.js`,
+              fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`,
                 `result[${ dataArrayPerCharacter }] = [${ finalValuesArray[dataArrayPerCharacter] }];\n`,
-                {encoding: "utf8"});
+                {encoding: 'utf8'});
             }
           }
         }; // End of writePlayerMemory() function
@@ -269,13 +268,13 @@ import(ORG_JS_FILE)
               {
                 fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`,
                   `var result = [];` + "\n",
-                  {encoding: "utf8"});
+                  {encoding: 'utf8'});
               }
               else
               {
                 fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`,
                   `var result = [];` + "\n",
-                  {encoding: "utf8"});
+                  {encoding: 'utf8'});
               }
             }
             for (let staticDataEntry = 0; staticDataEntry < STATIC_DATA_ADRS.length; staticDataEntry++)
@@ -292,13 +291,13 @@ import(ORG_JS_FILE)
                 if (STATIC_DATA_OBJS[staticDataEntry] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
                 {
                   fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
-                    {encoding: "utf8"});
+                    {encoding: 'utf8'});
                   staticLookupResultsArray = [[], [], []];
                 }
                 else
                 {
                   fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataEntry] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
-                    {encoding: "utf8"});
+                    {encoding: 'utf8'});
                   staticLookupResultsArray = [[], [], []];
                 }
               }
@@ -315,8 +314,7 @@ import(ORG_JS_FILE)
           const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View"
           for (const miscAdrIterator in MISC_ADRS)
           {
-            pMem[MISC_ADRS[miscAdrIterator]].split(",").forEach((address) => // accessing pMem object key by string, splitting its content, and pushing each array element
-            // eval(`pMem.${ MISC_ADRS[miscAdrIterator] }`).split(",").forEach((address) => *** Example of how not to use eval()
+            pMem[MISC_ADRS[miscAdrIterator]].split(',').forEach((address) => // accessing pMem object key by string, splitting its content, and pushing each array element
             {
               miscAdrArray[0].push(address);
             });
@@ -324,8 +322,8 @@ import(ORG_JS_FILE)
             if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`))
             {
               fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`,
-                `var = [];\nresult[0] = [${ miscAdrArray }];//onearray`,
-                {encoding: "utf8"});
+                `var result = [];\nresult[0] = [${ miscAdrArray }];`,
+                {encoding: 'utf8'});
               miscAdrArray[0] = []; // clear the array for the next player iteration.
             }
           }
@@ -338,7 +336,7 @@ import(ORG_JS_FILE)
         function writeTotalFrameCountCNV()
         {
           const totalFrameArr = [];
-          pMem.Total_Frames.split(",").forEach((frame, index) =>
+          pMem.Total_Frames.split(',').forEach((frame, index) =>
           {
             totalFrameArr.push(index + 1);
           });
@@ -346,18 +344,18 @@ import(ORG_JS_FILE)
           {
             fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
               `var result = [];\nresult[0] = [${ totalFrameArr }];\n`,
-              {encoding: "utf8"});
+              {encoding: 'utf8'});
             totalFrameArr.reverse()
             fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
               `result[1] = [${ totalFrameArr }];\n`,
-              {encoding: "utf8"});
+              {encoding: 'utf8'});
             for (let idx in totalFrameArr)
             {
               totalFrameArr[idx] = totalFrameArr[0]
             }
             fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
               `result[2] = [${ totalFrameArr }];\n`,
-              {encoding: "utf8"});
+              {encoding: 'utf8'});
           }
         };
         writeTotalFrameCountCNV();
@@ -365,7 +363,7 @@ import(ORG_JS_FILE)
         function writeStageDataCNV() // Fills out color data for stages in Hex in result[1]
         {
           let stageData = [];
-          pMem.Stage_Selector.split(",").forEach((frame) =>
+          pMem.Stage_Selector.split(',').forEach((frame) =>
           {
             stageData.push(frame)
           });
@@ -374,16 +372,16 @@ import(ORG_JS_FILE)
           {
             fs.writeFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
               `var result = [];\nresult[0] = [${ stageData }];\n`,
-              {encoding: "utf8"});
+              {encoding: 'utf8'});
             stageData = [];
 
-            pMem.Stage_Selector.split(",").forEach((frame) =>
+            pMem.Stage_Selector.split(',').forEach((frame) =>
             {
               stageData.push(`"${ Object.values(STAGES_OBJ)[frame] }"`)
             });
             fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
               `result[1] = [${ stageData }];\n`,
-              {encoding: "utf8"});
+              {encoding: 'utf8'});
             stageData = [];
           }
         };
@@ -394,8 +392,8 @@ import(ORG_JS_FILE)
         **/
         function writeInputCNV()
         {
-          const P1_InputsDECSplit = pMem.P1_Input_DEC.split(",");
-          const P2_InputsDECSplit = pMem.P2_Input_DEC.split(",");
+          const P1_InputsDECSplit = pMem.P1_Input_DEC.split(',');
+          const P2_InputsDECSplit = pMem.P2_Input_DEC.split(',');
           let playerInputResults = ""; // holds each result for P1 and P2
           let playerInputsCNVArray = []; // contains transformed results for P1 and P2
           let tempP1OrP2 = ""; // Changes to "P1" or "P2"
@@ -460,7 +458,7 @@ import(ORG_JS_FILE)
                 .replace(/86/gi, "9")
                 .replace(/68/gi, "9")
               }"];\n`,
-              {encoding: "utf8"});
+              {encoding: 'utf8'});
             playerInputsCNVArray = [];
 
             // Input Conversion Type 2
@@ -515,7 +513,7 @@ import(ORG_JS_FILE)
                 // Replace "++" with "+"
                 .replace(/\+\+/gm, "+")
               }"];`,
-              {encoding: "utf8"}
+              {encoding: 'utf8'}
             );
             playerInputsCNVArray = [];
           }
