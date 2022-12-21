@@ -256,7 +256,9 @@ export const MIN_MAX_ADRS =
     "P2_C_Storm_214kk_Timer",
     "P2_C_War_Machine_214kk_Timer",
     "P1_Combo_Meter_Value",
-    "P2_Combo_Meter_Value"
+    "P2_Combo_Meter_Value",
+    // "P2_Sentinel_214KK_Timer_Max",
+    // "P2_Sentinel_214KK_Timer_Min",
   ];
 /**
 * @description Miscellaneous addresses for which special calculations are not necessary. Example: P1_Combo_Meter_Value, P2_Meter_Big
