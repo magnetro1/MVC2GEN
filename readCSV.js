@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as readline from 'readline';
 const DIR_MAIN_FILES = path.join(process.cwd(), '/main_files/');
 const DIR_CSVS = path.join(process.cwd(), '/main_files/CSV_to_JS/');
-export var FILENAME_NO_EXT;
+var FILENAME_NO_EXT;
 const rl = readline.createInterface(
   {
     input: process.stdin,

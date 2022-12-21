@@ -4,9 +4,10 @@ import * as path from 'path';
 import {FLOATING_POINT_ADRS, KNOCKDOWN_STATE_OBJ, MIN_MAX_ADRS, MISC_ADRS, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ, PROX_BLOCK_OBJ, STAGES_OBJ} from "./main_files/staticData.js";
 
 // Figure out which variables need to be prompts
-const DO_ROM_FILES = true; // Do or Skip ROM logic files
+const DO_ROM_FILES = false; // Do or Skip ROM logic files
 
-const FILE_NAME_NO_EXT = `Magneto_ROM100`;
+const FILE_NAME_NO_EXT = `Combo_Sentinel10`;
+// const FILE_NAME_NO_EXT = `Magneto_ROM100`;
 // const FILE_NAME_NO_EXT = `ROM_01`;
 const TAIL_TEXT = `_Sorted_Node.js`;
 const DIR_MAIN_FILES = `./main_files/`;
@@ -19,7 +20,6 @@ if (!fs.existsSync(`${ DIR_OUTPATH }`))
 {
   fs.mkdirSync(`${ DIR_OUTPATH }`);
 }
-
 // Copy & Write Temp File
 var tempMinMaxBuffer = '\n';
 import(ORG_JS_FILE)
@@ -51,11 +51,9 @@ import(ORG_JS_FILE)
         `export const ${ KEY }_Min = '${ tempMin }';\n`,
         {encoding: 'utf8'});
     }
-    // var oldData = fs.readFileSync(ORG_JS_FILE, 'utf8')
   })
   .then(() => fs.promises.copyFile(`${ ORG_JS_FILE }`, NEW_JS_FILE) // Copy, append, write JS files, then bring back in
-    .then(() =>
-      fs.promises.appendFile(NEW_JS_FILE, tempMinMaxBuffer))
+    .then(() => fs.promises.appendFile(NEW_JS_FILE, tempMinMaxBuffer))
     .then(() =>
     {
       fs.promises.readFile(NEW_JS_FILE, 'utf8')
@@ -74,8 +72,8 @@ import(ORG_JS_FILE)
     })
   )
   .then(() =>
-    import(NEW_JS_FILE)
-      .then((pMem) =>
+    import(NEW_JS_FILE) //559+220 = 779 entries as of now, including min/max
+      .then((pMem, pMemIndex) =>
       {
         /**
          * @description Dynamic variable list as each JS file is not guaranteed to be the same
@@ -84,7 +82,7 @@ import(ORG_JS_FILE)
         function getLabelsfromJS()
         {
           let playerDataAll = []
-          let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; //[1] = P1_A, [2] = cheat entry description
+          let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; //[1] = P1_A, [2] = cheat entry description; catches stuff like X_Gravity_Max, allowing for P1_X_Gravity_Max, which gets pushed into the Min/Max JS file writes
           let tempRegExVar;
           let newFile = fs.readFileSync(NEW_JS_FILE, 'utf8');
           while (tempRegExVar = playerMemoryRegex.exec(newFile))
@@ -94,7 +92,7 @@ import(ORG_JS_FILE)
           var removedDuplicatesArray = [...new Set(playerDataAll)];
           return removedDuplicatesArray
         }
-        getLabelsfromJS();
+        // getLabelsfromJS();
         const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(',').length; // Used as clip-length frame tracker; address doesn't matter
         const POINT_OBJ_P1 =
         {
@@ -249,8 +247,9 @@ import(ORG_JS_FILE)
           }
         }; // End of writePlayerMemory() function
 
-        getLabelsfromJS().forEach((label) =>
+        getLabelsfromJS().forEach((label, index) => // its regex will find addresses like P1_X_Gravity_Max
         {
+          // console.log(`${ index }: ${ label }`);
           writePlayerMemory(1, label.toString(), 1);
           writePlayerMemory(2, label.toString(), 1);
         });
