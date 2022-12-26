@@ -1,17 +1,0 @@
-Adobe After Effects v23.1 Windows 64 render log for project “ASCII Pad V Pro_2023.aep”
-
-Rendering started on 12/23/2022 at 9:34:07 PM
-
-  12/23/2022 9:34:08 PM: Starting composition “Pad_Screen_ButtonBox_MAIN”.
-
-  Output To: D:\Pad_Screen_ButtonBox_MAIN.mov    12/23/2022 9:47:00 PM: Finished composition “Pad_Screen_ButtonBox_MAIN”.
-
-
-  12/23/2022 9:47:01 PM: Starting composition “Pad_Screen_ProgramBox”.
-
-  Output To: D:\Pad_Screen_ProgramBox.mov    12/23/2022 10:10:56 PM: Finished composition “Pad_Screen_ProgramBox”.
-
-
-  Total Time Elapsed: 36 Min, 49 Sec
-Log closed on 12/23/2022 at 10:10:57 PM
-

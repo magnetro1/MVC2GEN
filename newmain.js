@@ -4,7 +4,7 @@ import * as path from 'path';
 import {FLOATING_POINT_ADRS, KNOCKDOWN_STATE_OBJ, MIN_MAX_ADRS, MISC_ADRS, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ, PROX_BLOCK_OBJ, STAGES_OBJ} from "./main_files/staticData.js";
 const DO_ROM_FILES = false; // Do or Skip ROM logic files
 
-const FILE_NAME_NO_EXT = `Magneto105`;
+const FILE_NAME_NO_EXT = `Combo_Sentinel10`;
 const TAIL_TEXT = `_Sorted_Node.js`;
 const DIR_MAIN_FILES = `./main_files/`;
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
@@ -16,7 +16,7 @@ if (!fs.existsSync(`${ DIR_OUTPATH }`))
 {
   fs.mkdirSync(`${ DIR_OUTPATH }`);
 }
-// Copy & Write Temp File
+// Copy & Write Temp File ( that will be deleted )
 var tempMinMaxBuffer = '\n';
 import(ORG_JS_FILE)
   .then((pMemZero) => // Imports SortedJS file as Object with key-value pairs
