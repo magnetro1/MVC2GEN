@@ -2,13 +2,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import {FLOATING_POINT_ADRS, KNOCKDOWN_STATE_OBJ, MIN_MAX_ADRS, MISC_ADRS, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ, PROX_BLOCK_OBJ, STAGES_OBJ} from "./main_files/staticData.js";
-
-// Figure out which variables need to be prompts
 const DO_ROM_FILES = false; // Do or Skip ROM logic files
 
-const FILE_NAME_NO_EXT = `Combo_Sentinel10`;
-// const FILE_NAME_NO_EXT = `Magneto_ROM100`;
-// const FILE_NAME_NO_EXT = `ROM_01`;
+const FILE_NAME_NO_EXT = `Magneto105`;
 const TAIL_TEXT = `_Sorted_Node.js`;
 const DIR_MAIN_FILES = `./main_files/`;
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
@@ -82,10 +78,10 @@ import(ORG_JS_FILE)
         function getLabelsfromJS()
         {
           let playerDataAll = []
-          let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; //[1] = P1_A, [2] = cheat entry description; catches stuff like X_Gravity_Max, allowing for P1_X_Gravity_Max, which gets pushed into the Min/Max JS file writes
+          let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; //[1] = P1_A, [2] = cheat entry description
           let tempRegExVar;
           let newFile = fs.readFileSync(NEW_JS_FILE, 'utf8');
-          while (tempRegExVar = playerMemoryRegex.exec(newFile))
+          while (tempRegExVar = playerMemoryRegex.exec(newFile)) // Finds P1_A_X_Gravity_Max. 
           {
             playerDataAll.push(tempRegExVar[2]); // regex.exec returns array of all matches; item[2] has many duplicates
           };
@@ -347,25 +343,49 @@ import(ORG_JS_FILE)
           const totalFrameArr = [];
           pMem.Total_Frames.split(',').forEach((frame, index) =>
           {
-            totalFrameArr.push(index + 1);
-          });
-          if (!fs.existsSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`))
-          {
-            fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-              `var result = [];\nresult[0] = [${ totalFrameArr }];\n`,
-              {encoding: 'utf8'});
-            totalFrameArr.reverse()
-            fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-              `result[1] = [${ totalFrameArr }];\n`,
-              {encoding: 'utf8'});
-            for (let idx in totalFrameArr)
+            if (index == 0)
             {
-              totalFrameArr[idx] = totalFrameArr[0]
+              index++
             }
-            fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-              `result[2] = [${ totalFrameArr }];\n`,
-              {encoding: 'utf8'});
+            else if (index < 10)
+            {
+              index.toString()
+              index = '000' + index
+            }
+            else if (index < 100)
+            {
+              index.toString()
+              index = '00' + index
+            }
+            else if (index < 1000)
+            {
+              index.toString()
+              index = '0' + index
+            }
+            else
+            {
+              index
+            }
+            totalFrameArr.push(index);
+          });
+          // if (!fs.existsSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`))
+          // {
+          totalFrameArr.splice(0, 1)
+          fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+            `var result = [];\nresult[0] = ['${ totalFrameArr }'];\n`,
+            {encoding: 'utf8'});
+          totalFrameArr.reverse()
+          fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+            `result[1] = ['${ totalFrameArr }'];\n`,
+            {encoding: 'utf8'});
+          for (let idx in totalFrameArr)
+          {
+            totalFrameArr[idx] = totalFrameArr[0]
           }
+          fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+            `result[2] = ['${ totalFrameArr }'];\n`,
+            {encoding: 'utf8'});
+          // }
         };
         writeTotalFrameCountCNV();
 
@@ -1462,28 +1482,38 @@ import(ORG_JS_FILE)
                       {
                         if (ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] != 65535)
                         {
-                          ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
+                          let newTempNumber = ROM_CHOICEE[arrayWithROMData][clipLen - 1]
+                          ROM_CHOICEE[arrayWithROMData][clipLen - 1] = newTempNumber;
+                          ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] = newTempNumber;
                         }
                         else if (ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] == 65535)
                         {
-                          tempROMCounter = 0;
+                          tempROMCounter = 1;
                           break
                         }
                       }
                     }
                   }
                 }
+                // Subtract 1 from each number that isn't 65535 && isn't 0.
+                // for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+                // {
+                //   if ((ROM_CHOICEE[arrayWithROMData][clipLen] != 65535) && (ROM_CHOICEE[arrayWithROMData][clipLen] != 0))
+                //   {
+                //     ROM_CHOICEE[arrayWithROMData][clipLen] = ROM_CHOICEE[arrayWithROMData][clipLen] - 1
+                //   }
+                // }
                 // Clean up the values for AE Part1
                 for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
                 {
                   if ((ROM_CHOICEE[arrayWithROMData][clipLen] != 65535)
-                    && (ROM_CHOICEE[arrayWithROMData][clipLen] >= 1)
-                    && (ROM_CHOICEE[arrayWithROMData][clipLen] <= 2))
+                    && (ROM_CHOICEE[arrayWithROMData][clipLen] > 0)
+                    && (ROM_CHOICEE[arrayWithROMData][clipLen] <= 3))
                   {
                     ROM_CHOICEE[arrayWithROMData][clipLen] = `No-Wait`
                   }
                   else if (((ROM_CHOICEE[arrayWithROMData][clipLen] != 65535))
-                    && (ROM_CHOICEE[arrayWithROMData][clipLen] > 2))
+                    && (ROM_CHOICEE[arrayWithROMData][clipLen] > 3))
                   {
                     ROM_CHOICEE[arrayWithROMData][clipLen] = `Wait`
                   }
