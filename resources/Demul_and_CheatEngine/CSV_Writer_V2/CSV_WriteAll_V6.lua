@@ -1,48 +1,51 @@
 [ENABLE]
 {$lua}
 -- Variables and Functions
-outPath = "G:\\Emulators\\PCSX2\\pcsx2\\Cheat Tables+\\CSV_Input\\MvC2DataAll_Original.csv"
-_starting_new_write_flag = false
-contScript = true
-data_table = {}
+local outPath = "H:\\Git\\MVC2GEN\\main_files\\CSV_to_JS\\MvC2DataAll_Original.csv"
+--outPath = "G:\\Emulators\\PCSX2\\pcsx2\\Cheat Tables+\\CSV_Input\\MvC2DataAll_Original.csv"
+local _starting_new_write_flag = false
+local contScript = true
+local data_table = {}
+
 function readTF()
-    tfPointer = (0x2C3496B0)
-    readITF = readInteger(tfPointer)
-    return (readITF)
+	local tfPointer = ("pcsx2.exe+271A324")
+  local totalFrameNumber = readInteger(tfPointer)
+	return(totalFrameNumber)
 end
 
 function csv_write(path, data)
-    separator = ","
-    local file_handle = assert(io.open(path, "a"))
-    local output_string = ""
-    if _starting_new_write_flag == false then
-        for i = 0, #data, 1 do
-            if i < #data then
-                output_string = output_string .. data[i].desc .. separator
-            else
-                output_string = output_string .. data[i].desc
-            end
-        end
-        _starting_new_write_flag = true
-        file_handle:write(output_string)
-        file_handle:write("\n")
-        output_string = ""
+	local separator = ","
+	local file_handle = assert(io.open(path, "a"))
+	local output_string = ""
+	if _starting_new_write_flag == false then
+	  for i = 0, #data, 1 do
+      if i < #data then
+        output_string = output_string .. data[i].desc .. separator
+      else
+        output_string = output_string .. data[i].desc
+      end
     end
-    for i = 0, #data, 1 do
-        if i < #data then
-            output_string = output_string .. data[i].val .. separator
-        else
-            output_string = output_string .. data[i].val
-        end
-    end
-    file_handle:write(output_string)
-    file_handle:write("\n")
-    file_handle:close()
-    return true
+	  _starting_new_write_flag = true
+	  file_handle:write(output_string)
+	  file_handle:write("\n")
+	  output_string = ""
+	end
+	for i = 0, #data, 1 do
+	  if i < #data then
+		  output_string = output_string .. data[i].val .. separator
+	  else
+		  output_string = output_string .. data[i].val
+	  end
+	end
+	file_handle:write(output_string)
+	file_handle:write("\n")
+	file_handle:close()
+	return true
 end
 currentFrame = readTF()
 -- Main Script
 address_list = getAddressList()
+--startREGEX
 v0 = address_list.getMemoryRecordByDescription("Total_Frames")
 v1 = address_list.getMemoryRecordByDescription("P1_A_Anakaris_SStun_Timer")
 v2 = address_list.getMemoryRecordByDescription("P1_B_Anakaris_SStun_Timer")
@@ -602,2256 +605,593 @@ v555 = address_list.getMemoryRecordByDescription("P1_C_Move_Disable")
 v556 = address_list.getMemoryRecordByDescription("P2_A_Move_Disable")
 v557 = address_list.getMemoryRecordByDescription("P2_B_Move_Disable")
 v558 = address_list.getMemoryRecordByDescription("P2_C_Move_Disable")
+v559 = address_list.getMemoryRecordByDescription("P1_A_Special_Strength")
+v560 = address_list.getMemoryRecordByDescription("P1_B_Special_Strength")
+v561 = address_list.getMemoryRecordByDescription("P1_C_Special_Strength")
+v562 = address_list.getMemoryRecordByDescription("P2_A_Special_Strength")
+v563 = address_list.getMemoryRecordByDescription("P2_B_Special_Strength")
+v564 = address_list.getMemoryRecordByDescription("P2_C_Special_Strength")
 
 v0_prev = v0.Value
 
 -- Condition Loop
 while (currentFrame ~= v0.Value) and contScript do
-    while v0.Value == v0_prev do
-        if isKeyPressed(VK_HOME) then
-            contScript = false
-            break
-        end
-    end
+  while v0.Value == v0_prev do
+		if isKeyPressed(VK_HOME) then
+			contScript = false
+			break
+		end
+	end
 
-    data_table[0] = {
-        desc = v0.Description,
-        val = v0.Value
-    }
-    data_table[1] = {
-        desc = v1.Description,
-        val = v1.Value
-    }
-    data_table[2] = {
-        desc = v2.Description,
-        val = v2.Value
-    }
-    data_table[3] = {
-        desc = v3.Description,
-        val = v3.Value
-    }
-    data_table[4] = {
-        desc = v4.Description,
-        val = v4.Value
-    }
-    data_table[5] = {
-        desc = v5.Description,
-        val = v5.Value
-    }
-    data_table[6] = {
-        desc = v6.Description,
-        val = v6.Value
-    }
-    data_table[7] = {
-        desc = v7.Description,
-        val = v7.Value
-    }
-    data_table[8] = {
-        desc = v8.Description,
-        val = v8.Value
-    }
-    data_table[9] = {
-        desc = v9.Description,
-        val = v9.Value
-    }
-    data_table[10] = {
-        desc = v10.Description,
-        val = v10.Value
-    }
-    data_table[11] = {
-        desc = v11.Description,
-        val = v11.Value
-    }
-    data_table[12] = {
-        desc = v12.Description,
-        val = v12.Value
-    }
-    data_table[13] = {
-        desc = v13.Description,
-        val = v13.Value
-    }
-    data_table[14] = {
-        desc = v14.Description,
-        val = v14.Value
-    }
-    data_table[15] = {
-        desc = v15.Description,
-        val = v15.Value
-    }
-    data_table[16] = {
-        desc = v16.Description,
-        val = v16.Value
-    }
-    data_table[17] = {
-        desc = v17.Description,
-        val = v17.Value
-    }
-    data_table[18] = {
-        desc = v18.Description,
-        val = v18.Value
-    }
-    data_table[19] = {
-        desc = v19.Description,
-        val = v19.Value
-    }
-    data_table[20] = {
-        desc = v20.Description,
-        val = v20.Value
-    }
-    data_table[21] = {
-        desc = v21.Description,
-        val = v21.Value
-    }
-    data_table[22] = {
-        desc = v22.Description,
-        val = v22.Value
-    }
-    data_table[23] = {
-        desc = v23.Description,
-        val = v23.Value
-    }
-    data_table[24] = {
-        desc = v24.Description,
-        val = v24.Value
-    }
-    data_table[25] = {
-        desc = v25.Description,
-        val = v25.Value
-    }
-    data_table[26] = {
-        desc = v26.Description,
-        val = v26.Value
-    }
-    data_table[27] = {
-        desc = v27.Description,
-        val = v27.Value
-    }
-    data_table[28] = {
-        desc = v28.Description,
-        val = v28.Value
-    }
-    data_table[29] = {
-        desc = v29.Description,
-        val = v29.Value
-    }
-    data_table[30] = {
-        desc = v30.Description,
-        val = v30.Value
-    }
-    data_table[31] = {
-        desc = v31.Description,
-        val = v31.Value
-    }
-    data_table[32] = {
-        desc = v32.Description,
-        val = v32.Value
-    }
-    data_table[33] = {
-        desc = v33.Description,
-        val = v33.Value
-    }
-    data_table[34] = {
-        desc = v34.Description,
-        val = v34.Value
-    }
-    data_table[35] = {
-        desc = v35.Description,
-        val = v35.Value
-    }
-    data_table[36] = {
-        desc = v36.Description,
-        val = v36.Value
-    }
-    data_table[37] = {
-        desc = v37.Description,
-        val = v37.Value
-    }
-    data_table[38] = {
-        desc = v38.Description,
-        val = v38.Value
-    }
-    data_table[39] = {
-        desc = v39.Description,
-        val = v39.Value
-    }
-    data_table[40] = {
-        desc = v40.Description,
-        val = v40.Value
-    }
-    data_table[41] = {
-        desc = v41.Description,
-        val = v41.Value
-    }
-    data_table[42] = {
-        desc = v42.Description,
-        val = v42.Value
-    }
-    data_table[43] = {
-        desc = v43.Description,
-        val = v43.Value
-    }
-    data_table[44] = {
-        desc = v44.Description,
-        val = v44.Value
-    }
-    data_table[45] = {
-        desc = v45.Description,
-        val = v45.Value
-    }
-    data_table[46] = {
-        desc = v46.Description,
-        val = v46.Value
-    }
-    data_table[47] = {
-        desc = v47.Description,
-        val = v47.Value
-    }
-    data_table[48] = {
-        desc = v48.Description,
-        val = v48.Value
-    }
-    data_table[49] = {
-        desc = v49.Description,
-        val = v49.Value
-    }
-    data_table[50] = {
-        desc = v50.Description,
-        val = v50.Value
-    }
-    data_table[51] = {
-        desc = v51.Description,
-        val = v51.Value
-    }
-    data_table[52] = {
-        desc = v52.Description,
-        val = v52.Value
-    }
-    data_table[53] = {
-        desc = v53.Description,
-        val = v53.Value
-    }
-    data_table[54] = {
-        desc = v54.Description,
-        val = v54.Value
-    }
-    data_table[55] = {
-        desc = v55.Description,
-        val = v55.Value
-    }
-    data_table[56] = {
-        desc = v56.Description,
-        val = v56.Value
-    }
-    data_table[57] = {
-        desc = v57.Description,
-        val = v57.Value
-    }
-    data_table[58] = {
-        desc = v58.Description,
-        val = v58.Value
-    }
-    data_table[59] = {
-        desc = v59.Description,
-        val = v59.Value
-    }
-    data_table[60] = {
-        desc = v60.Description,
-        val = v60.Value
-    }
-    data_table[61] = {
-        desc = v61.Description,
-        val = v61.Value
-    }
-    data_table[62] = {
-        desc = v62.Description,
-        val = v62.Value
-    }
-    data_table[63] = {
-        desc = v63.Description,
-        val = v63.Value
-    }
-    data_table[64] = {
-        desc = v64.Description,
-        val = v64.Value
-    }
-    data_table[65] = {
-        desc = v65.Description,
-        val = v65.Value
-    }
-    data_table[66] = {
-        desc = v66.Description,
-        val = v66.Value
-    }
-    data_table[67] = {
-        desc = v67.Description,
-        val = v67.Value
-    }
-    data_table[68] = {
-        desc = v68.Description,
-        val = v68.Value
-    }
-    data_table[69] = {
-        desc = v69.Description,
-        val = v69.Value
-    }
-    data_table[70] = {
-        desc = v70.Description,
-        val = v70.Value
-    }
-    data_table[71] = {
-        desc = v71.Description,
-        val = v71.Value
-    }
-    data_table[72] = {
-        desc = v72.Description,
-        val = v72.Value
-    }
-    data_table[73] = {
-        desc = v73.Description,
-        val = v73.Value
-    }
-    data_table[74] = {
-        desc = v74.Description,
-        val = v74.Value
-    }
-    data_table[75] = {
-        desc = v75.Description,
-        val = v75.Value
-    }
-    data_table[76] = {
-        desc = v76.Description,
-        val = v76.Value
-    }
-    data_table[77] = {
-        desc = v77.Description,
-        val = v77.Value
-    }
-    data_table[78] = {
-        desc = v78.Description,
-        val = v78.Value
-    }
-    data_table[79] = {
-        desc = v79.Description,
-        val = v79.Value
-    }
-    data_table[80] = {
-        desc = v80.Description,
-        val = v80.Value
-    }
-    data_table[81] = {
-        desc = v81.Description,
-        val = v81.Value
-    }
-    data_table[82] = {
-        desc = v82.Description,
-        val = v82.Value
-    }
-    data_table[83] = {
-        desc = v83.Description,
-        val = v83.Value
-    }
-    data_table[84] = {
-        desc = v84.Description,
-        val = v84.Value
-    }
-    data_table[85] = {
-        desc = v85.Description,
-        val = v85.Value
-    }
-    data_table[86] = {
-        desc = v86.Description,
-        val = v86.Value
-    }
-    data_table[87] = {
-        desc = v87.Description,
-        val = v87.Value
-    }
-    data_table[88] = {
-        desc = v88.Description,
-        val = v88.Value
-    }
-    data_table[89] = {
-        desc = v89.Description,
-        val = v89.Value
-    }
-    data_table[90] = {
-        desc = v90.Description,
-        val = v90.Value
-    }
-    data_table[91] = {
-        desc = v91.Description,
-        val = v91.Value
-    }
-    data_table[92] = {
-        desc = v92.Description,
-        val = v92.Value
-    }
-    data_table[93] = {
-        desc = v93.Description,
-        val = v93.Value
-    }
-    data_table[94] = {
-        desc = v94.Description,
-        val = v94.Value
-    }
-    data_table[95] = {
-        desc = v95.Description,
-        val = v95.Value
-    }
-    data_table[96] = {
-        desc = v96.Description,
-        val = v96.Value
-    }
-    data_table[97] = {
-        desc = v97.Description,
-        val = v97.Value
-    }
-    data_table[98] = {
-        desc = v98.Description,
-        val = v98.Value
-    }
-    data_table[99] = {
-        desc = v99.Description,
-        val = v99.Value
-    }
-    data_table[100] = {
-        desc = v100.Description,
-        val = v100.Value
-    }
-    data_table[101] = {
-        desc = v101.Description,
-        val = v101.Value
-    }
-    data_table[102] = {
-        desc = v102.Description,
-        val = v102.Value
-    }
-    data_table[103] = {
-        desc = v103.Description,
-        val = v103.Value
-    }
-    data_table[104] = {
-        desc = v104.Description,
-        val = v104.Value
-    }
-    data_table[105] = {
-        desc = v105.Description,
-        val = v105.Value
-    }
-    data_table[106] = {
-        desc = v106.Description,
-        val = v106.Value
-    }
-    data_table[107] = {
-        desc = v107.Description,
-        val = v107.Value
-    }
-    data_table[108] = {
-        desc = v108.Description,
-        val = v108.Value
-    }
-    data_table[109] = {
-        desc = v109.Description,
-        val = v109.Value
-    }
-    data_table[110] = {
-        desc = v110.Description,
-        val = v110.Value
-    }
-    data_table[111] = {
-        desc = v111.Description,
-        val = v111.Value
-    }
-    data_table[112] = {
-        desc = v112.Description,
-        val = v112.Value
-    }
-    data_table[113] = {
-        desc = v113.Description,
-        val = v113.Value
-    }
-    data_table[114] = {
-        desc = v114.Description,
-        val = v114.Value
-    }
-    data_table[115] = {
-        desc = v115.Description,
-        val = v115.Value
-    }
-    data_table[116] = {
-        desc = v116.Description,
-        val = v116.Value
-    }
-    data_table[117] = {
-        desc = v117.Description,
-        val = v117.Value
-    }
-    data_table[118] = {
-        desc = v118.Description,
-        val = v118.Value
-    }
-    data_table[119] = {
-        desc = v119.Description,
-        val = v119.Value
-    }
-    data_table[120] = {
-        desc = v120.Description,
-        val = v120.Value
-    }
-    data_table[121] = {
-        desc = v121.Description,
-        val = v121.Value
-    }
-    data_table[122] = {
-        desc = v122.Description,
-        val = v122.Value
-    }
-    data_table[123] = {
-        desc = v123.Description,
-        val = v123.Value
-    }
-    data_table[124] = {
-        desc = v124.Description,
-        val = v124.Value
-    }
-    data_table[125] = {
-        desc = v125.Description,
-        val = v125.Value
-    }
-    data_table[126] = {
-        desc = v126.Description,
-        val = v126.Value
-    }
-    data_table[127] = {
-        desc = v127.Description,
-        val = v127.Value
-    }
-    data_table[128] = {
-        desc = v128.Description,
-        val = v128.Value
-    }
-    data_table[129] = {
-        desc = v129.Description,
-        val = v129.Value
-    }
-    data_table[130] = {
-        desc = v130.Description,
-        val = v130.Value
-    }
-    data_table[131] = {
-        desc = v131.Description,
-        val = v131.Value
-    }
-    data_table[132] = {
-        desc = v132.Description,
-        val = v132.Value
-    }
-    data_table[133] = {
-        desc = v133.Description,
-        val = v133.Value
-    }
-    data_table[134] = {
-        desc = v134.Description,
-        val = v134.Value
-    }
-    data_table[135] = {
-        desc = v135.Description,
-        val = v135.Value
-    }
-    data_table[136] = {
-        desc = v136.Description,
-        val = v136.Value
-    }
-    data_table[137] = {
-        desc = v137.Description,
-        val = v137.Value
-    }
-    data_table[138] = {
-        desc = v138.Description,
-        val = v138.Value
-    }
-    data_table[139] = {
-        desc = v139.Description,
-        val = v139.Value
-    }
-    data_table[140] = {
-        desc = v140.Description,
-        val = v140.Value
-    }
-    data_table[141] = {
-        desc = v141.Description,
-        val = v141.Value
-    }
-    data_table[142] = {
-        desc = v142.Description,
-        val = v142.Value
-    }
-    data_table[143] = {
-        desc = v143.Description,
-        val = v143.Value
-    }
-    data_table[144] = {
-        desc = v144.Description,
-        val = v144.Value
-    }
-    data_table[145] = {
-        desc = v145.Description,
-        val = v145.Value
-    }
-    data_table[146] = {
-        desc = v146.Description,
-        val = v146.Value
-    }
-    data_table[147] = {
-        desc = v147.Description,
-        val = v147.Value
-    }
-    data_table[148] = {
-        desc = v148.Description,
-        val = v148.Value
-    }
-    data_table[149] = {
-        desc = v149.Description,
-        val = v149.Value
-    }
-    data_table[150] = {
-        desc = v150.Description,
-        val = v150.Value
-    }
-    data_table[151] = {
-        desc = v151.Description,
-        val = v151.Value
-    }
-    data_table[152] = {
-        desc = v152.Description,
-        val = v152.Value
-    }
-    data_table[153] = {
-        desc = v153.Description,
-        val = v153.Value
-    }
-    data_table[154] = {
-        desc = v154.Description,
-        val = v154.Value
-    }
-    data_table[155] = {
-        desc = v155.Description,
-        val = v155.Value
-    }
-    data_table[156] = {
-        desc = v156.Description,
-        val = v156.Value
-    }
-    data_table[157] = {
-        desc = v157.Description,
-        val = v157.Value
-    }
-    data_table[158] = {
-        desc = v158.Description,
-        val = v158.Value
-    }
-    data_table[159] = {
-        desc = v159.Description,
-        val = v159.Value
-    }
-    data_table[160] = {
-        desc = v160.Description,
-        val = v160.Value
-    }
-    data_table[161] = {
-        desc = v161.Description,
-        val = v161.Value
-    }
-    data_table[162] = {
-        desc = v162.Description,
-        val = v162.Value
-    }
-    data_table[163] = {
-        desc = v163.Description,
-        val = v163.Value
-    }
-    data_table[164] = {
-        desc = v164.Description,
-        val = v164.Value
-    }
-    data_table[165] = {
-        desc = v165.Description,
-        val = v165.Value
-    }
-    data_table[166] = {
-        desc = v166.Description,
-        val = v166.Value
-    }
-    data_table[167] = {
-        desc = v167.Description,
-        val = v167.Value
-    }
-    data_table[168] = {
-        desc = v168.Description,
-        val = v168.Value
-    }
-    data_table[169] = {
-        desc = v169.Description,
-        val = v169.Value
-    }
-    data_table[170] = {
-        desc = v170.Description,
-        val = v170.Value
-    }
-    data_table[171] = {
-        desc = v171.Description,
-        val = v171.Value
-    }
-    data_table[172] = {
-        desc = v172.Description,
-        val = v172.Value
-    }
-    data_table[173] = {
-        desc = v173.Description,
-        val = v173.Value
-    }
-    data_table[174] = {
-        desc = v174.Description,
-        val = v174.Value
-    }
-    data_table[175] = {
-        desc = v175.Description,
-        val = v175.Value
-    }
-    data_table[176] = {
-        desc = v176.Description,
-        val = v176.Value
-    }
-    data_table[177] = {
-        desc = v177.Description,
-        val = v177.Value
-    }
-    data_table[178] = {
-        desc = v178.Description,
-        val = v178.Value
-    }
-    data_table[179] = {
-        desc = v179.Description,
-        val = v179.Value
-    }
-    data_table[180] = {
-        desc = v180.Description,
-        val = v180.Value
-    }
-    data_table[181] = {
-        desc = v181.Description,
-        val = v181.Value
-    }
-    data_table[182] = {
-        desc = v182.Description,
-        val = v182.Value
-    }
-    data_table[183] = {
-        desc = v183.Description,
-        val = v183.Value
-    }
-    data_table[184] = {
-        desc = v184.Description,
-        val = v184.Value
-    }
-    data_table[185] = {
-        desc = v185.Description,
-        val = v185.Value
-    }
-    data_table[186] = {
-        desc = v186.Description,
-        val = v186.Value
-    }
-    data_table[187] = {
-        desc = v187.Description,
-        val = v187.Value
-    }
-    data_table[188] = {
-        desc = v188.Description,
-        val = v188.Value
-    }
-    data_table[189] = {
-        desc = v189.Description,
-        val = v189.Value
-    }
-    data_table[190] = {
-        desc = v190.Description,
-        val = v190.Value
-    }
-    data_table[191] = {
-        desc = v191.Description,
-        val = v191.Value
-    }
-    data_table[192] = {
-        desc = v192.Description,
-        val = v192.Value
-    }
-    data_table[193] = {
-        desc = v193.Description,
-        val = v193.Value
-    }
-    data_table[194] = {
-        desc = v194.Description,
-        val = v194.Value
-    }
-    data_table[195] = {
-        desc = v195.Description,
-        val = v195.Value
-    }
-    data_table[196] = {
-        desc = v196.Description,
-        val = v196.Value
-    }
-    data_table[197] = {
-        desc = v197.Description,
-        val = v197.Value
-    }
-    data_table[198] = {
-        desc = v198.Description,
-        val = v198.Value
-    }
-    data_table[199] = {
-        desc = v199.Description,
-        val = v199.Value
-    }
-    data_table[200] = {
-        desc = v200.Description,
-        val = v200.Value
-    }
-    data_table[201] = {
-        desc = v201.Description,
-        val = v201.Value
-    }
-    data_table[202] = {
-        desc = v202.Description,
-        val = v202.Value
-    }
-    data_table[203] = {
-        desc = v203.Description,
-        val = v203.Value
-    }
-    data_table[204] = {
-        desc = v204.Description,
-        val = v204.Value
-    }
-    data_table[205] = {
-        desc = v205.Description,
-        val = v205.Value
-    }
-    data_table[206] = {
-        desc = v206.Description,
-        val = v206.Value
-    }
-    data_table[207] = {
-        desc = v207.Description,
-        val = v207.Value
-    }
-    data_table[208] = {
-        desc = v208.Description,
-        val = v208.Value
-    }
-    data_table[209] = {
-        desc = v209.Description,
-        val = v209.Value
-    }
-    data_table[210] = {
-        desc = v210.Description,
-        val = v210.Value
-    }
-    data_table[211] = {
-        desc = v211.Description,
-        val = v211.Value
-    }
-    data_table[212] = {
-        desc = v212.Description,
-        val = v212.Value
-    }
-    data_table[213] = {
-        desc = v213.Description,
-        val = v213.Value
-    }
-    data_table[214] = {
-        desc = v214.Description,
-        val = v214.Value
-    }
-    data_table[215] = {
-        desc = v215.Description,
-        val = v215.Value
-    }
-    data_table[216] = {
-        desc = v216.Description,
-        val = v216.Value
-    }
-    data_table[217] = {
-        desc = v217.Description,
-        val = v217.Value
-    }
-    data_table[218] = {
-        desc = v218.Description,
-        val = v218.Value
-    }
-    data_table[219] = {
-        desc = v219.Description,
-        val = v219.Value
-    }
-    data_table[220] = {
-        desc = v220.Description,
-        val = v220.Value
-    }
-    data_table[221] = {
-        desc = v221.Description,
-        val = v221.Value
-    }
-    data_table[222] = {
-        desc = v222.Description,
-        val = v222.Value
-    }
-    data_table[223] = {
-        desc = v223.Description,
-        val = v223.Value
-    }
-    data_table[224] = {
-        desc = v224.Description,
-        val = v224.Value
-    }
-    data_table[225] = {
-        desc = v225.Description,
-        val = v225.Value
-    }
-    data_table[226] = {
-        desc = v226.Description,
-        val = v226.Value
-    }
-    data_table[227] = {
-        desc = v227.Description,
-        val = v227.Value
-    }
-    data_table[228] = {
-        desc = v228.Description,
-        val = v228.Value
-    }
-    data_table[229] = {
-        desc = v229.Description,
-        val = v229.Value
-    }
-    data_table[230] = {
-        desc = v230.Description,
-        val = v230.Value
-    }
-    data_table[231] = {
-        desc = v231.Description,
-        val = v231.Value
-    }
-    data_table[232] = {
-        desc = v232.Description,
-        val = v232.Value
-    }
-    data_table[233] = {
-        desc = v233.Description,
-        val = v233.Value
-    }
-    data_table[234] = {
-        desc = v234.Description,
-        val = v234.Value
-    }
-    data_table[235] = {
-        desc = v235.Description,
-        val = v235.Value
-    }
-    data_table[236] = {
-        desc = v236.Description,
-        val = v236.Value
-    }
-    data_table[237] = {
-        desc = v237.Description,
-        val = v237.Value
-    }
-    data_table[238] = {
-        desc = v238.Description,
-        val = v238.Value
-    }
-    data_table[239] = {
-        desc = v239.Description,
-        val = v239.Value
-    }
-    data_table[240] = {
-        desc = v240.Description,
-        val = v240.Value
-    }
-    data_table[241] = {
-        desc = v241.Description,
-        val = v241.Value
-    }
-    data_table[242] = {
-        desc = v242.Description,
-        val = v242.Value
-    }
-    data_table[243] = {
-        desc = v243.Description,
-        val = v243.Value
-    }
-    data_table[244] = {
-        desc = v244.Description,
-        val = v244.Value
-    }
-    data_table[245] = {
-        desc = v245.Description,
-        val = v245.Value
-    }
-    data_table[246] = {
-        desc = v246.Description,
-        val = v246.Value
-    }
-    data_table[247] = {
-        desc = v247.Description,
-        val = v247.Value
-    }
-    data_table[248] = {
-        desc = v248.Description,
-        val = v248.Value
-    }
-    data_table[249] = {
-        desc = v249.Description,
-        val = v249.Value
-    }
-    data_table[250] = {
-        desc = v250.Description,
-        val = v250.Value
-    }
-    data_table[251] = {
-        desc = v251.Description,
-        val = v251.Value
-    }
-    data_table[252] = {
-        desc = v252.Description,
-        val = v252.Value
-    }
-    data_table[253] = {
-        desc = v253.Description,
-        val = v253.Value
-    }
-    data_table[254] = {
-        desc = v254.Description,
-        val = v254.Value
-    }
-    data_table[255] = {
-        desc = v255.Description,
-        val = v255.Value
-    }
-    data_table[256] = {
-        desc = v256.Description,
-        val = v256.Value
-    }
-    data_table[257] = {
-        desc = v257.Description,
-        val = v257.Value
-    }
-    data_table[258] = {
-        desc = v258.Description,
-        val = v258.Value
-    }
-    data_table[259] = {
-        desc = v259.Description,
-        val = v259.Value
-    }
-    data_table[260] = {
-        desc = v260.Description,
-        val = v260.Value
-    }
-    data_table[261] = {
-        desc = v261.Description,
-        val = v261.Value
-    }
-    data_table[262] = {
-        desc = v262.Description,
-        val = v262.Value
-    }
-    data_table[263] = {
-        desc = v263.Description,
-        val = v263.Value
-    }
-    data_table[264] = {
-        desc = v264.Description,
-        val = v264.Value
-    }
-    data_table[265] = {
-        desc = v265.Description,
-        val = v265.Value
-    }
-    data_table[266] = {
-        desc = v266.Description,
-        val = v266.Value
-    }
-    data_table[267] = {
-        desc = v267.Description,
-        val = v267.Value
-    }
-    data_table[268] = {
-        desc = v268.Description,
-        val = v268.Value
-    }
-    data_table[269] = {
-        desc = v269.Description,
-        val = v269.Value
-    }
-    data_table[270] = {
-        desc = v270.Description,
-        val = v270.Value
-    }
-    data_table[271] = {
-        desc = v271.Description,
-        val = v271.Value
-    }
-    data_table[272] = {
-        desc = v272.Description,
-        val = v272.Value
-    }
-    data_table[273] = {
-        desc = v273.Description,
-        val = v273.Value
-    }
-    data_table[274] = {
-        desc = v274.Description,
-        val = v274.Value
-    }
-    data_table[275] = {
-        desc = v275.Description,
-        val = v275.Value
-    }
-    data_table[276] = {
-        desc = v276.Description,
-        val = v276.Value
-    }
-    data_table[277] = {
-        desc = v277.Description,
-        val = v277.Value
-    }
-    data_table[278] = {
-        desc = v278.Description,
-        val = v278.Value
-    }
-    data_table[279] = {
-        desc = v279.Description,
-        val = v279.Value
-    }
-    data_table[280] = {
-        desc = v280.Description,
-        val = v280.Value
-    }
-    data_table[281] = {
-        desc = v281.Description,
-        val = v281.Value
-    }
-    data_table[282] = {
-        desc = v282.Description,
-        val = v282.Value
-    }
-    data_table[283] = {
-        desc = v283.Description,
-        val = v283.Value
-    }
-    data_table[284] = {
-        desc = v284.Description,
-        val = v284.Value
-    }
-    data_table[285] = {
-        desc = v285.Description,
-        val = v285.Value
-    }
-    data_table[286] = {
-        desc = v286.Description,
-        val = v286.Value
-    }
-    data_table[287] = {
-        desc = v287.Description,
-        val = v287.Value
-    }
-    data_table[288] = {
-        desc = v288.Description,
-        val = v288.Value
-    }
-    data_table[289] = {
-        desc = v289.Description,
-        val = v289.Value
-    }
-    data_table[290] = {
-        desc = v290.Description,
-        val = v290.Value
-    }
-    data_table[291] = {
-        desc = v291.Description,
-        val = v291.Value
-    }
-    data_table[292] = {
-        desc = v292.Description,
-        val = v292.Value
-    }
-    data_table[293] = {
-        desc = v293.Description,
-        val = v293.Value
-    }
-    data_table[294] = {
-        desc = v294.Description,
-        val = v294.Value
-    }
-    data_table[295] = {
-        desc = v295.Description,
-        val = v295.Value
-    }
-    data_table[296] = {
-        desc = v296.Description,
-        val = v296.Value
-    }
-    data_table[297] = {
-        desc = v297.Description,
-        val = v297.Value
-    }
-    data_table[298] = {
-        desc = v298.Description,
-        val = v298.Value
-    }
-    data_table[299] = {
-        desc = v299.Description,
-        val = v299.Value
-    }
-    data_table[300] = {
-        desc = v300.Description,
-        val = v300.Value
-    }
-    data_table[301] = {
-        desc = v301.Description,
-        val = v301.Value
-    }
-    data_table[302] = {
-        desc = v302.Description,
-        val = v302.Value
-    }
-    data_table[303] = {
-        desc = v303.Description,
-        val = v303.Value
-    }
-    data_table[304] = {
-        desc = v304.Description,
-        val = v304.Value
-    }
-    data_table[305] = {
-        desc = v305.Description,
-        val = v305.Value
-    }
-    data_table[306] = {
-        desc = v306.Description,
-        val = v306.Value
-    }
-    data_table[307] = {
-        desc = v307.Description,
-        val = v307.Value
-    }
-    data_table[308] = {
-        desc = v308.Description,
-        val = v308.Value
-    }
-    data_table[309] = {
-        desc = v309.Description,
-        val = v309.Value
-    }
-    data_table[310] = {
-        desc = v310.Description,
-        val = v310.Value
-    }
-    data_table[311] = {
-        desc = v311.Description,
-        val = v311.Value
-    }
-    data_table[312] = {
-        desc = v312.Description,
-        val = v312.Value
-    }
-    data_table[313] = {
-        desc = v313.Description,
-        val = v313.Value
-    }
-    data_table[314] = {
-        desc = v314.Description,
-        val = v314.Value
-    }
-    data_table[315] = {
-        desc = v315.Description,
-        val = v315.Value
-    }
-    data_table[316] = {
-        desc = v316.Description,
-        val = v316.Value
-    }
-    data_table[317] = {
-        desc = v317.Description,
-        val = v317.Value
-    }
-    data_table[318] = {
-        desc = v318.Description,
-        val = v318.Value
-    }
-    data_table[319] = {
-        desc = v319.Description,
-        val = v319.Value
-    }
-    data_table[320] = {
-        desc = v320.Description,
-        val = v320.Value
-    }
-    data_table[321] = {
-        desc = v321.Description,
-        val = v321.Value
-    }
-    data_table[322] = {
-        desc = v322.Description,
-        val = v322.Value
-    }
-    data_table[323] = {
-        desc = v323.Description,
-        val = v323.Value
-    }
-    data_table[324] = {
-        desc = v324.Description,
-        val = v324.Value
-    }
-    data_table[325] = {
-        desc = v325.Description,
-        val = v325.Value
-    }
-    data_table[326] = {
-        desc = v326.Description,
-        val = v326.Value
-    }
-    data_table[327] = {
-        desc = v327.Description,
-        val = v327.Value
-    }
-    data_table[328] = {
-        desc = v328.Description,
-        val = v328.Value
-    }
-    data_table[329] = {
-        desc = v329.Description,
-        val = v329.Value
-    }
-    data_table[330] = {
-        desc = v330.Description,
-        val = v330.Value
-    }
-    data_table[331] = {
-        desc = v331.Description,
-        val = v331.Value
-    }
-    data_table[332] = {
-        desc = v332.Description,
-        val = v332.Value
-    }
-    data_table[333] = {
-        desc = v333.Description,
-        val = v333.Value
-    }
-    data_table[334] = {
-        desc = v334.Description,
-        val = v334.Value
-    }
-    data_table[335] = {
-        desc = v335.Description,
-        val = v335.Value
-    }
-    data_table[336] = {
-        desc = v336.Description,
-        val = v336.Value
-    }
-    data_table[337] = {
-        desc = v337.Description,
-        val = v337.Value
-    }
-    data_table[338] = {
-        desc = v338.Description,
-        val = v338.Value
-    }
-    data_table[339] = {
-        desc = v339.Description,
-        val = v339.Value
-    }
-    data_table[340] = {
-        desc = v340.Description,
-        val = v340.Value
-    }
-    data_table[341] = {
-        desc = v341.Description,
-        val = v341.Value
-    }
-    data_table[342] = {
-        desc = v342.Description,
-        val = v342.Value
-    }
-    data_table[343] = {
-        desc = v343.Description,
-        val = v343.Value
-    }
-    data_table[344] = {
-        desc = v344.Description,
-        val = v344.Value
-    }
-    data_table[345] = {
-        desc = v345.Description,
-        val = v345.Value
-    }
-    data_table[346] = {
-        desc = v346.Description,
-        val = v346.Value
-    }
-    data_table[347] = {
-        desc = v347.Description,
-        val = v347.Value
-    }
-    data_table[348] = {
-        desc = v348.Description,
-        val = v348.Value
-    }
-    data_table[349] = {
-        desc = v349.Description,
-        val = v349.Value
-    }
-    data_table[350] = {
-        desc = v350.Description,
-        val = v350.Value
-    }
-    data_table[351] = {
-        desc = v351.Description,
-        val = v351.Value
-    }
-    data_table[352] = {
-        desc = v352.Description,
-        val = v352.Value
-    }
-    data_table[353] = {
-        desc = v353.Description,
-        val = v353.Value
-    }
-    data_table[354] = {
-        desc = v354.Description,
-        val = v354.Value
-    }
-    data_table[355] = {
-        desc = v355.Description,
-        val = v355.Value
-    }
-    data_table[356] = {
-        desc = v356.Description,
-        val = v356.Value
-    }
-    data_table[357] = {
-        desc = v357.Description,
-        val = v357.Value
-    }
-    data_table[358] = {
-        desc = v358.Description,
-        val = v358.Value
-    }
-    data_table[359] = {
-        desc = v359.Description,
-        val = v359.Value
-    }
-    data_table[360] = {
-        desc = v360.Description,
-        val = v360.Value
-    }
-    data_table[361] = {
-        desc = v361.Description,
-        val = v361.Value
-    }
-    data_table[362] = {
-        desc = v362.Description,
-        val = v362.Value
-    }
-    data_table[363] = {
-        desc = v363.Description,
-        val = v363.Value
-    }
-    data_table[364] = {
-        desc = v364.Description,
-        val = v364.Value
-    }
-    data_table[365] = {
-        desc = v365.Description,
-        val = v365.Value
-    }
-    data_table[366] = {
-        desc = v366.Description,
-        val = v366.Value
-    }
-    data_table[367] = {
-        desc = v367.Description,
-        val = v367.Value
-    }
-    data_table[368] = {
-        desc = v368.Description,
-        val = v368.Value
-    }
-    data_table[369] = {
-        desc = v369.Description,
-        val = v369.Value
-    }
-    data_table[370] = {
-        desc = v370.Description,
-        val = v370.Value
-    }
-    data_table[371] = {
-        desc = v371.Description,
-        val = v371.Value
-    }
-    data_table[372] = {
-        desc = v372.Description,
-        val = v372.Value
-    }
-    data_table[373] = {
-        desc = v373.Description,
-        val = v373.Value
-    }
-    data_table[374] = {
-        desc = v374.Description,
-        val = v374.Value
-    }
-    data_table[375] = {
-        desc = v375.Description,
-        val = v375.Value
-    }
-    data_table[376] = {
-        desc = v376.Description,
-        val = v376.Value
-    }
-    data_table[377] = {
-        desc = v377.Description,
-        val = v377.Value
-    }
-    data_table[378] = {
-        desc = v378.Description,
-        val = v378.Value
-    }
-    data_table[379] = {
-        desc = v379.Description,
-        val = v379.Value
-    }
-    data_table[380] = {
-        desc = v380.Description,
-        val = v380.Value
-    }
-    data_table[381] = {
-        desc = v381.Description,
-        val = v381.Value
-    }
-    data_table[382] = {
-        desc = v382.Description,
-        val = v382.Value
-    }
-    data_table[383] = {
-        desc = v383.Description,
-        val = v383.Value
-    }
-    data_table[384] = {
-        desc = v384.Description,
-        val = v384.Value
-    }
-    data_table[385] = {
-        desc = v385.Description,
-        val = v385.Value
-    }
-    data_table[386] = {
-        desc = v386.Description,
-        val = v386.Value
-    }
-    data_table[387] = {
-        desc = v387.Description,
-        val = v387.Value
-    }
-    data_table[388] = {
-        desc = v388.Description,
-        val = v388.Value
-    }
-    data_table[389] = {
-        desc = v389.Description,
-        val = v389.Value
-    }
-    data_table[390] = {
-        desc = v390.Description,
-        val = v390.Value
-    }
-    data_table[391] = {
-        desc = v391.Description,
-        val = v391.Value
-    }
-    data_table[392] = {
-        desc = v392.Description,
-        val = v392.Value
-    }
-    data_table[393] = {
-        desc = v393.Description,
-        val = v393.Value
-    }
-    data_table[394] = {
-        desc = v394.Description,
-        val = v394.Value
-    }
-    data_table[395] = {
-        desc = v395.Description,
-        val = v395.Value
-    }
-    data_table[396] = {
-        desc = v396.Description,
-        val = v396.Value
-    }
-    data_table[397] = {
-        desc = v397.Description,
-        val = v397.Value
-    }
-    data_table[398] = {
-        desc = v398.Description,
-        val = v398.Value
-    }
-    data_table[399] = {
-        desc = v399.Description,
-        val = v399.Value
-    }
-    data_table[400] = {
-        desc = v400.Description,
-        val = v400.Value
-    }
-    data_table[401] = {
-        desc = v401.Description,
-        val = v401.Value
-    }
-    data_table[402] = {
-        desc = v402.Description,
-        val = v402.Value
-    }
-    data_table[403] = {
-        desc = v403.Description,
-        val = v403.Value
-    }
-    data_table[404] = {
-        desc = v404.Description,
-        val = v404.Value
-    }
-    data_table[405] = {
-        desc = v405.Description,
-        val = v405.Value
-    }
-    data_table[406] = {
-        desc = v406.Description,
-        val = v406.Value
-    }
-    data_table[407] = {
-        desc = v407.Description,
-        val = v407.Value
-    }
-    data_table[408] = {
-        desc = v408.Description,
-        val = v408.Value
-    }
-    data_table[409] = {
-        desc = v409.Description,
-        val = v409.Value
-    }
-    data_table[410] = {
-        desc = v410.Description,
-        val = v410.Value
-    }
-    data_table[411] = {
-        desc = v411.Description,
-        val = v411.Value
-    }
-    data_table[412] = {
-        desc = v412.Description,
-        val = v412.Value
-    }
-    data_table[413] = {
-        desc = v413.Description,
-        val = v413.Value
-    }
-    data_table[414] = {
-        desc = v414.Description,
-        val = v414.Value
-    }
-    data_table[415] = {
-        desc = v415.Description,
-        val = v415.Value
-    }
-    data_table[416] = {
-        desc = v416.Description,
-        val = v416.Value
-    }
-    data_table[417] = {
-        desc = v417.Description,
-        val = v417.Value
-    }
-    data_table[418] = {
-        desc = v418.Description,
-        val = v418.Value
-    }
-    data_table[419] = {
-        desc = v419.Description,
-        val = v419.Value
-    }
-    data_table[420] = {
-        desc = v420.Description,
-        val = v420.Value
-    }
-    data_table[421] = {
-        desc = v421.Description,
-        val = v421.Value
-    }
-    data_table[422] = {
-        desc = v422.Description,
-        val = v422.Value
-    }
-    data_table[423] = {
-        desc = v423.Description,
-        val = v423.Value
-    }
-    data_table[424] = {
-        desc = v424.Description,
-        val = v424.Value
-    }
-    data_table[425] = {
-        desc = v425.Description,
-        val = v425.Value
-    }
-    data_table[426] = {
-        desc = v426.Description,
-        val = v426.Value
-    }
-    data_table[427] = {
-        desc = v427.Description,
-        val = v427.Value
-    }
-    data_table[428] = {
-        desc = v428.Description,
-        val = v428.Value
-    }
-    data_table[429] = {
-        desc = v429.Description,
-        val = v429.Value
-    }
-    data_table[430] = {
-        desc = v430.Description,
-        val = v430.Value
-    }
-    data_table[431] = {
-        desc = v431.Description,
-        val = v431.Value
-    }
-    data_table[432] = {
-        desc = v432.Description,
-        val = v432.Value
-    }
-    data_table[433] = {
-        desc = v433.Description,
-        val = v433.Value
-    }
-    data_table[434] = {
-        desc = v434.Description,
-        val = v434.Value
-    }
-    data_table[435] = {
-        desc = v435.Description,
-        val = v435.Value
-    }
-    data_table[436] = {
-        desc = v436.Description,
-        val = v436.Value
-    }
-    data_table[437] = {
-        desc = v437.Description,
-        val = v437.Value
-    }
-    data_table[438] = {
-        desc = v438.Description,
-        val = v438.Value
-    }
-    data_table[439] = {
-        desc = v439.Description,
-        val = v439.Value
-    }
-    data_table[440] = {
-        desc = v440.Description,
-        val = v440.Value
-    }
-    data_table[441] = {
-        desc = v441.Description,
-        val = v441.Value
-    }
-    data_table[442] = {
-        desc = v442.Description,
-        val = v442.Value
-    }
-    data_table[443] = {
-        desc = v443.Description,
-        val = v443.Value
-    }
-    data_table[444] = {
-        desc = v444.Description,
-        val = v444.Value
-    }
-    data_table[445] = {
-        desc = v445.Description,
-        val = v445.Value
-    }
-    data_table[446] = {
-        desc = v446.Description,
-        val = v446.Value
-    }
-    data_table[447] = {
-        desc = v447.Description,
-        val = v447.Value
-    }
-    data_table[448] = {
-        desc = v448.Description,
-        val = v448.Value
-    }
-    data_table[449] = {
-        desc = v449.Description,
-        val = v449.Value
-    }
-    data_table[450] = {
-        desc = v450.Description,
-        val = v450.Value
-    }
-    data_table[451] = {
-        desc = v451.Description,
-        val = v451.Value
-    }
-    data_table[452] = {
-        desc = v452.Description,
-        val = v452.Value
-    }
-    data_table[453] = {
-        desc = v453.Description,
-        val = v453.Value
-    }
-    data_table[454] = {
-        desc = v454.Description,
-        val = v454.Value
-    }
-    data_table[455] = {
-        desc = v455.Description,
-        val = v455.Value
-    }
-    data_table[456] = {
-        desc = v456.Description,
-        val = v456.Value
-    }
-    data_table[457] = {
-        desc = v457.Description,
-        val = v457.Value
-    }
-    data_table[458] = {
-        desc = v458.Description,
-        val = v458.Value
-    }
-    data_table[459] = {
-        desc = v459.Description,
-        val = v459.Value
-    }
-    data_table[460] = {
-        desc = v460.Description,
-        val = v460.Value
-    }
-    data_table[461] = {
-        desc = v461.Description,
-        val = v461.Value
-    }
-    data_table[462] = {
-        desc = v462.Description,
-        val = v462.Value
-    }
-    data_table[463] = {
-        desc = v463.Description,
-        val = v463.Value
-    }
-    data_table[464] = {
-        desc = v464.Description,
-        val = v464.Value
-    }
-    data_table[465] = {
-        desc = v465.Description,
-        val = v465.Value
-    }
-    data_table[466] = {
-        desc = v466.Description,
-        val = v466.Value
-    }
-    data_table[467] = {
-        desc = v467.Description,
-        val = v467.Value
-    }
-    data_table[468] = {
-        desc = v468.Description,
-        val = v468.Value
-    }
-    data_table[469] = {
-        desc = v469.Description,
-        val = v469.Value
-    }
-    data_table[470] = {
-        desc = v470.Description,
-        val = v470.Value
-    }
-    data_table[471] = {
-        desc = v471.Description,
-        val = v471.Value
-    }
-    data_table[472] = {
-        desc = v472.Description,
-        val = v472.Value
-    }
-    data_table[473] = {
-        desc = v473.Description,
-        val = v473.Value
-    }
-    data_table[474] = {
-        desc = v474.Description,
-        val = v474.Value
-    }
-    data_table[475] = {
-        desc = v475.Description,
-        val = v475.Value
-    }
-    data_table[476] = {
-        desc = v476.Description,
-        val = v476.Value
-    }
-    data_table[477] = {
-        desc = v477.Description,
-        val = v477.Value
-    }
-    data_table[478] = {
-        desc = v478.Description,
-        val = v478.Value
-    }
-    data_table[479] = {
-        desc = v479.Description,
-        val = v479.Value
-    }
-    data_table[480] = {
-        desc = v480.Description,
-        val = v480.Value
-    }
-    data_table[481] = {
-        desc = v481.Description,
-        val = v481.Value
-    }
-    data_table[482] = {
-        desc = v482.Description,
-        val = v482.Value
-    }
-    data_table[483] = {
-        desc = v483.Description,
-        val = v483.Value
-    }
-    data_table[484] = {
-        desc = v484.Description,
-        val = v484.Value
-    }
-    data_table[485] = {
-        desc = v485.Description,
-        val = v485.Value
-    }
-    data_table[486] = {
-        desc = v486.Description,
-        val = v486.Value
-    }
-    data_table[487] = {
-        desc = v487.Description,
-        val = v487.Value
-    }
-    data_table[488] = {
-        desc = v488.Description,
-        val = v488.Value
-    }
-    data_table[489] = {
-        desc = v489.Description,
-        val = v489.Value
-    }
-    data_table[490] = {
-        desc = v490.Description,
-        val = v490.Value
-    }
-    data_table[491] = {
-        desc = v491.Description,
-        val = v491.Value
-    }
-    data_table[492] = {
-        desc = v492.Description,
-        val = v492.Value
-    }
-    data_table[493] = {
-        desc = v493.Description,
-        val = v493.Value
-    }
-    data_table[494] = {
-        desc = v494.Description,
-        val = v494.Value
-    }
-    data_table[495] = {
-        desc = v495.Description,
-        val = v495.Value
-    }
-    data_table[496] = {
-        desc = v496.Description,
-        val = v496.Value
-    }
-    data_table[497] = {
-        desc = v497.Description,
-        val = v497.Value
-    }
-    data_table[498] = {
-        desc = v498.Description,
-        val = v498.Value
-    }
-    data_table[499] = {
-        desc = v499.Description,
-        val = v499.Value
-    }
-    data_table[500] = {
-        desc = v500.Description,
-        val = v500.Value
-    }
-    data_table[501] = {
-        desc = v501.Description,
-        val = v501.Value
-    }
-    data_table[502] = {
-        desc = v502.Description,
-        val = v502.Value
-    }
-    data_table[503] = {
-        desc = v503.Description,
-        val = v503.Value
-    }
-    data_table[504] = {
-        desc = v504.Description,
-        val = v504.Value
-    }
-    data_table[505] = {
-        desc = v505.Description,
-        val = v505.Value
-    }
-    data_table[506] = {
-        desc = v506.Description,
-        val = v506.Value
-    }
-    data_table[507] = {
-        desc = v507.Description,
-        val = v507.Value
-    }
-    data_table[508] = {
-        desc = v508.Description,
-        val = v508.Value
-    }
-    data_table[509] = {
-        desc = v509.Description,
-        val = v509.Value
-    }
-    data_table[510] = {
-        desc = v510.Description,
-        val = v510.Value
-    }
-    data_table[511] = {
-        desc = v511.Description,
-        val = v511.Value
-    }
-    data_table[512] = {
-        desc = v512.Description,
-        val = v512.Value
-    }
-    data_table[513] = {
-        desc = v513.Description,
-        val = v513.Value
-    }
-    data_table[514] = {
-        desc = v514.Description,
-        val = v514.Value
-    }
-    data_table[515] = {
-        desc = v515.Description,
-        val = v515.Value
-    }
-    data_table[516] = {
-        desc = v516.Description,
-        val = v516.Value
-    }
-    data_table[517] = {
-        desc = v517.Description,
-        val = v517.Value
-    }
-    data_table[518] = {
-        desc = v518.Description,
-        val = v518.Value
-    }
-    data_table[519] = {
-        desc = v519.Description,
-        val = v519.Value
-    }
-    data_table[520] = {
-        desc = v520.Description,
-        val = v520.Value
-    }
-    data_table[521] = {
-        desc = v521.Description,
-        val = v521.Value
-    }
-    data_table[522] = {
-        desc = v522.Description,
-        val = v522.Value
-    }
-    data_table[523] = {
-        desc = v523.Description,
-        val = v523.Value
-    }
-    data_table[524] = {
-        desc = v524.Description,
-        val = v524.Value
-    }
-    data_table[525] = {
-        desc = v525.Description,
-        val = v525.Value
-    }
-    data_table[526] = {
-        desc = v526.Description,
-        val = v526.Value
-    }
-    data_table[527] = {
-        desc = v527.Description,
-        val = v527.Value
-    }
-    data_table[528] = {
-        desc = v528.Description,
-        val = v528.Value
-    }
-    data_table[529] = {
-        desc = v529.Description,
-        val = v529.Value
-    }
-    data_table[530] = {
-        desc = v530.Description,
-        val = v530.Value
-    }
-    data_table[531] = {
-        desc = v531.Description,
-        val = v531.Value
-    }
-    data_table[532] = {
-        desc = v532.Description,
-        val = v532.Value
-    }
-    data_table[533] = {
-        desc = v533.Description,
-        val = v533.Value
-    }
-    data_table[534] = {
-        desc = v534.Description,
-        val = v534.Value
-    }
-    data_table[535] = {
-        desc = v535.Description,
-        val = v535.Value
-    }
-    data_table[536] = {
-        desc = v536.Description,
-        val = v536.Value
-    }
-    data_table[537] = {
-        desc = v537.Description,
-        val = v537.Value
-    }
-    data_table[538] = {
-        desc = v538.Description,
-        val = v538.Value
-    }
-    data_table[539] = {
-        desc = v539.Description,
-        val = v539.Value
-    }
-    data_table[540] = {
-        desc = v540.Description,
-        val = v540.Value
-    }
-    data_table[541] = {
-        desc = v541.Description,
-        val = v541.Value
-    }
-    data_table[542] = {
-        desc = v542.Description,
-        val = v542.Value
-    }
-    data_table[543] = {
-        desc = v543.Description,
-        val = v543.Value
-    }
-    data_table[544] = {
-        desc = v544.Description,
-        val = v544.Value
-    }
-    data_table[545] = {
-        desc = v545.Description,
-        val = v545.Value
-    }
-    data_table[546] = {
-        desc = v546.Description,
-        val = v546.Value
-    }
-    data_table[547] = {
-        desc = v547.Description,
-        val = v547.Value
-    }
-    data_table[548] = {
-        desc = v548.Description,
-        val = v548.Value
-    }
-    data_table[549] = {
-        desc = v549.Description,
-        val = v549.Value
-    }
-    data_table[550] = {
-        desc = v550.Description,
-        val = v550.Value
-    }
-    data_table[551] = {
-        desc = v551.Description,
-        val = v551.Value
-    }
-    data_table[552] = {
-        desc = v552.Description,
-        val = v552.Value
-    }
-    data_table[553] = {
-        desc = v553.Description,
-        val = v553.Value
-    }
-    data_table[554] = {
-        desc = v554.Description,
-        val = v554.Value
-    }
-    data_table[555] = {
-        desc = v555.Description,
-        val = v555.Value
-    }
-    data_table[556] = {
-        desc = v556.Description,
-        val = v556.Value
-    }
-    data_table[557] = {
-        desc = v557.Description,
-        val = v557.Value
-    }
-    data_table[558] = {
-        desc = v558.Description,
-        val = v558.Value
-    }
-    v0_prev = v0.Value
-    csv_write(outPath, data_table)
+  data_table[0] = {desc = v0.Description , val = v0.Value}
+  data_table[1] = {desc = v1.Description , val = v1.Value}
+  data_table[2] = {desc = v2.Description , val = v2.Value}
+  data_table[3] = {desc = v3.Description , val = v3.Value}
+  data_table[4] = {desc = v4.Description , val = v4.Value}
+  data_table[5] = {desc = v5.Description , val = v5.Value}
+  data_table[6] = {desc = v6.Description , val = v6.Value}
+  data_table[7] = {desc = v7.Description , val = v7.Value}
+  data_table[8] = {desc = v8.Description , val = v8.Value}
+  data_table[9] = {desc = v9.Description , val = v9.Value}
+  data_table[10] = {desc = v10.Description , val = v10.Value}
+  data_table[11] = {desc = v11.Description , val = v11.Value}
+  data_table[12] = {desc = v12.Description , val = v12.Value}
+  data_table[13] = {desc = v13.Description , val = v13.Value}
+  data_table[14] = {desc = v14.Description , val = v14.Value}
+  data_table[15] = {desc = v15.Description , val = v15.Value}
+  data_table[16] = {desc = v16.Description , val = v16.Value}
+  data_table[17] = {desc = v17.Description , val = v17.Value}
+  data_table[18] = {desc = v18.Description , val = v18.Value}
+  data_table[19] = {desc = v19.Description , val = v19.Value}
+  data_table[20] = {desc = v20.Description , val = v20.Value}
+  data_table[21] = {desc = v21.Description , val = v21.Value}
+  data_table[22] = {desc = v22.Description , val = v22.Value}
+  data_table[23] = {desc = v23.Description , val = v23.Value}
+  data_table[24] = {desc = v24.Description , val = v24.Value}
+  data_table[25] = {desc = v25.Description , val = v25.Value}
+  data_table[26] = {desc = v26.Description , val = v26.Value}
+  data_table[27] = {desc = v27.Description , val = v27.Value}
+  data_table[28] = {desc = v28.Description , val = v28.Value}
+  data_table[29] = {desc = v29.Description , val = v29.Value}
+  data_table[30] = {desc = v30.Description , val = v30.Value}
+  data_table[31] = {desc = v31.Description , val = v31.Value}
+  data_table[32] = {desc = v32.Description , val = v32.Value}
+  data_table[33] = {desc = v33.Description , val = v33.Value}
+  data_table[34] = {desc = v34.Description , val = v34.Value}
+  data_table[35] = {desc = v35.Description , val = v35.Value}
+  data_table[36] = {desc = v36.Description , val = v36.Value}
+  data_table[37] = {desc = v37.Description , val = v37.Value}
+  data_table[38] = {desc = v38.Description , val = v38.Value}
+  data_table[39] = {desc = v39.Description , val = v39.Value}
+  data_table[40] = {desc = v40.Description , val = v40.Value}
+  data_table[41] = {desc = v41.Description , val = v41.Value}
+  data_table[42] = {desc = v42.Description , val = v42.Value}
+  data_table[43] = {desc = v43.Description , val = v43.Value}
+  data_table[44] = {desc = v44.Description , val = v44.Value}
+  data_table[45] = {desc = v45.Description , val = v45.Value}
+  data_table[46] = {desc = v46.Description , val = v46.Value}
+  data_table[47] = {desc = v47.Description , val = v47.Value}
+  data_table[48] = {desc = v48.Description , val = v48.Value}
+  data_table[49] = {desc = v49.Description , val = v49.Value}
+  data_table[50] = {desc = v50.Description , val = v50.Value}
+  data_table[51] = {desc = v51.Description , val = v51.Value}
+  data_table[52] = {desc = v52.Description , val = v52.Value}
+  data_table[53] = {desc = v53.Description , val = v53.Value}
+  data_table[54] = {desc = v54.Description , val = v54.Value}
+  data_table[55] = {desc = v55.Description , val = v55.Value}
+  data_table[56] = {desc = v56.Description , val = v56.Value}
+  data_table[57] = {desc = v57.Description , val = v57.Value}
+  data_table[58] = {desc = v58.Description , val = v58.Value}
+  data_table[59] = {desc = v59.Description , val = v59.Value}
+  data_table[60] = {desc = v60.Description , val = v60.Value}
+  data_table[61] = {desc = v61.Description , val = v61.Value}
+  data_table[62] = {desc = v62.Description , val = v62.Value}
+  data_table[63] = {desc = v63.Description , val = v63.Value}
+  data_table[64] = {desc = v64.Description , val = v64.Value}
+  data_table[65] = {desc = v65.Description , val = v65.Value}
+  data_table[66] = {desc = v66.Description , val = v66.Value}
+  data_table[67] = {desc = v67.Description , val = v67.Value}
+  data_table[68] = {desc = v68.Description , val = v68.Value}
+  data_table[69] = {desc = v69.Description , val = v69.Value}
+  data_table[70] = {desc = v70.Description , val = v70.Value}
+  data_table[71] = {desc = v71.Description , val = v71.Value}
+  data_table[72] = {desc = v72.Description , val = v72.Value}
+  data_table[73] = {desc = v73.Description , val = v73.Value}
+  data_table[74] = {desc = v74.Description , val = v74.Value}
+  data_table[75] = {desc = v75.Description , val = v75.Value}
+  data_table[76] = {desc = v76.Description , val = v76.Value}
+  data_table[77] = {desc = v77.Description , val = v77.Value}
+  data_table[78] = {desc = v78.Description , val = v78.Value}
+  data_table[79] = {desc = v79.Description , val = v79.Value}
+  data_table[80] = {desc = v80.Description , val = v80.Value}
+  data_table[81] = {desc = v81.Description , val = v81.Value}
+  data_table[82] = {desc = v82.Description , val = v82.Value}
+  data_table[83] = {desc = v83.Description , val = v83.Value}
+  data_table[84] = {desc = v84.Description , val = v84.Value}
+  data_table[85] = {desc = v85.Description , val = v85.Value}
+  data_table[86] = {desc = v86.Description , val = v86.Value}
+  data_table[87] = {desc = v87.Description , val = v87.Value}
+  data_table[88] = {desc = v88.Description , val = v88.Value}
+  data_table[89] = {desc = v89.Description , val = v89.Value}
+  data_table[90] = {desc = v90.Description , val = v90.Value}
+  data_table[91] = {desc = v91.Description , val = v91.Value}
+  data_table[92] = {desc = v92.Description , val = v92.Value}
+  data_table[93] = {desc = v93.Description , val = v93.Value}
+  data_table[94] = {desc = v94.Description , val = v94.Value}
+  data_table[95] = {desc = v95.Description , val = v95.Value}
+  data_table[96] = {desc = v96.Description , val = v96.Value}
+  data_table[97] = {desc = v97.Description , val = v97.Value}
+  data_table[98] = {desc = v98.Description , val = v98.Value}
+  data_table[99] = {desc = v99.Description , val = v99.Value}
+  data_table[100] = {desc = v100.Description , val = v100.Value}
+  data_table[101] = {desc = v101.Description , val = v101.Value}
+  data_table[102] = {desc = v102.Description , val = v102.Value}
+  data_table[103] = {desc = v103.Description , val = v103.Value}
+  data_table[104] = {desc = v104.Description , val = v104.Value}
+  data_table[105] = {desc = v105.Description , val = v105.Value}
+  data_table[106] = {desc = v106.Description , val = v106.Value}
+  data_table[107] = {desc = v107.Description , val = v107.Value}
+  data_table[108] = {desc = v108.Description , val = v108.Value}
+  data_table[109] = {desc = v109.Description , val = v109.Value}
+  data_table[110] = {desc = v110.Description , val = v110.Value}
+  data_table[111] = {desc = v111.Description , val = v111.Value}
+  data_table[112] = {desc = v112.Description , val = v112.Value}
+  data_table[113] = {desc = v113.Description , val = v113.Value}
+  data_table[114] = {desc = v114.Description , val = v114.Value}
+  data_table[115] = {desc = v115.Description , val = v115.Value}
+  data_table[116] = {desc = v116.Description , val = v116.Value}
+  data_table[117] = {desc = v117.Description , val = v117.Value}
+  data_table[118] = {desc = v118.Description , val = v118.Value}
+  data_table[119] = {desc = v119.Description , val = v119.Value}
+  data_table[120] = {desc = v120.Description , val = v120.Value}
+  data_table[121] = {desc = v121.Description , val = v121.Value}
+  data_table[122] = {desc = v122.Description , val = v122.Value}
+  data_table[123] = {desc = v123.Description , val = v123.Value}
+  data_table[124] = {desc = v124.Description , val = v124.Value}
+  data_table[125] = {desc = v125.Description , val = v125.Value}
+  data_table[126] = {desc = v126.Description , val = v126.Value}
+  data_table[127] = {desc = v127.Description , val = v127.Value}
+  data_table[128] = {desc = v128.Description , val = v128.Value}
+  data_table[129] = {desc = v129.Description , val = v129.Value}
+  data_table[130] = {desc = v130.Description , val = v130.Value}
+  data_table[131] = {desc = v131.Description , val = v131.Value}
+  data_table[132] = {desc = v132.Description , val = v132.Value}
+  data_table[133] = {desc = v133.Description , val = v133.Value}
+  data_table[134] = {desc = v134.Description , val = v134.Value}
+  data_table[135] = {desc = v135.Description , val = v135.Value}
+  data_table[136] = {desc = v136.Description , val = v136.Value}
+  data_table[137] = {desc = v137.Description , val = v137.Value}
+  data_table[138] = {desc = v138.Description , val = v138.Value}
+  data_table[139] = {desc = v139.Description , val = v139.Value}
+  data_table[140] = {desc = v140.Description , val = v140.Value}
+  data_table[141] = {desc = v141.Description , val = v141.Value}
+  data_table[142] = {desc = v142.Description , val = v142.Value}
+  data_table[143] = {desc = v143.Description , val = v143.Value}
+  data_table[144] = {desc = v144.Description , val = v144.Value}
+  data_table[145] = {desc = v145.Description , val = v145.Value}
+  data_table[146] = {desc = v146.Description , val = v146.Value}
+  data_table[147] = {desc = v147.Description , val = v147.Value}
+  data_table[148] = {desc = v148.Description , val = v148.Value}
+  data_table[149] = {desc = v149.Description , val = v149.Value}
+  data_table[150] = {desc = v150.Description , val = v150.Value}
+  data_table[151] = {desc = v151.Description , val = v151.Value}
+  data_table[152] = {desc = v152.Description , val = v152.Value}
+  data_table[153] = {desc = v153.Description , val = v153.Value}
+  data_table[154] = {desc = v154.Description , val = v154.Value}
+  data_table[155] = {desc = v155.Description , val = v155.Value}
+  data_table[156] = {desc = v156.Description , val = v156.Value}
+  data_table[157] = {desc = v157.Description , val = v157.Value}
+  data_table[158] = {desc = v158.Description , val = v158.Value}
+  data_table[159] = {desc = v159.Description , val = v159.Value}
+  data_table[160] = {desc = v160.Description , val = v160.Value}
+  data_table[161] = {desc = v161.Description , val = v161.Value}
+  data_table[162] = {desc = v162.Description , val = v162.Value}
+  data_table[163] = {desc = v163.Description , val = v163.Value}
+  data_table[164] = {desc = v164.Description , val = v164.Value}
+  data_table[165] = {desc = v165.Description , val = v165.Value}
+  data_table[166] = {desc = v166.Description , val = v166.Value}
+  data_table[167] = {desc = v167.Description , val = v167.Value}
+  data_table[168] = {desc = v168.Description , val = v168.Value}
+  data_table[169] = {desc = v169.Description , val = v169.Value}
+  data_table[170] = {desc = v170.Description , val = v170.Value}
+  data_table[171] = {desc = v171.Description , val = v171.Value}
+  data_table[172] = {desc = v172.Description , val = v172.Value}
+  data_table[173] = {desc = v173.Description , val = v173.Value}
+  data_table[174] = {desc = v174.Description , val = v174.Value}
+  data_table[175] = {desc = v175.Description , val = v175.Value}
+  data_table[176] = {desc = v176.Description , val = v176.Value}
+  data_table[177] = {desc = v177.Description , val = v177.Value}
+  data_table[178] = {desc = v178.Description , val = v178.Value}
+  data_table[179] = {desc = v179.Description , val = v179.Value}
+  data_table[180] = {desc = v180.Description , val = v180.Value}
+  data_table[181] = {desc = v181.Description , val = v181.Value}
+  data_table[182] = {desc = v182.Description , val = v182.Value}
+  data_table[183] = {desc = v183.Description , val = v183.Value}
+  data_table[184] = {desc = v184.Description , val = v184.Value}
+  data_table[185] = {desc = v185.Description , val = v185.Value}
+  data_table[186] = {desc = v186.Description , val = v186.Value}
+  data_table[187] = {desc = v187.Description , val = v187.Value}
+  data_table[188] = {desc = v188.Description , val = v188.Value}
+  data_table[189] = {desc = v189.Description , val = v189.Value}
+  data_table[190] = {desc = v190.Description , val = v190.Value}
+  data_table[191] = {desc = v191.Description , val = v191.Value}
+  data_table[192] = {desc = v192.Description , val = v192.Value}
+  data_table[193] = {desc = v193.Description , val = v193.Value}
+  data_table[194] = {desc = v194.Description , val = v194.Value}
+  data_table[195] = {desc = v195.Description , val = v195.Value}
+  data_table[196] = {desc = v196.Description , val = v196.Value}
+  data_table[197] = {desc = v197.Description , val = v197.Value}
+  data_table[198] = {desc = v198.Description , val = v198.Value}
+  data_table[199] = {desc = v199.Description , val = v199.Value}
+  data_table[200] = {desc = v200.Description , val = v200.Value}
+  data_table[201] = {desc = v201.Description , val = v201.Value}
+  data_table[202] = {desc = v202.Description , val = v202.Value}
+  data_table[203] = {desc = v203.Description , val = v203.Value}
+  data_table[204] = {desc = v204.Description , val = v204.Value}
+  data_table[205] = {desc = v205.Description , val = v205.Value}
+  data_table[206] = {desc = v206.Description , val = v206.Value}
+  data_table[207] = {desc = v207.Description , val = v207.Value}
+  data_table[208] = {desc = v208.Description , val = v208.Value}
+  data_table[209] = {desc = v209.Description , val = v209.Value}
+  data_table[210] = {desc = v210.Description , val = v210.Value}
+  data_table[211] = {desc = v211.Description , val = v211.Value}
+  data_table[212] = {desc = v212.Description , val = v212.Value}
+  data_table[213] = {desc = v213.Description , val = v213.Value}
+  data_table[214] = {desc = v214.Description , val = v214.Value}
+  data_table[215] = {desc = v215.Description , val = v215.Value}
+  data_table[216] = {desc = v216.Description , val = v216.Value}
+  data_table[217] = {desc = v217.Description , val = v217.Value}
+  data_table[218] = {desc = v218.Description , val = v218.Value}
+  data_table[219] = {desc = v219.Description , val = v219.Value}
+  data_table[220] = {desc = v220.Description , val = v220.Value}
+  data_table[221] = {desc = v221.Description , val = v221.Value}
+  data_table[222] = {desc = v222.Description , val = v222.Value}
+  data_table[223] = {desc = v223.Description , val = v223.Value}
+  data_table[224] = {desc = v224.Description , val = v224.Value}
+  data_table[225] = {desc = v225.Description , val = v225.Value}
+  data_table[226] = {desc = v226.Description , val = v226.Value}
+  data_table[227] = {desc = v227.Description , val = v227.Value}
+  data_table[228] = {desc = v228.Description , val = v228.Value}
+  data_table[229] = {desc = v229.Description , val = v229.Value}
+  data_table[230] = {desc = v230.Description , val = v230.Value}
+  data_table[231] = {desc = v231.Description , val = v231.Value}
+  data_table[232] = {desc = v232.Description , val = v232.Value}
+  data_table[233] = {desc = v233.Description , val = v233.Value}
+  data_table[234] = {desc = v234.Description , val = v234.Value}
+  data_table[235] = {desc = v235.Description , val = v235.Value}
+  data_table[236] = {desc = v236.Description , val = v236.Value}
+  data_table[237] = {desc = v237.Description , val = v237.Value}
+  data_table[238] = {desc = v238.Description , val = v238.Value}
+  data_table[239] = {desc = v239.Description , val = v239.Value}
+  data_table[240] = {desc = v240.Description , val = v240.Value}
+  data_table[241] = {desc = v241.Description , val = v241.Value}
+  data_table[242] = {desc = v242.Description , val = v242.Value}
+  data_table[243] = {desc = v243.Description , val = v243.Value}
+  data_table[244] = {desc = v244.Description , val = v244.Value}
+  data_table[245] = {desc = v245.Description , val = v245.Value}
+  data_table[246] = {desc = v246.Description , val = v246.Value}
+  data_table[247] = {desc = v247.Description , val = v247.Value}
+  data_table[248] = {desc = v248.Description , val = v248.Value}
+  data_table[249] = {desc = v249.Description , val = v249.Value}
+  data_table[250] = {desc = v250.Description , val = v250.Value}
+  data_table[251] = {desc = v251.Description , val = v251.Value}
+  data_table[252] = {desc = v252.Description , val = v252.Value}
+  data_table[253] = {desc = v253.Description , val = v253.Value}
+  data_table[254] = {desc = v254.Description , val = v254.Value}
+  data_table[255] = {desc = v255.Description , val = v255.Value}
+  data_table[256] = {desc = v256.Description , val = v256.Value}
+  data_table[257] = {desc = v257.Description , val = v257.Value}
+  data_table[258] = {desc = v258.Description , val = v258.Value}
+  data_table[259] = {desc = v259.Description , val = v259.Value}
+  data_table[260] = {desc = v260.Description , val = v260.Value}
+  data_table[261] = {desc = v261.Description , val = v261.Value}
+  data_table[262] = {desc = v262.Description , val = v262.Value}
+  data_table[263] = {desc = v263.Description , val = v263.Value}
+  data_table[264] = {desc = v264.Description , val = v264.Value}
+  data_table[265] = {desc = v265.Description , val = v265.Value}
+  data_table[266] = {desc = v266.Description , val = v266.Value}
+  data_table[267] = {desc = v267.Description , val = v267.Value}
+  data_table[268] = {desc = v268.Description , val = v268.Value}
+  data_table[269] = {desc = v269.Description , val = v269.Value}
+  data_table[270] = {desc = v270.Description , val = v270.Value}
+  data_table[271] = {desc = v271.Description , val = v271.Value}
+  data_table[272] = {desc = v272.Description , val = v272.Value}
+  data_table[273] = {desc = v273.Description , val = v273.Value}
+  data_table[274] = {desc = v274.Description , val = v274.Value}
+  data_table[275] = {desc = v275.Description , val = v275.Value}
+  data_table[276] = {desc = v276.Description , val = v276.Value}
+  data_table[277] = {desc = v277.Description , val = v277.Value}
+  data_table[278] = {desc = v278.Description , val = v278.Value}
+  data_table[279] = {desc = v279.Description , val = v279.Value}
+  data_table[280] = {desc = v280.Description , val = v280.Value}
+  data_table[281] = {desc = v281.Description , val = v281.Value}
+  data_table[282] = {desc = v282.Description , val = v282.Value}
+  data_table[283] = {desc = v283.Description , val = v283.Value}
+  data_table[284] = {desc = v284.Description , val = v284.Value}
+  data_table[285] = {desc = v285.Description , val = v285.Value}
+  data_table[286] = {desc = v286.Description , val = v286.Value}
+  data_table[287] = {desc = v287.Description , val = v287.Value}
+  data_table[288] = {desc = v288.Description , val = v288.Value}
+  data_table[289] = {desc = v289.Description , val = v289.Value}
+  data_table[290] = {desc = v290.Description , val = v290.Value}
+  data_table[291] = {desc = v291.Description , val = v291.Value}
+  data_table[292] = {desc = v292.Description , val = v292.Value}
+  data_table[293] = {desc = v293.Description , val = v293.Value}
+  data_table[294] = {desc = v294.Description , val = v294.Value}
+  data_table[295] = {desc = v295.Description , val = v295.Value}
+  data_table[296] = {desc = v296.Description , val = v296.Value}
+  data_table[297] = {desc = v297.Description , val = v297.Value}
+  data_table[298] = {desc = v298.Description , val = v298.Value}
+  data_table[299] = {desc = v299.Description , val = v299.Value}
+  data_table[300] = {desc = v300.Description , val = v300.Value}
+  data_table[301] = {desc = v301.Description , val = v301.Value}
+  data_table[302] = {desc = v302.Description , val = v302.Value}
+  data_table[303] = {desc = v303.Description , val = v303.Value}
+  data_table[304] = {desc = v304.Description , val = v304.Value}
+  data_table[305] = {desc = v305.Description , val = v305.Value}
+  data_table[306] = {desc = v306.Description , val = v306.Value}
+  data_table[307] = {desc = v307.Description , val = v307.Value}
+  data_table[308] = {desc = v308.Description , val = v308.Value}
+  data_table[309] = {desc = v309.Description , val = v309.Value}
+  data_table[310] = {desc = v310.Description , val = v310.Value}
+  data_table[311] = {desc = v311.Description , val = v311.Value}
+  data_table[312] = {desc = v312.Description , val = v312.Value}
+  data_table[313] = {desc = v313.Description , val = v313.Value}
+  data_table[314] = {desc = v314.Description , val = v314.Value}
+  data_table[315] = {desc = v315.Description , val = v315.Value}
+  data_table[316] = {desc = v316.Description , val = v316.Value}
+  data_table[317] = {desc = v317.Description , val = v317.Value}
+  data_table[318] = {desc = v318.Description , val = v318.Value}
+  data_table[319] = {desc = v319.Description , val = v319.Value}
+  data_table[320] = {desc = v320.Description , val = v320.Value}
+  data_table[321] = {desc = v321.Description , val = v321.Value}
+  data_table[322] = {desc = v322.Description , val = v322.Value}
+  data_table[323] = {desc = v323.Description , val = v323.Value}
+  data_table[324] = {desc = v324.Description , val = v324.Value}
+  data_table[325] = {desc = v325.Description , val = v325.Value}
+  data_table[326] = {desc = v326.Description , val = v326.Value}
+  data_table[327] = {desc = v327.Description , val = v327.Value}
+  data_table[328] = {desc = v328.Description , val = v328.Value}
+  data_table[329] = {desc = v329.Description , val = v329.Value}
+  data_table[330] = {desc = v330.Description , val = v330.Value}
+  data_table[331] = {desc = v331.Description , val = v331.Value}
+  data_table[332] = {desc = v332.Description , val = v332.Value}
+  data_table[333] = {desc = v333.Description , val = v333.Value}
+  data_table[334] = {desc = v334.Description , val = v334.Value}
+  data_table[335] = {desc = v335.Description , val = v335.Value}
+  data_table[336] = {desc = v336.Description , val = v336.Value}
+  data_table[337] = {desc = v337.Description , val = v337.Value}
+  data_table[338] = {desc = v338.Description , val = v338.Value}
+  data_table[339] = {desc = v339.Description , val = v339.Value}
+  data_table[340] = {desc = v340.Description , val = v340.Value}
+  data_table[341] = {desc = v341.Description , val = v341.Value}
+  data_table[342] = {desc = v342.Description , val = v342.Value}
+  data_table[343] = {desc = v343.Description , val = v343.Value}
+  data_table[344] = {desc = v344.Description , val = v344.Value}
+  data_table[345] = {desc = v345.Description , val = v345.Value}
+  data_table[346] = {desc = v346.Description , val = v346.Value}
+  data_table[347] = {desc = v347.Description , val = v347.Value}
+  data_table[348] = {desc = v348.Description , val = v348.Value}
+  data_table[349] = {desc = v349.Description , val = v349.Value}
+  data_table[350] = {desc = v350.Description , val = v350.Value}
+  data_table[351] = {desc = v351.Description , val = v351.Value}
+  data_table[352] = {desc = v352.Description , val = v352.Value}
+  data_table[353] = {desc = v353.Description , val = v353.Value}
+  data_table[354] = {desc = v354.Description , val = v354.Value}
+  data_table[355] = {desc = v355.Description , val = v355.Value}
+  data_table[356] = {desc = v356.Description , val = v356.Value}
+  data_table[357] = {desc = v357.Description , val = v357.Value}
+  data_table[358] = {desc = v358.Description , val = v358.Value}
+  data_table[359] = {desc = v359.Description , val = v359.Value}
+  data_table[360] = {desc = v360.Description , val = v360.Value}
+  data_table[361] = {desc = v361.Description , val = v361.Value}
+  data_table[362] = {desc = v362.Description , val = v362.Value}
+  data_table[363] = {desc = v363.Description , val = v363.Value}
+  data_table[364] = {desc = v364.Description , val = v364.Value}
+  data_table[365] = {desc = v365.Description , val = v365.Value}
+  data_table[366] = {desc = v366.Description , val = v366.Value}
+  data_table[367] = {desc = v367.Description , val = v367.Value}
+  data_table[368] = {desc = v368.Description , val = v368.Value}
+  data_table[369] = {desc = v369.Description , val = v369.Value}
+  data_table[370] = {desc = v370.Description , val = v370.Value}
+  data_table[371] = {desc = v371.Description , val = v371.Value}
+  data_table[372] = {desc = v372.Description , val = v372.Value}
+  data_table[373] = {desc = v373.Description , val = v373.Value}
+  data_table[374] = {desc = v374.Description , val = v374.Value}
+  data_table[375] = {desc = v375.Description , val = v375.Value}
+  data_table[376] = {desc = v376.Description , val = v376.Value}
+  data_table[377] = {desc = v377.Description , val = v377.Value}
+  data_table[378] = {desc = v378.Description , val = v378.Value}
+  data_table[379] = {desc = v379.Description , val = v379.Value}
+  data_table[380] = {desc = v380.Description , val = v380.Value}
+  data_table[381] = {desc = v381.Description , val = v381.Value}
+  data_table[382] = {desc = v382.Description , val = v382.Value}
+  data_table[383] = {desc = v383.Description , val = v383.Value}
+  data_table[384] = {desc = v384.Description , val = v384.Value}
+  data_table[385] = {desc = v385.Description , val = v385.Value}
+  data_table[386] = {desc = v386.Description , val = v386.Value}
+  data_table[387] = {desc = v387.Description , val = v387.Value}
+  data_table[388] = {desc = v388.Description , val = v388.Value}
+  data_table[389] = {desc = v389.Description , val = v389.Value}
+  data_table[390] = {desc = v390.Description , val = v390.Value}
+  data_table[391] = {desc = v391.Description , val = v391.Value}
+  data_table[392] = {desc = v392.Description , val = v392.Value}
+  data_table[393] = {desc = v393.Description , val = v393.Value}
+  data_table[394] = {desc = v394.Description , val = v394.Value}
+  data_table[395] = {desc = v395.Description , val = v395.Value}
+  data_table[396] = {desc = v396.Description , val = v396.Value}
+  data_table[397] = {desc = v397.Description , val = v397.Value}
+  data_table[398] = {desc = v398.Description , val = v398.Value}
+  data_table[399] = {desc = v399.Description , val = v399.Value}
+  data_table[400] = {desc = v400.Description , val = v400.Value}
+  data_table[401] = {desc = v401.Description , val = v401.Value}
+  data_table[402] = {desc = v402.Description , val = v402.Value}
+  data_table[403] = {desc = v403.Description , val = v403.Value}
+  data_table[404] = {desc = v404.Description , val = v404.Value}
+  data_table[405] = {desc = v405.Description , val = v405.Value}
+  data_table[406] = {desc = v406.Description , val = v406.Value}
+  data_table[407] = {desc = v407.Description , val = v407.Value}
+  data_table[408] = {desc = v408.Description , val = v408.Value}
+  data_table[409] = {desc = v409.Description , val = v409.Value}
+  data_table[410] = {desc = v410.Description , val = v410.Value}
+  data_table[411] = {desc = v411.Description , val = v411.Value}
+  data_table[412] = {desc = v412.Description , val = v412.Value}
+  data_table[413] = {desc = v413.Description , val = v413.Value}
+  data_table[414] = {desc = v414.Description , val = v414.Value}
+  data_table[415] = {desc = v415.Description , val = v415.Value}
+  data_table[416] = {desc = v416.Description , val = v416.Value}
+  data_table[417] = {desc = v417.Description , val = v417.Value}
+  data_table[418] = {desc = v418.Description , val = v418.Value}
+  data_table[419] = {desc = v419.Description , val = v419.Value}
+  data_table[420] = {desc = v420.Description , val = v420.Value}
+  data_table[421] = {desc = v421.Description , val = v421.Value}
+  data_table[422] = {desc = v422.Description , val = v422.Value}
+  data_table[423] = {desc = v423.Description , val = v423.Value}
+  data_table[424] = {desc = v424.Description , val = v424.Value}
+  data_table[425] = {desc = v425.Description , val = v425.Value}
+  data_table[426] = {desc = v426.Description , val = v426.Value}
+  data_table[427] = {desc = v427.Description , val = v427.Value}
+  data_table[428] = {desc = v428.Description , val = v428.Value}
+  data_table[429] = {desc = v429.Description , val = v429.Value}
+  data_table[430] = {desc = v430.Description , val = v430.Value}
+  data_table[431] = {desc = v431.Description , val = v431.Value}
+  data_table[432] = {desc = v432.Description , val = v432.Value}
+  data_table[433] = {desc = v433.Description , val = v433.Value}
+  data_table[434] = {desc = v434.Description , val = v434.Value}
+  data_table[435] = {desc = v435.Description , val = v435.Value}
+  data_table[436] = {desc = v436.Description , val = v436.Value}
+  data_table[437] = {desc = v437.Description , val = v437.Value}
+  data_table[438] = {desc = v438.Description , val = v438.Value}
+  data_table[439] = {desc = v439.Description , val = v439.Value}
+  data_table[440] = {desc = v440.Description , val = v440.Value}
+  data_table[441] = {desc = v441.Description , val = v441.Value}
+  data_table[442] = {desc = v442.Description , val = v442.Value}
+  data_table[443] = {desc = v443.Description , val = v443.Value}
+  data_table[444] = {desc = v444.Description , val = v444.Value}
+  data_table[445] = {desc = v445.Description , val = v445.Value}
+  data_table[446] = {desc = v446.Description , val = v446.Value}
+  data_table[447] = {desc = v447.Description , val = v447.Value}
+  data_table[448] = {desc = v448.Description , val = v448.Value}
+  data_table[449] = {desc = v449.Description , val = v449.Value}
+  data_table[450] = {desc = v450.Description , val = v450.Value}
+  data_table[451] = {desc = v451.Description , val = v451.Value}
+  data_table[452] = {desc = v452.Description , val = v452.Value}
+  data_table[453] = {desc = v453.Description , val = v453.Value}
+  data_table[454] = {desc = v454.Description , val = v454.Value}
+  data_table[455] = {desc = v455.Description , val = v455.Value}
+  data_table[456] = {desc = v456.Description , val = v456.Value}
+  data_table[457] = {desc = v457.Description , val = v457.Value}
+  data_table[458] = {desc = v458.Description , val = v458.Value}
+  data_table[459] = {desc = v459.Description , val = v459.Value}
+  data_table[460] = {desc = v460.Description , val = v460.Value}
+  data_table[461] = {desc = v461.Description , val = v461.Value}
+  data_table[462] = {desc = v462.Description , val = v462.Value}
+  data_table[463] = {desc = v463.Description , val = v463.Value}
+  data_table[464] = {desc = v464.Description , val = v464.Value}
+  data_table[465] = {desc = v465.Description , val = v465.Value}
+  data_table[466] = {desc = v466.Description , val = v466.Value}
+  data_table[467] = {desc = v467.Description , val = v467.Value}
+  data_table[468] = {desc = v468.Description , val = v468.Value}
+  data_table[469] = {desc = v469.Description , val = v469.Value}
+  data_table[470] = {desc = v470.Description , val = v470.Value}
+  data_table[471] = {desc = v471.Description , val = v471.Value}
+  data_table[472] = {desc = v472.Description , val = v472.Value}
+  data_table[473] = {desc = v473.Description , val = v473.Value}
+  data_table[474] = {desc = v474.Description , val = v474.Value}
+  data_table[475] = {desc = v475.Description , val = v475.Value}
+  data_table[476] = {desc = v476.Description , val = v476.Value}
+  data_table[477] = {desc = v477.Description , val = v477.Value}
+  data_table[478] = {desc = v478.Description , val = v478.Value}
+  data_table[479] = {desc = v479.Description , val = v479.Value}
+  data_table[480] = {desc = v480.Description , val = v480.Value}
+  data_table[481] = {desc = v481.Description , val = v481.Value}
+  data_table[482] = {desc = v482.Description , val = v482.Value}
+  data_table[483] = {desc = v483.Description , val = v483.Value}
+  data_table[484] = {desc = v484.Description , val = v484.Value}
+  data_table[485] = {desc = v485.Description , val = v485.Value}
+  data_table[486] = {desc = v486.Description , val = v486.Value}
+  data_table[487] = {desc = v487.Description , val = v487.Value}
+  data_table[488] = {desc = v488.Description , val = v488.Value}
+  data_table[489] = {desc = v489.Description , val = v489.Value}
+  data_table[490] = {desc = v490.Description , val = v490.Value}
+  data_table[491] = {desc = v491.Description , val = v491.Value}
+  data_table[492] = {desc = v492.Description , val = v492.Value}
+  data_table[493] = {desc = v493.Description , val = v493.Value}
+  data_table[494] = {desc = v494.Description , val = v494.Value}
+  data_table[495] = {desc = v495.Description , val = v495.Value}
+  data_table[496] = {desc = v496.Description , val = v496.Value}
+  data_table[497] = {desc = v497.Description , val = v497.Value}
+  data_table[498] = {desc = v498.Description , val = v498.Value}
+  data_table[499] = {desc = v499.Description , val = v499.Value}
+  data_table[500] = {desc = v500.Description , val = v500.Value}
+  data_table[501] = {desc = v501.Description , val = v501.Value}
+  data_table[502] = {desc = v502.Description , val = v502.Value}
+  data_table[503] = {desc = v503.Description , val = v503.Value}
+  data_table[504] = {desc = v504.Description , val = v504.Value}
+  data_table[505] = {desc = v505.Description , val = v505.Value}
+  data_table[506] = {desc = v506.Description , val = v506.Value}
+  data_table[507] = {desc = v507.Description , val = v507.Value}
+  data_table[508] = {desc = v508.Description , val = v508.Value}
+  data_table[509] = {desc = v509.Description , val = v509.Value}
+  data_table[510] = {desc = v510.Description , val = v510.Value}
+  data_table[511] = {desc = v511.Description , val = v511.Value}
+  data_table[512] = {desc = v512.Description , val = v512.Value}
+  data_table[513] = {desc = v513.Description , val = v513.Value}
+  data_table[514] = {desc = v514.Description , val = v514.Value}
+  data_table[515] = {desc = v515.Description , val = v515.Value}
+  data_table[516] = {desc = v516.Description , val = v516.Value}
+  data_table[517] = {desc = v517.Description , val = v517.Value}
+  data_table[518] = {desc = v518.Description , val = v518.Value}
+  data_table[519] = {desc = v519.Description , val = v519.Value}
+  data_table[520] = {desc = v520.Description , val = v520.Value}
+  data_table[521] = {desc = v521.Description , val = v521.Value}
+  data_table[522] = {desc = v522.Description , val = v522.Value}
+  data_table[523] = {desc = v523.Description , val = v523.Value}
+  data_table[524] = {desc = v524.Description , val = v524.Value}
+  data_table[525] = {desc = v525.Description , val = v525.Value}
+  data_table[526] = {desc = v526.Description , val = v526.Value}
+  data_table[527] = {desc = v527.Description , val = v527.Value}
+  data_table[528] = {desc = v528.Description , val = v528.Value}
+  data_table[529] = {desc = v529.Description , val = v529.Value}
+  data_table[530] = {desc = v530.Description , val = v530.Value}
+  data_table[531] = {desc = v531.Description , val = v531.Value}
+  data_table[532] = {desc = v532.Description , val = v532.Value}
+  data_table[533] = {desc = v533.Description , val = v533.Value}
+  data_table[534] = {desc = v534.Description , val = v534.Value}
+  data_table[535] = {desc = v535.Description , val = v535.Value}
+  data_table[536] = {desc = v536.Description , val = v536.Value}
+  data_table[537] = {desc = v537.Description , val = v537.Value}
+  data_table[538] = {desc = v538.Description , val = v538.Value}
+  data_table[539] = {desc = v539.Description , val = v539.Value}
+  data_table[540] = {desc = v540.Description , val = v540.Value}
+  data_table[541] = {desc = v541.Description , val = v541.Value}
+  data_table[542] = {desc = v542.Description , val = v542.Value}
+  data_table[543] = {desc = v543.Description , val = v543.Value}
+  data_table[544] = {desc = v544.Description , val = v544.Value}
+  data_table[545] = {desc = v545.Description , val = v545.Value}
+  data_table[546] = {desc = v546.Description , val = v546.Value}
+  data_table[547] = {desc = v547.Description , val = v547.Value}
+  data_table[548] = {desc = v548.Description , val = v548.Value}
+  data_table[549] = {desc = v549.Description , val = v549.Value}
+  data_table[550] = {desc = v550.Description , val = v550.Value}
+  data_table[551] = {desc = v551.Description , val = v551.Value}
+  data_table[552] = {desc = v552.Description , val = v552.Value}
+  data_table[553] = {desc = v553.Description , val = v553.Value}
+  data_table[554] = {desc = v554.Description , val = v554.Value}
+  data_table[555] = {desc = v555.Description , val = v555.Value}
+  data_table[556] = {desc = v556.Description , val = v556.Value}
+  data_table[557] = {desc = v557.Description , val = v557.Value}
+  data_table[558] = {desc = v558.Description , val = v558.Value}
+  data_table[558] = {desc = v558.Description , val = v558.Value}
+  data_table[559] = {desc = v559.Description , val = v559.Value}
+  data_table[560] = {desc = v560.Description , val = v560.Value}
+  data_table[561] = {desc = v561.Description , val = v561.Value}
+  data_table[562] = {desc = v562.Description , val = v562.Value}
+  data_table[563] = {desc = v563.Description , val = v563.Value}
+  data_table[564] = {desc = v564.Description , val = v564.Value}
+  --stopREGEX
+  v0_prev = v0.Value
+  csv_write(outPath, data_table)
 end
 {$asm}
 [DISABLE]

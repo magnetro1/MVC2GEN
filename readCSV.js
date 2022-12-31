@@ -10,7 +10,7 @@ const rl = readline.createInterface(
   }
 );
 
-rl.question('Enter original CSV name without \'_Original\' or extension:', (FILENAME_NO_EXT) =>
+rl.question('Enter original CSV name without \'_Original\' or file extension:', (FILENAME_NO_EXT) =>
 {
   if (FILENAME_NO_EXT.trim().includes("_Original"))
   {
@@ -87,35 +87,33 @@ rl.question('Enter original CSV name without \'_Original\' or extension:', (FILE
 
   // Write the Sorted_Node.JS file for the clip data
   var stringArray = [];
-  fs.writeFileSync(`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Sorted_Node.js`, '');
-
   for (let header in headersArray)
   {
     stringArray.push(`export const ${ headersArray[header] } = "${ allArrayStructure[header] }";`);
   }
-  fs.appendFileSync(`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Sorted_Node.js`, stringArray.join('\n'));
+  fs.writeFileSync(`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Sorted_Node.js`, stringArray.join('\n'));
 
   // Write missing data entries to a file
 
   var missingEntries = [];
-  for (let i = 0; i < allArrayStructure[0].length - 1; i++)
+  for (let i = 0; i < allArrayStructure[0].length - 1; i++) // total frames
   {
     if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1)
     {
-      missingEntries.push(`Missing data entry after Total_Frame #: ${ allArrayStructure[0][i] }\n`);
+      missingEntries.push(`Missing data entry after Total_Frame Number: ${ allArrayStructure[0][i] }\n`);
     }
   }
   if (missingEntries.length > 0)
   {
-    fs.writeFileSync((`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Missing_Frames.txt`),
+    fs.writeFileSync((`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Total_Frames_Info.txt`),
       (`${ missingEntries }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }`)
         .replace(/,/g, ''));
     console.log('Missing entries logged.');
   }
   else
   {
-    fs.writeFileSync((`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Missing_Frames.txt`),
-      (`No missing data entries\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }`)
+    fs.writeFileSync((`${ DIR_MAIN_FILES }${ FILENAME_NO_EXT }_Total_Frames_Info.txt`),
+      (`No missing data entries\nFirst entry in Total_Frames: ${ allArrayStructure[0][0] }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }`)
         .replace(/,/g, ''));
     console.log('No missing data entries');
   }

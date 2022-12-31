@@ -1,0 +1,4 @@
+Missing data entry after Total_Frame #: 24949
+
+Final entry in Total_Frames: 26595
+Total_Frames in Clip: 1647

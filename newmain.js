@@ -4,7 +4,7 @@ import * as path from 'path';
 import {FLOATING_POINT_ADRS, KNOCKDOWN_STATE_OBJ, MIN_MAX_ADRS, MISC_ADRS, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ, PROX_BLOCK_OBJ, STAGES_OBJ} from "./main_files/staticData.js";
 const DO_ROM_FILES = false; // Do or Skip ROM logic files
 
-const FILE_NAME_NO_EXT = `Combo_Sentinel10`;
+const FILE_NAME_NO_EXT = `Magneto105`;
 const TAIL_TEXT = `_Sorted_Node.js`;
 const DIR_MAIN_FILES = `./main_files/`;
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
@@ -68,27 +68,9 @@ import(ORG_JS_FILE)
     })
   )
   .then(() =>
-    import(NEW_JS_FILE) //559+220 = 779 entries as of now, including min/max
+    import(NEW_JS_FILE)
       .then((pMem, pMemIndex) =>
       {
-        /**
-         * @description Dynamic variable list as each JS file is not guaranteed to be the same
-         * @returns {Array} Array of all unique Cheat Table entries from the replay in the JS file.
-         **/
-        function getLabelsfromJS()
-        {
-          let playerDataAll = []
-          let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; //[1] = P1_A, [2] = cheat entry description
-          let tempRegExVar;
-          let newFile = fs.readFileSync(NEW_JS_FILE, 'utf8');
-          while (tempRegExVar = playerMemoryRegex.exec(newFile)) // Finds P1_A_X_Gravity_Max. 
-          {
-            playerDataAll.push(tempRegExVar[2]); // regex.exec returns array of all matches; item[2] has many duplicates
-          };
-          var removedDuplicatesArray = [...new Set(playerDataAll)];
-          return removedDuplicatesArray
-        }
-        // getLabelsfromJS();
         const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(',').length; // Used as clip-length frame tracker; address doesn't matter
         const POINT_OBJ_P1 =
         {
@@ -102,6 +84,25 @@ import(ORG_JS_FILE)
           P2_B_: pMem.P2_B_Is_Point.split(','),
           P2_C_: pMem.P2_C_Is_Point.split(',')
         };
+
+        /**
+         * @description Dynamic player-memory variable list as each JS file is not guaranteed to be the same
+         * @returns {Array} Array of all unique Cheat Table entries from the replay in the JS file.
+         **/
+        function getPlayerMemoryEntries()
+        {
+          let playerDataAll = []
+          let playerMemoryRegex = /(P[1-2]_[A-C]_)(\w+)\s/g; //[1] = P1_A, [2] = cheat entry description
+          let tempRegExVar;
+          let newFile = fs.readFileSync(NEW_JS_FILE, 'utf8');
+          while (tempRegExVar = playerMemoryRegex.exec(newFile)) // Finds P1_A_X_Gravity_Max.
+          {
+            playerDataAll.push(tempRegExVar[2]); // regex.exec returns array of all matches; item[2] has many duplicates
+          };
+          var removedDuplicatesArray = [...new Set(playerDataAll)];
+          return removedDuplicatesArray
+        }
+
         // Main function to write data to files OR return finalValues array
         /**
          * @param {number|string} PlayerOneOrPlayerTwo number or string, ex: 1 or "P1"
@@ -112,7 +113,7 @@ import(ORG_JS_FILE)
          */
         function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // "P1"/"P2", address from data-object, 1/0
         {
-          const finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
+          let finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
           let playerObjectSwitcher;// Switches between the Player1 and Player2 objects
           /**@description P1 | P2 */
           let playerSwitcher; // Switches between "P1" and "P2"
@@ -243,7 +244,7 @@ import(ORG_JS_FILE)
           }
         }; // End of writePlayerMemory() function
 
-        getLabelsfromJS().forEach((label, index) => // its regex will find addresses like P1_X_Gravity_Max
+        getPlayerMemoryEntries().forEach((label, index) => // its regex will find addresses like P1_X_Gravity_Max
         {
           // console.log(`${ index }: ${ label }`);
           writePlayerMemory(1, label.toString(), 1);
@@ -534,6 +535,62 @@ import(ORG_JS_FILE)
                 .replace(/3|3\+/gm, "DR+")
                 .replace(/9|9\+/gm, "UR+")
                 .replace(/7|7\+/gm, "UL+")
+                // Re-write assists" notation
+                .replace(/AA/gi, "A1")
+                .replace(/AB/gi, "A2")
+                // Remove trailing "+" if a comma follows
+                .replace(/\+(?=,)/gm, "")
+                // Replace "++" with "+"
+                .replace(/\+\+/gm, "+")
+              }"];`,
+              {encoding: 'utf8'}
+            );
+            playerInputsCNVArray = [];
+
+            // Input Conversion Type 3
+            for (const input in tempP1OrP2)
+            {
+              for (const button in Object.entries(buttonConversionVersion2))
+              {
+                if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, the value is converted
+                {
+                  playerInputResults += Object.keys(buttonConversionVersion2)[button];
+                }
+              }
+              playerInputsCNVArray.push(playerInputResults);
+              playerInputResults = "";
+            }
+            fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
+              `\nresult[2] = ["${ playerInputsCNVArray.toString()
+                // Fix diagonals
+                .replace(/24/gi, "1")
+                .replace(/42/gi, "1")
+                .replace(/26/gi, "3")
+                .replace(/62/gi, "3")
+                .replace(/48/gi, "7")
+                .replace(/84/gi, "7")
+                .replace(/86/gi, "9")
+                .replace(/68/gi, "9")
+                // Add "+" to each button
+                .replace(/LP/gi, "LP+")
+                .replace(/LK/gi, "LK+")
+                .replace(/HP/gi, "HP+")
+                .replace(/HK/gi, "HK+")
+                .replace(/AA/gi, "AA+")
+                .replace(/AB/gi, "AB+")
+                .replace(/START/gi, "START+")
+                .replace(/SELECT/gi, "SELECT+")
+                // Add "+" to multiple button inputs
+                .replace(/([1-9](?=\w+))/gm, "$1+") // Looking ahead for a button+ input
+                // Replace numbers with Letter-notation
+                .replace(/2|2\+/gm, "Down+")
+                .replace(/6|6\+/gm, "Right+")
+                .replace(/8|8\+/gm, "Up+")
+                .replace(/4|4\+/gm, "Left+")
+                .replace(/1|1\+/gm, "Downleft+")
+                .replace(/3|3\+/gm, "Downright+")
+                .replace(/9|9\+/gm, "Upright+")
+                .replace(/7|7\+/gm, "Upleft+")
                 // Re-write assists" notation
                 .replace(/AA/gi, "A1")
                 .replace(/AB/gi, "A2")
@@ -858,7 +915,7 @@ import(ORG_JS_FILE)
                   : allNewStateObject.State_ROM_09_ChoiceF[playerSlotI].push(0);
               } // clipLen Scope
 
-              // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
+              // Count | Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
               // Applies to ROM cases as well!
               var counter = 0;
 
@@ -1495,14 +1552,6 @@ import(ORG_JS_FILE)
                     }
                   }
                 }
-                // Subtract 1 from each number that isn't 65535 && isn't 0.
-                // for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-                // {
-                //   if ((ROM_CHOICEE[arrayWithROMData][clipLen] != 65535) && (ROM_CHOICEE[arrayWithROMData][clipLen] != 0))
-                //   {
-                //     ROM_CHOICEE[arrayWithROMData][clipLen] = ROM_CHOICEE[arrayWithROMData][clipLen] - 1
-                //   }
-                // }
                 // Clean up the values for AE Part1
                 for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
                 {
@@ -1650,32 +1699,32 @@ import(ORG_JS_FILE)
               // End ROMStuff End ROM Stuff
 
               // Write the files
-              for (let k = 0; k < Object.entries(allNewStateObject).length; k++)
+              for (let stateFileIndex = 0; stateFileIndex < Object.entries(allNewStateObject).length; stateFileIndex++)
               {
                 if (DO_ROM_FILES == false)
                 {
-                  if (Object.keys(allNewStateObject)[k].toString().match('ROM'))
+                  if (Object.keys(allNewStateObject)[stateFileIndex].toString().match('ROM'))
                   {
                     continue;
                   }
                 }
-                fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ Object.keys(allNewStateObject)[k] }.js`,
+                fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ Object.keys(allNewStateObject)[stateFileIndex] }.js`,
                   `var result = []; ` + '\n', {encoding: 'utf8'});
               }
 
               // Append data arrays into files
-              for (let k = 0; k < Object.entries(allNewStateObject).length; k++)
+              for (let stateFileDataIndex = 0; stateFileDataIndex < Object.entries(allNewStateObject).length; stateFileDataIndex++)
               {
                 if (DO_ROM_FILES == false)
                 {
-                  if (Object.keys(allNewStateObject)[k].toString().match('ROM'))
+                  if (Object.keys(allNewStateObject)[stateFileDataIndex].toString().match('ROM'))
                   {
                     continue;
                   }
                 }
 
-                fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ Object.keys(allNewStateObject)[k] }.js`,
-                  JSON.stringify(Object.values(allNewStateObject)[k])
+                fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ Object.keys(allNewStateObject)[stateFileDataIndex] }.js`,
+                  JSON.stringify(Object.values(allNewStateObject)[stateFileDataIndex])
                     .replace('[[', `result[0] = [`)
                     .replace(',[', '\nresult[1] = [')
                     .replace(',[', '\nresult[2] = [')
@@ -1687,9 +1736,50 @@ import(ORG_JS_FILE)
             }
           }
         }
-
-        fs.closeSync(1);
-        fs.unlinkSync(NEW_JS_FILE);
         writeNewStates()
+
+        function writeP1P2Addresses() 
+        {
+          const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View"
+          for (const miscAdrIterator in MISC_ADRS)
+          {
+            pMem[MISC_ADRS[miscAdrIterator]].split(',').forEach((address) => // accessing pMem object key by string, splitting its content, and pushing each array element
+            {
+              miscAdrArray[0].push(address);
+            });
+
+            if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`))
+            {
+              fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`,
+                `var result = [];\nresult[0] = [${ miscAdrArray }];`,
+                {encoding: 'utf8'});
+              miscAdrArray[0] = []; // clear the array for the next player iteration.
+            }
+          }
+        };
+        function countIsPaused()
+        {
+          let State_Is_Paused = [];
+          var counter = 0;
+          pMem.Is_Paused.split(',').forEach((element, index) =>
+          {
+            if (element == 0)
+            {
+              counter = 0
+              State_Is_Paused[index] = 0
+            }
+            else
+            {
+              State_Is_Paused[index] = (counter + 1)
+              counter++
+            }
+          });
+          fs.writeFileSync(`${ DIR_OUTPATH }State_Is_Paused.js`,
+            `var result = [];\nresult[0] = [${ State_Is_Paused }];`,
+            {encoding: 'utf8'});
+        }
+        countIsPaused()
+        fs.closeSync(0);
+        fs.unlinkSync(NEW_JS_FILE);
       })
   )
