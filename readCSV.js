@@ -12,6 +12,12 @@ const rl = readline.createInterface(
 
 rl.question('Enter original CSV name without \'_Original\' or file extension:', (FILENAME_NO_EXT) =>
 {
+  if (FILENAME_NO_EXT.trim().includes("exit")
+    || FILENAME_NO_EXT.trim().includes("quit"))
+  {
+    console.log('Exiting...');
+    process.exit();
+  }
   if (FILENAME_NO_EXT.trim().includes("_Original"))
   {
     FILENAME_NO_EXT = FILENAME_NO_EXT.replace("_Original", "");
@@ -42,7 +48,6 @@ rl.question('Enter original CSV name without \'_Original\' or file extension:', 
   }
 
   const FILE = path.join(DIR_CSVS, `${ FILENAME_NO_EXT }_Original.csv`); // Working with _Original
-  // const FILE = path.join(DIR_CSVS, `Colossus7_Original.csv`); // Working with _Original
 
   var headersArray = [];
   var allDataArray = [];
@@ -54,13 +59,18 @@ rl.question('Enter original CSV name without \'_Original\' or file extension:', 
     }
     else
     {
-      allDataArray.push(line.split(',')); // ideally, check if each line is the same length as the headerArray
+      allDataArray.push(line.split(','));
     } return null;
   });
 
   // Sorting by the first column's first value (Total_Frames)
   allDataArray.sort((a, b) => a[0] - b[0]);
 
+  /**
+   * @description Counts the amount of times a value appears in an array and returns the value that appears the most
+   * @param {Number[]} arrayOfNumbers dynamic amount of numbers, depending on the csv file
+   * @returns single number value as a string
+   */
   function countReplayData(arrayOfNumbers)
   {
     // Count the values in the arrays and store them in an object
@@ -76,9 +86,14 @@ rl.question('Enter original CSV name without \'_Original\' or file extension:', 
         counterObject[arrayOfNumbers[i]]++;
       }
     }
-    // console.log(counterObject);
     // Return the value that appears the most in the object
+    /**
+     * @description number of times the data value appears. Ex: 4
+     */
     let largestValue = 0;
+    /**
+     * @description Will store the data value that appears the most. Ex: 255
+     */
     let largestValueKey = 0;
     for (let key in counterObject)
     {
@@ -92,13 +107,12 @@ rl.question('Enter original CSV name without \'_Original\' or file extension:', 
     {
       if ((arrayOfNumbers[0] == 0) && (arrayOfNumbers[1] != 0))
       {
-        // console.log(arrayOfNumbers);
         return arrayOfNumbers[1];
       }
     }
     return largestValueKey;
   }
-
+  // Find true data
   var tempDataArr = [];
   for (let totalLines = 1; totalLines < allDataArray.length - 1; totalLines++)
   {
