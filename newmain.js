@@ -4,7 +4,7 @@ import * as path from 'path';
 import {FLOATING_POINT_ADRS, KNOCKDOWN_STATE_OBJ, MIN_MAX_ADRS, MISC_ADRS, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ, PROX_BLOCK_OBJ, STAGES_OBJ} from "./main_files/staticData.js";
 const DO_ROM_FILES = false; // Do or Skip ROM logic files
 
-const FILE_NAME_NO_EXT = `Magneto105`;
+const FILE_NAME_NO_EXT = `Colossus7`;
 const TAIL_TEXT = `_Sorted_Node.js`;
 const DIR_MAIN_FILES = `./main_files/`;
 const DIR_EXPORT_TO_AE = path.join(process.cwd(), `exportToAE/`);
@@ -286,23 +286,23 @@ import(ORG_JS_FILE)
             for (let staticDataEntry = 0; staticDataEntry < STATIC_DATA_ADRS.length; staticDataEntry++)
             {
               const callPlayerMemoryFN = writePlayerMemory(`${ playersLen }`, STATIC_DATA_ADRS[staticDataEntry], 0);
-              for (let playerMemLength = 0; playerMemLength < callPlayerMemoryFN.length; playerMemLength++)
+              for (let characterSlotI = 0; characterSlotI < callPlayerMemoryFN.length; characterSlotI++) // [0][1][2]
               {
                 // Push and convert all three arrays' values
-                for (let characterSlot = 0; characterSlot < callPlayerMemoryFN[playerMemLength].length; characterSlot++)
+                for (let clipLen = 0; clipLen < callPlayerMemoryFN[characterSlotI].length; clipLen++) // CLIPLENGTH
                 {
-                  staticLookupResultsArray[playerMemLength].push(`"${ Object.values(STATIC_DATA_OBJS[staticDataEntry])[callPlayerMemoryFN[playerMemLength][characterSlot]] }"`);
+                  staticLookupResultsArray[characterSlotI].push(`"${ Object.values(STATIC_DATA_OBJS[staticDataEntry])[callPlayerMemoryFN[characterSlotI][clipLen]] }"`);
                 }
 
                 if (STATIC_DATA_OBJS[staticDataEntry] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
                 {
-                  fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
+                  fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ characterSlotI }] = [${ staticLookupResultsArray[characterSlotI] }];\n`,
                     {encoding: 'utf8'});
                   staticLookupResultsArray = [[], [], []];
                 }
                 else
                 {
-                  fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataEntry] }_CNV.js`, `result[${ playerMemLength }] = [${ staticLookupResultsArray[playerMemLength] }];\n`,
+                  fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataEntry] }_CNV.js`, `result[${ characterSlotI }] = [${ staticLookupResultsArray[characterSlotI] }];\n`,
                     {encoding: 'utf8'});
                   staticLookupResultsArray = [[], [], []];
                 }
@@ -317,17 +317,17 @@ import(ORG_JS_FILE)
          */
         function writeP1P2Addresses() 
         {
-          const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View"
-          for (const miscAdrIterator in MISC_ADRS)
+          const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View", "Timer_Secondary"
+          for (const miscAdrI in MISC_ADRS)
           {
-            pMem[MISC_ADRS[miscAdrIterator]].split(',').forEach((address) => // accessing pMem object key by string, splitting its content, and pushing each array element
+            pMem[MISC_ADRS[miscAdrI]].split(',').forEach((clipLenEntry) => // accessing pMem object key by string, splitting its content, and pushing each frame's value
             {
-              miscAdrArray[0].push(address);
+              miscAdrArray[0].push(clipLenEntry);
             });
 
-            if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`))
+            if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrI] }.js`))
             {
-              fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`,
+              fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrI] }.js`,
                 `var result = [];\nresult[0] = [${ miscAdrArray }];`,
                 {encoding: 'utf8'});
               miscAdrArray[0] = []; // clear the array for the next player iteration.
@@ -341,50 +341,75 @@ import(ORG_JS_FILE)
          */
         function writeTotalFrameCountCNV()
         {
-          const totalFrameArr = [];
-          pMem.Total_Frames.split(',').forEach((frame, index) =>
+          let totalFrameArrT1 = [];
+          let totalFrameArrT2 = [];
+
+          pMem.Total_Frames.split(',').forEach((frame, indexT1) =>
           {
-            if (index == 0)
+            totalFrameArrT1.push(indexT1);
+          });
+
+          pMem.Total_Frames.split(',').forEach((frame, indexT2) =>
+          {
+            if (indexT2 == 0)
             {
-              index++
+              indexT2++
             }
-            else if (index < 10)
+            else if (indexT2 < 10)
             {
-              index.toString()
-              index = '000' + index
+              indexT2.toString()
+              indexT2 = '000' + indexT2
             }
-            else if (index < 100)
+            else if (indexT2 < 100)
             {
-              index.toString()
-              index = '00' + index
+              indexT2.toString()
+              indexT2 = '00' + indexT2
             }
-            else if (index < 1000)
+            else if (indexT2 < 1000)
             {
-              index.toString()
-              index = '0' + index
+              indexT2.toString()
+              indexT2 = '0' + indexT2
             }
             else
             {
-              index
+              indexT2
             }
-            totalFrameArr.push(index);
+            totalFrameArrT2.push(indexT2);
           });
           // if (!fs.existsSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`))
           // {
-          totalFrameArr.splice(0, 1)
+
+          // T1 for Normal Compositions
           fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-            `var result = [];\nresult[0] = ['${ totalFrameArr }'];\n`,
+            `var result = [];\nresult[0] = ['${ totalFrameArrT1 }'];\n`,
             {encoding: 'utf8'});
-          totalFrameArr.reverse()
+          totalFrameArrT1.reverse()
           fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-            `result[1] = ['${ totalFrameArr }'];\n`,
+            `result[1] = ['${ totalFrameArrT1 }'];\n`,
             {encoding: 'utf8'});
-          for (let idx in totalFrameArr)
+          for (let idx in totalFrameArrT1)
           {
-            totalFrameArr[idx] = totalFrameArr[0]
+            totalFrameArrT1[idx] = totalFrameArrT1[0]
           }
           fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-            `result[2] = ['${ totalFrameArr }'];\n`,
+            `result[2] = ['${ totalFrameArrT1 }'];\n`,
+            {encoding: 'utf8'});
+
+          // T2 for ASCII Pad Composition
+          totalFrameArrT2.splice(0, 1)
+          fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+            `result[3] = ['${ totalFrameArrT2 }'];\n`,
+            {encoding: 'utf8'});
+          totalFrameArrT2.reverse()
+          fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+            `result[4] = ['${ totalFrameArrT2 }'];\n`,
+            {encoding: 'utf8'});
+          for (let idx in totalFrameArrT2)
+          {
+            totalFrameArrT2[idx] = totalFrameArrT2[0]
+          }
+          fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+            `result[5] = ['${ totalFrameArrT2 }'];\n`,
             {encoding: 'utf8'});
           // }
         };

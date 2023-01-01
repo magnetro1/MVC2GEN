@@ -304,7 +304,7 @@ export const MISC_ADRS =
 **/
 export const STAGES_OBJ =
 {
-  0: "142030FF", //"Boat1",
+  0: "2D456DFF", //"Boat1",
   1: "E1540CFF", //"Desert1",
   2: "6D574FFF", //"Factory",
   3: "CF461BFF", //"Carnival1",
@@ -323,7 +323,7 @@ export const STAGES_OBJ =
   16: "8CA7DFFF" //"Raft1"
 };
 /**
-* @description Contains the decimal value of each character, and its alphabetical value in time for an After Effects timeline. Ex: decimal: 30, second: 4 (Akuma)
+* @description Contains the decimal value of each character, and its alphabetical value in time for an After Effects timeremap. Ex: decimal: 30, second: 4 (Akuma)
 **/
 export const PORTRAITS_TO_TIME_OBJ =
 {
@@ -387,7 +387,9 @@ export const PORTRAITS_TO_TIME_OBJ =
   57: 58, //Wolverine (Bone)
   1: 59   //Zangief
 };
-
+/**
+ * @description Addresses to exclude from the project for CTScraper.js file
+ */
 export const UNUSED_CT_ADDRESSES = [
   "FOV",
   "X_Rot_NOP",

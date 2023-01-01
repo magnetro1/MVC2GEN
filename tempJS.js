@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-const DIR_CSVS = path.join(process.cwd(), '/main_files/CSV_to_JS/Combo_Sentinel10_Original.csv');
+const DIR_CSVS = path.join(process.cwd(), '/main_files/CSV_to_JS/Colossus7_Original.csv');
 const DIR_MAIN_FILES = path.join(process.cwd(), '/main_files/');
 var headersArray = [];
 var allDataArray = [];
@@ -48,4 +48,4 @@ for (let header in headersArray)
   stringArray.push(`export const ${ headersArray[header] } = '${ allArrayStructure[header] }';`);
 }
 // console.log(stringArray[0]);
-fs.writeFileSync(`Combo_Sentinel10A_Sorted_Node.js`, stringArray.join('\n'), 'utf-8'); 
+// fs.writeFileSync(`Combo_Colossus7A_Sorted_Node.js`, stringArray.join('\n'), 'utf-8'); 
