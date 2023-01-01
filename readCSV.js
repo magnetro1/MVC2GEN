@@ -76,7 +76,8 @@ rl.question('Enter original CSV name without \'_Original\' or file extension:', 
         counterObject[arrayOfNumbers[i]]++;
       }
     }
-    // Return the largest value in the object
+    // console.log(counterObject);
+    // Return the value that appears the most in the object
     let largestValue = 0;
     let largestValueKey = 0;
     for (let key in counterObject)
@@ -91,13 +92,12 @@ rl.question('Enter original CSV name without \'_Original\' or file extension:', 
     {
       if ((arrayOfNumbers[0] == 0) && (arrayOfNumbers[1] != 0))
       {
-        console.log(arrayOfNumbers);
+        // console.log(arrayOfNumbers);
         return arrayOfNumbers[1];
       }
     }
     return largestValueKey;
   }
-
 
   var tempDataArr = [];
   for (let totalLines = 1; totalLines < allDataArray.length - 1; totalLines++)
@@ -117,6 +117,14 @@ rl.question('Enter original CSV name without \'_Original\' or file extension:', 
             if (allDataArray[totalLines][0] == allDataArray[totalLines + 3][0])
             {
               tempDataArr[3] = (allDataArray[totalLines + 3][headerValue]);
+              if (allDataArray[totalLines][0] == allDataArray[totalLines + 4][0])
+              {
+                tempDataArr[4] = (allDataArray[totalLines + 4][headerValue]);
+
+                allDataArray[totalLines][headerValue] = countReplayData(tempDataArr);
+                tempDataArr = [];
+                continue
+              }
               allDataArray[totalLines][headerValue] = countReplayData(tempDataArr);
               tempDataArr = [];
               continue
@@ -130,12 +138,56 @@ rl.question('Enter original CSV name without \'_Original\' or file extension:', 
           // console.log(allDataArray[totalLines][headerValue]);
           tempDataArr = [];
           continue
-
         }
         tempDataArr = []
       }
     }
   }
+
+
+  // var totalFrameObject = {};
+  // // Count how many times each total_frames value appears, which is the first column of each line
+  // for (let totalLines = 1; totalLines < allDataArray.length - 1; totalLines++)
+  // {
+  //   if (totalFrameObject[allDataArray[totalLines][0]] == undefined)
+  //   {
+  //     totalFrameObject[allDataArray[totalLines][0]] = 1;
+  //   }
+  //   else
+  //   {
+  //     totalFrameObject[allDataArray[totalLines][0]]++;
+  //   }
+  // }
+  // var objectLength = Object.entries(totalFrameObject).length
+  // var str = '';
+
+  // for (var totalLines = 1; totalLines < allDataArray.length - 1; totalLines++)
+  // {
+  //   var tempFrm = parseInt(allDataArray[totalLines + 1][0]);
+  //   var tempKey = parseInt(Object.keys(totalFrameObject)[totalLines - 1]);
+  //   var tempValue = parseInt(Object.values(totalFrameObject)[totalLines - 1]);
+
+  //   for (let dynamicI = 0; dynamicI < tempValue; dynamicI++)
+  //   {
+  //     if (tempFrm == tempKey)
+  //     {
+  //       str += `yes\nFrm: ${ tempFrm } Key: ${ tempKey } Value: ${ tempValue } !TotalLines: ${ totalLines }\n`
+  //       // continue
+  //     }
+  //     else
+  //     {
+  //       tempFrm++
+  //       // tempKey++
+  //       // tempValue++
+  //       totalLines += tempValue - 1
+  //       str += `no\n!Frm: ${ tempFrm } !Key: ${ tempKey } !Value: ${ tempValue } !TotalLines: ${ totalLines }\n`
+  //       break
+  //     }
+  //   }
+  // }
+  // fs.writeFileSync('test.txt', str);
+
+
 
   // Removing duplicates using the first column's value (Total_Frames)
   for (let check = 0; check < allDataArray.length - 1; check++) // length-1 because we're checking the next element
