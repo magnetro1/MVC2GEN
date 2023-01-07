@@ -224,11 +224,11 @@
         Vtransition("exposureblur")
       Return
       
-      F20::
+      ;F20::
         Vtransition("swish pan")
       Return
       
-      F21::
+      ;F21::
         preset("Zoom_abs_.6")
       Return
       
