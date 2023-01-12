@@ -79,7 +79,7 @@ export const NAME_TABLE_OBJ =
   4: "Anakaris",
   5: "Strider Hiryu",
   6: "Cyclops",
-  7: "Wolverine (Adamantium)",
+  7: "Wolverine",
   8: "Psylocke",
   9: "Iceman",
   10: "Rogue",
@@ -129,7 +129,7 @@ export const NAME_TABLE_OBJ =
   54: "Thanos",
   55: "Jin",
   56: "Captain Commando",
-  57: "Wolverine (Bone)",
+  57: "Wolverine-B",
   58: "Servbot"
 };
 

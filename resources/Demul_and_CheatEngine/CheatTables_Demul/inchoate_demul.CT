@@ -1,0 +1,1024 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="31">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>11080</ID>
+      <Description>"Demul_Values"</Description>
+      <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+      <LastState Value="" RealAddress="00000000"/>
+      <Color>8080FF</Color>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>11079</ID>
+          <Description>"Demul_Current_Save_State"</Description>
+          <LastState Value="1" RealAddress="011CB980"/>
+          <Color>4080FF</Color>
+          <VariableType>Byte</VariableType>
+          <Address>demul.exe+DCB980</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11081</ID>
+          <Description>"Demul_Pause State On/Off"</Description>
+          <LastState Value="0" RealAddress="0119B536"/>
+          <Color>000000</Color>
+          <VariableType>Byte</VariableType>
+          <Address>demul.exe+D9B536</Address>
+          <Hotkeys>
+            <Hotkey>
+              <Action>Set Value</Action>
+              <Keys>
+                <Key>17</Key>
+                <Key>32</Key>
+              </Keys>
+              <Value>1</Value>
+              <ID>0</ID>
+            </Hotkey>
+            <Hotkey>
+              <Action>Set Value</Action>
+              <Keys>
+                <Key>16</Key>
+                <Key>32</Key>
+              </Keys>
+              <Value>0</Value>
+              <ID>1</ID>
+            </Hotkey>
+          </Hotkeys>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11084</ID>
+          <Description>"Demul_Sound"</Description>
+          <LastState Value="0" RealAddress="156C34F4"/>
+          <VariableType>Byte</VariableType>
+          <Address>spuDemul.dll+D34F4</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11085</ID>
+          <Description>"Demul_Total_Frames"</Description>
+          <LastState Value="385657" RealAddress="01129330"/>
+          <Color>008000</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>demul.exe+D29330</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11086</ID>
+          <Description>"Demul_SoundOn/SoundOff"</Description>
+          <LastState/>
+          <Color>004080</Color>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$Lua}
+writeBytes("spuDemul.dll+D34F4",01)
+{$asm}
+[DISABLE]
+{$lua}
+writeBytes("spuDemul.dll+D34F4",00)
+</AssemblerScript>
+          <Hotkeys>
+            <Hotkey>
+              <Action>Toggle Activation</Action>
+              <Keys>
+                <Key>16</Key>
+                <Key>17</Key>
+                <Key>49</Key>
+              </Keys>
+              <ID>0</ID>
+            </Hotkey>
+          </Hotkeys>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11083</ID>
+          <Description>"Demul_Pause/Unpause"</Description>
+          <LastState/>
+          <Color>000080</Color>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$Lua}
+writeBytes("demul.exe+D9B536",01)
+{$asm}
+[DISABLE]
+{$lua}
+writeBytes("demul.exe+D9B536",00)
+</AssemblerScript>
+          <Hotkeys>
+            <Hotkey>
+              <Action>Toggle Activation</Action>
+              <Keys>
+                <Key>17</Key>
+                <Key>16</Key>
+                <Key>222</Key>
+              </Keys>
+              <ID>0</ID>
+            </Hotkey>
+          </Hotkeys>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>11045</ID>
+      <Description>"System &amp; Camera"</Description>
+      <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+      <LastState Value="" RealAddress="00000000"/>
+      <Color>FF8080</Color>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>138</ID>
+          <Description>"A_2D_Game_Timer"</Description>
+          <LastState Value="99" RealAddress="2C289630"/>
+          <Color>0000FF</Color>
+          <VariableType>Byte</VariableType>
+          <Address>2C289630</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11076</ID>
+          <Description>"Duplicates"</Description>
+          <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+          <LastState Value="" RealAddress="00000000"/>
+          <Color>FF0080</Color>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>11064</ID>
+              <Description>"Animation_Lock_duplicate"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11065</ID>
+              <Description>"Assist_Counter_duplicate"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11066</ID>
+              <Description>"Block_Meter_duplicate"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11067</ID>
+              <Description>"Camera_duplicate"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11068</ID>
+              <Description>"Character_Position_duplicate"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11069</ID>
+              <Description>"Colors_duplicate"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>11146</ID>
+                  <Description>"P1_A_Color"</Description>
+                  <LastState Value="0" RealAddress="2C268365"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268365</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11147</ID>
+                  <Description>"P1_B_Color"</Description>
+                  <LastState Value="0" RealAddress="2C268EAD"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268EAD</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11148</ID>
+                  <Description>"P1_C_Color"</Description>
+                  <LastState Value="0" RealAddress="2C2699F5"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C2699F5</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11149</ID>
+                  <Description>"P2_A_Color"</Description>
+                  <LastState Value="2" RealAddress="2C268909"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268909</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11150</ID>
+                  <Description>"P2_B_Color"</Description>
+                  <LastState Value="3" RealAddress="2C269451"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C269451</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11151</ID>
+                  <Description>"P1_C_Color"</Description>
+                  <LastState Value="1" RealAddress="2C269F99"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C269F99</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11070</ID>
+              <Description>"Dizzy_duplicate"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>11154</ID>
+                  <Description>"P1_A_Dizzy"</Description>
+                  <LastState Value="80" RealAddress="2C268521"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268521</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11156</ID>
+                  <Description>"P1_B_Dizzy"</Description>
+                  <LastState Value="80" RealAddress="2C269BB1"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268521+1690</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11157</ID>
+                  <Description>"P1_C_Dizzy"</Description>
+                  <LastState Value="80" RealAddress="2C269069"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268521+B48</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11155</ID>
+                  <Description>"P2_A_Dizzy"</Description>
+                  <LastState Value="80" RealAddress="2C268AC5"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268AC5</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11153</ID>
+                  <Description>"P2_B_Dizzy"</Description>
+                  <LastState Value="80" RealAddress="2C26960D"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268521+10EC</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11152</ID>
+                  <Description>"P2_C_Dizzy"</Description>
+                  <LastState Value="80" RealAddress="2C26A155"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268521+1C34</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11071</ID>
+              <Description>"HUD_Cheats_duplicate"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>11090</ID>
+                  <Description>"Lifebars_dupllicate"</Description>
+                  <Options moHideChildren="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+                  <LastState Value="" RealAddress="00000000"/>
+                  <GroupHeader>1</GroupHeader>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>11091</ID>
+                      <Description>"P1_A_Health_Big"</Description>
+                      <LastState Value="144" RealAddress="2C268760"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C268760</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11092</ID>
+                      <Description>"P1_A_Health_Small"</Description>
+                      <LastState Value="144" RealAddress="2C268764"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C268764</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11093</ID>
+                      <Description>"P1_B_Health_Big"</Description>
+                      <LastState Value="144" RealAddress="2C2692A8"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C2692A8</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11094</ID>
+                      <Description>"P1_B_Health_Small"</Description>
+                      <LastState Value="144" RealAddress="2C269DF0"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C269DF0</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11095</ID>
+                      <Description>"P1_C_Health_Big"</Description>
+                      <LastState Value="144" RealAddress="2C2692AC"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C2692AC</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11096</ID>
+                      <Description>"P1_C_Health_Small"</Description>
+                      <LastState Value="144" RealAddress="2C269DF4"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C269DF4</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11098</ID>
+                      <Description>"P2_A_Health_Big"</Description>
+                      <LastState Value="144" RealAddress="2C26984C"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C26984C</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11099</ID>
+                      <Description>"P2_A_Health_Small"</Description>
+                      <LastState Value="144" RealAddress="2C269850"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C269850</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11100</ID>
+                      <Description>"P2_B_Health_Big"</Description>
+                      <LastState Value="144" RealAddress="2C268D04"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C268D04</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11101</ID>
+                      <Description>"P2_B_Health_Small"</Description>
+                      <LastState Value="144" RealAddress="2C268D08"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C268D08</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11102</ID>
+                      <Description>"P2_C_Health_Big"</Description>
+                      <LastState Value="144" RealAddress="2C26A394"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C26A394</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11103</ID>
+                      <Description>"P2_C_Health_Small"</Description>
+                      <LastState Value="144" RealAddress="2C26A398"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C26A398</Address>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11097</ID>
+                  <Description>"Meter_duplicate"</Description>
+                  <Options moHideChildren="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+                  <LastState Value="" RealAddress="00000000"/>
+                  <GroupHeader>1</GroupHeader>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>11126</ID>
+                      <Description>"P1_Meter_Big_duplicate"</Description>
+                      <LastState Value="2" RealAddress="2C28964A"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C28964A</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11127</ID>
+                      <Description>"P1_Meter_Small_duplicate"</Description>
+                      <LastState Value="40" RealAddress="2C28966C"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C28966C</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11129</ID>
+                      <Description>"P2_Meter_Small_duplicate"</Description>
+                      <LastState Value="0" RealAddress="2C28966E"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C28966E</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11128</ID>
+                      <Description>"P2_Meter_Big_duplicate"</Description>
+                      <LastState Value="2" RealAddress="2C28964B"/>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C28964B</Address>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11072</ID>
+              <Description>"IDs_duplicate"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11073</ID>
+              <Description>"THC_duplicate"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11074</ID>
+              <Description>"SJI_duplicate"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>11136</ID>
+                  <Description>"P1_A_SJ_Counter"</Description>
+                  <LastState Value="0" RealAddress="2C26853C"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C26853C</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11137</ID>
+                  <Description>"P1_B_SJ_Counter"</Description>
+                  <LastState Value="0" RealAddress="2C269084"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C269084</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11138</ID>
+                  <Description>"P1_C_SJ_Counter"</Description>
+                  <LastState Value="0" RealAddress="2C269BCC"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C269BCC</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11139</ID>
+                  <Description>"P2_A_SJ_Counter"</Description>
+                  <LastState Value="0" RealAddress="2C268AE0"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C26853C+5A4</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11140</ID>
+                  <Description>"P2_B_SJ_Counter"</Description>
+                  <LastState Value="0" RealAddress="2C269628"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C26853C+10EC</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11141</ID>
+                  <Description>"P2_C_SJ_Counter"</Description>
+                  <LastState Value="0" RealAddress="2C26A170"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C26853C+1C34</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11075</ID>
+              <Description>"Unfly_duplicate"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>11130</ID>
+                  <Description>"P1_A_Unfly"</Description>
+                  <LastState Value="0" RealAddress="2C268516"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268516</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11131</ID>
+                  <Description>"P1_B_Unfly"</Description>
+                  <LastState Value="0" RealAddress="2C26905E"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C26905E</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11132</ID>
+                  <Description>"P1_C_Unfly"</Description>
+                  <LastState Value="0" RealAddress="2C269BA6"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C269BA6</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11133</ID>
+                  <Description>"P2_A_Unfly"</Description>
+                  <LastState Value="255" RealAddress="2C268ABA"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268ABA</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11134</ID>
+                  <Description>"P2_B_Unfly"</Description>
+                  <LastState Value="0" RealAddress="2C269602"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C269602</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11135</ID>
+                  <Description>"P2_C_Unfly"</Description>
+                  <LastState Value="0" RealAddress="2C26A14A"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C26A14A</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11053</ID>
+          <Description>"Player_Character_Values"</Description>
+          <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+          <LastState Value="" RealAddress="00000000"/>
+          <Color>000000</Color>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>11046</ID>
+              <Description>"HUD_Cheats"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>11118</ID>
+                  <Description>"P1_HUD"</Description>
+                  <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+                  <LastState Value="" RealAddress="00000000"/>
+                  <Color>000000</Color>
+                  <GroupHeader>1</GroupHeader>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>11120</ID>
+                      <Description>"P1_Health"</Description>
+                      <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+                      <LastState Value="" RealAddress="00000000"/>
+                      <Color>000000</Color>
+                      <GroupHeader>1</GroupHeader>
+                      <CheatEntries>
+                        <CheatEntry>
+                          <ID>11105</ID>
+                          <Description>"P1_A_Health_Big"</Description>
+                          <LastState Value="144" RealAddress="2C268760"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C268760</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>11106</ID>
+                          <Description>"P1_A_Health_Small"</Description>
+                          <LastState Value="144" RealAddress="2C268764"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C268764</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>11107</ID>
+                          <Description>"P1_B_Health_Big"</Description>
+                          <LastState Value="144" RealAddress="2C2692A8"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C2692A8</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>11108</ID>
+                          <Description>"P1_B_Health_Small"</Description>
+                          <LastState Value="144" RealAddress="2C269DF0"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C269DF0</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>11109</ID>
+                          <Description>"P1_C_Health_Big"</Description>
+                          <LastState Value="144" RealAddress="2C2692AC"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C2692AC</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>11110</ID>
+                          <Description>"P1_C_Health_Small"</Description>
+                          <LastState Value="144" RealAddress="2C269DF4"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C269DF4</Address>
+                        </CheatEntry>
+                      </CheatEntries>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11122</ID>
+                      <Description>"P1_Meter"</Description>
+                      <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+                      <LastState Value="" RealAddress="00000000"/>
+                      <Color>000000</Color>
+                      <GroupHeader>1</GroupHeader>
+                      <CheatEntries>
+                        <CheatEntry>
+                          <ID>136</ID>
+                          <Description>"P1_Meter_Big"</Description>
+                          <LastState Value="2" RealAddress="2C28964A"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C28964A</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>11124</ID>
+                          <Description>"P1_Meter_Small"</Description>
+                          <LastState Value="40" RealAddress="2C28966C"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C28966C</Address>
+                        </CheatEntry>
+                      </CheatEntries>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11119</ID>
+                  <Description>"P2_HUD"</Description>
+                  <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+                  <LastState Value="" RealAddress="00000000"/>
+                  <Color>000000</Color>
+                  <GroupHeader>1</GroupHeader>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>11121</ID>
+                      <Description>"P2_Health"</Description>
+                      <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+                      <LastState Value="" RealAddress="00000000"/>
+                      <Color>000000</Color>
+                      <GroupHeader>1</GroupHeader>
+                      <CheatEntries>
+                        <CheatEntry>
+                          <ID>11112</ID>
+                          <Description>"P2_A_Health_Big"</Description>
+                          <LastState Value="144" RealAddress="2C26984C"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C26984C</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>11113</ID>
+                          <Description>"P2_A_Health_Small"</Description>
+                          <LastState Value="144" RealAddress="2C269850"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C269850</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>11114</ID>
+                          <Description>"P2_B_Health_Big"</Description>
+                          <LastState Value="144" RealAddress="2C268D04"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C268D04</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>11115</ID>
+                          <Description>"P2_B_Health_Small"</Description>
+                          <LastState Value="144" RealAddress="2C268D08"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C268D08</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>11116</ID>
+                          <Description>"P2_C_Health_Big"</Description>
+                          <LastState Value="144" RealAddress="2C26A394"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C26A394</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>11117</ID>
+                          <Description>"P2_C_Health_Small"</Description>
+                          <LastState Value="144" RealAddress="2C26A398"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C26A398</Address>
+                        </CheatEntry>
+                      </CheatEntries>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11123</ID>
+                      <Description>"P2_Meter"</Description>
+                      <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+                      <LastState Value="" RealAddress="00000000"/>
+                      <Color>000000</Color>
+                      <GroupHeader>1</GroupHeader>
+                      <CheatEntries>
+                        <CheatEntry>
+                          <ID>137</ID>
+                          <Description>"P2_Meter_Big"</Description>
+                          <LastState Value="2" RealAddress="2C28964B"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C28964B</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>11125</ID>
+                          <Description>"P2_Meter_Small"</Description>
+                          <LastState Value="0" RealAddress="2C28966E"/>
+                          <VariableType>Byte</VariableType>
+                          <Address>2C28966E</Address>
+                        </CheatEntry>
+                      </CheatEntries>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11047</ID>
+              <Description>"P1_A_Character_Values"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>139</ID>
+                  <Description>"P1_A_Dizzy"</Description>
+                  <LastState Value="80" RealAddress="2C268521"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268521</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11048</ID>
+              <Description>"P1_B_Character_Values"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11049</ID>
+              <Description>"P1_C_Character_Values"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11050</ID>
+              <Description>"P2_A_Character_Values"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>141</ID>
+                  <Description>"P2_A_Dizzy"</Description>
+                  <LastState Value="80" RealAddress="2C268AC5"/>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268AC5</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11051</ID>
+              <Description>"P2_B_Character_Values"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11052</ID>
+              <Description>"P2_C_Character_Values"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11054</ID>
+          <Description>"System_Values"</Description>
+          <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+          <LastState Value="" RealAddress="00000000"/>
+          <Color>000000</Color>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>11056</ID>
+              <Description>"Assist Flags"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11057</ID>
+              <Description>"Camera"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>18</ID>
+                  <Description>"Camera-1"</Description>
+                  <Options moHideChildren="1" moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+                  <LastState Value="" RealAddress="00000000"/>
+                  <GroupHeader>1</GroupHeader>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>113</ID>
+                      <Description>"Camera_Lock"</Description>
+                      <LastState Value="1" RealAddress="2C26A51F"/>
+                      <Color>408080</Color>
+                      <VariableType>Byte</VariableType>
+                      <Address>2C26A51F</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11087</ID>
+                      <Description>"Camera_X"</Description>
+                      <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+                      <LastState Value="" RealAddress="00000000"/>
+                      <Color>000000</Color>
+                      <GroupHeader>1</GroupHeader>
+                      <CheatEntries>
+                        <CheatEntry>
+                          <ID>116</ID>
+                          <Description>"Camera_X_Pos"</Description>
+                          <LastState Value="-427.9545288" RealAddress="2C26A56C"/>
+                          <VariableType>Float</VariableType>
+                          <Address>2C26A56C</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>114</ID>
+                          <Description>"Camera_X_Rot"</Description>
+                          <Options moHideChildren="1"/>
+                          <LastState Value="-427.9545288" RealAddress="2C26A524"/>
+                          <VariableType>Float</VariableType>
+                          <Address>2C26A524</Address>
+                          <CheatEntries>
+                            <CheatEntry>
+                              <ID>17</ID>
+                              <Description>"Rotation Mirror"</Description>
+                              <LastState Value="-427.9545288" RealAddress="2C1F9CE4"/>
+                              <VariableType>Float</VariableType>
+                              <Address>2C1F9CE4</Address>
+                            </CheatEntry>
+                          </CheatEntries>
+                        </CheatEntry>
+                      </CheatEntries>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11088</ID>
+                      <Description>"Camera_Y"</Description>
+                      <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+                      <LastState Value="" RealAddress="00000000"/>
+                      <Color>000000</Color>
+                      <GroupHeader>1</GroupHeader>
+                      <CheatEntries>
+                        <CheatEntry>
+                          <ID>117</ID>
+                          <Description>"Camera_Y_Pos"</Description>
+                          <LastState Value="95.00001526" RealAddress="2C26A570"/>
+                          <VariableType>Float</VariableType>
+                          <Address>2C26A570</Address>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>115</ID>
+                          <Description>"Camera_Y_Rot"</Description>
+                          <LastState Value="95.00001526" RealAddress="2C26A528"/>
+                          <VariableType>Float</VariableType>
+                          <Address>2C26A528</Address>
+                        </CheatEntry>
+                      </CheatEntries>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>11089</ID>
+                      <Description>"Camera_Z"</Description>
+                      <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+                      <LastState Value="" RealAddress="00000000"/>
+                      <Color>000000</Color>
+                      <GroupHeader>1</GroupHeader>
+                      <CheatEntries>
+                        <CheatEntry>
+                          <ID>19</ID>
+                          <Description>"Camera_Z_Pos"</Description>
+                          <Options moHideChildren="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1"/>
+                          <LastState Value="812.3571167" RealAddress="2C26A52C"/>
+                          <VariableType>Float</VariableType>
+                          <Address>2C26A52C</Address>
+                          <CheatEntries>
+                            <CheatEntry>
+                              <ID>16</ID>
+                              <Description>"Mirror"</Description>
+                              <Options moHideChildren="1" moRecursiveSetValue="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1"/>
+                              <LastState Value="812.3571167" RealAddress="2C1F9CE0"/>
+                              <VariableType>Float</VariableType>
+                              <Address>2C1F9CE0</Address>
+                            </CheatEntry>
+                            <CheatEntry>
+                              <ID>118</ID>
+                              <Description>"Mirror"</Description>
+                              <LastState Value="812.3571167" RealAddress="2C2D6B14"/>
+                              <VariableType>Float</VariableType>
+                              <Address>2C2D6B14</Address>
+                            </CheatEntry>
+                          </CheatEntries>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>20</ID>
+                          <Description>"Camera_Z_Sprite_Scale"</Description>
+                          <LastState Value="812.3571167" RealAddress="2C26A538"/>
+                          <VariableType>Float</VariableType>
+                          <Address>2C26A538</Address>
+                        </CheatEntry>
+                      </CheatEntries>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>112</ID>
+                      <Description>"Camera_Field_of_View"</Description>
+                      <LastState Value="43" RealAddress="2C26A584"/>
+                      <VariableType>Float</VariableType>
+                      <Address>2C26A584</Address>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11055</ID>
+              <Description>"Characters_Stun"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11058</ID>
+              <Description>"Combo_Meter_Values"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11059</ID>
+              <Description>"Flying Screen"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11060</ID>
+              <Description>"Frame_Skip"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11061</ID>
+              <Description>"Inputs"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11062</ID>
+              <Description>"Misc_Game_Values"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <Color>000000</Color>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>11082</ID>
+      <Description>"header_copy"</Description>
+      <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+      <LastState Value="" RealAddress="00000000"/>
+      <Color>000000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <Comments>Player Character Values Offset (?)
+P1_A to P1_B: B48
+P1_A to P1_C: 1690
+P1_A to P2_A: 5A4
+P1_A to P2_B: 10EC
+P1_A to P2_C: 1C34
+</Comments>
+</CheatTable>

@@ -1,15 +1,14 @@
 // Scrape a Cheat Engine XML file for the address description of the table
 import * as fs from 'fs';
-import * as path from 'path';
 
+import {PCSX2_CT_FILES_DIR} from "./paths_aliases.js";
 import {UNUSED_CT_ADDRESSES} from "./main_files/staticData.js";
-const RESOURCES_DIR = path.join(process.cwd(), '/resources/');
-const CE_DIR = `${ RESOURCES_DIR }PCSX2RR_and_CheatEngine/CheatTables.BK/`;
+
 const CT_FILE_PREFIX = 'pcsx2_entelechy_';
 const CT_FILE_SUFFIX = '.CT';
 // Get files from directory
 var allFileNames = [];
-fs.readdirSync(CE_DIR).forEach((file) =>
+fs.readdirSync(PCSX2_CT_FILES_DIR).forEach((file) =>
 {
   allFileNames.push(file);
 });
@@ -17,11 +16,11 @@ fs.readdirSync(CE_DIR).forEach((file) =>
 // Find the newest CT file
 var newestCTFile = ``;
 var newestCTFileDate = 0;
-fs.readdirSync(CE_DIR).forEach((file) =>
+fs.readdirSync(PCSX2_CT_FILES_DIR).forEach((file) =>
 {
   if (file.match(/^pcsx2_entelechy/g) && file.match(/\.CT$/))
   {
-    var stats = fs.statSync(`${ CE_DIR }${ file }`);
+    var stats = fs.statSync(`${ PCSX2_CT_FILES_DIR }${ file }`);
     if (stats.mtimeMs > newestCTFileDate)
     {
       newestCTFileDate = stats.mtimeMs;
@@ -36,12 +35,12 @@ const MAIN_CT_FILE = `${ newestCTFile }`; // Stats method
 // file number method // needs granular file name building
 // const MAIN_CT_FILE = `${ CT_FILE_PREFIX }${ FindNewestCTFile }${ CT_FILE_SUFFIX }`;
 
-const READ_CT_FILE = fs.readFileSync(`${ CE_DIR }${ MAIN_CT_FILE }`.toString(), 'utf8');
+const READ_CT_FILE = fs.readFileSync(`${ PCSX2_CT_FILES_DIR }${ MAIN_CT_FILE }`.toString(), 'utf8');
 var readFlag = false;
 var regexCTDescription = /(?<=<Description>)"(.*)"(?=<\/Description>)/m;
 var regexCTAddress = /(?<=<Address>)(.*)(?=<\/Address>)/m;
 var cheatEntryArray = [];
-var cheatTableBuffer = fs.readFileSync(`${ CE_DIR }${ MAIN_CT_FILE }`, 'utf8').split('\r\n')
+var cheatTableBuffer = fs.readFileSync(`${ PCSX2_CT_FILES_DIR }${ MAIN_CT_FILE }`, 'utf8').split('\r\n')
 for (let line = 0; line < cheatTableBuffer.length; line++)
 {
   if (cheatTableBuffer[line].includes('<ID>6636</ID>')) // Reached Total_Frames
@@ -120,7 +119,7 @@ if (regexForPreviousLuaScript.test(READ_CT_FILE))
     let fileNumber = MAIN_CT_FILE.match(/(?<=_)(\d+)/)[0];
     let fileNamePlusOne = parseInt(fileNumber) + 1;
     var CTFileNamePlusOne = `${ CT_FILE_PREFIX }${ fileNamePlusOne }${ CT_FILE_SUFFIX }`;
-    fs.writeFileSync(`${ CE_DIR }${ CTFileNamePlusOne }`, CTFileWithNewLuaScript, 'utf8');
+    fs.writeFileSync(`${ PCSX2_CT_FILES_DIR }${ CTFileNamePlusOne }`, CTFileWithNewLuaScript, 'utf8');
     txtSlot = 1;
     console.log(`A new CT file was created with the name: ${ CTFileNamePlusOne }`);
   }
@@ -133,14 +132,14 @@ else
 // Write the addresses to a TXT file
 if (txtSlot == 1)
 {
-  fs.writeFileSync(`${ CE_DIR }${ CTFileNamePlusOne }_addresses.txt`, ((`${ cheatEntryArrayFixedSet }`)
+  fs.writeFileSync(`${ PCSX2_CT_FILES_DIR }${ CTFileNamePlusOne }_addresses.txt`, ((`${ cheatEntryArrayFixedSet }`)
     .replace(/,/gmi, '\n') + textToWrite)
     , 'utf8');
   // console.log(txtSlot);
 }
 else if (txtSlot == 0)
 {
-  fs.writeFileSync(`${ CE_DIR }${ newestCTFile }_addresses.txt`, ((`${ cheatEntryArrayFixedSet }`)
+  fs.writeFileSync(`${ PCSX2_CT_FILES_DIR }${ newestCTFile }_addresses.txt`, ((`${ cheatEntryArrayFixedSet }`)
     .replace(/,/gmi, '\n') + textToWrite)
     , 'utf8');
   // console.log(txtSlot);

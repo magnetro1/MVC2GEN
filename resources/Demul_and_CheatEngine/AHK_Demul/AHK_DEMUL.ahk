@@ -1,4 +1,4 @@
-﻿;header1 (Check & Run in Admin Mode
+﻿;Check & Run in Admin Mode
 {
   full_command_line := DllCall("GetCommandLine", "str")
   
@@ -16,176 +16,177 @@
       }
     }
   }
+}
+
+;Environment stuff
+{
+  #SingleInstance, Force
+  #NoEnv
+  SendMode Input
+  SetWorkingDir %A_ScriptDir%
+  Menu, Tray, Icon, shell32.dll, 042 ;link to icons https://renenyffenegger.ch/development/Windows/PowerShell/examples/WinAPI/ExtractIconEx/shell32.html
   
-  ;header2 Environment stuff
+}
+;---------------------------------------------------------;
+;------------------------forDemul+------------------------;
+;---------------------------------------------------------;
+; ^ : Ctrl, ! : Alt, + : Shift, # : Win, ~ : Apps
+;------Separate Stuff
+
+; F14 sends mouse Click
+{
+#IfWinActive ahk_exe cheatengine-x86_64-SSE4-AVX2.exe
+  F14::Send {Click Left}
+  return
+}
+
+;Propagate-Character-Value Function --- Put the desired address in clipboard first
+{
+  !Numpad0::
+    ;P1_A -> P2_C
+    Send P1_A
+    sleep 25
+    SendInput {Tab}
+    Send P2_C
+    SendInput {Tab}
+    Send 1C34 ;;;;;;
+    SendInput {ENTER}
+    sleep 100
+    ;P1_A -> P2_B
+    Send ^v
+    WinWait Paste table entries
+    Send P1_A
+    sleep 25
+    SendInput {Tab}
+    Send P2_B
+    SendInput {Tab}
+    Send 10EC ;;;;;;
+    SendInput {ENTER}
+    sleep 100
+    ;P1_A -> P2_A
+    Send ^v
+    WinWait Paste table entries
+    Send P1_A
+    sleep 25
+    SendInput {Tab}
+    Send P2_A
+    SendInput {Tab}
+    Send 5A4 ;;;;;;
+    SendInput {ENTER}
+    sleep 100
+    ;P1_A -> P1_B
+    Send ^v
+    WinWait Paste table entries
+    Send P1_A
+    sleep 25
+    SendInput {Tab}
+    Send P1_B
+    SendInput {Tab}
+    Send B48 ;;;;;;
+    SendInput {ENTER}
+    sleep 100
+    ;P1_A -> P1_C
+    Send ^v
+    WinWait Paste table entries
+    Send P1_A
+    sleep 25
+    SendInput {Tab}
+    Send P1_C
+    SendInput {Tab}
+    Send 1690 ;;;;;;
+    SendInput {ENTER}
+    sleep 100
+    ;P1_A ->  P1_A
+    Send ^v
+    WinWait Paste table entries
+    SendInput {Tab}
+    SendInput {Tab}
+    SendInput {Tab}
+    SendInput {Tab}
+    SendInput {ENTER}
+  return
+}
+
+; E as Stop Macro
+{
+#IfWinActive ahk_exe demul.exe
+  E::
+    SetKeyDelay 0, 1
+    SendInput {7}
+  return
+}
+; R as Stop,Reload State Only
+{
+#IfWinActive ahk_exe demul.exe
+  R::
+    SendInput {7}
+    SetKeyDelay 0, 100
+    SendInput {F10 Down}
+    sleep 50
+    SendInput {F10 Up}
+    Send {=}
+    sleep 100
+    Send {=}
+    SendInput {F10 Down}
+    sleep 100
+    SendInput {F10 Up}
+  return
+}
+
+;-------Functions
+
+;ReloadState
+{
+#IfWinActive ahk_exe demul.exe
+  reloadState()
   {
-    #SingleInstance, Force
-    #NoEnv
-    SendMode Input
-    SetWorkingDir %A_ScriptDir%
-    Menu, Tray, Icon, shell32.dll, 042 ;
-    
-  }
-  ;---------------------------------------------------------;
-  ;------------------------forDemul+------------------------;
-  ;---------------------------------------------------------;
-  
-  ;------Separate Stuff
-  
-  ; F14 sends mouse Click
-  {
-  #IfWinActive ahk_exe cheatengine-x86_64-SSE4-AVX2.exe
-    F14::Send {Click Left}
+    SendInput {7}
+    SetKeyDelay 0, 100
+    SendInput {F10 Down}
+    sleep 50
+    SendInput {F10 Up}
+    Send {=}
+    sleep 100
+    Send {=}
+    SendInput {F10 Down}
+    sleep 100
+    SendInput {F10 Up}
     return
   }
-  
-  ;Propagate-Character-Value Function --- Put the desired address in clipboard first
+}
+;Reload,Play State
+{
+#IfWinActive ahk_exe demul.exe
+  reloadPlay()
   {
-    !Numpad0::
-      ;P1_A -> P2_C
-      Send P1_A
-      sleep 25
-      SendInput {Tab}
-      Send P2_C
-      SendInput {Tab}
-      Send 1C34 ;;;;;;
-      SendInput {ENTER}
-      sleep 100
-      ;P1_A -> P2_B
-      Send ^v
-      WinWait Paste table entries
-      Send P1_A
-      sleep 25
-      SendInput {Tab}
-      Send P2_B
-      SendInput {Tab}
-      Send 10EC ;;;;;;
-      SendInput {ENTER}
-      sleep 100
-      ;P1_A -> P2_A
-      Send ^v
-      WinWait Paste table entries
-      Send P1_A
-      sleep 25
-      SendInput {Tab}
-      Send P2_A
-      SendInput {Tab}
-      Send 5A4 ;;;;;;
-      SendInput {ENTER}
-      sleep 100
-      ;P1_A -> P1_B
-      Send ^v
-      WinWait Paste table entries
-      Send P1_A
-      sleep 25
-      SendInput {Tab}
-      Send P1_B
-      SendInput {Tab}
-      Send B48 ;;;;;;
-      SendInput {ENTER}
-      sleep 100
-      ;P1_A -> P1_C
-      Send ^v
-      WinWait Paste table entries
-      Send P1_A
-      sleep 25
-      SendInput {Tab}
-      Send P1_C
-      SendInput {Tab}
-      Send 1690 ;;;;;;
-      SendInput {ENTER}
-      sleep 100
-      ;P1_A ->  P1_A
-      Send ^v
-      WinWait Paste table entries
-      SendInput {Tab}
-      SendInput {Tab}
-      SendInput {Tab}
-      SendInput {Tab}
-      SendInput {ENTER}
-    return
+    SetKeyDelay 0, 90
+    SendInput {7 Down}
+    SendInput {7 Up}
+    sleep 10
+    SendInput {F10 Down}
+    sleep 100
+    SendInput {= Down}
+    sleep 200
+    SendInput {F10 Up}
+    SendInput {= Up}
+    SendInput {8}
   }
-  
-  ; E as Stop Macro
-  {
-  #IfWinActive ahk_exe demul.exe
-    E::
-      SetKeyDelay 0, 1
-      SendInput {7}
-    return
-  }
-  ; R as Stop,Reload State Only
-  {
-  #IfWinActive ahk_exe demul.exe
-    R::
-      SendInput {7}
-      SetKeyDelay 0, 100
-      SendInput {F10 Down}
-      sleep 50
-      SendInput {F10 Up}
-      Send {=}
-      sleep 100
-      Send {=}
-      SendInput {F10 Down}
-      sleep 100
-      SendInput {F10 Up}
-    return
-  }
-  
-  ;-------Functions
-  
-  ;ReloadState
-  {
-  #IfWinActive ahk_exe demul.exe
+}
+
+;-------Call Functions
+
+;Reload & Pause
+{
+#IfWinActive ahk_exe demul.exe
+  1::
     reloadState()
-    {
-      SendInput {7}
-      SetKeyDelay 0, 100
-      SendInput {F10 Down}
-      sleep 50
-      SendInput {F10 Up}
-      Send {=}
-      sleep 100
-      Send {=}
-      SendInput {F10 Down}
-      sleep 100
-      SendInput {F10 Up}
-      return
-    }
-  }
-  ;Reload,Play State
-  {
-  #IfWinActive ahk_exe demul.exe
+    sleep 400
     reloadPlay()
-    {
-      SetKeyDelay 0, 90
-      SendInput {7 Down}
-      SendInput {7 Up}
-      sleep 10
-      SendInput {F10 Down}
-      sleep 100
-      SendInput {= Down}
-      sleep 200
-      SendInput {F10 Up}
-      SendInput {= Up}
-      SendInput {8}
-    }
-  }
-  
-  ;-------Call Functions
-  
-  ;Reload & Pause
-  {
-  #IfWinActive ahk_exe demul.exe
-    1::
-      reloadState()
-      sleep 400
-      reloadPlay()
-    return
-  }
-  ;Reload & Unpause
-  {
-    2::
+  return
+}
+;Reload & Unpause
+{
+  2::
 #IfWinActive ahk_exe demul.exe
   Send 7
   sleep 100

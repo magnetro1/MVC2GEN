@@ -1,8 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as readline from 'readline';
-const DIR_MAIN_FILES = path.join(process.cwd(), '/main_files/');
-const DIR_CSVS = path.join(process.cwd(), '/main_files/CSV_to_JS/');
+
+import {DIR_CSVS} from './paths_aliases.js';
+import {DIR_MAIN_FILES} from './paths_aliases.js';
+
 const rl = readline.createInterface(
   {
     input: process.stdin,

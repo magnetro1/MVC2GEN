@@ -1,0 +1,969 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="27">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>151</ID>
+      <Description>"frame counter gameplay"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>2C1F9D80</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>105</ID>
+      <Description>"No description"</Description>
+      <VariableType>2 Bytes</VariableType>
+      <Address>2C212C3E</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>24</ID>
+      <Description>"infinite meter ui state"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>2C212CD9</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>110</ID>
+      <Description>"menu?"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>2C2681E6</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>109</ID>
+      <Description>"abyss stage unlock"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>2C268291</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>25</ID>
+      <Description>"infinite meter ingame state"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>2C2682EA</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"player1mem"</Description>
+      <Options moManualExpandCollapse="1"/>
+      <VariableType>Byte</VariableType>
+      <Address>2C268340</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>11</ID>
+          <Description>"charid"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+01</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>1</ID>
+          <Description>"move "stage""</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+06</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>22</ID>
+          <Description>"mash timer"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>+1c</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>10</ID>
+          <Description>"mash/rekkas"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1e</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>155</ID>
+          <Description>"normal thingy"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>+22</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>29</ID>
+          <Description>"x position"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+34</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>30</ID>
+          <Description>"y position"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+38</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>85</ID>
+          <Description>"x move"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+5c</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>86</ID>
+          <Description>"y move"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+60</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>87</ID>
+          <Description>"gravity"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+6C</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>149</ID>
+          <Description>"screenspace x"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+e0</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>150</ID>
+          <Description>"screenspace y"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+e4</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>121</ID>
+          <Description>"fly screen maybe?"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+149</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>100</ID>
+          <Description>"14a weird"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+14a</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>111</ID>
+          <Description>"proximityblock"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+14a</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>97</ID>
+          <Description>"animation num"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+158</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>96</ID>
+          <Description>"animation group"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+159</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>88</ID>
+          <Description>"proj pointer?"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>+180</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>5</ID>
+          <Description>"special move strength"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1a3</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>9</ID>
+          <Description>"special move jump limit?"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d4</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>8</ID>
+          <Description>"airdash used??"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d5</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>103</ID>
+          <Description>"unfly"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d6</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>6</ID>
+          <Description>"doublejump"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d9</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>132</ID>
+          <Description>"undizzy counter"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1e1</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>4</ID>
+          <Description>"special move index"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1e9</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>137</ID>
+          <Description>"attack immunity"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1ed</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>130</ID>
+          <Description>"special move disable"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1F2</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>129</ID>
+          <Description>"move disable"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1f3</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>145</ID>
+          <Description>"camera?"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1f4</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>99</ID>
+          <Description>"1f5 (ken roll?)"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1f5</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>101</ID>
+          <Description>"14c (mm fireball related?)"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1f5</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>26</ID>
+          <Description>"superjump mode"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1fC</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>180</ID>
+          <Description>"limb choice"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>2C26853E</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>147</ID>
+          <Description>"idle float???"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+203</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>98</ID>
+          <Description>"damage boost"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+205</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>148</ID>
+          <Description>"landing thingy"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+207</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>27</ID>
+          <Description>"guard break counter"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+210</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"flying screen related"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+235</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>131</ID>
+          <Description>"dhc move"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+258</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>184</ID>
+          <Description>"assist / thc char counter"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+259</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>126</ID>
+          <Description>"scalex"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+284</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>127</ID>
+          <Description>"scaley"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+288</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>128</ID>
+          <Description>"scalez"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+28a</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>142</ID>
+          <Description>"enemy distance"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+298</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>146</ID>
+          <Description>"snap timer"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>+2a0</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>104</ID>
+          <Description>"snapout timer"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>+2A0</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>122</ID>
+          <Description>"megaman weapon"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+2a4</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>123</ID>
+          <Description>"amingo cactus limiter"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+2a4</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>119</ID>
+          <Description>"megaman charging bool"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+2a5</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>181</ID>
+          <Description>"No description"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>2C2685E6</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>102</ID>
+          <Description>"ryu fb limit"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+2a6</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>120</ID>
+          <Description>"megaman charging count"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+2A6</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>35</ID>
+          <Description>"psylocke punch super followups"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+2ac</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>84</ID>
+          <Description>"sonson projectile counter"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>+2c2</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>182</ID>
+          <Description>"input timer??"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>2C26869C</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>183</ID>
+          <Description>"input timer 2??"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>2C268694</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>124</ID>
+          <Description>"function pointer table"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>+428</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>140</ID>
+          <Description>"assist type"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+4c9</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>143</ID>
+          <Description>"cpu"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+525</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>144</ID>
+          <Description>"pal idx"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+52d</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>12</ID>
+      <Description>"player2amem"</Description>
+      <Options moManualExpandCollapse="1"/>
+      <VariableType>Byte</VariableType>
+      <Address>2C2688e4</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>36</ID>
+          <Description>"charid"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+01</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>45</ID>
+          <Description>"mash/rekkas"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1e</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>172</ID>
+          <Description>"scalex"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+284</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>173</ID>
+          <Description>"scaley"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+288</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>174</ID>
+          <Description>"scalez"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+28a</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>164</ID>
+          <Description>"0x48 unk"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+48</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>43</ID>
+          <Description>"x position"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+34</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>44</ID>
+          <Description>"y position"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+38</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>162</ID>
+          <Description>"airdash related"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+12c</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>112</ID>
+          <Description>"fly screen maybe?"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+14b</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>116</ID>
+          <Description>"proximity block causing"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+153</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>40</ID>
+          <Description>"special move strength"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1a3</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>169</ID>
+          <Description>"1d0 unk"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d0</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>50</ID>
+          <Description>"special move jump limit?"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d4</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>41</ID>
+          <Description>"airdash used??"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d5</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>37</ID>
+          <Description>"unfly"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d6</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>48</ID>
+          <Description>"doublejump"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d9</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>133</ID>
+          <Description>"undizzy counter"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1e1</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>134</ID>
+          <Description>"undizzy counter2"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1E2</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>39</ID>
+          <Description>"special move index"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1e9</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>135</ID>
+          <Description>"throw immunity"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1eb</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>136</ID>
+          <Description>"attack immunity"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1ed</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>47</ID>
+          <Description>"superjump mode"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1fC</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>163</ID>
+          <Description>"flying"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+201</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>42</ID>
+          <Description>"guard break counter"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+210</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>141</ID>
+          <Description>"flying screen related"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+235</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>117</ID>
+          <Description>"megaman charging bool"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+2a6</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>118</ID>
+          <Description>"megaman charging count"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+2A7</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>49</ID>
+          <Description>"psylocke punch super followups"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+2ac</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>165</ID>
+          <Description>"0x41c unk float"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+48</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>166</ID>
+          <Description>"34e omega airdash?"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>+34e</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>138</ID>
+          <Description>"health"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>+420</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>139</ID>
+          <Description>"red health"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>+420</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>156</ID>
+          <Description>"function table pointer"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>+428</Address>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>157</ID>
+              <Description>"airdash?"</Description>
+              <VariableType>4 Bytes</VariableType>
+              <Address>+54</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>38</ID>
+          <Description>"assist type"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+4c9</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>51</ID>
+      <Description>"player1bmem"</Description>
+      <Options moManualExpandCollapse="1"/>
+      <VariableType>Byte</VariableType>
+      <Address>2c268e88</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>63</ID>
+          <Description>"mash timer"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>2C26835C</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>53</ID>
+          <Description>"charid"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+01</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>62</ID>
+          <Description>"mash/rekkas"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1e</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>60</ID>
+          <Description>"x position"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+34</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>61</ID>
+          <Description>"y position"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+38</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>160</ID>
+          <Description>"airdash related"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+12c</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>113</ID>
+          <Description>"proximityblock"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+14a</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>57</ID>
+          <Description>"special move strength"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1a3</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>67</ID>
+          <Description>"special move jump limit?"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d4</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>58</ID>
+          <Description>"airdash used??"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d5</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>54</ID>
+          <Description>"unfly"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d6</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>65</ID>
+          <Description>"doublejump"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d9</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>56</ID>
+          <Description>"special move index"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1e9</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>64</ID>
+          <Description>"superjump mode"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1fC</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>161</ID>
+          <Description>"flying"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+201</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>59</ID>
+          <Description>"guard break counter"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+210</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>66</ID>
+          <Description>"psylocke punch super followups"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+2ac</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>55</ID>
+          <Description>"assist type"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+4c9</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>114</ID>
+      <Description>"player2bmem"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>2C26942C</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>115</ID>
+          <Description>"proximityblock"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+14a</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>52</ID>
+      <Description>"player1cmem"</Description>
+      <Options moManualExpandCollapse="1"/>
+      <VariableType>Byte</VariableType>
+      <Address>2c2699d0</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>78</ID>
+          <Description>"mash timer"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>2C26835C</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>68</ID>
+          <Description>"charid"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+01</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>77</ID>
+          <Description>"mash/rekkas"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1e</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>75</ID>
+          <Description>"x position"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+34</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>76</ID>
+          <Description>"y position"</Description>
+          <VariableType>Float</VariableType>
+          <Address>+38</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>72</ID>
+          <Description>"special move strength"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1a3</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>82</ID>
+          <Description>"special move jump limit?"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d4</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>73</ID>
+          <Description>"airdash used??"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d5</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>69</ID>
+          <Description>"unfly"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d6</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>80</ID>
+          <Description>"doublejump"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1d9</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>71</ID>
+          <Description>"special move index"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1e9</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>79</ID>
+          <Description>"superjump mode"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+1fC</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>74</ID>
+          <Description>"guard break counter"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+210</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>81</ID>
+          <Description>"psylocke punch super followups"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+2ac</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>83</ID>
+          <Description>"sonson projectile counter"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>+2c2</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>70</ID>
+          <Description>"assist type"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>+4c9</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>153</ID>
+      <Description>"frameskip max"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>2C289620</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>154</ID>
+      <Description>"frameskip counter"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>2C289621</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>125</ID>
+      <Description>"function table p1c1"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>2C289BD8</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>158</ID>
+      <Description>"function pointer table??"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>2C289C58</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>159</ID>
+          <Description>"airdash?"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>+54</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>152</ID>
+      <Description>"frame counter includes menus"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>2C3496B0</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>167</ID>
+      <Description>"No description"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>2c055a70</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>168</ID>
+      <Description>"asdf"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>2C055A6E</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>170</ID>
+      <Description>"airdash height table"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>2c151274</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>171</ID>
+      <Description>"No description"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <VariableType>4 Bytes</VariableType>
+      <Address>2CE3B32C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>175</ID>
+      <Description>"pl dat player slot a start"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>2C420000</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>176</ID>
+          <Description>"whatever"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>+8888C</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>178</ID>
+          <Description>"teleport"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>+863BC</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>179</ID>
+          <Description>"fly??"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>+87DD4</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>177</ID>
+          <Description>"maybe is fireball?"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>+8A250</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
