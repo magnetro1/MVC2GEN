@@ -10,6 +10,8 @@
 1. 🔲Samurai & Kobun & Guile chip
 1. 🔲Powerup Rogue?
 1. 🔲2Char Chun-Li lightning legs
+1. 🔲Cable Viper Beam with DHC from BeatPlane
+1. 🔲Hayato sandwhich with 2Char Samurai Chip | BeatPlane with 2Char Samurai Chip
 
 ---
 

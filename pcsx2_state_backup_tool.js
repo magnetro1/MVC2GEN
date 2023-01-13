@@ -83,6 +83,5 @@ function copyReplayAndSstatesToNewFolders()
 }
 
 // Run the function and set a timeout in the console
-// console.log(getNewestReplay() || ``);
 console.log(copyReplayAndSstatesToNewFolders() || ``);
 await sleep(SLEEP_AMOUNT);
