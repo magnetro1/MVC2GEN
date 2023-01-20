@@ -457,18 +457,18 @@ import(ORG_JS_FILE)
 
           const buttonConversionVersion1 =
           {
-            "6": 1024, 	// 6 = right
-            "4": 2048, 	// 4 = left
-            "2": 4096, 	// 2 = down
-            "8": 8192, 	// 8 = up
-            "u": 512, 	// LP = u
-            "j": 64,	  // LK = j
-            "i": 256,	  // HP = i
-            "k": 32,	  // HK = k
-            "o": 128,	  // A1 = o
-            "l": 16,	  // A2 = l
+            "6": 1024,  // 6 = right
+            "4": 2048,  // 4 = left
+            "2": 4096,  // 2 = down
+            "8": 8192,  // 8 = up
+            "u": 512,   // LP = u
+            "j": 64,    // LK = j
+            "i": 256,   // HP = i
+            "k": 32,    // HK = k
+            "o": 128,   // A1 = o
+            "l": 16,    // A2 = l
             "(": 32768, // START = (
-            ")": 2,		  // SELECT = )
+            ")": 2,     // SELECT = )
           };
 
           const buttonConversionVersion2 =
