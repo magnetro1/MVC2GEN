@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {FLOATING_POINT_ADRS, KNOCKDOWN_STATE_OBJ, MIN_MAX_ADRS, MISC_ADRS, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ, PROX_BLOCK_OBJ, STAGES_OBJ} from "./main_files/staticData.js";
+import {FLOATING_POINT_ADDRESSES, KNOCKDOWN_STATE_OBJ, MIN_MAX_ADDRESSES, MISC_ADDRESSES, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ, PROX_BLOCK_OBJ, STAGES_OBJ} from "./main_files/staticData.js";
 
 const DO_ROM_FILES = false; // Do or Skip ROM logic files
 
@@ -24,10 +24,10 @@ import(ORG_JS_FILE)
   .then((pMemZero) => // Imports SortedJS file as Object with key-value pairs
   {
     const CLIP_LENGTH = pMemZero.A_2D_Game_Timer.split(',').length;
-    for (let adr in MIN_MAX_ADRS)
+    for (let adr in MIN_MAX_ADDRESSES)
     {
-      const KEY = MIN_MAX_ADRS[adr];
-      const VALUE = pMemZero[MIN_MAX_ADRS[adr]].split(','); // Fetch the value by finding the key using its string name, then make into an array by splitting it.
+      const KEY = MIN_MAX_ADDRESSES[adr];
+      const VALUE = pMemZero[MIN_MAX_ADDRESSES[adr]].split(','); // Fetch the value by finding the key using its string name
       const MIN = Math.min(...VALUE);
       const MAX = Math.max(...VALUE);
       let tempMin = [];
@@ -41,17 +41,17 @@ import(ORG_JS_FILE)
       tempMinMaxBuffer += `export const ${ KEY }_Max = '${ tempMax }';\n`;
       tempMinMaxBuffer += `export const ${ KEY }_Min = '${ tempMin }';\n`;
 
-      fs.promises.writeFile(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[adr] }_Max.js`,
+      fs.promises.writeFile(`${ DIR_OUTPATH }${ MIN_MAX_ADDRESSES[adr] }_Max.js`,
         `export const ${ KEY }_Max = '${ tempMax }';\n`,
         {encoding: 'utf8'});
 
-      fs.promises.writeFile(`${ DIR_OUTPATH }${ MIN_MAX_ADRS[adr] }_Min.js`,
+      fs.promises.writeFile(`${ DIR_OUTPATH }${ MIN_MAX_ADDRESSES[adr] }_Min.js`,
         `export const ${ KEY }_Min = '${ tempMin }';\n`,
         {encoding: 'utf8'});
     }
   })
-  .then(() => fs.promises.copyFile(`${ ORG_JS_FILE }`, NEW_JS_FILE) // Copy, append, write JS files, then bring back in
-    .then(() => fs.promises.appendFile(NEW_JS_FILE, tempMinMaxBuffer))
+  // Copy, append, write JS files, then bring back in
+  .then(() => fs.promises.copyFile(`${ ORG_JS_FILE }`, NEW_JS_FILE).then(() => fs.promises.appendFile(NEW_JS_FILE, tempMinMaxBuffer))
     .then(() =>
     {
       fs.promises.readFile(NEW_JS_FILE, 'utf8')
@@ -133,11 +133,11 @@ import(ORG_JS_FILE)
           // Push all player memory addresses to finalValuesArray depending on the if-statement-logic
           for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) // length of clip
           {
+            // 3-Character Bug Logic
             if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
               && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
               && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
             {
-              // 3-Character Bug Logic
               // console.log( `${ playerString}: 3-Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
               finalValuesArray[0].push(pMem[`${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }`].split(',')[clipLen]);
               finalValuesArray[1].push(pMem[`${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }`].split(',')[clipLen]);
@@ -202,17 +202,17 @@ import(ORG_JS_FILE)
             fs.mkdirSync(DIR_OUTPATH);
           }
           // Check for Floating Point Addresses so they can have their trailing digits cut off
-          for (const floatAddress in FLOATING_POINT_ADRS)
+          for (const floatAddress in FLOATING_POINT_ADDRESSES)
           {
             const toFixedDigitNumberZero = [0, 2, 4]; // 7 by default
-            if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }`)
+            if (`${ playerSwitcher }_${ playerMemoryAddress.toString() }` == `${ playerSwitcher }_${ FLOATING_POINT_ADDRESSES[floatAddress] }`)
             {
               for (let fixedDigitType in toFixedDigitNumberZero)
               {
                 var floatArrayFixed = [[], [], []];
-                if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[fixedDigitType] }.js`))
+                if (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADDRESSES[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[fixedDigitType] }.js`))
                 {
-                  fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[fixedDigitType] }.js`,
+                  fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADDRESSES[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[fixedDigitType] }.js`,
                     `result = [];` + "\n", {encoding: 'utf8'});
                   for (let playerSlotI = 0; playerSlotI < 3; playerSlotI++)
                   {
@@ -222,7 +222,7 @@ import(ORG_JS_FILE)
                       floatArrayFixed[playerSlotI].push(value.toFixed(toFixedDigitNumberZero[fixedDigitType]))
                     });
                   }
-                  fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADRS[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[fixedDigitType] }.js`,
+                  fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ FLOATING_POINT_ADDRESSES[floatAddress] }_ToFixed_${ toFixedDigitNumberZero[fixedDigitType] }.js`,
                     `result[0]=[${ floatArrayFixed[0].toString() }];\nresult[1]=[${ floatArrayFixed[1].toString() }];\nresult[2]=[${ floatArrayFixed[2].toString() }];`,
                     {encoding: 'utf8'});
                 }
@@ -320,16 +320,16 @@ import(ORG_JS_FILE)
         function writeP1P2Addresses() 
         {
           const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View", "Timer_Secondary"
-          for (const miscAdrI in MISC_ADRS)
+          for (const miscAdrI in MISC_ADDRESSES)
           {
-            pMem[MISC_ADRS[miscAdrI]].split(',').forEach((clipLenEntry) => // accessing pMem object key by string, splitting its content, and pushing each frame's value
+            pMem[MISC_ADDRESSES[miscAdrI]].split(',').forEach((clipLenEntry) => // accessing pMem object key by string, splitting its content, and pushing each frame's value
             {
               miscAdrArray[0].push(clipLenEntry);
             });
 
-            if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrI] }.js`))
+            if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADDRESSES[miscAdrI] }.js`))
             {
-              fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrI] }.js`,
+              fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADDRESSES[miscAdrI] }.js`,
                 `var result = [];\nresult[0] = [${ miscAdrArray }];`,
                 {encoding: 'utf8'});
               miscAdrArray[0] = []; // clear the array for the next player iteration.
@@ -1768,16 +1768,16 @@ import(ORG_JS_FILE)
         function writeP1P2Addresses() 
         {
           const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View"
-          for (const miscAdrIterator in MISC_ADRS)
+          for (const miscAdrIterator in MISC_ADDRESSES)
           {
-            pMem[MISC_ADRS[miscAdrIterator]].split(',').forEach((address) => // accessing pMem object key by string, splitting its content, and pushing each array element
+            pMem[MISC_ADDRESSES[miscAdrIterator]].split(',').forEach((address) => // accessing pMem object key by string, splitting its content, and pushing each array element
             {
               miscAdrArray[0].push(address);
             });
 
-            if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`))
+            if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADDRESSES[miscAdrIterator] }.js`))
             {
-              fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADRS[miscAdrIterator] }.js`,
+              fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADDRESSES[miscAdrIterator] }.js`,
                 `var result = [];\nresult[0] = [${ miscAdrArray }];`,
                 {encoding: 'utf8'});
               miscAdrArray[0] = []; // clear the array for the next player iteration.

@@ -133,7 +133,7 @@ export const NAME_TABLE_OBJ =
   58: "Servbot"
 };
 
-export const FLOATING_POINT_ADRS =
+export const FLOATING_POINT_ADDRESSES =
   [
     "X_Gravity",
     "X_Position_Arena",
@@ -145,7 +145,7 @@ export const FLOATING_POINT_ADRS =
     "Y_Position_Screen",
     "Y_Velocity"
   ];
-export const MIN_MAX_ADRS =
+export const MIN_MAX_ADDRESSES =
   [
     "P1_A_X_Gravity",
     "P1_A_X_Position_Arena",
@@ -261,7 +261,7 @@ export const MIN_MAX_ADRS =
 /**
 * @description Miscellaneous addresses for which special calculations are not necessary. Example: P1_Combo_Meter_Value, P2_Meter_Big
 **/
-export const MISC_ADRS =
+export const MISC_ADDRESSES =
   [
     "Total_Frames",
     "Camera_Field_of_View",
@@ -323,7 +323,7 @@ export const STAGES_OBJ =
   16: "8CA7DFFF" //"Raft1"
 };
 /**
-* @description Contains the decimal value of each character, and its alphabetical value in time for an After Effects timeremap. Ex: decimal: 30, second: 4 (Akuma)
+* @description Contains the decimal value of each character, and its alphabetical value in time for an After Effects timer remap. Ex: decimal: 30, second: 4 (Akuma)
 **/
 export const PORTRAITS_TO_TIME_OBJ =
 {
@@ -537,3 +537,66 @@ export const UNUSED_CT_ADDRESSES = [
   "P2_B_Sprite_Scale_Z",
   "P2_C_Sprite_Scale_Z",
 ];
+
+// Names by Shortest to Longest
+/*
+Ryu
+Dan
+Ken
+Jin
+Hulk
+Jill
+Roll
+Guile
+Rogue
+Venom
+Cable
+Akuma
+Cammy
+Storm
+Iceman
+Hayato
+Sonson
+Amingo
+Marrow
+Sakura
+Gambit
+Spiral
+Thanos
+Zangief
+Cyclops
+Abyss-A
+Abyss-B
+Abyss-C
+Chun-Li
+Megaman
+Felicia
+Charlie
+Dhalsim
+M.Bison
+Magneto
+Servbot
+Morrigan
+Anakaris
+Psylocke
+Colossus
+Iron Man
+Sentinel
+Wolverine
+B.B. Hood
+Omega Red
+Spider-Man
+Tron Bonne
+Ruby Heart
+Juggernaut
+Sabretooth
+Blackheart
+Doctor Doom
+War Machine
+Wolverine-B
+Shuma-Gorath
+Strider Hiryu
+Silver Samurai
+Captain America
+Captain Commando
+*/
