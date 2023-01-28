@@ -60,7 +60,7 @@ var fontsSubOneObj = {
 };
 
 // Global Variables
-var GLOBAL_OUTPUT_FOLDER = 'H:/Git/MVC2GEN/AdobeScripts/Photoshop/';
+var GLOBAL_OUTPUT_FOLDER = 'H:/Git/MVC2GEN/resources/After Effects Projects+/Tutorial_3/AdobeScripts/Photoshop';
 var GLOBAL_PARAGRAPH_TEXT = '';
 var GLOBAL_POINT_TEXT = '';
 
