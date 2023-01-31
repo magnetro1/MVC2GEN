@@ -42,7 +42,7 @@ var cheatEntryArray = [];
 var cheatTableBuffer = fs.readFileSync(`${ DIR_PCSX2_CT_FILES }${ MAIN_CT_FILE }`, 'utf8').split('\r\n')
 for (let line = 0; line < cheatTableBuffer.length; line++)
 {
-  if (cheatTableBuffer[line].includes('<ID>6636</ID>')) // Reached Total_Frames
+  if (cheatTableBuffer[line].includes('<ID>6636</ID>') /*PCSX2*/ || cheatTableBuffer[line].includes('<ID>11085</ID>') /*DEMUL*/) // Reached Total_Frames
   {
     readFlag = true;
   }

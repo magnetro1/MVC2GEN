@@ -49,14 +49,14 @@ function cameraPan(camCoord)
 	local oldFrame = readTF()
 	
 	while currentTime < 1.0 and contScript do
-		currentFrame = readTF()
-		while currentFrame == oldFrame and contScript do
+		CURRENT_FRAME = readTF()
+		while CURRENT_FRAME == oldFrame and contScript do
 			if isKeyPressed(VK_HOME) then   -- break loop by pressing HOME key
 				contScript = false
 			end
-			currentFrame = readTF()
+			CURRENT_FRAME = readTF()
 		end
-		oldFrame = currentFrame     -- updates frame counter to new number
+		oldFrame = CURRENT_FRAME     -- updates frame counter to new number
 		currentTime = currentTime + timeSpeed
 		for i, v in pairs(camPtr) do
 			writeFloat(v, lerp(camStart[i], camCoord[i], currentTime))

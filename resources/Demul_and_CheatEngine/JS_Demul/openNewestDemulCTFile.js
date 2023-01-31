@@ -12,7 +12,8 @@ function getNewestCTFile()
   const cheatTables = files.filter(file =>
     file.endsWith(CT_EXT));
   const newestDemulCT = cheatTables.reduce((previous, current) =>
-    fs.statSync(DIR_DEMUL_CT_FILES + previous).mtimeMs > fs.statSync(DIR_DEMUL_CT_FILES + current).mtimeMs ? previous : current);
+    fs.statSync(DIR_DEMUL_CT_FILES + previous).mtimeMs > fs.statSync(DIR_DEMUL_CT_FILES + current).mtimeMs
+      ? previous : current);
   return newestDemulCT;
 }
 // Launch newest CT file

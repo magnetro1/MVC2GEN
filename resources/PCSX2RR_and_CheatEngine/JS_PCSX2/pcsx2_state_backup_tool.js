@@ -4,8 +4,8 @@ import * as path from 'path';
 
 import {DIR_PCSX2} from '../../Both_Emulator_Resources/JS_Utils/JS_UTIL_paths.js';
 
-const DIR_SSTATES = DIR_PCSX2 + 'sstates\\';
-const DIR_STATEBK = DIR_PCSX2 + 'StateBK\\';
+const DIR_SSTATES = DIR_PCSX2 + 'sstates/';
+const DIR_STATEBK = DIR_PCSX2 + 'StateBK/';
 const REPLAY_EXT = '.p2m';
 const SLEEP_AMOUNT = 1500;
 const errStr = 'No replays found in ' + DIR_PCSX2 + ', exiting...';
@@ -20,16 +20,18 @@ function sleep(ms)
 function getNewestReplay()
 {
   const files = fs.readdirSync(DIR_PCSX2);
-  const replays = files.filter(file => file.endsWith(REPLAY_EXT));
-  if (replays.length === 0)
+  const replaysList = files.filter(file => file.endsWith(REPLAY_EXT));
+  if (replaysList.length === 0)
   {
     return 'No replays found in ' + DIR_PCSX2 + ', exiting...'
   }
-  const newestReplay = replays.reduce((previousReplayFile, currentReplayFile) =>
+  const newestReplay = replaysList.reduce((previousReplayFile, currentReplayFile) =>
     fs.statSync(DIR_PCSX2 + previousReplayFile).mtimeMs > fs.statSync(DIR_PCSX2 + currentReplayFile).mtimeMs
       ? previousReplayFile : currentReplayFile);
   return newestReplay;
 }
+console.log(getNewestReplay());
+
 // If no replays are found, exit the script
 if (getNewestReplay() === errStr)
 {
@@ -42,7 +44,7 @@ function getAndMakeReplayFolder()
   const newestReplay = getNewestReplay();
   const folderName = newestReplay.replace(REPLAY_EXT, '_pcsx2');
   const ReplayfolderPath = path.join(DIR_STATEBK, folderName)
-  if (!fs.existsSync(ReplayfolderPath))
+  if (!fs.existsSync(ReplayfolderPath) && newestReplay !== errStr)
   {
     fs.mkdirSync(ReplayfolderPath);
   }
@@ -63,6 +65,7 @@ function getAndMakeIncrementedFolder()
   }
   return newFolderPath;
 }
+
 
 // Copy the newest replay and the contents of sstates to the new folder
 function copyReplayAndSstatesToNewFolders()

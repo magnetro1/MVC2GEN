@@ -391,151 +391,66 @@ export const PORTRAITS_TO_TIME_OBJ =
  * @description Addresses to exclude from the project for CTScraper.js file
  */
 export const UNUSED_CT_ADDRESSES = [
+  "01_SCV_Alignment",
+  "Camera_Lock_duplicate",
+  "FOV_duplicate",
   "FOV",
-  "X_Rot_NOP",
-  "Y_Pos_NOP",
-  "X_Pos_NOP",
-  "Y_Rot_NOP",
-  "Z_NOP",
-  "Z_Y_Camera",
-  "Y_NOP",
-  "Z_POS",
-  "Z_SPR",
-  "Y_Clamp_Top",
-  "X Pos Clamp Left",
-  "X Pos Clamp Right",
   "P1_A_Base",
   "P1_B_Base",
   "P1_C_Base",
   "P2_A_Base",
   "P2_B_Base",
   "P2_C_Base",
-  "P1_A_Animation_Lock_duplicate",
-  "P1_B_Animation_Lock_duplicate",
-  "P1_C_Animation_Lock_duplicate",
-  "P2_A_Animation_Lock_duplicate",
-  "P2_B_Animation_Lock_duplicate",
-  "P2_C_Animation_Lock_duplicate",
-  "P1_A_Assist_Counter_duplicate",
-  "P1_B_Assist_Counter_duplicate",
-  "P1_C_Assist_Counter_duplicate",
-  "P2_A_Assist_Counter_duplicate",
-  "P2_B_Assist_Counter_duplicate",
-  "P2_C_Assist_Counter_duplicate",
-  "P1_A_Block_Meter_duplicate",
-  "P1_B_Block_Meter_duplicate",
-  "P1_C_Block_Meter_duplicate",
-  "P2_A_Block_Meter_duplicate",
-  "P2_B_Block_Meter_duplicate",
-  "P2_C_Block_Meter_duplicate",
-  "Camera_Lock_duplicate",
-  "P1_A_X_Position_duplicate",
-  "P1_A_Y_Position_duplicate",
-  "P1_B_X_Position_duplicate",
-  "P1_B_Y_Position_duplicate",
-  "P1_C_X_Position_duplicate",
-  "P1_C_Y_Position_duplicate",
-  "P2_A_X_Position_duplicate",
-  "P2_A_Y_Position_duplicate",
-  "P2_B_X_Position_duplicate",
-  "P2_B_Y_Position_duplicate",
-  "P2_C_X_Position_duplicate",
-  "P2_C_Y_Position_duplicate",
-  "Y_Camera_duplicate",
-  "P1_A_Color_duplicate",
-  "P1_B_Color_duplicate",
-  "P1_C_Color_duplicate",
-  "P2_A_Color_duplicate",
-  "P2_B_Color_duplicate",
-  "P2_C_Color_duplicate",
-  "P1_A_Dizzy_Value_duplicate",
-  "P1_B_Dizzy_Value_duplicate",
-  "P1_C_Dizzy_Value_duplicate",
-  "P2_A_Dizzy_Value_duplicate",
-  "P2_B_Dizzy_Value_duplicate",
-  "P2_C_Dizzy_Value_duplicate",
-  "P1_A_Health_Big_duplicate",
-  "P1_A_Health_Small_duplicate",
-  "P1_B_Health_Big_duplicate",
-  "P1_B_Health_Small_duplicate",
-  "P1_C_Health_Big_duplicate",
-  "P1_C_Health_Small_duplicate",
-  "P2_A_Health_Big_duplicate",
-  "P2_A_Health_Small_duplicate",
-  "P2_B_Health_Big_duplicate",
-  "P2_B_Health_Small_duplicate",
-  "P2_C_Health_Big_duplicate",
-  "P2_C_Health_Small_duplicate",
-  "P1_Meter_Big_duplicate",
-  "P2_Meter_Big_duplicate",
   "P1_A_ID_duplicate",
   "P1_B_ID_duplicate",
   "P1_C_ID_duplicate",
   "P2_A_ID_duplicate",
   "P2_B_ID_duplicate",
   "P2_C_ID_duplicate",
-  "P1_A_THC_Appear_duplicate",
-  "P1_B_THC_Appear_duplicate",
-  "P1_C_THC_Appear_duplicate",
-  "P2_A_THC_Appear_duplicate",
-  "P2_B_THC_Appear_duplicate",
-  "P2_C_THC_Appear_duplicate",
-  "P1_A_Throw_RNG_duplicate",
-  "P1_B_Throw_RNG_duplicate",
-  "P1_C_Throw_RNG_duplicate",
-  "P2_A_Throw_RNG_duplicate",
-  "P2_B_Throw_RNG_duplicate",
-  "P2_C_Throw_RNG_duplicate",
-  "P1_A_Throw_Counter_Mash_duplicate",
-  "P1_B_Throw_Counter_Mash_duplicate",
-  "P1_C_Throw_Counter_Mash_duplicate",
-  "P2_A_Throw_Counter_Mash_duplicate",
-  "P2_B_Throw_Counter_Mash_duplicate",
-  "P2_C_Throw_Counter_Mash_duplicate",
-  "P1_A_SJ_Counter_duplicate",
-  "P1_B_SJ_Counter_duplicate",
-  "P1_C_SJ_Counter_duplicate",
-  "P2_A_SJ_Counter_duplicate",
-  "P2_B_SJ_Counter_duplicate",
-  "P2_C_SJ_Counter_duplicate",
-  "P1_A_Unfly_duplicate",
-  "P1_B_Unfly_duplicate",
-  "P1_C_Unfly_duplicate",
-  "P2_A_Unfly_duplicate",
-  "P2_B_Unfly_duplicate",
-  "P2_C_Unfly_duplicate",
-  "Win_Display_Toggle_duplicate",
-  "01_SCV_Alignment",
-  "P1_A_X_Hitbox_Scale",
-  "P1_B_X_Hitbox_Scale",
-  "P1_C_X_Hitbox_Scale",
-  "P2_A_X_Hitbox_Scale",
-  "P2_B_X_Hitbox_Scale",
-  "P2_C_X_Hitbox_Scale",
-  "P1_A_Y_Hitbox_Scale",
-  "P1_B_Y_Hitbox_Scale",
-  "P1_C_Y_Hitbox_Scale",
-  "P2_A_Y_Hitbox_Scale",
-  "P2_B_Y_Hitbox_Scale",
-  "P2_C_Y_Hitbox_Scale",
   "P1_A_Sprite_Scale_X",
-  "P1_B_Sprite_Scale_X",
-  "P1_C_Sprite_Scale_X",
-  "P2_A_Sprite_Scale_X",
-  "P2_B_Sprite_Scale_X",
-  "P2_C_Sprite_Scale_X",
   "P1_A_Sprite_Scale_Y",
-  "P1_B_Sprite_Scale_Y",
-  "P1_C_Sprite_Scale_Y",
-  "P2_A_Sprite_Scale_Y",
-  "P2_B_Sprite_Scale_Y",
-  "P2_C_Sprite_Scale_Y",
   "P1_A_Sprite_Scale_Z",
+  "P1_A_X_Hitbox_Scale",
+  "P1_A_Y_Hitbox_Scale",
+  "P1_B_Sprite_Scale_X",
+  "P1_B_Sprite_Scale_Y",
   "P1_B_Sprite_Scale_Z",
+  "P1_B_X_Hitbox_Scale",
+  "P1_B_Y_Hitbox_Scale",
+  "P1_C_Sprite_Scale_X",
+  "P1_C_Sprite_Scale_Y",
   "P1_C_Sprite_Scale_Z",
+  "P1_C_X_Hitbox_Scale",
+  "P1_C_Y_Hitbox_Scale",
+  "P2_A_Sprite_Scale_X",
+  "P2_A_Sprite_Scale_Y",
   "P2_A_Sprite_Scale_Z",
+  "P2_A_X_Hitbox_Scale",
+  "P2_A_Y_Hitbox_Scale",
+  "P2_B_Sprite_Scale_X",
+  "P2_B_Sprite_Scale_Y",
   "P2_B_Sprite_Scale_Z",
+  "P2_B_X_Hitbox_Scale",
+  "P2_B_Y_Hitbox_Scale",
+  "P2_C_Sprite_Scale_X",
+  "P2_C_Sprite_Scale_Y",
   "P2_C_Sprite_Scale_Z",
+  "P2_C_X_Hitbox_Scale",
+  "P2_C_Y_Hitbox_Scale",
+  "Win_Display_Toggle_duplicate",
+  "X_Pos_Clamp_Left_duplicate",
+  "X_Pos_Clamp_Right_duplicate",
+  "X_Pos_NOP_duplicate",
+  "X_Rot_NOP_duplicate",
+  "Y_Camera_duplicate",
+  "Y_Clamp_Top_duplicate",
+  "Y_NOP_duplicate",
+  "Y_Pos_NOP_duplicate",
+  "Y_Rot_NOP_duplicate",
+  "Z_NOP_duplicate",
+  "Z_POS_duplicate",
+  "Z_SPR_duplicate",
+  "Z_Y_Camera_duplicate",
 ];
 
 // Names by Shortest to Longest
@@ -599,4 +514,67 @@ Strider Hiryu
 Silver Samurai
 Captain America
 Captain Commando
+*/
+
+// Names Alphabetically
+/*
+Abyss-A
+Abyss-B
+Abyss-C
+Akuma
+Amingo
+Anakaris
+B.B. Hood
+Blackheart
+Cable
+Cammy
+Captain America
+Captain Commando
+Charlie
+Chun-Li
+Colossus
+Cyclops
+Dan
+Dhalsim
+Doctor Doom
+Felicia
+Gambit
+Guile
+Hayato
+Hulk
+Iceman
+Iron Man
+Jill
+Jin
+Juggernaut
+Ken
+M.Bison
+Magneto
+Marrow
+Megaman
+Morrigan
+Omega Red
+Psylocke
+Rogue
+Roll
+Ruby Heart
+Ryu
+Sabretooth
+Sakura
+Sentinel
+Servbot
+Shuma-Gorath
+Silver Samurai
+Sonson
+Spider-Man
+Spiral
+Storm
+Strider Hiryu
+Thanos
+Tron Bonne
+Venom
+War Machine
+Wolverine
+Wolverine-B
+Zangief
 */
