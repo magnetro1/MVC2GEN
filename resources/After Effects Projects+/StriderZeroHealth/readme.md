@@ -25,7 +25,7 @@
     A. MikeZ Bugs2
 08. `SZH_CaptainCommando` : KThrow+Zangief throw assist bug
 
-    A. MikeZ video of setup; joo dvd combo etc
+    A. mc2next; joo dvd combo etc
 09. `SZH_Charlie_RubyHeart` : Sonic Breaks, DHC to reset damage scale
 
     A. Meikyousuisui 7 idea is the germ of it. thc scale is new
@@ -34,25 +34,25 @@
     A. Joo All Character Infinite combo video with Colossus vs Spider-Man
 11. `SZH_Colossus_Sonson` : 2Char-POW + Colossus hyper armor vs Orbs
 
-    A. Joo original idea; show NG version
+    A. mc2combos10 : Joo original idea; show NG version
 12. `SZH_Cyclops_demul` : Optic Blast 2Char DHC
 
     A. cable viper beam izumojin idea
 13. `SZH_Dan` : Dan + Powerup vs Strider + Guile hidden blade
 
-    A. Maj damage-combovid last clip with Iceman and Dan.
+    A. Maj damage-combovid last clip with Iceman and Dan. : mc2combos9
 14. `SZH_Dhalsim02` : Quad Yoga Fire
 
     A. CE - Dhalsim fire setup
 15. `SZH_Dhalsim03_demul` : Full-life grab Strider glitch-death & dhc to WeaponX (DC)
 
-    A. vol8 dhalsim
+    A. vol8 dhalsim : mc2next
 16. `SZH_Felicia` : 999 Cats using Izumojin setup
 
     A.  izumojin combovid & setup
 17. `SZH_Guile` : Guile Blade Lock glitch Air throw into 100 of them
 
-    A. "original" :  gamefaqs?
+    A. "original" :  gamefaqs? : mc2combos9
 18. `SZH_Hulk` : gamma crush (11 hits)
 
     A. original : 320x240 idea vid
@@ -91,7 +91,7 @@
     A. Izu bug demo clip vid for me
 30. `SZH_Megaman_SilverSamurai` : Buster glitch + two ice supers using two char bug
 
-    A. Buster Glitch from StriderZer0 channel  && Vol9 chip
+    A. Buster Glitch from StriderZer0 channel  && Vol9 chip : mc2next (for strider dying and for chip)
 31. `SZH_Morrigan_demul` : VA2 Morrigan-HK bug = Soul Eraser
 
     A. VA1 Morrigan
@@ -109,7 +109,7 @@
     A. original idea
 36. `SZH_SentinelSentinel` : two sentinels vs strider assists
 
-    A. Chaos Dimension - i dont remember the idea used ❗❗❗ Vid4?
+    A. Chaos Dimension - i dont remember the idea used ❗ Vid4?
 37. `SZH_Servbot_demul` : 143 plane  grab (DC)
 
     A. ComboVideo nightwish || find joo infinite in neta?
@@ -130,7 +130,7 @@
     A. Meik10 bug with the same idea
 43. `SZH_Thanos02` : Powerball stack
 
-    A. Chaos Dimension-Vid1 : Powerball vs charging star : mikez video? ❗❗❗
+    A. Chaos Dimension-Vid1 : Powerball vs charging star : mc2combos9
 44. `SZH_Tron_Doom_Juggernaut` : Keep combo going after Trap Gun
 
     A. MikeZ combo && my idea NETA CLIPS
@@ -142,7 +142,7 @@
     A. Zangief video ? : original
 47. `SZH_Zangief02_demul` : UFAB kill with Omega Coil DHC bug
 
-    A. MikeZ video❗❗❗
+    A. mc2bugs1
 
 ## B. NG
 

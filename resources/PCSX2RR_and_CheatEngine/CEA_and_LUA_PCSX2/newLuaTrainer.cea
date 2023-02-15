@@ -1,0 +1,89 @@
+[ENABLE]
+{$lua}
+-- ENABLE 'Frame_Counter' after form launches,
+-- then DISABLE it in order to let the form update.
+-- Label Position Variables
+local xPos = 5
+local yPos = 20
+local fWidth = 279
+local fHeight = 455
+local label0XPos = 0
+local label0YPos = 0
+-- Custom Font Variables
+local cFont0 = {
+  fName = 'Consolas',
+  fSize = 15,
+  fColor = 16750592,
+}
+-- Timer & Form Creation
+local timer = createTimer(nil)
+local MvC2DataDisplay = createForm()
+  MvC2DataDisplay.name = nil
+  MvC2DataDisplay.width = fWidth
+  MvC2DataDisplay.height = fHeight
+local stopButton = createButton(MvC2DataDisplay)
+  stopButton.setName('Stop')
+function fnToggleForm()
+  timer_setEnabled(timer, not timer_getEnabled(timer))
+end
+control_onClick(stopButton, fnToggleForm)
+control_setPosition(stopButton, 0,0)
+function fnUpdateOnTimer(memoryrecord, before, currentstate)
+  timer_onTimer(timer, fnGetandSetData)
+  timer_setInterval(timer,100)
+  timer_setEnabled(timer, true)
+  return true
+end
+
+---Dynamic Entries
+
+--labels
+local vX0= createLabel(MvC2DataDisplay)
+vX0.Font.Size=cFont0.fSize;vX0.Font.Color=cFont0.fColor;vX0.Font.Name=cFont0.fName
+local vX1= createLabel(MvC2DataDisplay)
+vX1.Font.Size=cFont0.fSize;vX1.Font.Color=cFont0.fColor;vX1.Font.Name=cFont0.fName
+local vX2= createLabel(MvC2DataDisplay)
+vX2.Font.Size=cFont0.fSize;vX2.Font.Color=cFont0.fColor;vX2.Font.Name=cFont0.fName
+local vX3= createLabel(MvC2DataDisplay)
+vX3.Font.Size=cFont0.fSize;vX3.Font.Color=cFont0.fColor;vX3.Font.Name=cFont0.fName
+local vX4= createLabel(MvC2DataDisplay)
+vX4.Font.Size=cFont0.fSize;vX4.Font.Color=cFont0.fColor;vX4.Font.Name=cFont0.fName
+local vX5= createLabel(MvC2DataDisplay)
+vX5.Font.Size=cFont0.fSize;vX5.Font.Color=cFont0.fColor;vX5.Font.Name=cFont0.fName
+
+--descriptions
+local desc0 = 'Frame_Counter'
+local desc1 = 'P1_A_Health_Big'
+local desc2 = 'P1_B_Health_Big'
+local desc3 = 'P1_C_Health_Big'
+local desc4 = 'P1_Combo_Meter_Value'
+local desc5 = 'P2_Combo_Meter_Value'
+
+--memory records
+local memRec0= getAddressList().getMemoryRecordByDescription(desc0)
+local memRec1= getAddressList().getMemoryRecordByDescription(desc1)
+local memRec2= getAddressList().getMemoryRecordByDescription(desc2)
+local memRec3= getAddressList().getMemoryRecordByDescription(desc3)
+local memRec4= getAddressList().getMemoryRecordByDescription(desc4)
+local memRec5= getAddressList().getMemoryRecordByDescription(desc5)
+
+--setup function
+function fnGetandSetData()
+  local data0 = desc0 .. ': '.. memoryrecord_getValue(memRec0);control_setPosition(vX0, 5,40);control_setCaption(vX0,data0)
+  local data1 = desc1 .. ': '.. memoryrecord_getValue(memRec1);control_setPosition(vX1, 5,60);control_setCaption(vX1,data1)
+  local data2 = desc2 .. ': '.. memoryrecord_getValue(memRec2);control_setPosition(vX2, 5,80);control_setCaption(vX2,data2)
+  local data3 = desc3 .. ': '.. memoryrecord_getValue(memRec3);control_setPosition(vX3, 5,100);control_setCaption(vX3,data3)
+  local data4 = desc4 .. ': '.. memoryrecord_getValue(memRec4);control_setPosition(vX4, 5,120);control_setCaption(vX4,data4)
+  local data5 = desc5 .. ': '.. memoryrecord_getValue(memRec5);control_setPosition(vX5, 5,140);control_setCaption(vX5,data5)
+  return true
+end
+
+-- activate
+memoryrecord_onActivate(memRec0, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec1, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec2, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec3, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec4, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec5, fnUpdateOnTimer)
+{$asm}
+[DISABLE]
