@@ -3,22 +3,19 @@
 -- ENABLE 'Frame_Counter' after form launches,
 -- then DISABLE it in order to let the form update.
 -- Label Position Variables
-local xPos = 5
-local yPos = 20
-local fWidth = 279
-local fHeight = 455
-local label0XPos = 0
-local label0YPos = 0
+local fWidth = 347
+local fHeight = 452
+
 -- Custom Font Variables
 local cFont0 = {
-  fName = 'Consolas',
-  fSize = 15,
-  fColor = 16750592,
+  fName = 'Source Code Pro Light',
+  fSize = 18,
+  fColor = 0x000000,
 }
 -- Timer & Form Creation
 local timer = createTimer(nil)
 local MvC2DataDisplay = createForm()
-  MvC2DataDisplay.name = nil
+  MvC2DataDisplay.caption = 'MvC2 Data Display'
   MvC2DataDisplay.width = fWidth
   MvC2DataDisplay.height = fHeight
 local stopButton = createButton(MvC2DataDisplay)
@@ -38,43 +35,48 @@ end
 ---Dynamic Entries
 
 --labels
-local vX0= createLabel(MvC2DataDisplay)
-vX0.Font.Size=cFont0.fSize;vX0.Font.Color=cFont0.fColor;vX0.Font.Name=cFont0.fName
-local vX1= createLabel(MvC2DataDisplay)
-vX1.Font.Size=cFont0.fSize;vX1.Font.Color=cFont0.fColor;vX1.Font.Name=cFont0.fName
-local vX2= createLabel(MvC2DataDisplay)
-vX2.Font.Size=cFont0.fSize;vX2.Font.Color=cFont0.fColor;vX2.Font.Name=cFont0.fName
-local vX3= createLabel(MvC2DataDisplay)
-vX3.Font.Size=cFont0.fSize;vX3.Font.Color=cFont0.fColor;vX3.Font.Name=cFont0.fName
-local vX4= createLabel(MvC2DataDisplay)
-vX4.Font.Size=cFont0.fSize;vX4.Font.Color=cFont0.fColor;vX4.Font.Name=cFont0.fName
-local vX5= createLabel(MvC2DataDisplay)
-vX5.Font.Size=cFont0.fSize;vX5.Font.Color=cFont0.fColor;vX5.Font.Name=cFont0.fName
+local vX0 = createLabel(MvC2DataDisplay)
+  vX0.Font.Size = cFont0.fSize;vX0.Font.Color = cFont0.fColor;vX0.Font.Name = cFont0.fName
+local vX1 = createLabel(MvC2DataDisplay)
+  vX1.Font.Size = cFont0.fSize;vX1.Font.Color = cFont0.fColor;vX1.Font.Name = cFont0.fName
+local vX2 = createLabel(MvC2DataDisplay)
+  vX2.Font.Size = cFont0.fSize;vX2.Font.Color = cFont0.fColor;vX2.Font.Name = cFont0.fName
+local vX3 = createLabel(MvC2DataDisplay)
+  vX3.Font.Size = cFont0.fSize;vX3.Font.Color = cFont0.fColor;vX3.Font.Name = cFont0.fName
+local vX4 = createLabel(MvC2DataDisplay)
+  vX4.Font.Size = cFont0.fSize;vX4.Font.Color = cFont0.fColor;vX4.Font.Name = cFont0.fName
+local vX5 = createLabel(MvC2DataDisplay)
+  vX5.Font.Size = cFont0.fSize;vX5.Font.Color = cFont0.fColor;vX5.Font.Name = cFont0.fName
+local vX6 = createLabel(MvC2DataDisplay)
+  vX6.Font.Size = cFont0.fSize;vX6.Font.Color = cFont0.fColor;vX6.Font.Name = cFont0.fName
 
 --descriptions
 local desc0 = 'Frame_Counter'
-local desc1 = 'P1_A_Health_Big'
-local desc2 = 'P1_B_Health_Big'
-local desc3 = 'P1_C_Health_Big'
-local desc4 = 'P1_Combo_Meter_Value'
-local desc5 = 'P2_Combo_Meter_Value'
+local desc1 = 'P2_A_Health_Big'
+local desc2 = 'P1_Combo_Meter_Value'
+local desc3 = 'P2_Combo_Meter_Value'
+local desc4 = 'P2_A_Y_Velocity'
+local desc5 = 'P2_A_Unfly'
+local desc6 = 'P2_A_Dizzy'
 
 --memory records
-local memRec0= getAddressList().getMemoryRecordByDescription(desc0)
-local memRec1= getAddressList().getMemoryRecordByDescription(desc1)
-local memRec2= getAddressList().getMemoryRecordByDescription(desc2)
-local memRec3= getAddressList().getMemoryRecordByDescription(desc3)
-local memRec4= getAddressList().getMemoryRecordByDescription(desc4)
-local memRec5= getAddressList().getMemoryRecordByDescription(desc5)
+local memRec0 = getAddressList().getMemoryRecordByDescription(desc0)
+local memRec1 = getAddressList().getMemoryRecordByDescription(desc1)
+local memRec2 = getAddressList().getMemoryRecordByDescription(desc2)
+local memRec3 = getAddressList().getMemoryRecordByDescription(desc3)
+local memRec4 = getAddressList().getMemoryRecordByDescription(desc4)
+local memRec5 = getAddressList().getMemoryRecordByDescription(desc5)
+local memRec6 = getAddressList().getMemoryRecordByDescription(desc6)
 
 --setup function
 function fnGetandSetData()
-  local data0 = desc0 .. ': '.. memoryrecord_getValue(memRec0);control_setPosition(vX0, 5,40);control_setCaption(vX0,data0)
-  local data1 = desc1 .. ': '.. memoryrecord_getValue(memRec1);control_setPosition(vX1, 5,60);control_setCaption(vX1,data1)
-  local data2 = desc2 .. ': '.. memoryrecord_getValue(memRec2);control_setPosition(vX2, 5,80);control_setCaption(vX2,data2)
-  local data3 = desc3 .. ': '.. memoryrecord_getValue(memRec3);control_setPosition(vX3, 5,100);control_setCaption(vX3,data3)
-  local data4 = desc4 .. ': '.. memoryrecord_getValue(memRec4);control_setPosition(vX4, 5,120);control_setCaption(vX4,data4)
-  local data5 = desc5 .. ': '.. memoryrecord_getValue(memRec5);control_setPosition(vX5, 5,140);control_setCaption(vX5,data5)
+  local data0 = desc0 .. ': '.. memoryrecord_getValue(memRec0);control_setPosition(vX0, 5,25);control_setCaption(vX0,data0)
+  local data1 = desc1 .. ': '.. memoryrecord_getValue(memRec1);control_setPosition(vX1, 5,47);control_setCaption(vX1,data1)
+  local data2 = desc2 .. ': '.. memoryrecord_getValue(memRec2);control_setPosition(vX2, 5,69);control_setCaption(vX2,data2)
+  local data3 = desc3 .. ': '.. memoryrecord_getValue(memRec3);control_setPosition(vX3, 5,91);control_setCaption(vX3,data3)
+  local data4 = desc4 .. ': '.. memoryrecord_getValue(memRec4);control_setPosition(vX4, 5,113);control_setCaption(vX4,data4)
+  local data5 = desc5 .. ': '.. memoryrecord_getValue(memRec5);control_setPosition(vX5, 5,135);control_setCaption(vX5,data5)
+  local data6 = desc6 .. ': '.. memoryrecord_getValue(memRec6);control_setPosition(vX6, 5,157);control_setCaption(vX6,data6)
   return true
 end
 
@@ -85,5 +87,6 @@ memoryrecord_onActivate(memRec2, fnUpdateOnTimer)
 memoryrecord_onActivate(memRec3, fnUpdateOnTimer)
 memoryrecord_onActivate(memRec4, fnUpdateOnTimer)
 memoryrecord_onActivate(memRec5, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec6, fnUpdateOnTimer)
 {$asm}
 [DISABLE]

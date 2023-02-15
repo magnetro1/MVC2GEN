@@ -10,24 +10,25 @@ import clipboard from "clipboardy";
 // JS Values
 const ENTRIES = [
   'Frame_Counter',
-  'P1_A_Health_Big',
-  'P1_B_Health_Big',
-  'P1_C_Health_Big',
+  'P2_A_Health_Big',
   'P1_Combo_Meter_Value',
   'P2_Combo_Meter_Value',
+  'P2_A_Y_Velocity',
+  'P2_A_Unfly',
+  'P2_A_Dizzy',
 ];
 
 // Form Constants
-const luaFormWidth = 279 - 2 // subtracting due to Windows Panel
-const luaFormHeight = 480 - 28 // subtracting due to Windows Panel
+const luaFormWidth = 350 - 3 // subtracting due to Windows Panel // 279
+const luaFormHeight = 480 - 28 // subtracting due to Windows Panel // 480
 const luaFormXPos = 5;
-const luaFormYPos = 15;
-const luaLabelXColumn = 0;
-const luaLabelYRow = 25;
+const luaFormYPos = 5;
+// const luaLabelColOffset = 0;
+const luaLabelRowOffset = 22;
 const luaFont0 = {
-  fName0: 'Consolas',
-  fSize0: 16,
-  fSColor0: 0xFF9900,
+  fName0: 'Source Code Pro Light',
+  fSize0: 18,
+  fSColor0: '0x000000',
 };
 
 const tempLitStart =
@@ -48,7 +49,7 @@ local cFont0 = {
 -- Timer & Form Creation
 local timer = createTimer(nil)
 local MvC2DataDisplay = createForm()
-  MvC2DataDisplay.name = nil
+  MvC2DataDisplay.caption = 'MvC2 Data Display'
   MvC2DataDisplay.width = fWidth
   MvC2DataDisplay.height = fHeight
 local stopButton = createButton(MvC2DataDisplay)
@@ -79,8 +80,8 @@ let labelsStr = '', descriptionsStr = '', memRecStr = '', mainFunctionStr = '', 
 // labels
 for (let labelsIdx = 0; labelsIdx < ENTRIES.length; labelsIdx++)
 {
-  labelsStr += `local vX${ labelsIdx }= createLabel(MvC2DataDisplay)
-vX${ labelsIdx }.Font.Size=cFont0.fSize;vX${ labelsIdx }.Font.Color=cFont0.fColor;vX${ labelsIdx }.Font.Name=cFont0.fName\n`
+  labelsStr += `local vX${ labelsIdx } = createLabel(MvC2DataDisplay)
+  vX${ labelsIdx }.Font.Size = cFont0.fSize;vX${ labelsIdx }.Font.Color = cFont0.fColor;vX${ labelsIdx }.Font.Name = cFont0.fName\n`
 }
 // descriptions
 for (let descriptionsIdx = 0; descriptionsIdx < ENTRIES.length; descriptionsIdx++)
@@ -90,10 +91,10 @@ for (let descriptionsIdx = 0; descriptionsIdx < ENTRIES.length; descriptionsIdx+
 // memory records
 for (let memRecIdx = 0; memRecIdx < ENTRIES.length; memRecIdx++)
 {
-  memRecStr += `local memRec${ memRecIdx }= getAddressList().getMemoryRecordByDescription(desc${ memRecIdx })\n`
+  memRecStr += `local memRec${ memRecIdx } = getAddressList().getMemoryRecordByDescription(desc${ memRecIdx })\n`
 }
 // main function
-for (let mainFunctionIdx = 0, updaterVal = 20; mainFunctionIdx < ENTRIES.length; mainFunctionIdx++, updaterVal += 20)
+for (let mainFunctionIdx = 0, updaterVal = 20; mainFunctionIdx < ENTRIES.length; mainFunctionIdx++, updaterVal += luaLabelRowOffset)
 {
   mainFunctionStr += `  local data${ mainFunctionIdx } = desc${ mainFunctionIdx } .. ': '.. memoryrecord_getValue(memRec${ mainFunctionIdx });control_setPosition(vX${ mainFunctionIdx }, ${ luaFormXPos },${ luaFormYPos + updaterVal });control_setCaption(vX${ mainFunctionIdx },data${ mainFunctionIdx })\n`
 }
@@ -109,4 +110,5 @@ memRecStr += `\n--setup function\nfunction fnGetandSetData()\n`
 mainFunctionStr += `  return true\nend\n\n-- activate\n`
 
 const finalStr = tempLitStart + labelsStr + descriptionsStr + memRecStr + mainFunctionStr + activatesStr + tempLitEnd;
+
 clipboard.writeSync(finalStr);
