@@ -10,23 +10,30 @@ import clipboard from "clipboardy";
 // JS Values
 const ENTRIES = [
   'Frame_Counter',
-  'P2_A_Health_Big',
+  'P1_Input_DEC',
+  'P2_Input_DEC',
   'P1_Combo_Meter_Value',
   'P2_Combo_Meter_Value',
-  'P2_A_Y_Velocity',
-  'P2_A_Unfly',
   'P2_A_Dizzy',
+  'P2_A_Unfly',
+  'P2_A_Y_Velocity',
+  'P2_B_Dizzy',
+  'P2_B_Unfly',
+  'P2_B_Y_Velocity',
+  'P2_C_Dizzy',
+  'P2_C_Unfly',
+  'P2_C_Y_Velocity',
 ];
 
 // Form Constants
-const luaFormWidth = 350 - 3 // subtracting due to Windows Panel // 279
+const luaFormWidth = 420 - 2 // subtracting due to Windows Panel // 279
 const luaFormHeight = 480 - 28 // subtracting due to Windows Panel // 480
 const luaFormXPos = 5;
 const luaFormYPos = 5;
 // const luaLabelColOffset = 0;
-const luaLabelRowOffset = 22;
+const luaLabelRowOffset = 25;
 const luaFont0 = {
-  fName0: 'Source Code Pro Light',
+  fName0: 'Source Code Pro',
   fSize0: 18,
   fSColor0: '0x000000',
 };
@@ -46,6 +53,21 @@ local cFont0 = {
   fSize = ${ luaFont0.fSize0 },
   fColor = ${ luaFont0.fSColor0 },
 }
+-- Input Converter
+local struct = {
+  D     = 4096,
+  U     = 8192,
+  R     = 1024,
+  L     = 2048,
+  LP    = 512,
+  LK    = 64,
+  HP    = 256,
+  HK    = 32,
+  AA    = 128,
+  AB    = 16,
+  ST    = 32768,
+  SE    = 2,
+}
 -- Timer & Form Creation
 local timer = createTimer(nil)
 local MvC2DataDisplay = createForm()
@@ -60,7 +82,7 @@ end
 control_onClick(stopButton, fnToggleForm)
 control_setPosition(stopButton, 0,0)
 function fnUpdateOnTimer(memoryrecord, before, currentstate)
-  timer_onTimer(timer, fnGetandSetData)
+  timer_onTimer(timer, fnGetAndSetData)
   timer_setInterval(timer,100)
   timer_setEnabled(timer, true)
   return true
@@ -70,11 +92,28 @@ end
 
 --labels
 `;
+
+const tempLitP1InputConverter =
+  `  -- Process Directions
+  local P1Str = ''
+  local P2Str = ''
+  local p1 = memRec1.Value
+  local p2 = memRec2.Value
+  for i, v in pairs(struct) do
+    if ( bAnd(p1, struct[i]) ~= 0 ) then
+      P1Str = P1Str .. i
+    end
+    if ( bAnd(p2, struct[i]) ~= 0 ) then
+      P2Str = P2Str .. i
+    end
+  end`;
+
 const tempLitEnd =
   `{$asm}
 [DISABLE]`;
-const fnStrSetup = `function fnGetandSetData()
-`;
+
+const fnStrSetup = `function fnGetAndSetData()\n`;
+
 let labelsStr = '', descriptionsStr = '', memRecStr = '', mainFunctionStr = '', activatesStr = '';
 
 // labels
@@ -93,9 +132,19 @@ for (let memRecIdx = 0; memRecIdx < ENTRIES.length; memRecIdx++)
 {
   memRecStr += `local memRec${ memRecIdx } = getAddressList().getMemoryRecordByDescription(desc${ memRecIdx })\n`
 }
-// main function
+// setup function
 for (let mainFunctionIdx = 0, updaterVal = 20; mainFunctionIdx < ENTRIES.length; mainFunctionIdx++, updaterVal += luaLabelRowOffset)
 {
+  if (mainFunctionIdx === 1)
+  {
+    mainFunctionStr += `  local data1 = desc1 .. ': ' .. P1Str                        ;control_setPosition(vX${ mainFunctionIdx }, ${ luaFormXPos },${ luaFormYPos + updaterVal });control_setCaption(vX${ mainFunctionIdx },data${ mainFunctionIdx })\n`
+    continue
+  }
+  if (mainFunctionIdx === 2)
+  {
+    mainFunctionStr += `  local data2 = desc2 .. ': ' .. P2Str                        ;control_setPosition(vX${ mainFunctionIdx }, ${ luaFormXPos },${ luaFormYPos + updaterVal });control_setCaption(vX${ mainFunctionIdx },data${ mainFunctionIdx })\n`
+    continue
+  }
   mainFunctionStr += `  local data${ mainFunctionIdx } = desc${ mainFunctionIdx } .. ': '.. memoryrecord_getValue(memRec${ mainFunctionIdx });control_setPosition(vX${ mainFunctionIdx }, ${ luaFormXPos },${ luaFormYPos + updaterVal });control_setCaption(vX${ mainFunctionIdx },data${ mainFunctionIdx })\n`
 }
 // activate
@@ -106,7 +155,7 @@ for (let activatesIdx = 0; activatesIdx < ENTRIES.length; activatesIdx++)
 // update strings
 labelsStr += `\n--descriptions\n`
 descriptionsStr += `\n--memory records\n`
-memRecStr += `\n--setup function\nfunction fnGetandSetData()\n`
+memRecStr += `\n--setup function\nfunction fnGetAndSetData()\n${ tempLitP1InputConverter }\n`
 mainFunctionStr += `  return true\nend\n\n-- activate\n`
 
 const finalStr = tempLitStart + labelsStr + descriptionsStr + memRecStr + mainFunctionStr + activatesStr + tempLitEnd;

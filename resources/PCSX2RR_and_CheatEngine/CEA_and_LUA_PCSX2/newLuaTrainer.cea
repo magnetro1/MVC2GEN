@@ -3,14 +3,29 @@
 -- ENABLE 'Frame_Counter' after form launches,
 -- then DISABLE it in order to let the form update.
 -- Label Position Variables
-local fWidth = 347
+local fWidth = 418
 local fHeight = 452
 
 -- Custom Font Variables
 local cFont0 = {
-  fName = 'Source Code Pro Light',
+  fName = 'Source Code Pro',
   fSize = 18,
   fColor = 0x000000,
+}
+-- Input Converter
+local struct = {
+  D     = 4096,
+  U     = 8192,
+  R     = 1024,
+  L     = 2048,
+  LP    = 512,
+  LK    = 64,
+  HP    = 256,
+  HK    = 32,
+  AA    = 128,
+  AB    = 16,
+  ST    = 32768,
+  SE    = 2,
 }
 -- Timer & Form Creation
 local timer = createTimer(nil)
@@ -26,7 +41,7 @@ end
 control_onClick(stopButton, fnToggleForm)
 control_setPosition(stopButton, 0,0)
 function fnUpdateOnTimer(memoryrecord, before, currentstate)
-  timer_onTimer(timer, fnGetandSetData)
+  timer_onTimer(timer, fnGetAndSetData)
   timer_setInterval(timer,100)
   timer_setEnabled(timer, true)
   return true
@@ -49,15 +64,36 @@ local vX5 = createLabel(MvC2DataDisplay)
   vX5.Font.Size = cFont0.fSize;vX5.Font.Color = cFont0.fColor;vX5.Font.Name = cFont0.fName
 local vX6 = createLabel(MvC2DataDisplay)
   vX6.Font.Size = cFont0.fSize;vX6.Font.Color = cFont0.fColor;vX6.Font.Name = cFont0.fName
+local vX7 = createLabel(MvC2DataDisplay)
+  vX7.Font.Size = cFont0.fSize;vX7.Font.Color = cFont0.fColor;vX7.Font.Name = cFont0.fName
+local vX8 = createLabel(MvC2DataDisplay)
+  vX8.Font.Size = cFont0.fSize;vX8.Font.Color = cFont0.fColor;vX8.Font.Name = cFont0.fName
+local vX9 = createLabel(MvC2DataDisplay)
+  vX9.Font.Size = cFont0.fSize;vX9.Font.Color = cFont0.fColor;vX9.Font.Name = cFont0.fName
+local vX10 = createLabel(MvC2DataDisplay)
+  vX10.Font.Size = cFont0.fSize;vX10.Font.Color = cFont0.fColor;vX10.Font.Name = cFont0.fName
+local vX11 = createLabel(MvC2DataDisplay)
+  vX11.Font.Size = cFont0.fSize;vX11.Font.Color = cFont0.fColor;vX11.Font.Name = cFont0.fName
+local vX12 = createLabel(MvC2DataDisplay)
+  vX12.Font.Size = cFont0.fSize;vX12.Font.Color = cFont0.fColor;vX12.Font.Name = cFont0.fName
+local vX13 = createLabel(MvC2DataDisplay)
+  vX13.Font.Size = cFont0.fSize;vX13.Font.Color = cFont0.fColor;vX13.Font.Name = cFont0.fName
 
 --descriptions
 local desc0 = 'Frame_Counter'
-local desc1 = 'P2_A_Health_Big'
-local desc2 = 'P1_Combo_Meter_Value'
-local desc3 = 'P2_Combo_Meter_Value'
-local desc4 = 'P2_A_Y_Velocity'
-local desc5 = 'P2_A_Unfly'
-local desc6 = 'P2_A_Dizzy'
+local desc1 = 'P1_Input_DEC'
+local desc2 = 'P2_Input_DEC'
+local desc3 = 'P1_Combo_Meter_Value'
+local desc4 = 'P2_Combo_Meter_Value'
+local desc5 = 'P2_A_Y_Velocity'
+local desc6 = 'P2_A_Unfly'
+local desc7 = 'P2_A_Dizzy'
+local desc8 = 'P2_B_Y_Velocity'
+local desc9 = 'P2_B_Unfly'
+local desc10 = 'P2_B_Dizzy'
+local desc11 = 'P2_C_Y_Velocity'
+local desc12 = 'P2_C_Unfly'
+local desc13 = 'P2_C_Dizzy'
 
 --memory records
 local memRec0 = getAddressList().getMemoryRecordByDescription(desc0)
@@ -67,16 +103,43 @@ local memRec3 = getAddressList().getMemoryRecordByDescription(desc3)
 local memRec4 = getAddressList().getMemoryRecordByDescription(desc4)
 local memRec5 = getAddressList().getMemoryRecordByDescription(desc5)
 local memRec6 = getAddressList().getMemoryRecordByDescription(desc6)
+local memRec7 = getAddressList().getMemoryRecordByDescription(desc7)
+local memRec8 = getAddressList().getMemoryRecordByDescription(desc8)
+local memRec9 = getAddressList().getMemoryRecordByDescription(desc9)
+local memRec10 = getAddressList().getMemoryRecordByDescription(desc10)
+local memRec11 = getAddressList().getMemoryRecordByDescription(desc11)
+local memRec12 = getAddressList().getMemoryRecordByDescription(desc12)
+local memRec13 = getAddressList().getMemoryRecordByDescription(desc13)
 
 --setup function
-function fnGetandSetData()
+function fnGetAndSetData()
+  -- Process Directions
+  local P1Str = ''
+  local P2Str = ''
+  local p1 = memRec1.Value
+  local p2 = memRec2.Value
+  for i, v in pairs(struct) do
+    if ( bAnd(p1, struct[i]) ~= 0 ) then
+      P1Str = P1Str .. i
+    end
+    if ( bAnd(p2, struct[i]) ~= 0 ) then
+      P2Str = P2Str .. i
+    end
+  end
   local data0 = desc0 .. ': '.. memoryrecord_getValue(memRec0);control_setPosition(vX0, 5,25);control_setCaption(vX0,data0)
-  local data1 = desc1 .. ': '.. memoryrecord_getValue(memRec1);control_setPosition(vX1, 5,47);control_setCaption(vX1,data1)
-  local data2 = desc2 .. ': '.. memoryrecord_getValue(memRec2);control_setPosition(vX2, 5,69);control_setCaption(vX2,data2)
-  local data3 = desc3 .. ': '.. memoryrecord_getValue(memRec3);control_setPosition(vX3, 5,91);control_setCaption(vX3,data3)
-  local data4 = desc4 .. ': '.. memoryrecord_getValue(memRec4);control_setPosition(vX4, 5,113);control_setCaption(vX4,data4)
-  local data5 = desc5 .. ': '.. memoryrecord_getValue(memRec5);control_setPosition(vX5, 5,135);control_setCaption(vX5,data5)
-  local data6 = desc6 .. ': '.. memoryrecord_getValue(memRec6);control_setPosition(vX6, 5,157);control_setCaption(vX6,data6)
+  local data1 = desc1 .. ': ' .. P1Str                        ;control_setPosition(vX1, 5,50);control_setCaption(vX1,data1)
+  local data2 = desc2 .. ': ' .. P2Str                        ;control_setPosition(vX2, 5,75);control_setCaption(vX2,data2)
+  local data3 = desc3 .. ': '.. memoryrecord_getValue(memRec3);control_setPosition(vX3, 5,100);control_setCaption(vX3,data3)
+  local data4 = desc4 .. ': '.. memoryrecord_getValue(memRec4);control_setPosition(vX4, 5,125);control_setCaption(vX4,data4)
+  local data5 = desc5 .. ': '.. memoryrecord_getValue(memRec5);control_setPosition(vX5, 5,150);control_setCaption(vX5,data5)
+  local data6 = desc6 .. ': '.. memoryrecord_getValue(memRec6);control_setPosition(vX6, 5,175);control_setCaption(vX6,data6)
+  local data7 = desc7 .. ': '.. memoryrecord_getValue(memRec7);control_setPosition(vX7, 5,200);control_setCaption(vX7,data7)
+  local data8 = desc8 .. ': '.. memoryrecord_getValue(memRec8);control_setPosition(vX8, 5,225);control_setCaption(vX8,data8)
+  local data9 = desc9 .. ': '.. memoryrecord_getValue(memRec9);control_setPosition(vX9, 5,250);control_setCaption(vX9,data9)
+  local data10 = desc10 .. ': '.. memoryrecord_getValue(memRec10);control_setPosition(vX10, 5,275);control_setCaption(vX10,data10)
+  local data11 = desc11 .. ': '.. memoryrecord_getValue(memRec11);control_setPosition(vX11, 5,300);control_setCaption(vX11,data11)
+  local data12 = desc12 .. ': '.. memoryrecord_getValue(memRec12);control_setPosition(vX12, 5,325);control_setCaption(vX12,data12)
+  local data13 = desc13 .. ': '.. memoryrecord_getValue(memRec13);control_setPosition(vX13, 5,350);control_setCaption(vX13,data13)
   return true
 end
 
@@ -88,5 +151,12 @@ memoryrecord_onActivate(memRec3, fnUpdateOnTimer)
 memoryrecord_onActivate(memRec4, fnUpdateOnTimer)
 memoryrecord_onActivate(memRec5, fnUpdateOnTimer)
 memoryrecord_onActivate(memRec6, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec7, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec8, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec9, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec10, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec11, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec12, fnUpdateOnTimer)
+memoryrecord_onActivate(memRec13, fnUpdateOnTimer)
 {$asm}
 [DISABLE]
