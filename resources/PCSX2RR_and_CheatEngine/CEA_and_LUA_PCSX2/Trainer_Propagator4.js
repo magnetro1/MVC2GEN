@@ -1,7 +1,7 @@
 /*
   Trainer propagator for PCSX2
     - Creates a LUA script for Cheat Engine
-    - Copies the LUA script to the clipboard
+    - Copy output into `Scritps > Trainer_V2` in Cheat Engine
     - PCSX2 must be running & the memory records offset using the 2D Pointer action
  */
 
@@ -9,31 +9,29 @@ import clipboard from "clipboardy";
 
 // JS Values
 const ENTRIES = [
-  'Frame_Counter',
-  'P1_Input_DEC',
-  'P2_Input_DEC',
+  'Frame_Counter', //reserved
+  'P1_Input_DEC', //reserved
+  'P2_Input_DEC', //reserved
   'P1_Combo_Meter_Value',
   'P2_Combo_Meter_Value',
-  'P2_A_Dizzy',
-  'P2_A_Unfly',
-  'P2_A_Y_Velocity',
-  'P2_B_Dizzy',
-  'P2_B_Unfly',
+  'P2_B_X_Position_Arena',
+  'P2_B_Y_Position_Arena',
+  'P2_B_X_Velocity',
   'P2_B_Y_Velocity',
-  'P2_C_Dizzy',
-  'P2_C_Unfly',
-  'P2_C_Y_Velocity',
+  'P2_B_X_Gravity',
+  'P2_B_Y_Gravity',
+
 ];
 
 // Form Constants
-const luaFormWidth = 420 - 2 // subtracting due to Windows Panel // 279
+const luaFormWidth = 820 - 2 // subtracting due to Windows Panel // 279
 const luaFormHeight = 480 - 28 // subtracting due to Windows Panel // 480
 const luaFormXPos = 5;
 const luaFormYPos = 5;
 // const luaLabelColOffset = 0;
 const luaLabelRowOffset = 25;
 const luaFont0 = {
-  fName0: 'Source Code Pro',
+  fName0: 'Consolas',
   fSize0: 18,
   fSColor0: '0x000000',
 };
@@ -54,7 +52,7 @@ local cFont0 = {
   fColor = ${ luaFont0.fSColor0 },
 }
 -- Input Converter
-local struct = {
+local inputConverterObject = {
   D     = 4096,
   U     = 8192,
   R     = 1024,
@@ -99,26 +97,23 @@ const tempLitP1InputConverter =
   local P2Str = ''
   local p1 = memRec1.Value
   local p2 = memRec2.Value
-  for i, v in pairs(struct) do
-    if ( bAnd(p1, struct[i]) ~= 0 ) then
+  for i, v in pairs(inputConverterObject) do
+    if ( bAnd(p1, inputConverterObject[i]) ~= 0 ) then
       P1Str = P1Str .. i
     end
-    if ( bAnd(p2, struct[i]) ~= 0 ) then
+    if ( bAnd(p2, inputConverterObject[i]) ~= 0 ) then
       P2Str = P2Str .. i
     end
   end`;
 
-const tempLitEnd =
-  `{$asm}
-[DISABLE]`;
-
-const fnStrSetup = `function fnGetAndSetData()\n`;
+const tempLitEnd = `{$asm}\n[DISABLE]`;
 
 let labelsStr = '', descriptionsStr = '', memRecStr = '', mainFunctionStr = '', activatesStr = '';
 
 // labels
 for (let labelsIdx = 0; labelsIdx < ENTRIES.length; labelsIdx++)
 {
+
   labelsStr += `local vX${ labelsIdx } = createLabel(MvC2DataDisplay)
   vX${ labelsIdx }.Font.Size = cFont0.fSize;vX${ labelsIdx }.Font.Color = cFont0.fColor;vX${ labelsIdx }.Font.Name = cFont0.fName\n`
 }
@@ -159,5 +154,5 @@ memRecStr += `\n--setup function\nfunction fnGetAndSetData()\n${ tempLitP1InputC
 mainFunctionStr += `  return true\nend\n\n-- activate\n`
 
 const finalStr = tempLitStart + labelsStr + descriptionsStr + memRecStr + mainFunctionStr + activatesStr + tempLitEnd;
-
+console.log('Finished');
 clipboard.writeSync(finalStr);

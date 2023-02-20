@@ -21,7 +21,7 @@ import
 
 const DO_ROM_FILES = false; // Do or Skip ROM logic files
 
-const FILE_NAME_NO_EXT = `Tu4`; // File name without extension
+const FILE_NAME_NO_EXT = `CableJuggernaut`; // ⭐ File name without extension
 const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ FILE_NAME_NO_EXT }/`;
 
 const ORG_JS_FILE = `${ DIR_SORTED_JS }${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
@@ -84,7 +84,7 @@ import(`file://${ ORG_JS_FILE }`)
   )
   .then(() =>
     import(`file://${ NEW_JS_FILE }`)
-      .then((pMem, pMemIndex) =>
+      .then((pMem) =>
       {
         const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(',').length; // Used as clip-length frame tracker; address doesn't matter
         const POINT_OBJ_P1 =
