@@ -1,6 +1,5 @@
 import * as fs from 'fs';
-import * as path from 'path';
-
+import clipboard from "clipboardy";
 import
 {
   FLOATING_POINT_ADDRESSES,
@@ -12,6 +11,7 @@ import
   PROX_BLOCK_OBJ,
   STAGES_OBJ
 } from './JS_UTIL_staticData.js';
+
 import
 {
   DIR_SORTED_JS,
@@ -19,12 +19,21 @@ import
   TAIL_TEXT
 } from './JS_UTIL_paths.js';
 
+import {knownName} from './JS_UTIL_readCSVAuto.js';
+
+// Find newest Sorted.js file
+// const files = fs.readdirSync(DIR_SORTED_JS);
+// const jsFiles = files.filter(file => file.endsWith('.js'));
+// const newestJS = jsFiles.reduce((previous, current) => fs.statSync(DIR_SORTED_JS + previous).mtimeMs > fs.statSync(DIR_SORTED_JS + current).mtimeMs ? previous : current);
+// const FileNameStr = newestJS.replace('_Sorted_Node.js', '');
+
 const DO_ROM_FILES = false; // Do or Skip ROM logic files
 
-const FILE_NAME_NO_EXT = `CableJuggernaut`; // ⭐ File name without extension
+const FILE_NAME_NO_EXT = knownName; // ⭐ File name without extension
 const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ FILE_NAME_NO_EXT }/`;
 
 const ORG_JS_FILE = `${ DIR_SORTED_JS }${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
+console.log(ORG_JS_FILE);
 const NEW_JS_FILE = `${ DIR_SORTED_JS }New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
 
 if (!fs.existsSync(`${ DIR_OUTPATH }`))
@@ -1822,4 +1831,5 @@ import(`file://${ ORG_JS_FILE }`)
         fs.closeSync(0);
         fs.unlinkSync(NEW_JS_FILE);
       })
-  )
+  );
+clipboard.writeSync(DIR_OUTPATH);

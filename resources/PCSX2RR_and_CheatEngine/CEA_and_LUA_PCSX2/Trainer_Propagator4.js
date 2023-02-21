@@ -12,18 +12,21 @@ const ENTRIES = [
   'Frame_Counter', //reserved
   'P1_Input_DEC', //reserved
   'P2_Input_DEC', //reserved
-  'P1_Combo_Meter_Value',
-  'P2_Combo_Meter_Value',
-  'P2_B_X_Position_Arena',
-  'P2_B_Y_Position_Arena',
-  'P2_B_X_Velocity',
-  'P2_B_Y_Velocity',
-  'P2_B_X_Gravity',
-  'P2_B_Y_Gravity',
+  // 'P1_Combo_Meter_Value',
+  // 'P2_Combo_Meter_Value',
+  // 'P2_B_X_Position_Arena',
+  // 'P2_B_X_Velocity',
+  'P1_A_Y_Position_Arena',
+  'P1_A_Y_Velocity',
+  'P1_A_Y_Gravity',
 
+  'P2_A_Y_Position_Arena',
+  'P2_A_Y_Velocity',
+  'P2_A_Y_Gravity',
 ];
 
 // Form Constants
+const luaFormColor = '0x00b140';
 const luaFormWidth = 820 - 2 // subtracting due to Windows Panel // 279
 const luaFormHeight = 480 - 28 // subtracting due to Windows Panel // 480
 const luaFormXPos = 5;
@@ -72,6 +75,7 @@ local MvC2DataDisplay = createForm()
   MvC2DataDisplay.caption = 'MvC2 Data Display'
   MvC2DataDisplay.width = fWidth
   MvC2DataDisplay.height = fHeight
+  MvC2DataDisplay.color = ${ luaFormColor }
 local stopButton = createButton(MvC2DataDisplay)
   stopButton.setName('Stop')
 function fnToggleForm()
