@@ -60,6 +60,7 @@ function countReplayData(arrayOfNumbers)
       largestValueKey = key;
     }
   }
+  // If there are two data entries, and one is 0, return the other that is not 0.
   if (arrayOfNumbers.length == 2)
   {
     if ((arrayOfNumbers[0] == 0) && (arrayOfNumbers[1] != 0))

@@ -117,7 +117,6 @@ let labelsStr = '', descriptionsStr = '', memRecStr = '', mainFunctionStr = '', 
 // labels
 for (let labelsIdx = 0; labelsIdx < ENTRIES.length; labelsIdx++)
 {
-
   labelsStr += `local vX${ labelsIdx } = createLabel(MvC2DataDisplay)
   vX${ labelsIdx }.Font.Size = cFont0.fSize;vX${ labelsIdx }.Font.Color = cFont0.fColor;vX${ labelsIdx }.Font.Name = cFont0.fName\n`
 }
@@ -158,5 +157,4 @@ memRecStr += `\n--setup function\nfunction fnGetAndSetData()\n${ tempLitP1InputC
 mainFunctionStr += `  return true\nend\n\n-- activate\n`
 
 const finalStr = tempLitStart + labelsStr + descriptionsStr + memRecStr + mainFunctionStr + activatesStr + tempLitEnd;
-console.log('Finished');
 clipboard.writeSync(finalStr);

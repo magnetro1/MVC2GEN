@@ -19,13 +19,13 @@ import
   TAIL_TEXT
 } from './JS_UTIL_paths.js';
 
-import {knownName} from './JS_UTIL_readCSVAuto.js';
+import {knownName} from './JS_UTIL_readCSVAuto.js'; //Calls getCSVName => readCSVAuto
 
-// Find newest Sorted.js file
-// const files = fs.readdirSync(DIR_SORTED_JS);
-// const jsFiles = files.filter(file => file.endsWith('.js'));
-// const newestJS = jsFiles.reduce((previous, current) => fs.statSync(DIR_SORTED_JS + previous).mtimeMs > fs.statSync(DIR_SORTED_JS + current).mtimeMs ? previous : current);
-// const FileNameStr = newestJS.replace('_Sorted_Node.js', '');
+const SLEEP_AMOUNT = 2500;
+function sleep(ms)
+{
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 const DO_ROM_FILES = false; // Do or Skip ROM logic files
 
@@ -1833,3 +1833,5 @@ import(`file://${ ORG_JS_FILE }`)
       })
   );
 clipboard.writeSync(DIR_OUTPATH);
+console.log('AE Path Copied to Clipboard' || ``);
+await sleep(SLEEP_AMOUNT);
