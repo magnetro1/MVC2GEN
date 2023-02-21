@@ -107,6 +107,7 @@ function main()
       }
       if (arrayOfNumbers.length == 2)
       {
+        console.log(largestValueKey);
         if ((arrayOfNumbers[0] == 0) && (arrayOfNumbers[1] != 0))
         {
           return arrayOfNumbers[1];

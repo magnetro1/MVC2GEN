@@ -24,16 +24,17 @@ import {knownName} from './JS_UTIL_readCSVAuto.js'; //Calls getCSVName => readCS
 const SLEEP_AMOUNT = 2500;
 function sleep(ms)
 {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(function (resolve)
+  {
+    return setTimeout(resolve, ms);
+  });
 }
 
 const DO_ROM_FILES = false; // Do or Skip ROM logic files
 
 const FILE_NAME_NO_EXT = knownName; // ⭐ File name without extension
 const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ FILE_NAME_NO_EXT }/`;
-
 const ORG_JS_FILE = `${ DIR_SORTED_JS }${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
-console.log(ORG_JS_FILE);
 const NEW_JS_FILE = `${ DIR_SORTED_JS }New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
 
 if (!fs.existsSync(`${ DIR_OUTPATH }`))
@@ -41,7 +42,7 @@ if (!fs.existsSync(`${ DIR_OUTPATH }`))
   fs.mkdirSync(`${ DIR_OUTPATH }`);
 }
 // Copy & Write Temp File ( that will be deleted )
-var tempMinMaxBuffer = '\n';
+let tempMinMaxBuffer = '\n';
 import(`file://${ ORG_JS_FILE }`)
   .then((pMemZero) => // Imports SortedJS file as Object with key-value pairs
   {
