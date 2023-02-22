@@ -52,7 +52,7 @@ function main()
     const FILE = path.join(DIR_CSVS, `${ FILENAME_NO_EXT }_Original.csv`); // Working with _Original
 
     var headersArray = [];
-    var allDataArray = [];
+    var allDataArr = [];
     fs.readFileSync(FILE, 'utf8').split('\r\n').map((line, index) =>
     {
       if (index === 0)
@@ -61,12 +61,12 @@ function main()
       }
       else
       {
-        allDataArray.push(line.split(','));
+        allDataArr.push(line.split(','));
       } return null;
     });
 
     // Sorting by the first column's first value (Total_Frames)
-    allDataArray.sort((a, b) => a[0] - b[0]);
+    allDataArr.sort((a, b) => a[0] - b[0]);
 
     /**
      * @description Counts the amount of times a value appears in an array and returns the value that appears the most
@@ -75,6 +75,8 @@ function main()
      */
     function countReplayData(arrayOfNumbers)
     {
+      // console.log(arrayOfNumbers[0]);
+      // console.log(arrayOfNumbers.length);
       // Count the values in the arrays and store them in an object
       let counterObject = {};
       for (let i = 0; i < arrayOfNumbers.length; i++)
@@ -92,186 +94,195 @@ function main()
       /**
        * @description number of times the data value appears. Ex: 4
        */
-      let largestValue = 0;
+      let largestOccurrence = 0;
+
       /**
        * @description Will store the data value that appears the most. Ex: 255
        */
       let largestValueKey = 0;
       for (let key in counterObject)
       {
-        if (counterObject[key] > largestValue)
+        if (counterObject[key] > largestOccurrence)
         {
-          largestValue = counterObject[key];
+          largestOccurrence = counterObject[key];
           largestValueKey = key;
         }
       }
+
+      // If the occurrence is two and one value is 0 and the other is not, return the next value that is not 0
+      // buggy csv capture issue
       if (arrayOfNumbers.length == 2)
       {
-        console.log(largestValueKey);
         if ((arrayOfNumbers[0] == 0) && (arrayOfNumbers[1] != 0))
         {
           return arrayOfNumbers[1];
         }
+        // Opposite
+        else if ((arrayOfNumbers[1] == 0) && (arrayOfNumbers[0] != 0))
+        {
+          return arrayOfNumbers[0];
+        }
       }
+      // console.log(largestValueKey);
       return largestValueKey;
     }
-    // Find true data
-    var tempDataArr = [];
-    for (let totalLines = 1; totalLines < allDataArray.length - 1; totalLines++)
+
+
+    //Find true data
+    const tfObject = {};
+    let tempDataArr = [];
+    let tempCounter = 0;
+    try
     {
-      if (allDataArray[totalLines][0] == allDataArray[totalLines + 1][0]) // we are in a duplicate line entry based on total_frames
+      for (let linesIdx = 1; linesIdx < allDataArr.length; linesIdx++) //entries as arrays with values starting at Total_Frames
       {
-        for (let headerValue = 0; headerValue < headersArray.length; headerValue++)
+        if (allDataArr[linesIdx][0] != allDataArr[linesIdx + 1][0] && tempCounter == 0) // we are in a unique line entry based on total_frames
         {
-          if (allDataArray[totalLines][headerValue] != allDataArray[totalLines + 1][headerValue])
-          {
-            tempDataArr[0] = (allDataArray[totalLines][headerValue]);
-            tempDataArr[1] = (allDataArray[totalLines + 1][headerValue]);
-
-            if (allDataArray[totalLines][0] == allDataArray[totalLines + 2][0])
-            {
-              tempDataArr[2] = (allDataArray[totalLines + 2][headerValue]);
-              if (allDataArray[totalLines][0] == allDataArray[totalLines + 3][0])
-              {
-                tempDataArr[3] = (allDataArray[totalLines + 3][headerValue]);
-                if (allDataArray[totalLines][0] == allDataArray[totalLines + 4][0])
-                {
-                  tempDataArr[4] = (allDataArray[totalLines + 4][headerValue]);
-
-                  allDataArray[totalLines][headerValue] = countReplayData(tempDataArr);
-                  tempDataArr = [];
-                  continue
-                }
-                allDataArray[totalLines][headerValue] = countReplayData(tempDataArr);
-                tempDataArr = [];
-                continue
-              }
-              allDataArray[totalLines][headerValue] = countReplayData(tempDataArr);
-              tempDataArr = [];
-              continue
-            }
-            allDataArray[totalLines][headerValue] = countReplayData(tempDataArr);
-            // console.log(countReplayData(tempDataArr));
-            // console.log(allDataArray[totalLines][headerValue]);
-            tempDataArr = [];
-            continue
-          }
-          else
-          {
-            tempDataArr[0] = (allDataArray[totalLines][headerValue]);
-            tempDataArr[1] = (allDataArray[totalLines + 1][headerValue]);
-            allDataArray[totalLines][headerValue] = countReplayData(tempDataArr);
-            // console.log(tempDataArr[0])
-            // console.log(tempDataArr[1])
-            tempDataArr = [];
-            break
-          }
-          tempDataArr = []
+          // console.log(allDataArr[linesIdx][0] + " is not equal to " + allDataArr[linesIdx + 1][0]);
+          tfObject[allDataArr[linesIdx][0]] = 1;
+          continue
+        }
+        else if (allDataArr[linesIdx][0] == allDataArr[linesIdx + 1][0])
+        {
+          // console.log(`${ allDataArr[linesIdx][0] } is equal to ${ allDataArr[linesIdx + 1][0] }`);
+          tempCounter++
+        }
+        else if (allDataArr[linesIdx][0] != allDataArr[linesIdx + 1][0] && tempCounter > 0)
+        {
+          // console.log(`${ allDataArr[linesIdx][0] } is not equal to ${ allDataArr[linesIdx + 1][0] }`);
+          tfObject[allDataArr[linesIdx][0]] = tempCounter;
+          tempCounter = 0;
         }
       }
     }
+    catch (error)
+    {
+      console.log('error');
+    }
+
+    // Remove headers
+    allDataArr.splice(0, 2);
+
+    const CLIP_LENGTH = Object.keys(tfObject).length;
+
+    //             j                  linesIdx  h
+    // tempDataArr[0] = [allDataArray[linesIdx][23]];
 
 
-    // var totalFrameObject = {};
-    // // Count how many times each total_frames value appears, which is the first column of each line
-    // for (let totalLines = 1; totalLines < allDataArray.length - 1; totalLines++)
+    // for (let linesIdx = 1; linesIdx < allDataArray.length - 1; linesIdx++)
     // {
-    //   if (totalFrameObject[allDataArray[totalLines][0]] == undefined)
+    //   if (allDataArray[linesIdx][0] == allDataArray[linesIdx + 1][0]) // we are in a duplicate line entry based on total_frames
     //   {
-    //     totalFrameObject[allDataArray[totalLines][0]] = 1;
+    //     for (let headerValue = 0; headerValue < headersArray.length; headerValue++)
+    //     {
+    //       if (allDataArray[linesIdx][headerValue] != allDataArray[linesIdx + 1][headerValue])
+    //       {
+    //         tempDataArr[0] = (allDataArray[linesIdx][headerValue]);
+    //         tempDataArr[1] = (allDataArray[linesIdx + 1][headerValue]);
+
+    //         if (allDataArray[linesIdx][0] == allDataArray[linesIdx + 2][0])
+    //         {
+    //           tempDataArr[2] = (allDataArray[linesIdx + 2][headerValue]);
+    //           if (allDataArray[linesIdx][0] == allDataArray[linesIdx + 3][0])
+    //           {
+    //             tempDataArr[3] = (allDataArray[linesIdx + 3][headerValue]);
+    //             if (allDataArray[linesIdx][0] == allDataArray[linesIdx + 4][0])
+    //             {
+    //               tempDataArr[4] = (allDataArray[linesIdx + 4][headerValue]);
+    //               if (allDataArray[linesIdx][0] == allDataArray[linesIdx + 4][0])
+    //               {
+    //                 tempDataArr[0] = (allDataArray[linesIdx][headerValue]);
+    //                 tempDataArr[1] = (allDataArray[linesIdx + 1][headerValue]);
+    //                 tempDataArr[2] = (allDataArray[linesIdx + 2][headerValue]);
+    //                 tempDataArr[3] = (allDataArray[linesIdx + 3][headerValue]);
+    //                 tempDataArr[4] = (allDataArray[linesIdx + 4][headerValue]);
+
+    //                 allDataArray[linesIdx][headerValue] = countReplayData(tempDataArr);
+    //                 tempDataArr = [];
+    //                 continue
+    //               }
+    //             }
+    //             allDataArray[linesIdx][headerValue] = countReplayData(tempDataArr);
+    //             tempDataArr = [];
+    //             continue
+    //             tempDataArr[5] = (allDataArray[linesIdx + 5][headerValue]);
+    //           }
+    //           allDataArray[linesIdx][headerValue] = countReplayData(tempDataArr);
+    //           tempDataArr = [];
+    //           continue
+    //         }
+    //         allDataArray[linesIdx][headerValue] = countReplayData(tempDataArr);
+    //         tempDataArr = [];
+    //         continue
+    //       }
+    //       else // more than 5 repeat captures
+    //       {
+    //         tempDataArr[0] = (allDataArray[linesIdx][headerValue]);
+    //         tempDataArr[1] = (allDataArray[linesIdx + 1][headerValue]);
+    //         allDataArray[linesIdx][headerValue] = countReplayData(tempDataArr);
+
+    //         tempDataArr = [];
+    //         break
+    //       }
+    //     }
+    //   }
+    // }
+
+    //   // Removing duplicates using the first column's value (Total_Frames)
+    //   for (let check = 0; check < allDataArray.length - 1; check++) // length-1 because we're checking the next element
+    //   {
+    //     if ((allDataArray[check + 1][0] === allDataArray[check][0])) // line number is the same
+    //     {
+    //       allDataArray.splice(check + 1, 1); // remove the next line
+    //       check--; // go back to original line in order to check the next line again
+    //     }
+    //   }
+
+    //   // // Transpose the array by columns
+    //   var allArrayStructure = [];
+    //   for (let headerIndex = 0; headerIndex < headersArray.length; headerIndex++)
+    //   {
+    //     allArrayStructure.push([]);
+    //   }
+    //   // Fill the array of arrays with the data separated by column
+    //   for (let rowIdx = 1; rowIdx < allDataArray.length; ++rowIdx) 
+    //   {
+    //     for (let colIdx = 0; colIdx < headersArray.length; ++colIdx)
+    //     {
+    //       allArrayStructure[colIdx].push(allDataArray[rowIdx][colIdx]);
+    //     }
+    //   }
+    //   // Make entire file buffer
+    //   var stringArray = [];
+    //   for (let header in headersArray)
+    //   {
+    //     stringArray.push(`export const ${ headersArray[header] } = "${ allArrayStructure[header] }";`);
+    //   }
+
+    //   // Make Total_Frames info
+    //   var missingEntries = [];
+    //   for (let i = 0; i < allArrayStructure[0].length - 1; i++) // total frames
+    //   {
+    //     if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1)
+    //     {
+    //       missingEntries.push(`Missing data entry after Total_Frame Number: ${ allArrayStructure[0][i] }\n`);
+    //     }
+    //   }
+    //   if (missingEntries.length > 0)
+    //   {
+    //     fs.writeFileSync(`${ DIR_SORTED_JS }${ FILENAME_NO_EXT }${ TAIL_TEXT }`,
+    //       (`/*\n${ missingEntries }\nFirst entry in Total_Frames: ${ allArrayStructure[0][0] }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }\n*/\n`)
+    //         .replace(/,/g, ''));
+    //     console.log('Missing entries logged.');
     //   }
     //   else
     //   {
-    //     totalFrameObject[allDataArray[totalLines][0]]++;
+    //     fs.writeFileSync(`${ DIR_SORTED_JS }${ FILENAME_NO_EXT }${ TAIL_TEXT }`,
+    //       (`/*\nNo missing data entries\nFirst entry in Total_Frames: ${ allArrayStructure[0][0] }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }\n*/\n`)
+    //         .replace(/,/g, ''));
     //   }
-    // }
-    // var objectLength = Object.entries(totalFrameObject).length
-    // var str = '';
-
-    // for (var totalLines = 1; totalLines < allDataArray.length - 1; totalLines++)
-    // {
-    //   var tempFrm = parseInt(allDataArray[totalLines + 1][0]);
-    //   var tempKey = parseInt(Object.keys(totalFrameObject)[totalLines - 1]);
-    //   var tempValue = parseInt(Object.values(totalFrameObject)[totalLines - 1]);
-
-    //   for (let dynamicI = 0; dynamicI < tempValue; dynamicI++)
-    //   {
-    //     if (tempFrm == tempKey)
-    //     {
-    //       str += `yes\nFrm: ${ tempFrm } Key: ${ tempKey } Value: ${ tempValue } !TotalLines: ${ totalLines }\n`
-    //       // continue
-    //     }
-    //     else
-    //     {
-    //       tempFrm++
-    //       // tempKey++
-    //       // tempValue++
-    //       totalLines += tempValue - 1
-    //       str += `no\n!Frm: ${ tempFrm } !Key: ${ tempKey } !Value: ${ tempValue } !TotalLines: ${ totalLines }\n`
-    //       break
-    //     }
-    //   }
-    // }
-    // fs.writeFileSync('test.txt', str);
-
-
-
-    // Removing duplicates using the first column's value (Total_Frames)
-    for (let check = 0; check < allDataArray.length - 1; check++) // length-1 because we're checking the next element
-    {
-      if ((allDataArray[check + 1][0] === allDataArray[check][0])) // line number is the same
-      {
-        allDataArray.splice(check + 1, 1); // remove the next line
-        check--; // go back to original line in order to check the next line again
-      }
-    }
-
-    // // Transpose the array by columns
-    var allArrayStructure = [];
-    for (let headerIndex = 0; headerIndex < headersArray.length; headerIndex++)
-    {
-      allArrayStructure.push([]);
-    }
-    // Fill the array of arrays with the data separated by column
-    for (let rowIdx = 1; rowIdx < allDataArray.length; ++rowIdx) 
-    {
-      for (let colIdx = 0; colIdx < headersArray.length; ++colIdx)
-      {
-        allArrayStructure[colIdx].push(allDataArray[rowIdx][colIdx]);
-      }
-    }
-    // Make entire file buffer
-    var stringArray = [];
-    for (let header in headersArray)
-    {
-      stringArray.push(`export const ${ headersArray[header] } = "${ allArrayStructure[header] }";`);
-    }
-
-    // Make Total_Frames info
-    var missingEntries = [];
-    for (let i = 0; i < allArrayStructure[0].length - 1; i++) // total frames
-    {
-      if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1)
-      {
-        missingEntries.push(`Missing data entry after Total_Frame Number: ${ allArrayStructure[0][i] }\n`);
-      }
-    }
-    if (missingEntries.length > 0)
-    {
-      fs.writeFileSync(`${ DIR_SORTED_JS }${ FILENAME_NO_EXT }${ TAIL_TEXT }`,
-        (`/*\n${ missingEntries }\nFirst entry in Total_Frames: ${ allArrayStructure[0][0] }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }\n*/\n`)
-          .replace(/,/g, ''));
-      console.log('Missing entries logged.');
-    }
-    else
-    {
-      fs.writeFileSync(`${ DIR_SORTED_JS }${ FILENAME_NO_EXT }${ TAIL_TEXT }`,
-        (`/*\nNo missing data entries\nFirst entry in Total_Frames: ${ allArrayStructure[0][0] }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }\n*/\n`)
-          .replace(/,/g, ''));
-    }
-    fs.appendFileSync(`${ DIR_SORTED_JS }${ FILENAME_NO_EXT }${ TAIL_TEXT }`,
-      (`${ stringArray.join('\n') }`));
-    console.log('Finished');
+    //   fs.appendFileSync(`${ DIR_SORTED_JS }${ FILENAME_NO_EXT }${ TAIL_TEXT }`,
+    //     (`${ stringArray.join('\n') }`));
     rl.close();
   });
   rl.on('close', () =>
