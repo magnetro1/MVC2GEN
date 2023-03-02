@@ -21,7 +21,7 @@ import
 
 import {knownName} from './JS_UTIL_readCSVAuto.js'; //Calls getCSVName => readCSVAuto
 
-const SLEEP_AMOUNT = 2500;
+const SLEEP_AMOUNT = 3000;
 function sleep(ms)
 {
   return new Promise(function (resolve)

@@ -1,17 +1,17 @@
 //Clip Info
 const clipName = function ()
 {
-  getName = comp( "PathString" ).layer( "MainPathString" )( "Text" )( "Source Text" );
-  getNameTrunc = getName.split( "\\" ).reverse()[ 1 ].replace( "_ae", "" );
+  getName = comp("PathString").layer("MainPathString")("Text")("Source Text");
+  getNameTrunc = getName.split("\\").reverse()[1].replace("_ae", "");
   // Total_Frames
   let dataPath =
-    comp( "PathString" ).layer( "MainPathString" )( "Text" )( "Source Text" );
+    comp("PathString").layer("MainPathString")("Text")("Source Text");
   let assemble = dataPath + "Total_Frames" + ".js";
-  $.evalFile( assemble );
-  let stringSplit = string.split( "," );
-  let tfLength = stringSplit[ stringSplit.length - 1 ];
-  let tfVal = mnlLookup( "Total_Frames" );
-  let tfCurr = tfVal - stringSplit[ 0 ];
+  $.evalFile(assemble);
+  let stringSplit = string.split(",");
+  let tfLength = stringSplit[stringSplit.length - 1];
+  let tfVal = mnlLookup("Total_Frames");
+  let tfCurr = tfVal - stringSplit[0];
   let tfRemaining = tfLength - tfVal;
 
   return (
@@ -25,14 +25,14 @@ const clipName = function ()
 };
 
 // Manual Lookup Function // Needs complete target-address. Ex: "P1_A_Health_Big"
-const mnlLookup = function ( address )
+const mnlLookup = function (address)
 {
   let dataPath =
-    comp( "PathString" ).layer( "MainPathString" )( "Text" )( "Source Text" );
+    comp("PathString").layer("MainPathString")("Text")("Source Text");
   let assemble = dataPath + address + ".js";
-  $.evalFile( assemble ); // $.evals an external file containing a variable called "string"
-  let check = string.split( "," )[ timeToFrames( time ) ];
-  if ( isNaN( check ) )
+  $.evalFile(assemble); // $.evals an external file containing a variable called "string"
+  let check = string.split(",")[timeToFrames(time)];
+  if (isNaN(check))
   {
     return 0;
   }
@@ -46,58 +46,58 @@ const P2 = [];
 
 //Object-Keys use prefixes for future address-lookups (Ex: P1_A_ + Health_Big)
 const pointTableP1 = {
-  P1_A_: mnlLookup( "P1_A_is_Point" ),
-  P1_B_: mnlLookup( "P1_B_is_Point" ),
-  P1_C_: mnlLookup( "P1_C_is_Point" ),
+  P1_A_: mnlLookup("P1_A_is_Point"),
+  P1_B_: mnlLookup("P1_B_is_Point"),
+  P1_C_: mnlLookup("P1_C_is_Point"),
 };
 const pointTableP2 = {
-  P2_A_: mnlLookup( "P2_A_is_Point" ),
-  P2_B_: mnlLookup( "P2_B_is_Point" ),
-  P2_C_: mnlLookup( "P2_C_is_Point" ),
+  P2_A_: mnlLookup("P2_A_is_Point"),
+  P2_B_: mnlLookup("P2_B_is_Point"),
+  P2_C_: mnlLookup("P2_C_is_Point"),
 };
 
 //Loops to check which keys have a 0 value and push them into previous arrays
 //P1
-for ( let i = 0; i < Object.values( pointTableP1 ).length; i++ )
+for (let i = 0; i < Object.values(pointTableP1).length; i++)
 {
-  Object.values( pointTableP1 )[ i ] == 0
-    ? P1.push( Object.keys( pointTableP1 )[ i ] )
+  Object.values(pointTableP1)[i] == 0
+    ? P1.push(Object.keys(pointTableP1)[i])
     : "eod";
 }
 
 //P2
-for ( let i = 0; i < Object.values( pointTableP2 ).length; i++ )
+for (let i = 0; i < Object.values(pointTableP2).length; i++)
 {
-  Object.values( pointTableP2 )[ i ] == 0
-    ? P2.push( Object.keys( pointTableP2 )[ i ] )
+  Object.values(pointTableP2)[i] == 0
+    ? P2.push(Object.keys(pointTableP2)[i])
     : "eod";
 }
 
 //Main look-up function. Displays data in an array
-const varLookup2 = function ( Pz, address )
+const varLookup2 = function (Pz, address)
 {
   try
   {
     let PzData = [];
-    for ( let i = 0; i < Pz.length; i++ )
+    for (let i = 0; i < Pz.length; i++)
     {
       let dataDir =
-        comp( "PathString" ).layer( "MainPathString" )( "Text" )(
+        comp("PathString").layer("MainPathString")("Text")(
           "Source Text"
         );
-      let assemble2 = dataDir + Pz[ i ] + address + ".js"; //uses function parameters
-      $.evalFile( assemble2 );
-      let check = Math.round( string.split( "," )[ timeToFrames( time ) ] );
-      if ( isNaN( check ) )
+      let assemble2 = dataDir + Pz[i] + address + ".js"; //uses function parameters
+      $.evalFile(assemble2);
+      let check = Math.round(string.split(",")[timeToFrames(time)]);
+      if (isNaN(check))
       {
         return 0;
       }
       {
-        PzData.push( check );
+        PzData.push(check);
       }
     }
     return PzData;
-  } catch ( error )
+  } catch (error)
   {
     return "EoD";
   }
@@ -105,53 +105,53 @@ const varLookup2 = function ( Pz, address )
 
 // Min/Max finder Functions for Linear interpolation animations
 //Min
-const minFN = function ( Pz, address )
+const minFN = function (Pz, address)
 {
-  addressSearch = varLookup2( Pz, address );
+  addressSearch = varLookup2(Pz, address);
   arrMin = [];
-  for ( i = 0; i < addressSearch.length; i++ )
+  for (i = 0; i < addressSearch.length; i++)
   {
     let dataPath =
-      comp( "PathString" ).layer( "MainPathString" )( "Text" )( "Source Text" );
-    let assemble = dataPath + Pz[ i ] + address + ".js";
-    $.evalFile( assemble );
-    let stringSplit = string.split( "," );
+      comp("PathString").layer("MainPathString")("Text")("Source Text");
+    let assemble = dataPath + Pz[i] + address + ".js";
+    $.evalFile(assemble);
+    let stringSplit = string.split(",");
     let xMath = Math.round(
-      Math.min.apply( null, stringSplit.splice( 0, stringSplit.length ) )
+      Math.min.apply(null, stringSplit.splice(0, stringSplit.length))
     );
-    arrMin.push( xMath );
+    arrMin.push(xMath);
   }
   return arrMin;
 };
 
 //Max
-const maxFN = function ( Pz, address )
+const maxFN = function (Pz, address)
 {
-  addressSearch = varLookup2( Pz, address );
+  addressSearch = varLookup2(Pz, address);
   arrMax = [];
-  for ( i = 0; i < addressSearch.length; i++ )
+  for (i = 0; i < addressSearch.length; i++)
   {
     let dataPath =
-      comp( "PathString" ).layer( "MainPathString" )( "Text" )( "Source Text" );
-    let assemble = dataPath + Pz[ i ] + address + ".js";
-    $.evalFile( assemble );
-    let stringSplit = string.split( "," );
+      comp("PathString").layer("MainPathString")("Text")("Source Text");
+    let assemble = dataPath + Pz[i] + address + ".js";
+    $.evalFile(assemble);
+    let stringSplit = string.split(",");
     let xMath = Math.round(
-      Math.max.apply( null, stringSplit.splice( 0, stringSplit.length ) )
+      Math.max.apply(null, stringSplit.splice(0, stringSplit.length))
     );
-    arrMax.push( xMath );
+    arrMax.push(xMath);
   }
   return arrMax;
 };
 
 //P1 or P2 address lookup. Needs P1 or P2 & ex: "Combo_Meter_Value"
-const P1P2Lookup = function ( Py, address )
+const P1P2Lookup = function (Py, address)
 {
   try
   {
     let dataPath =
-      comp( "PathString" ).layer( "MainPathString" )( "Text" )( "Source Text" );
-    if ( Py == P1 )
+      comp("PathString").layer("MainPathString")("Text")("Source Text");
+    if (Py == P1)
     {
       Py = "P1_";
     } else
@@ -159,14 +159,14 @@ const P1P2Lookup = function ( Py, address )
       Py = "P2_";
     }
     let assemble = dataPath + Py + address + ".js";
-    $.evalFile( assemble );
-    let check = string.split( "," )[ timeToFrames( time ) ];
-    if ( isNaN( check ) )
+    $.evalFile(assemble);
+    let check = string.split(",")[timeToFrames(time)];
+    if (isNaN(check))
     {
       return 0;
     }
     return check;
-  } catch ( error )
+  } catch (error)
   {
     return "EoD!";
   }
@@ -176,63 +176,63 @@ const P1P2Lookup = function ( Py, address )
 function teamFinder()
 {
   let placeArr = [];
-  placeArr.push( mnlLookup( "P1_A_ID_2" ) );
-  placeArr.push( mnlLookup( "P1_B_ID_2" ) );
-  placeArr.push( mnlLookup( "P1_C_ID_2" ) );
-  placeArr.push( mnlLookup( "P2_A_ID_2" ) );
-  placeArr.push( mnlLookup( "P2_B_ID_2" ) );
-  placeArr.push( mnlLookup( "P2_C_ID_2" ) );
+  placeArr.push(mnlLookup("P1_A_ID_2"));
+  placeArr.push(mnlLookup("P1_B_ID_2"));
+  placeArr.push(mnlLookup("P1_C_ID_2"));
+  placeArr.push(mnlLookup("P2_A_ID_2"));
+  placeArr.push(mnlLookup("P2_B_ID_2"));
+  placeArr.push(mnlLookup("P2_C_ID_2"));
   let names = "";
-  for ( let i = 0; i < placeArr.length; i++ )
+  for (let i = 0; i < placeArr.length; i++)
   {
-    names += Object.values( namesTable )[ placeArr[ i ] ] + ",";
+    names += Object.values(namesTable)[placeArr[i]] + ",";
   }
   return names;
 }
 
 // Get P1/P2 active-point-character name function from namesTable
-getPointName = function ( Pz )
+getPointName = function (Pz)
 {
-  charName = varLookup2( Pz, "ID_2" );
+  charName = varLookup2(Pz, "ID_2");
   let arr = [];
-  for ( i = 0; i < charName.length; i++ )
+  for (i = 0; i < charName.length; i++)
   {
-    arr.push( namesTable[ charName[ i ] ] );
+    arr.push(namesTable[charName[i]]);
   }
   return arr;
 };
 
 //Knockdown_State Function gets P1 or P2 point-character's Knockdown_State
-function Knockdown_StateFN( Pz )
+function Knockdown_StateFN(Pz)
 {
   // P1 or P2
-  let KSLookup = varLookup2( Pz, "Knockdown_State" );
+  let KSLookup = varLookup2(Pz, "Knockdown_State");
   let arrKeys = [];
   let arrValues = [];
-  for ( k = 0; k < KSLookup.length; k++ )
+  for (k = 0; k < KSLookup.length; k++)
   {
-    arrKeys.push( KSLookup[ k ] );
+    arrKeys.push(KSLookup[k]);
   }
-  for ( v = 0; v < arrKeys.length; v++ )
+  for (v = 0; v < arrKeys.length; v++)
   {
-    arrValues.push( Knockdown_StateObj[ arrKeys[ v ] ] );
+    arrValues.push(Knockdown_StateObj[arrKeys[v]]);
   }
   return arrValues;
 }
 
 //Prox_Block Function
-function Prox_BlockFN( Pz )
+function Prox_BlockFN(Pz)
 {
-  let ProxLookup = varLookup2( Pz, "Is_Prox_Block" );
+  let ProxLookup = varLookup2(Pz, "Is_Prox_Block");
   let arrKeys = [];
   let arrValues = [];
-  for ( k = 0; k < ProxLookup.length; k++ )
+  for (k = 0; k < ProxLookup.length; k++)
   {
-    arrKeys.push( ProxLookup[ k ] );
+    arrKeys.push(ProxLookup[k]);
   }
-  for ( v = 0; v < arrKeys.length; v++ )
+  for (v = 0; v < arrKeys.length; v++)
   {
-    arrValues.push( ProxBlocKObj[ arrKeys[ v ] ] );
+    arrValues.push(ProxBlocKObj[arrKeys[v]]);
   }
   return arrValues;
 }
@@ -376,18 +376,18 @@ const logicTracker = function (
 {
   //Static values derived from original set of data
   let dataAdrObj = {
-    Action_Flags: varLookup2( Px, "Action_Flags" ),
-    Airborne: varLookup2( Px, "Airborne" ),
-    Animation_Timer_Main: varLookup2( Px, "Animation_Timer_Main" ),
-    Attack_Immune: varLookup2( Px, "Attack_Immune" ),
-    Block_Meter: varLookup2( Px, "Block_Meter" ),
-    FlyingScreen: varLookup2( Px, "FlyingScreen" ),
-    FSI_Points: varLookup2( Px, "FSI_Points" ),
-    Hitstop: varLookup2( Px, "Animation_Timer_Main" ),
-    Knockdown_State: varLookup2( Px, "Knockdown_State" ),
-    PunchKick: varLookup2( Px, "PunchKick" ),
-    SJ_Counter: varLookup2( Px, "SJ_Counter" ),
-    Is_Prox_Block: varLookup2( Px, "Is_Prox_Block" ),
+    Action_Flags: varLookup2(Px, "Action_Flags"),
+    Airborne: varLookup2(Px, "Airborne"),
+    Animation_Timer_Main: varLookup2(Px, "Animation_Timer_Main"),
+    Attack_Immune: varLookup2(Px, "Attack_Immune"),
+    Block_Meter: varLookup2(Px, "Block_Meter"),
+    FlyingScreen: varLookup2(Px, "FlyingScreen"),
+    FSI_Points: varLookup2(Px, "FSI_Points"),
+    Hitstop: varLookup2(Px, "Animation_Timer_Main"),
+    Knockdown_State: varLookup2(Px, "Knockdown_State"),
+    PunchKick: varLookup2(Px, "PunchKick"),
+    SJ_Counter: varLookup2(Px, "SJ_Counter"),
+    Is_Prox_Block: varLookup2(Px, "Is_Prox_Block"),
   };
   // empty arrays that will contain our character's values
   let arrBeing_Hit = [];
@@ -443,153 +443,153 @@ const logicTracker = function (
     Thrown_Air: arrThrown_Air,
     Thrown_Ground: arrThrown_Ground,
   };
-  for ( let p = 0; p < Px.length; p++ )
+  for (let p = 0; p < Px.length; p++)
   {
     //Ternary checkers for state active/inactive
     arrBeing_Hit.push(
-      dataAdrObj.Animation_Timer_Main[ p ] > 0 &&
-        dataAdrObj.Knockdown_State[ p ] == 32
+      dataAdrObj.Animation_Timer_Main[p] > 0 &&
+        dataAdrObj.Knockdown_State[p] == 32
         ? 1
         : 0
     );
     arrFlying_Screen_Air.push(
-      dataAdrObj.FlyingScreen[ p ] == 1 &&
-        dataAdrObj.Knockdown_State[ p ] == 32 &&
-        dataAdrObj.Airborne[ p ] == 2
+      dataAdrObj.FlyingScreen[p] == 1 &&
+        dataAdrObj.Knockdown_State[p] == 32 &&
+        dataAdrObj.Airborne[p] == 2
         ? 1
         : 0
     );
     arrFlyingScreen_OTG.push(
-      dataAdrObj.FlyingScreen[ p ] == 1 &&
-        dataAdrObj.Knockdown_State[ p ] == 32 &&
-        dataAdrObj.Airborne[ p ] == 3
+      dataAdrObj.FlyingScreen[p] == 1 &&
+        dataAdrObj.Knockdown_State[p] == 32 &&
+        dataAdrObj.Airborne[p] == 3
         ? 1
         : 0
     );
     arrFS_Install_1.push(
-      dataAdrObj.FSI_Points[ p ] == 8 || dataAdrObj.FSI_Points[ p ] == 9
+      dataAdrObj.FSI_Points[p] == 8 || dataAdrObj.FSI_Points[p] == 9
         ? 1
         : 0
     );
-    arrFS_Install_2.push( dataAdrObj.FSI_Points[ p ] > 9 ? 1 : 0 );
+    arrFS_Install_2.push(dataAdrObj.FSI_Points[p] > 9 ? 1 : 0);
     arrNJ_Air.push(
-      dataAdrObj.Airborne[ p ] == 2 &&
-        dataAdrObj.Knockdown_State[ p ] == 3 &&
-        dataAdrObj.SJ_Counter[ p ] == 0
+      dataAdrObj.Airborne[p] == 2 &&
+        dataAdrObj.Knockdown_State[p] == 3 &&
+        dataAdrObj.SJ_Counter[p] == 0
         ? 1
         : 0
     );
     arrNJ_Rising.push(
-      dataAdrObj.Airborne[ p ] == 0 &&
-        dataAdrObj.Knockdown_State[ p ] == 2 &&
-        dataAdrObj.SJ_Counter[ p ] == 0
+      dataAdrObj.Airborne[p] == 0 &&
+        dataAdrObj.Knockdown_State[p] == 2 &&
+        dataAdrObj.SJ_Counter[p] == 0
         ? 1
         : 0
     );
     arrOTG_Extra_Stun.push(
-      dataAdrObj.Knockdown_State[ p ] == 23 && dataAdrObj.Airborne[ p ] == 3
+      dataAdrObj.Knockdown_State[p] == 23 && dataAdrObj.Airborne[p] == 3
         ? 1
         : 0
     );
     arrOTG_Forced_Stun.push(
-      dataAdrObj.Knockdown_State[ p ] == 32 && dataAdrObj.Airborne[ p ] == 3
+      dataAdrObj.Knockdown_State[p] == 32 && dataAdrObj.Airborne[p] == 3
         ? 1
         : 0
     );
     arrOTG_Hit.push(
-      dataAdrObj.Action_Flags[ p ] == 0 &&
-        dataAdrObj.Airborne[ p ] == 3 &&
-        dataAdrObj.Knockdown_State[ p ] == 32
+      dataAdrObj.Action_Flags[p] == 0 &&
+        dataAdrObj.Airborne[p] == 3 &&
+        dataAdrObj.Knockdown_State[p] == 32
         ? 1
         : 0
     );
     arrOTG_Roll_Invincible.push(
-      dataAdrObj.Action_Flags[ p ] == 2 &&
-        dataAdrObj.Airborne[ p ] == 1 &&
-        dataAdrObj.Attack_Immune[ p ] == 1 &&
-        dataAdrObj.Knockdown_State[ p ] == 17
+      dataAdrObj.Action_Flags[p] == 2 &&
+        dataAdrObj.Airborne[p] == 1 &&
+        dataAdrObj.Attack_Immune[p] == 1 &&
+        dataAdrObj.Knockdown_State[p] == 17
         ? 1
         : 0
     );
     arrOTG_Roll_Stunned.push(
-      dataAdrObj.Action_Flags[ p ] == 1 &&
-        dataAdrObj.Airborne[ p ] == 3 &&
-        dataAdrObj.Knockdown_State[ p ] == 32
+      dataAdrObj.Action_Flags[p] == 1 &&
+        dataAdrObj.Airborne[p] == 3 &&
+        dataAdrObj.Knockdown_State[p] == 32
         ? 1
         : 0
     );
     arrProxBlock_Air.push(
-      dataAdrObj.Is_Prox_Block[ p ] == 6 &&
-        dataAdrObj.Knockdown_State[ p ] == 19
+      dataAdrObj.Is_Prox_Block[p] == 6 &&
+        dataAdrObj.Knockdown_State[p] == 19
         ? 1
         : 0
     );
     arrProxBlock_Ground.push(
-      dataAdrObj.Is_Prox_Block[ p ] == 5 &&
-        dataAdrObj.Knockdown_State[ p ] == 18
+      dataAdrObj.Is_Prox_Block[p] == 5 &&
+        dataAdrObj.Knockdown_State[p] == 18
         ? 1
         : 0
     );
     arrPushblock_Air.push(
-      dataAdrObj.Block_Meter[ p ] > 0 &&
-        dataAdrObj.Animation_Timer_Main[ p ] < 28 &&
-        dataAdrObj.Is_Prox_Block[ p ] == 6 &&
-        dataAdrObj.Action_Flags[ p ] == 2
+      dataAdrObj.Block_Meter[p] > 0 &&
+        dataAdrObj.Animation_Timer_Main[p] < 28 &&
+        dataAdrObj.Is_Prox_Block[p] == 6 &&
+        dataAdrObj.Action_Flags[p] == 2
         ? 1
         : 0
     );
     arrPushblock_Ground.push(
-      dataAdrObj.Block_Meter[ p ] > 0 &&
-        dataAdrObj.Animation_Timer_Main[ p ] < 28 &&
-        dataAdrObj.Is_Prox_Block[ p ] == 5 &&
-        dataAdrObj.Action_Flags[ p ] == 3
+      dataAdrObj.Block_Meter[p] > 0 &&
+        dataAdrObj.Animation_Timer_Main[p] < 28 &&
+        dataAdrObj.Is_Prox_Block[p] == 5 &&
+        dataAdrObj.Action_Flags[p] == 3
         ? 1
         : 0
     );
     arrRising_Invincibility.push(
-      dataAdrObj.Airborne[ p ] == 0 &&
-        dataAdrObj.Attack_Immune[ p ] == 1 &&
-        dataAdrObj.Knockdown_State[ p ] == 17
+      dataAdrObj.Airborne[p] == 0 &&
+        dataAdrObj.Attack_Immune[p] == 1 &&
+        dataAdrObj.Knockdown_State[p] == 17
         ? 1
         : 0
     );
     arrSJ_Air.push(
-      dataAdrObj.Airborne[ p ] == 2 &&
-        dataAdrObj.Knockdown_State[ p ] == 14 &&
-        dataAdrObj.SJ_Counter[ p ] == 1
+      dataAdrObj.Airborne[p] == 2 &&
+        dataAdrObj.Knockdown_State[p] == 14 &&
+        dataAdrObj.SJ_Counter[p] == 1
         ? 1
         : 0
     );
-    arrSJ_Counter.push( dataAdrObj.SJ_Counter[ p ] == 2 ? 1 : 0 );
+    arrSJ_Counter.push(dataAdrObj.SJ_Counter[p] == 2 ? 1 : 0);
     arrStun.push(
-      dataAdrObj.Knockdown_State[ p ] == 32 &&
-        dataAdrObj.Is_Prox_Block[ p ] == 13
+      dataAdrObj.Knockdown_State[p] == 32 &&
+        dataAdrObj.Is_Prox_Block[p] == 13
         ? 1
         : 0
     );
-    arrTech_Hit.push( dataAdrObj.Knockdown_State[ p ] == 27 ? 1 : 0 );
+    arrTech_Hit.push(dataAdrObj.Knockdown_State[p] == 27 ? 1 : 0);
     arrThrown_Air.push(
-      dataAdrObj.Airborne[ p ] == 2 &&
-        dataAdrObj.Knockdown_State[ p ] == 31 &&
-        dataAdrObj.Is_Prox_Block[ p ] == 16
+      dataAdrObj.Airborne[p] == 2 &&
+        dataAdrObj.Knockdown_State[p] == 31 &&
+        dataAdrObj.Is_Prox_Block[p] == 16
         ? 1
         : 0
     );
     arrThrown_Ground.push(
-      dataAdrObj.Airborne[ p ] == 0 &&
-        dataAdrObj.Knockdown_State[ p ] == 31 &&
-        dataAdrObj.Is_Prox_Block[ p ] == 16
+      dataAdrObj.Airborne[p] == 0 &&
+        dataAdrObj.Knockdown_State[p] == 31 &&
+        dataAdrObj.Is_Prox_Block[p] == 16
         ? 1
         : 0
     );
   }
-  let fnStatusKeys = Object.keys( statusObject );
-  let fnStatusValues = Object.values( statusObject );
+  let fnStatusKeys = Object.keys(statusObject);
+  let fnStatusValues = Object.values(statusObject);
   let resultTable = "";
 
-  for ( i = 0; i < fnStatusValues.length; i++ )
+  for (i = 0; i < fnStatusValues.length; i++)
   {
-    resultTable += Px + fnStatusKeys[ i ] + ": " + fnStatusValues[ i ] + "\r";
+    resultTable += Px + fnStatusKeys[i] + ": " + fnStatusValues[i] + "\r";
   }
 
   return resultTable;
@@ -610,17 +610,17 @@ teamFinder()
 */
 
 templateLiteral = `Clip_Info: ${ clipName() }
-P1_Point_ID_2: ${ varLookup2( P1, "ID_2" ) }
-P2_Point_ID_2: ${ varLookup2( P2, "ID_2" ) }
-P1_Point: ${ getPointName( P1 ) }
-P2_Point: ${ getPointName( P2 ) }
+P1_Point_ID_2: ${ varLookup2(P1, "ID_2") }
+P2_Point_ID_2: ${ varLookup2(P2, "ID_2") }
+P1_Point: ${ getPointName(P1) }
+P2_Point: ${ getPointName(P2) }
 Team_Finder: ${ teamFinder() }
-P1_Dizzy: ${ varLookup2( P1, "Dizzy" ) }
-P2_Dizzy: ${ varLookup2( P2, "Dizzy" ) }
-P1_Dizzy_Reset_Timer: ${ varLookup2( P1, "Dizzy_Reset_Timer" ) }
-P2_Dizzy_Reset_Timer: ${ varLookup2( P2, "Dizzy_Reset_Timer" ) }
-P1_Health_Big: ${ varLookup2( P1, "Health_Big" ) }
-P2_Health_Big: ${ varLookup2( P2, "Health_Big" ) }
-${ logicTracker( P1 ) }
-${ logicTracker( P2 ) }
+P1_Dizzy: ${ varLookup2(P1, "Dizzy") }
+P2_Dizzy: ${ varLookup2(P2, "Dizzy") }
+P1_Dizzy_Reset_Timer: ${ varLookup2(P1, "Dizzy_Reset_Timer") }
+P2_Dizzy_Reset_Timer: ${ varLookup2(P2, "Dizzy_Reset_Timer") }
+P1_Health_Big: ${ varLookup2(P1, "Health_Big") }
+P2_Health_Big: ${ varLookup2(P2, "Health_Big") }
+${ logicTracker(P1) }
+${ logicTracker(P2) }
 `;

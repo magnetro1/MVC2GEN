@@ -1,38 +1,37 @@
 // Might need images to make this stuff easier to understand.
 // Stage Lookup to determine color
 // Manual Lookup Function // Needs complete target-address. Ex: "P1_A_Health_Big"
-const mnlLookup = function (address)
+function mnlLookup(address)
 {
-	let dataPath = comp("PathString").layer("MainPathString")("Text")("Source Text");
-	let assemble = dataPath + address + '.js'
-	$.evalFile(assemble); // $.evals an external file containing a variable called "string"
-	let check = string.split(",")[timeToFrames(time)];
-	if (isNaN(check))
-	{return 0}
-	return check;
+  let dataPath = comp("PathString").layer("MainPathString")("Text")("Source Text");
+  let assemble = dataPath + address + '.js';
+  $.evalFile(assemble); // $.evals an external file containing a variable called "string"
+  let check = string.split(",")[timeToFrames(time)];
+  if (isNaN(check)) {return 0;}
+  return check;
 }
 //Get stage value
 stageResult = mnlLookup("Stage_Selector");
 //Object to map colors to address values. 
 const stagesTable =
 {
-	0: hexToRgb("142030"),	//"Boat1"
-	1: hexToRgb("E1540C"),	//"Desert1"
-	2: hexToRgb("6D574F"),	//"Factory"
-	3: hexToRgb("CF461B"),	//"Carnival1"
-	4: hexToRgb("ECE4B9"),	//"Bridge1"
-	5: hexToRgb("257B8A"),	//"Cave2"
-	6: hexToRgb("D0C1AC"),	//"Clock2"
-	7: hexToRgb("B764AA"),	//"Raft2"
-	8: hexToRgb("263548"), //"Abyss"
-	9: hexToRgb("C09A71"),	//"Boat2"
-	10: hexToRgb("3F5FFF"),	//"Desert2"
-	11: hexToRgb("266D04"),	//"Training"
-	12: hexToRgb("74566E"),	//"Carnival2"
-	13: hexToRgb("E9797F"),	//"Bridge2"
-	14: hexToRgb("A43812"),	//"Cave1"
-	15: hexToRgb("888885"),	//"Clock1"
-	16: hexToRgb("8CA7DF"),	//"Raft1"
+  0: hexToRgb("142030"),	//"Boat1"
+  1: hexToRgb("E1540C"),	//"Desert1"
+  2: hexToRgb("6D574F"),	//"Factory"
+  3: hexToRgb("CF461B"),	//"Carnival1"
+  4: hexToRgb("ECE4B9"),	//"Bridge1"
+  5: hexToRgb("257B8A"),	//"Cave2"
+  6: hexToRgb("D0C1AC"),	//"Clock2"
+  7: hexToRgb("B764AA"),	//"Raft2"
+  8: hexToRgb("263548"), //"Abyss"
+  9: hexToRgb("C09A71"),	//"Boat2"
+  10: hexToRgb("3F5FFF"),	//"Desert2"
+  11: hexToRgb("266D04"),	//"Training"
+  12: hexToRgb("74566E"),	//"Carnival2"
+  13: hexToRgb("E9797F"),	//"Bridge2"
+  14: hexToRgb("A43812"),	//"Cave1"
+  15: hexToRgb("888885"),	//"Clock1"
+  16: hexToRgb("8CA7DF"),	//"Raft1"
 }
 // const stagesTable = 
 // {
