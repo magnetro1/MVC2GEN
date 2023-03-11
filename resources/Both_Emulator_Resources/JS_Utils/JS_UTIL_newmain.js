@@ -131,12 +131,12 @@ import(`file://${ ORG_JS_FILE }`)
         // Main function to write data to files OR return finalValues array
         /**
          * @param {number|string} PlayerOneOrPlayerTwo number or string, ex: 1 or "P1"
-         * @param {string} playerMemoryAddress string, ex: "P1_A_Health_Big"
+         * @param {string} playerMemoryAddress string, ex: "Health_Big"
          * @param {number} write flag to return array or write to file
          * @returns {Number[]} returns an array of numbers or writes a file for the playerMemoryAddress in the clip.
          * @description Finds the point character, and returns an array of numbers for the playerMemoryAddress in the clip.
          */
-        function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) // "P1"/"P2", address from data-object, 1/0
+        function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) 
         {
           let finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
           let playerObjectSwitcher;// Switches between the Player1 and Player2 objects
@@ -373,7 +373,7 @@ import(`file://${ ORG_JS_FILE }`)
           {
             totalFrameArrT1.push(indexT1);
           });
-
+          // Padded Zeroes for program pad comp
           pMem.Total_Frames.split(',').forEach((frame, indexT2) =>
           {
             if (indexT2 == 0)
@@ -401,8 +401,6 @@ import(`file://${ ORG_JS_FILE }`)
             }
             totalFrameArrT2.push(indexT2);
           });
-          // if (!fs.existsSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`))
-          // {
 
           // T1 for Normal Compositions
           fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,

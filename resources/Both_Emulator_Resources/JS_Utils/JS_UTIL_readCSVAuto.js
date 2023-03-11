@@ -32,15 +32,15 @@ function countReplayData(arrayOfNumbers)
 {
   // Count the values in the arrays and store them in an object
   let counterObject = {};
-  for (let i = 0; i < arrayOfNumbers.length; i++)
+  for (let numbersIdx = 0; numbersIdx < arrayOfNumbers.length; numbersIdx++)
   {
-    if (counterObject[arrayOfNumbers[i]] == undefined)
+    if (counterObject[arrayOfNumbers[numbersIdx]] == undefined)
     {
-      counterObject[arrayOfNumbers[i]] = 1;
+      counterObject[arrayOfNumbers[numbersIdx]] = 1;
     }
     else
     {
-      counterObject[arrayOfNumbers[i]]++;
+      counterObject[arrayOfNumbers[numbersIdx]]++;
     }
   }
   // Return the value that appears the most in the object
@@ -159,7 +159,7 @@ for (let rowIdx = 1; rowIdx < allDataArray.length; ++rowIdx)
 var stringArray = [];
 for (let header in headersArray)
 {
-  stringArray.push(`export const ${ headersArray[header] } = "${ allArrayStructure[header] }";`);
+  stringArray.push(`export const ${ headersArray[header] } = '${ allArrayStructure[header] }';`);
 }
 
 // Make Total_Frames info
