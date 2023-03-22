@@ -183,6 +183,7 @@
     sleep 400
     reloadPlay()
   return
+#IfWinActive ahk_exe demul.exe
 }
 ;Reload & Unpause
 {

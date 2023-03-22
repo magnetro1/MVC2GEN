@@ -6,19 +6,24 @@ import {DIR_PCSX2_CT_FILES} from '../../Both_Emulator_Resources/JS_Utils/JS_UTIL
 
 const CT_EXT = '.CT';
 
-function getNewestCTFile()
+function reduceNewestFile(previous, current)
+{
+  return fs.statSync(DIR_PCSX2_CT_FILES + previous).mtimeMs > fs.statSync(DIR_PCSX2_CT_FILES + current).mtimeMs ? previous : current;
+};
+// filter for CT files
+function filterCTFile()
 {
   const files = fs.readdirSync(DIR_PCSX2_CT_FILES);
-  const cheatTables = files.filter(file =>
-    file.endsWith(CT_EXT));
-  const newestPCSX2CT = cheatTables.reduce((previous, current) =>
-    fs.statSync(DIR_PCSX2_CT_FILES + previous).mtimeMs > fs.statSync(DIR_PCSX2_CT_FILES + current).mtimeMs ? previous : current);
-  return newestPCSX2CT;
+  const cheatTables = files.filter(function (file)
+  {
+    return file.endsWith(CT_EXT);
+  });
+  return cheatTables.reduce(reduceNewestFile)
 }
 // Launch newest CT file
 function launchNewestPCSX2CTFile()
 {
-  const newestPCSX2CTFullPath = DIR_PCSX2_CT_FILES + getNewestCTFile();
+  const newestPCSX2CTFullPath = DIR_PCSX2_CT_FILES + filterCTFile();
   exec(newestPCSX2CTFullPath)
 }
 launchNewestPCSX2CTFile();

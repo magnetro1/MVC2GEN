@@ -21,7 +21,7 @@ import
 
 import {knownName} from './JS_UTIL_readCSVAuto.js'; //Calls getCSVName => readCSVAuto
 
-const SLEEP_AMOUNT = 3000;
+const SLEEP_AMOUNT = 4000;
 function sleep(ms)
 {
   return new Promise(function (resolve)
@@ -662,8 +662,7 @@ import(`file://${ ORG_JS_FILE }`)
         function writeNewStates()
         {
           // Temps for switching P1 and P2
-          let tempPlayerValue;
-          let tempPlayerString;
+          let tempPlayerValue, tempPlayerString;
           // Temps for ROM data
           let tempROMCounter = 0;
           let tempROMSwitch = 0;
