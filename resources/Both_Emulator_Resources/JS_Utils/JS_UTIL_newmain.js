@@ -19,7 +19,7 @@ import
   TAIL_TEXT
 } from './JS_UTIL_paths.js';
 
-import {knownName} from './JS_UTIL_readCSVAuto.js'; //Calls getCSVName => readCSVAuto
+import {knownName} from './JS_UTIL_readCSVAuto.js'; //Calls getCSVName => readCSVAuto ⭐❗ Comment if not using CSV fetcher
 
 const SLEEP_AMOUNT = 4000;
 function sleep(ms)
@@ -32,7 +32,7 @@ function sleep(ms)
 
 const DO_ROM_FILES = false; // Do or Skip ROM logic files
 
-const FILE_NAME_NO_EXT = knownName; // ⭐ File name without extension
+const FILE_NAME_NO_EXT = knownName; // || 'Opener_5'⭐ File name without extension OR '_Original'
 const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ FILE_NAME_NO_EXT }/`;
 const ORG_JS_FILE = `${ DIR_SORTED_JS }${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
 const NEW_JS_FILE = `${ DIR_SORTED_JS }New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
@@ -404,18 +404,18 @@ import(`file://${ ORG_JS_FILE }`)
 
           // T1 for Normal Compositions
           fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-            `var result = [];\nresult[0] = ['${ totalFrameArrT1 }'];\n`,
+            `var result = [];\nresult[0] = [${ totalFrameArrT1 }];\n`,
             {encoding: 'utf8'});
           totalFrameArrT1.reverse()
           fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-            `result[1] = ['${ totalFrameArrT1 }'];\n`,
+            `result[1] = [${ totalFrameArrT1 }];\n`,
             {encoding: 'utf8'});
           for (let idx in totalFrameArrT1)
           {
             totalFrameArrT1[idx] = totalFrameArrT1[0]
           }
           fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-            `result[2] = ['${ totalFrameArrT1 }'];\n`,
+            `result[2] = [${ totalFrameArrT1 }];\n`,
             {encoding: 'utf8'});
 
           // T2 for ASCII Pad Composition
