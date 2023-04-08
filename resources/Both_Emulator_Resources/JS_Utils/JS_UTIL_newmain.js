@@ -19,8 +19,8 @@ import
   TAIL_TEXT
 } from './JS_UTIL_paths.js';
 
-import {knownName} from './JS_UTIL_readCSVAuto.js'; //Calls getCSVName => readCSVAuto ⭐❗ Comment if not using CSV fetcher
-
+// import {knownName} from './JS_UTIL_readCSVAuto.js'; //Calls getCSVName => readCSVAuto ⭐❗ Comment if not using CSV fetcher
+// import {knownName} from './argTest.js';
 const SLEEP_AMOUNT = 4000;
 function sleep(ms)
 {
@@ -31,8 +31,8 @@ function sleep(ms)
 }
 
 const DO_ROM_FILES = false; // Do or Skip ROM logic files
-
-const FILE_NAME_NO_EXT = knownName; // || 'Opener_5'⭐ File name without extension OR '_Original'
+var sanitizeName = process.argv.slice(2).toString().replace('_Original.csv', ''); //⭐ File name without extension OR '_Original'
+const FILE_NAME_NO_EXT = knownName
 const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ FILE_NAME_NO_EXT }/`;
 const ORG_JS_FILE = `${ DIR_SORTED_JS }${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
 const NEW_JS_FILE = `${ DIR_SORTED_JS }New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
