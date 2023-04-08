@@ -19,9 +19,10 @@ import
   TAIL_TEXT
 } from './JS_UTIL_paths.js';
 
-// import {knownName} from './JS_UTIL_readCSVAuto.js'; //Calls getCSVName => readCSVAuto ⭐❗ Comment if not using CSV fetcher
-// import {knownName} from './argTest.js';
-const SLEEP_AMOUNT = 4000;
+import {knownName} from './JS_UTIL_readCSVAuto.js'; //Calls getCSVName => readCSVAuto ⭐❗ Comment if not using CSV fetcher
+// import {answer} from './JS_UTIL_getCSVName.js';
+
+const SLEEP_AMOUNT = 750;
 function sleep(ms)
 {
   return new Promise(function (resolve)
@@ -29,72 +30,75 @@ function sleep(ms)
     return setTimeout(resolve, ms);
   });
 }
+await sleep(SLEEP_AMOUNT);
 
-const DO_ROM_FILES = false; // Do or Skip ROM logic files
-var sanitizeName = process.argv.slice(2).toString().replace('_Original.csv', ''); //⭐ File name without extension OR '_Original'
-const FILE_NAME_NO_EXT = knownName
-const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ FILE_NAME_NO_EXT }/`;
-const ORG_JS_FILE = `${ DIR_SORTED_JS }${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
-const NEW_JS_FILE = `${ DIR_SORTED_JS }New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
 
-if (!fs.existsSync(`${ DIR_OUTPATH }`))
+for (let csvFilesIDX = 0; csvFilesIDX < knownName.length; csvFilesIDX++)
 {
-  fs.mkdirSync(`${ DIR_OUTPATH }`);
-}
-// Copy & Write Temp File ( that will be deleted )
-let tempMinMaxBuffer = '\n';
-import(`file://${ ORG_JS_FILE }`)
-  .then((pMemZero) => // Imports SortedJS file as Object with key-value pairs
+  const DO_ROM_FILES = false; // Do or Skip ROM logic files
+  var FILE_NAME_NO_EXT = knownName[csvFilesIDX];
+
+  var DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ FILE_NAME_NO_EXT }/`;
+  var ORG_JS_FILE = `${ DIR_SORTED_JS }${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
+  var NEW_JS_FILE = `${ DIR_SORTED_JS }New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
+
+  if (!fs.existsSync(`${ DIR_OUTPATH }`))
   {
-    const CLIP_LENGTH = pMemZero.A_2D_Game_Timer.split(',').length;
-    for (let adr in MIN_MAX_ADDRESSES)
+    fs.mkdirSync(`${ DIR_OUTPATH }`);
+  }
+  // Copy & Write Temp File ( that will be deleted )
+  let tempMinMaxBuffer = '\n';
+  import(`file://${ ORG_JS_FILE }`)
+    .then((pMemZero) => // Imports SortedJS file as Object with key-value pairs
     {
-      const KEY = MIN_MAX_ADDRESSES[adr];
-      const VALUE = pMemZero[MIN_MAX_ADDRESSES[adr]].split(','); // Fetch the value by finding the key using its string name
-      const MIN = Math.min(...VALUE);
-      const MAX = Math.max(...VALUE);
-      let tempMin = [];
-      let tempMax = [];
-
-      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+      const CLIP_LENGTH = pMemZero.A_2D_Game_Timer.split(',').length;
+      for (let adr in MIN_MAX_ADDRESSES)
       {
-        tempMax[clipLen] = MAX;
-        tempMin[clipLen] = MIN;
-      }
-      tempMinMaxBuffer += `export const ${ KEY }_Max = '${ tempMax }';\n`;
-      tempMinMaxBuffer += `export const ${ KEY }_Min = '${ tempMin }';\n`;
+        const KEY = MIN_MAX_ADDRESSES[adr];
+        const VALUE = pMemZero[MIN_MAX_ADDRESSES[adr]].split(','); // Fetch the value by finding the key using its string name
+        const MIN = Math.min(...VALUE);
+        const MAX = Math.max(...VALUE);
+        let tempMin = [];
+        let tempMax = [];
 
-      fs.promises.writeFile(`${ DIR_OUTPATH }${ MIN_MAX_ADDRESSES[adr] }_Max.js`,
-        `export const ${ KEY }_Max = '${ tempMax }';\n`,
-        {encoding: 'utf8'});
-
-      fs.promises.writeFile(`${ DIR_OUTPATH }${ MIN_MAX_ADDRESSES[adr] }_Min.js`,
-        `export const ${ KEY }_Min = '${ tempMin }';\n`,
-        {encoding: 'utf8'});
-    }
-  })
-  // Copy, append, write JS files, then bring back in
-  .then(() => fs.promises.copyFile(`${ ORG_JS_FILE }`, NEW_JS_FILE).then(() => fs.promises.appendFile(NEW_JS_FILE, tempMinMaxBuffer))
-    .then(() =>
-    {
-      fs.promises.readFile(NEW_JS_FILE, 'utf8')
-        .then((newFile) => // Write all JS files
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
         {
-          let allVariablesREGEX = /export const (\w+) = "(.*)";\n/gmi; // ALL variable regex
-          let tempRegExVar;
-          while (tempRegExVar = allVariablesREGEX.exec(newFile))
-          {
-            // console.log(tempRegExVar[1]);
-            fs.promises.writeFile(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`,
-              `var result = [];\n result[0] = [${ tempRegExVar[2] }];\n`,
-              {encoding: 'utf8'});
-          }
-        })
+          tempMax[clipLen] = MAX;
+          tempMin[clipLen] = MIN;
+        }
+        tempMinMaxBuffer += `export const ${ KEY }_Max = '${ tempMax }';\n`;
+        tempMinMaxBuffer += `export const ${ KEY }_Min = '${ tempMin }';\n`;
+
+        fs.promises.writeFile(`${ DIR_OUTPATH }${ MIN_MAX_ADDRESSES[adr] }_Max.js`,
+          `export const ${ KEY }_Max = '${ tempMax }';\n`,
+          {encoding: 'utf8'});
+
+        fs.promises.writeFile(`${ DIR_OUTPATH }${ MIN_MAX_ADDRESSES[adr] }_Min.js`,
+          `export const ${ KEY }_Min = '${ tempMin }';\n`,
+          {encoding: 'utf8'});
+      }
     })
-  )
-  .then(() =>
-    import(`file://${ NEW_JS_FILE }`)
-      .then((pMem) =>
+    // Copy, append, write JS files, then bring back in
+    .then(() => fs.promises.copyFile(`${ ORG_JS_FILE }`, NEW_JS_FILE).then(() => fs.promises.appendFile(NEW_JS_FILE, tempMinMaxBuffer))
+      .then(() =>
+      {
+        fs.promises.readFile(NEW_JS_FILE, 'utf8')
+          .then((newFile) => // Write all JS files
+          {
+            let allVariablesREGEX = /export const (\w+) = "(.*)";\n/gmi; // ALL variable regex
+            let tempRegExVar;
+            while (tempRegExVar = allVariablesREGEX.exec(newFile))
+            {
+              // console.log(tempRegExVar[1]);
+              fs.promises.writeFile(`${ DIR_OUTPATH }${ tempRegExVar[1] }.js`,
+                `var result = [];\n result[0] = [${ tempRegExVar[2] }];\n`,
+                {encoding: 'utf8'});
+            }
+          })
+      })
+    )
+    .then(() =>
+      import(`file://${ NEW_JS_FILE }`).then((pMem) =>
       {
         const CLIP_LENGTH = pMem.A_2D_Game_Timer.split(',').length; // Used as clip-length frame tracker; address doesn't matter
         const POINT_OBJ_P1 =
@@ -1827,9 +1831,15 @@ import(`file://${ ORG_JS_FILE }`)
         }
         countIsPaused()
         fs.closeSync(0);
-        fs.unlinkSync(NEW_JS_FILE);
+
       })
-  );
-clipboard.writeSync(DIR_OUTPATH);
-console.log('AE Path Copied to Clipboard' || ``);
-await sleep(SLEEP_AMOUNT);
+        .then(() =>
+        {
+          fs.unlinkSync(NEW_JS_FILE); // delete the temp file
+          console.log(`Done processing ${ knownName[csvFilesIDX] } ` || ``);
+        })
+    );
+
+  clipboard.writeSync(DIR_OUTPATH);
+  await sleep(SLEEP_AMOUNT);
+}
