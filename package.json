@@ -1,56 +1,22 @@
 {
- 
   "name": "newmain.js",
- 
   "main": "H:/Git/MVC2GEN/resources/Both_Emulator_Resources/JS_Utils/JS_UTIL_newmain.js",
- 
   "version": "2.0.0",
- 
   "type": "module",
- 
   "description": "Finished all functionality",
- 
   "repository": {
- 
-   
   "type": "git",
- 
-   
   "url": "git+https://github.com/magnetro1/MVC2GEN.git"
- 
   },
- 
   "keywords": [],
- 
   "author": "Magnetro",
- 
   "license": "ISC",
- 
   "homepage": "https://github.com/magnetro1/MVC2GEN",
- 
   "dependencies": {
- 
-   
   "clipboardy": "^3.0.0",
- 
-   
-  "drag-drop": "^7.2.0",
- 
-   
-  "readline": "^1.3.0",
- 
-   
-  "readline-sync": "^1.4.10",
- 
-   
-  "robotjs": "^0.6.0"
- 
+  "readline": "^1.3.0"
   },
- 
   "scripts": {
- 
-   
   "js_util": "node ./resources/Both_Emulator_Resources/JS_Utils/JS_UTIL_newmain.js"
- 
   }
 }
