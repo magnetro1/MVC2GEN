@@ -23,3 +23,10 @@ const newestCSV = csvFiles.reduce(function (previous, current) // needs director
 });
 
 fs.renameSync(DIR_CSVS + newestCSV, DIR_CSVS + answer + '.csv');
+
+//dizzy formula?
+//  attack_immune = 2
+//  proxblock = 13
+//  knockdown = 32
+//  Dizzy_Reset_Timer = 60 // normally 0
+//  dizzy = 80
