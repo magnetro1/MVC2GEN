@@ -210,7 +210,7 @@ async function main()
       }
       else
       {
-        console.log('File already exists.');
+        console.log('Sorted_NodeJS already exists for ' + answer[i] + '.');
       }
       // console.log('Done writing Sorted_JS files.');
     }).catch((err) =>
