@@ -28,27 +28,27 @@ function sleep(ms)
     return setTimeout(resolve, ms);
   });
 }
-
-var csvArray = [];
+// Get the csv file names
+var csvFilesArrayList = [];
 fs.readdirSync(DIR_CSVS).forEach(function (file)
 {
   if (file.endsWith('.csv') || file.endsWith('.CSV'))
   {
-    csvArray.push(file);
+    csvFilesArrayList.push(file);
   }
 });
-
-var knownName = [];
-csvArray.forEach((name) =>
+// truncate the .csv from the file names
+var csvSoloName = [];
+csvFilesArrayList.forEach((name) =>
 {
   let temp = '';
   temp = name.toString().replace('.csv', '')
-  knownName.push(temp);
+  csvSoloName.push(temp);
 });
-
-for (let mainCSVListIDX = 0; mainCSVListIDX < csvArray.length; mainCSVListIDX++)
+// main loop for each csv file
+for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx++)
 {
-  var FILENAME_NO_EXT = DIR_CSVS + csvArray[mainCSVListIDX];
+  var FILENAME_NO_EXT = DIR_CSVS + csvFilesArrayList[csv_list_idx];
   var headersArray = [];
   var allDataArray = [];
 
@@ -183,7 +183,6 @@ for (let mainCSVListIDX = 0; mainCSVListIDX < csvArray.length; mainCSVListIDX++)
       check--; // go back to original line in order to check the next line again
     }
   }
-
   // // Transpose the array by columns
   var allArrayStructure = [];
   for (let headerIndex = 0; headerIndex < headersArray.length; headerIndex++)
@@ -198,16 +197,15 @@ for (let mainCSVListIDX = 0; mainCSVListIDX < csvArray.length; mainCSVListIDX++)
       allArrayStructure[colIdx].push(allDataArray[rowIdx][colIdx]);
     }
   }
-  // Make entire file buffer
-  var stringArray = [];
-  for (let header in headersArray)
+  // Make entire file buffer v1
+  let dataObject = {};
+  // make the values of each key into a string
+  for (let i = 0; i < headersArray.length; i++)
   {
-    // stringArray.push(`export const ${ headersArray[header] } = '${ allArrayStructure[header] }';`);
-    stringArray.push(`${ headersArray[header] }=${ allArrayStructure[header] }`);
+    dataObject[headersArray[i]] = allArrayStructure[i].join(','); // the key is the header name[i], the value are the numbers joined by a comma
   }
-
-  // Make Total_Frames info
-  var missingEntries = [];
+  // Make Total_Frames info. Write into the beginning of the file
+  let missingEntries = [];
   for (let i = 0; i < allArrayStructure[0].length - 1; i++) // total frames
   {
     if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1)
@@ -215,111 +213,238 @@ for (let mainCSVListIDX = 0; mainCSVListIDX < csvArray.length; mainCSVListIDX++)
       missingEntries.push(`Missing data entry after Total_Frame Number: ${ allArrayStructure[0][i] }\n`);
     }
   }
-  // Write Stuff
-
-  if (fs.existsSync(`${ DIR_SORTED_JS }${ csvArray[mainCSVListIDX].replace(`.csv`, ``) }${ TAIL_TEXT }`)) // if the file exists
-  {
-    // delete the file
-    fs.unlinkSync(`${ DIR_SORTED_JS }${ csvArray[mainCSVListIDX].replace(`.csv`, ``) }${ TAIL_TEXT }`);
-  }
-  // if (fs.existsSync(`${ DIR_SORTED_JS }${ csvArray[mainCSVListIDX].replace(`.csv`, ``) }${ TAIL_TEXT }`)) // if the file exists
-  // {
-  //   console.log(`File ${ csvArray[mainCSVListIDX] } already exists!`);
-  // }
-  // else #######################################################
-  if (!(fs.existsSync(`${ DIR_SORTED_JS }${ csvArray[mainCSVListIDX].replace(`.csv`, ``) }${ TAIL_TEXT }`))) // if the file doesn't exist
-  {
-    // if (missingEntries.length > 0)
-    // {
-    var writeInitSorted = fs.promises.writeFile(`${ DIR_SORTED_JS }${ csvArray[mainCSVListIDX].replace(`.csv`, ``) }${ TAIL_TEXT }`,
-      (`/*\n${ missingEntries }\nFirst entry in Total_Frames: ${ allArrayStructure[0][0] }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }\n*/\n`)
-        .replace(/,/g, '')).then(function ()
-        {
-          console.log(`File ${ csvArray[mainCSVListIDX].replace('.csv', '') }${ TAIL_TEXT } created!`);
-        });
-    // await writeInitSorted;
-    // console.log('Missing entries logged.');
-    // }
-    // else
-    // {
-    //   fs.promises.writeFile(`${ DIR_SORTED_JS }${ csvArray[mainCSVListIDX].replace(`.csv`, ``) }${ TAIL_TEXT }`,
-    //     (`/*\nNo missing data entries\nFirst entry in Total_Frames: ${ allArrayStructure[0][0] }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }\n*/\n`)
-    //       .replace(/,/g, ''));
-    // }
-
-    var finishSortedMissing = fs.promises.appendFile(`${ DIR_SORTED_JS }${ csvArray[mainCSVListIDX].replace(`.csv`, ``) }${ TAIL_TEXT }`,
-      (`${ stringArray.join('\n') }`))
-      .then(function ()
-      {
-        console.log(`File ${ csvArray[mainCSVListIDX].replace('.csv', '') }${ TAIL_TEXT } was saved!`);
-      });
-    // await finishSortedMissing;
-
-  } // if sorted-js doesn't exist
-
-  await writeInitSorted;
-  await finishSortedMissing;
-  // Main Logic
-
-  var FILE_NAME_NO_EXT = knownName[mainCSVListIDX];
-  var DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ FILE_NAME_NO_EXT }/`;
-  var ORG_JS_FILE = `${ DIR_SORTED_JS }${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
-  var NEW_JS_FILE = `${ DIR_SORTED_JS }New_${ FILE_NAME_NO_EXT }${ TAIL_TEXT }`;
-
+  let fileNameNoExt = csvSoloName[csv_list_idx];
+  const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ fileNameNoExt }/`;
   // Make Output folder for AE files
   if (!fs.existsSync(`${ DIR_OUTPATH }`))
   {
     fs.mkdirSync(`${ DIR_OUTPATH }`);
   }
 
+  //Append MIN&MAX value to buffer
   let tempMinMaxBuffer = '\n';
-  // read the file with promises
-  var readSortedJS = fs.promises.readFile(ORG_JS_FILE, 'utf8').then((data) =>
+  let CLIP_LENGTH = dataObject['A_2D_Game_Timer'].split(',').length;
+
+  for (let adr in MIN_MAX_ADDRESSES)
   {
-    // separate the file by line, then convert the data into objects
-    var dataSplit = data.split('\n');
-    var dataObject = {};
-    for (let line in dataSplit)
+    const KEY = MIN_MAX_ADDRESSES[adr];
+
+    const VALUE = dataObject[MIN_MAX_ADDRESSES[adr]].split(','); // Fetch the value by finding the key using its string name
+    const MIN = Math.min(...VALUE);
+    const MAX = Math.max(...VALUE);
+    let tempMin = [];
+    let tempMax = [];
+    for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
     {
-      var lineSplit = dataSplit[line].split('=');
-      dataObject[lineSplit[0]] = lineSplit[1]; // [0] is the key, [1] is the value
+      tempMax[clipLen] = MAX;
+      tempMin[clipLen] = MIN;
     }
-    // console.log(dataObject);
+    tempMinMaxBuffer += `${ KEY }_Max=${ tempMax }\n`;
+    tempMinMaxBuffer += `${ KEY }_Min=${ tempMin }\n`;
+  }
 
-    var CLIP_LENGTH = dataObject['A_2D_Game_Timer'].split(',').length;
-    // console.log(CLIP_LENGTH);
+  // Merge tempMinMaxBuffer into the dataObject
+  var tempMinMaxBufferSplit = tempMinMaxBuffer.split('\n');
+  for (let line in tempMinMaxBufferSplit)
+  {
+    var lineSplit = tempMinMaxBufferSplit[line].split('=');
+    dataObject[lineSplit[0]] = lineSplit[1]; // [0] is the key, [1] is the value
+  }
 
-    for (let adr in MIN_MAX_ADDRESSES)
+  // Round off floating point addresses using FLOATING_POINT_ADDRESSES
+  var prefixes = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_']
+  var toFixedDigits = [0, 2, 4]; // 7 is the default
+  for (let playerPrefix in prefixes)
+  {
+    for (let floatAdr in FLOATING_POINT_ADDRESSES)
     {
-      const KEY = MIN_MAX_ADDRESSES[adr];
-
-      const VALUE = dataObject[MIN_MAX_ADDRESSES[adr]].split(','); // Fetch the value by finding the key using its string name
-      const MIN = Math.min(...VALUE);
-      const MAX = Math.max(...VALUE);
-      let tempMin = [];
-      let tempMax = [];
-      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+      // check if the floatAdr exist in this player prefix
+      if (dataObject[prefixes[playerPrefix] + FLOATING_POINT_ADDRESSES[floatAdr]] !== undefined)
       {
-        tempMax[clipLen] = MAX;
-        tempMin[clipLen] = MIN;
+        // console.log(`Rounding off ${ prefixes[playerPrefix] + FLOATING_POINT_ADDRESSES[floatAdr] }`);
+        // round off each address by each number inside of toFixedDigits
+        for (let digit in toFixedDigits)
+        {
+          let tempArray = dataObject[prefixes[playerPrefix] + FLOATING_POINT_ADDRESSES[floatAdr]].split(',');
+          for (let i = 0; i < tempArray.length; i++)
+          {
+            tempArray[i] = parseFloat(tempArray[i]).toFixed(toFixedDigits[digit]);
+          }
+          dataObject[prefixes[playerPrefix] + FLOATING_POINT_ADDRESSES[floatAdr] + '_' + toFixedDigits[digit]] = tempArray.join(',');
+        }
       }
-      tempMinMaxBuffer += `${ KEY }_Max=${ tempMax }\n`;
-      tempMinMaxBuffer += `${ KEY }_Min=${ tempMin }\n`;
-    } // for adr in MIN_MAX_ADDRESSES
-
-    // split tempMinMaxBuffer by line, then merge into the dataObject
-    var tempMinMaxBufferSplit = tempMinMaxBuffer.split('\n');
-    for (let line in tempMinMaxBufferSplit)
-    {
-      var lineSplit = tempMinMaxBufferSplit[line].split('=');
-      dataObject[lineSplit[0]] = lineSplit[1]; // [0] is the key, [1] is the value
     }
-    // write the new dataObject to a new file
-    // var writeNewSortedJS = fs.promises.writeFile(NEW_JS_FILE, `var myOBJ =\n` + JSON.stringify(dataObject, null, 2)).then(function ()
-    // {
-    //   console.log(`File ${ NEW_JS_FILE } created!`);
-    // });
-  })
+  }
+
+  // /*
+  // Write the dataObject into a file
+  let dataObjectString = `var ${ csvSoloName[csv_list_idx] }_Object = \n` + JSON.stringify(dataObject);
+  dataObjectString = dataObjectString.replace(/{"/g, '{\n\t"');
+  dataObjectString = dataObjectString.replace(/"}/g, '"\n}');
+  dataObjectString = dataObjectString.replace(/","/g, '",\n\t"');
+
+  fs.writeFileSync(`${ DIR_SORTED_JS }${ csvSoloName[csv_list_idx] }Object.js`, dataObjectString);
+  // */
+
   await sleep(1000);
-  await readSortedJS;
+
+  let POINT_OBJ_P1 =
+  {
+    P1_A_: dataObject['P1_A_Is_Point'].split(','),
+    P1_B_: dataObject['P1_B_Is_Point'].split(','),
+    P1_C_: dataObject['P1_C_Is_Point'].split(',')
+  };
+  let POINT_OBJ_P2 =
+  {
+    P2_A_: dataObject['P2_A_Is_Point'].split(','),
+    P2_B_: dataObject['P2_B_Is_Point'].split(','),
+    P2_C_: dataObject['P2_C_Is_Point'].split(',')
+  };
+  // Main function to write data to files OR return finalValues array
+  /**
+   * @param {number|string} PlayerOneOrPlayerTwo number or string, ex: 1 or "P1"
+   * @param {string} playerMemoryAddress string, ex: "Health_Big"
+   * @param {number|boolean} write flag to return array or write to file
+   * @returns {Number[]} returns an array of numbers or writes a file for the playerMemoryAddress in the clip.
+   * @description Finds the point character, and returns an array of numbers for the playerMemoryAddress in the clip.
+   */
+  function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) 
+  {
+    let finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
+    let playerObjectSwitcher;// Switches between the Player1 and Player2 objects
+    /**@description P1 | P2 */
+    let playerSwitcher; // Switches between "P1" and "P2"
+
+    if ((PlayerOneOrPlayerTwo == 1) || (PlayerOneOrPlayerTwo == "P1"))
+    {
+      playerObjectSwitcher = POINT_OBJ_P1;
+      playerSwitcher = "P1";
+    }
+    else if ((PlayerOneOrPlayerTwo == 2) || (PlayerOneOrPlayerTwo == "P2"))
+    {
+      playerObjectSwitcher = POINT_OBJ_P2;
+      playerSwitcher = "P2";
+    }
+    // Push all player memory addresses to finalValuesArray depending on the if-statement-logic
+    for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) // length of clip
+    {
+      // 3-Character Bug Logic
+      if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
+        && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
+        && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
+      {
+        // console.log( `${ playerSwitcher}: 3-Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
+        finalValuesArray[0].push(dataObject[`${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }`].split(',')[clipLen]);
+        finalValuesArray[1].push(dataObject[`${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }`].split(',')[clipLen]);
+        finalValuesArray[2].push(dataObject[`${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }`].split(',')[clipLen]);
+      }
+      // 2-Character Bug Logic
+      else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
+        && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
+        && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
+      {
+        // console.log( `${ playerSwitcher}: 2-Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
+        finalValuesArray[0].push(dataObject[`${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }`].split(',')[clipLen]);
+        finalValuesArray[1].push(dataObject[`${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }`].split(',')[clipLen]);
+      }
+      else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
+        && (Object.values(playerObjectSwitcher)[1][clipLen] != 0)
+        && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
+      {
+        // console.log( `${ playerSwitcher}: 2-Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
+        finalValuesArray[0].push(dataObject[`${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }`].split(',')[clipLen]);
+        finalValuesArray[1].push(dataObject[`${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }`].split(',')[clipLen]);
+      }
+      else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0)
+        && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
+        && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
+      {
+        // console.log( `${ playerSwitcher}: 2-Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
+        finalValuesArray[0].push(dataObject[`${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }`].split(',')[clipLen]);
+        finalValuesArray[1].push(dataObject[`${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }`].split(',')[clipLen]);
+      }
+      // 1-Character Logic
+      else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
+        && (Object.values(playerObjectSwitcher)[1][clipLen] != 0)
+        && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
+      {
+        // console.log(`${ playerSwitcher }: 1-Character Logic: A == 0 && B != 0 && C != 0        P1: A`);
+        finalValuesArray[0].push(dataObject[`${ Object.keys(playerObjectSwitcher)[0] }${ playerMemoryAddress }`].split(',')[clipLen]);
+      }//                                                           P1|P2        P1_A        Health_Big                        i     
+      else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0)
+        && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
+        && (Object.values(playerObjectSwitcher)[2][clipLen] != 0))
+      {
+        // console.log(`${ playerSwitcher }: 1-Character Logic: A != 0 && B == 0 && C != 0        P1: B`);
+        finalValuesArray[0].push(dataObject[`${ Object.keys(playerObjectSwitcher)[1] }${ playerMemoryAddress }`].split(',')[clipLen]);
+      }
+      else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0)
+        && (Object.values(playerObjectSwitcher)[1][clipLen] != 0)
+        && (Object.values(playerObjectSwitcher)[2][clipLen] == 0))
+      {
+        // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C`);
+        finalValuesArray[0].push(dataObject[`${ Object.keys(playerObjectSwitcher)[2] }${ playerMemoryAddress }`].split(',')[clipLen]);
+      }
+    } // loop end
+
+    // Return if not writing files
+    if ((write == 0) || (write == false))
+    {
+      return finalValuesArray
+    }
+    else if ((write == 1) || (write == true))
+    {
+      (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`))
+      {
+        fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`,
+          `var result = [];` + "\n",
+          {flag: "a+", encoding: 'utf8'});
+
+        // Append main data
+        for (let dataArrayPerCharacter in finalValuesArray)
+        {
+          fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`,
+            `result[${ dataArrayPerCharacter }] = [${ finalValuesArray[dataArrayPerCharacter] }];\n`,
+            {encoding: 'utf8'});
+        }
+      }
+    }
+  }// end of find-point-player-memory-function
+
+  // Function to getPlayerMemoryEntries from the dataObject
+  function getPlayerMemoryEntries()
+  {
+    let playerMemoryEntries = [];
+    let playerMemoryRegex = /(P[1-2]_[A-C]_)/g; //[1] = P1_A
+    for (let key in dataObject)
+    {
+      if (key.toString().match(playerMemoryRegex))
+      {
+        playerMemoryEntries.push(key);
+      }
+    }
+    // Remove the playerMemoryRegex from the array using replace()
+    playerMemoryEntries = playerMemoryEntries.map((label) =>
+    {
+      return label.replace(playerMemoryRegex, '');
+    });
+
+    // // Remove duplicates
+    playerMemoryEntries = [...new Set(playerMemoryEntries)];
+    // console.log(...playerMemoryEntries);
+    return playerMemoryEntries;
+  }
+
+  // getPlayerMemoryEntries().forEach((label, index) =>
+  // {
+  //   // console.log(`${ index }: ${ label }`);
+  //   writePlayerMemory(1, label.toString(), 1);
+  //   writePlayerMemory(2, label.toString(), 1);
+  // });
+
+  // // break apart the dataObject and write eaach value into its own file using the key of the object as the filename
+  // for (let key in dataObject)
+  // {
+  //   fs.writeFileSync(`${ DIR_OUTPATH }/${ key }.js`, `var result = [${ dataObject[key] }];`, {encoding: 'utf8'});
+  // }
 }
