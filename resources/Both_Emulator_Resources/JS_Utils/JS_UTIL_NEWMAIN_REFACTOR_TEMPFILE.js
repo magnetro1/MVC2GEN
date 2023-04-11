@@ -245,66 +245,66 @@ const DO_ROM_FILES = false; // Do or Skip ROM logic files
 //   writePlayerMemory(2, label.toString(), 1);
 // });
 
-// Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
-/**
- * @returns {Number[]} returns an array of numbers and writes a file with _CNV appended to its name
- * @description Writes and converts the point character's values for Knockdown State, Is_Prox_Block, ID_2 and _PortraitsToTime
-*/
-function writeStaticDataCNV()
-{
-  const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
-  const STATIC_DATA_ADRS = ["Knockdown_State", "Is_Prox_Block", "ID_2", "ID_2"]
-  let staticLookupResultsArray = [[], [], []];
+// // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
+// /**
+//  * @returns {Number[]} returns an array of numbers and writes a file with _CNV appended to its name
+//  * @description Writes and converts the point character's values for Knockdown State, Is_Prox_Block, ID_2 and _PortraitsToTime
+// */
+// function writeStaticDataCNV()
+// {
+//   const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
+//   const STATIC_DATA_ADRS = ["Knockdown_State", "Is_Prox_Block", "ID_2", "ID_2"]
+//   let staticLookupResultsArray = [[], [], []];
 
-  for (let playersLen = 1; playersLen < 3; playersLen++)
-  {
-    for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
-    {
-      // Make directories if they don't exist
-      if (!fs.existsSync(DIR_OUTPATH))
-        fs.mkdirSync(DIR_OUTPATH);
-      // Write base file
-      if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
-      {
-        fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`,
-          `var result = [];` + "\n",
-          {encoding: 'utf8'});
-      }
-      else
-      {
-        fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`,
-          `var result = [];` + "\n",
-          {encoding: 'utf8'});
-      }
-    }
-    for (let staticDataEntry = 0; staticDataEntry < STATIC_DATA_ADRS.length; staticDataEntry++)
-    {
-      const callPlayerMemoryFN = writePlayerMemory(`${ playersLen }`, STATIC_DATA_ADRS[staticDataEntry], 0);
-      for (let characterSlotI = 0; characterSlotI < callPlayerMemoryFN.length; characterSlotI++) // [0][1][2]
-      {
-        // Push and convert all three arrays' values
-        for (let clipLen = 0; clipLen < callPlayerMemoryFN[characterSlotI].length; clipLen++) // CLIPLENGTH
-        {
-          staticLookupResultsArray[characterSlotI].push(`"${ Object.values(STATIC_DATA_OBJS[staticDataEntry])[callPlayerMemoryFN[characterSlotI][clipLen]] }"`);
-        }
+//   for (let playersLen = 1; playersLen < 3; playersLen++)
+//   {
+//     for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
+//     {
+//       // Make directories if they don't exist
+//       if (!fs.existsSync(DIR_OUTPATH))
+//         fs.mkdirSync(DIR_OUTPATH);
+//       // Write base file
+//       if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+//       {
+//         fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`,
+//           `var result = [];` + "\n",
+//           {encoding: 'utf8'});
+//       }
+//       else
+//       {
+//         fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`,
+//           `var result = [];` + "\n",
+//           {encoding: 'utf8'});
+//       }
+//     }
+//     for (let staticDataEntry = 0; staticDataEntry < STATIC_DATA_ADRS.length; staticDataEntry++)
+//     {
+//       const callPlayerMemoryFN = writePlayerMemory(`${ playersLen }`, STATIC_DATA_ADRS[staticDataEntry], 0);
+//       for (let characterSlotI = 0; characterSlotI < callPlayerMemoryFN.length; characterSlotI++) // [0][1][2]
+//       {
+//         // Push and convert all three arrays' values
+//         for (let clipLen = 0; clipLen < callPlayerMemoryFN[characterSlotI].length; clipLen++) // CLIPLENGTH
+//         {
+//           staticLookupResultsArray[characterSlotI].push(`"${ Object.values(STATIC_DATA_OBJS[staticDataEntry])[callPlayerMemoryFN[characterSlotI][clipLen]] }"`);
+//         }
 
-        if (STATIC_DATA_OBJS[staticDataEntry] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
-        {
-          fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ characterSlotI }] = [${ staticLookupResultsArray[characterSlotI] }];\n`,
-            {encoding: 'utf8'});
-          staticLookupResultsArray = [[], [], []];
-        }
-        else
-        {
-          fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataEntry] }_CNV.js`, `result[${ characterSlotI }] = [${ staticLookupResultsArray[characterSlotI] }];\n`,
-            {encoding: 'utf8'});
-          staticLookupResultsArray = [[], [], []];
-        }
-      }
-    }
-  }
-};
-writeStaticDataCNV();
+//         if (STATIC_DATA_OBJS[staticDataEntry] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+//         {
+//           fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ characterSlotI }] = [${ staticLookupResultsArray[characterSlotI] }];\n`,
+//             {encoding: 'utf8'});
+//           staticLookupResultsArray = [[], [], []];
+//         }
+//         else
+//         {
+//           fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataEntry] }_CNV.js`, `result[${ characterSlotI }] = [${ staticLookupResultsArray[characterSlotI] }];\n`,
+//             {encoding: 'utf8'});
+//           staticLookupResultsArray = [[], [], []];
+//         }
+//       }
+//     }
+//   }
+// };
+// writeStaticDataCNV();
 
 /**
  * @description Writes P1 & P2 addresses to their own JS files. Ex: P1_Combo_Meter_Value.js. One array per entry.
@@ -330,298 +330,298 @@ function writeP1P2Addresses()
 };
 writeP1P2Addresses();
 
-/**
- * @description outputs 3 arrays containing Total_Frames in ascending and then descending order, and Max number in clip.
- */
-function writeTotalFrameCountCNV()
-{
-  let totalFrameArrT1 = [];
-  let totalFrameArrT2 = [];
+// /**
+//  * @description outputs 3 arrays containing Total_Frames in ascending and then descending order, and Max number in clip.
+//  */
+// function writeTotalFrameCountCNV()
+// {
+//   let totalFrameArrT1 = [];
+//   let totalFrameArrT2 = [];
 
-  pMem.Total_Frames.split(',').forEach((frame, indexT1) =>
-  {
-    totalFrameArrT1.push(indexT1);
-  });
-  // Padded Zeroes for program pad comp
-  pMem.Total_Frames.split(',').forEach((frame, indexT2) =>
-  {
-    if (indexT2 == 0)
-    {
-      indexT2++
-    }
-    else if (indexT2 < 10)
-    {
-      indexT2.toString()
-      indexT2 = '000' + indexT2
-    }
-    else if (indexT2 < 100)
-    {
-      indexT2.toString()
-      indexT2 = '00' + indexT2
-    }
-    else if (indexT2 < 1000)
-    {
-      indexT2.toString()
-      indexT2 = '0' + indexT2
-    }
-    else
-    {
-      indexT2
-    }
-    totalFrameArrT2.push(indexT2);
-  });
+//   pMem.Total_Frames.split(',').forEach((frame, indexT1) =>
+//   {
+//     totalFrameArrT1.push(indexT1);
+//   });
+//   // Padded Zeroes for program pad comp
+//   pMem.Total_Frames.split(',').forEach((frame, indexT2) =>
+//   {
+//     if (indexT2 == 0)
+//     {
+//       indexT2++
+//     }
+//     else if (indexT2 < 10)
+//     {
+//       indexT2.toString()
+//       indexT2 = '000' + indexT2
+//     }
+//     else if (indexT2 < 100)
+//     {
+//       indexT2.toString()
+//       indexT2 = '00' + indexT2
+//     }
+//     else if (indexT2 < 1000)
+//     {
+//       indexT2.toString()
+//       indexT2 = '0' + indexT2
+//     }
+//     else
+//     {
+//       indexT2
+//     }
+//     totalFrameArrT2.push(indexT2);
+//   });
 
-  // T1 for Normal Compositions
-  fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-    `var result = [];\nresult[0] = [${ totalFrameArrT1 }];\n`,
-    {encoding: 'utf8'});
-  totalFrameArrT1.reverse()
-  fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-    `result[1] = [${ totalFrameArrT1 }];\n`,
-    {encoding: 'utf8'});
-  for (let idx in totalFrameArrT1)
-  {
-    totalFrameArrT1[idx] = totalFrameArrT1[0]
-  }
-  fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-    `result[2] = [${ totalFrameArrT1 }];\n`,
-    {encoding: 'utf8'});
+//   // T1 for Normal Compositions
+//   fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+//     `var result = [];\nresult[0] = [${ totalFrameArrT1 }];\n`,
+//     {encoding: 'utf8'});
+//   totalFrameArrT1.reverse()
+//   fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+//     `result[1] = [${ totalFrameArrT1 }];\n`,
+//     {encoding: 'utf8'});
+//   for (let idx in totalFrameArrT1)
+//   {
+//     totalFrameArrT1[idx] = totalFrameArrT1[0]
+//   }
+//   fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+//     `result[2] = [${ totalFrameArrT1 }];\n`,
+//     {encoding: 'utf8'});
 
-  // T2 for ASCII Pad Composition
-  totalFrameArrT2.splice(0, 1)
-  fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-    `result[3] = ['${ totalFrameArrT2 }'];\n`,
-    {encoding: 'utf8'});
-  totalFrameArrT2.reverse()
-  fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-    `result[4] = ['${ totalFrameArrT2 }'];\n`,
-    {encoding: 'utf8'});
-  for (let idx in totalFrameArrT2)
-  {
-    totalFrameArrT2[idx] = totalFrameArrT2[0]
-  }
-  fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-    `result[5] = ['${ totalFrameArrT2 }'];\n`,
-    {encoding: 'utf8'});
-  // }
-};
-writeTotalFrameCountCNV();
+//   // T2 for ASCII Pad Composition
+//   totalFrameArrT2.splice(0, 1)
+//   fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+//     `result[3] = ['${ totalFrameArrT2 }'];\n`,
+//     {encoding: 'utf8'});
+//   totalFrameArrT2.reverse()
+//   fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+//     `result[4] = ['${ totalFrameArrT2 }'];\n`,
+//     {encoding: 'utf8'});
+//   for (let idx in totalFrameArrT2)
+//   {
+//     totalFrameArrT2[idx] = totalFrameArrT2[0]
+//   }
+//   fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+//     `result[5] = ['${ totalFrameArrT2 }'];\n`,
+//     {encoding: 'utf8'});
+//   // }
+// };
+// writeTotalFrameCountCNV();
 
-function writeStageDataCNV() // Fills out color data for stages in Hex in result[1]
-{
-  let stageData = [];
-  pMem.Stage_Selector.split(',').forEach((frame) =>
-  {
-    stageData.push(frame)
-  });
+// function writeStageDataCNV() // Fills out color data for stages in Hex in result[1]
+// {
+//   let stageData = [];
+//   pMem.Stage_Selector.split(',').forEach((frame) =>
+//   {
+//     stageData.push(frame)
+//   });
 
-  if (!fs.existsSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`))
-  {
-    fs.writeFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
-      `var result = [];\nresult[0] = [${ stageData }];\n`,
-      {encoding: 'utf8'});
-    stageData = [];
+//   if (!fs.existsSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`))
+//   {
+//     fs.writeFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
+//       `var result = [];\nresult[0] = [${ stageData }];\n`,
+//       {encoding: 'utf8'});
+//     stageData = [];
 
-    pMem.Stage_Selector.split(',').forEach((frame) =>
-    {
-      stageData.push(`"${ Object.values(STAGES_OBJ)[frame] }"`)
-    });
-    fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
-      `result[1] = [${ stageData }];\n`,
-      {encoding: 'utf8'});
-    stageData = [];
-  }
-};
-writeStageDataCNV()
+//     pMem.Stage_Selector.split(',').forEach((frame) =>
+//     {
+//       stageData.push(`"${ Object.values(STAGES_OBJ)[frame] }"`)
+//     });
+//     fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
+//       `result[1] = [${ stageData }];\n`,
+//       {encoding: 'utf8'});
+//     stageData = [];
+//   }
+// };
+// writeStageDataCNV()
 
-/**
-* @description Converts and writes inputs to one file that contains formatting for a custom-font and US FGC notation
-**/
-function writeInputCNV()
-{
-  const P1_InputsDECSplit = pMem.P1_Input_DEC.split(',');
-  const P2_InputsDECSplit = pMem.P2_Input_DEC.split(',');
-  let playerInputResults = ""; // holds each result for P1 and P2
-  let playerInputsCNVArray = []; // contains transformed results for P1 and P2
-  let tempP1OrP2 = ""; // Changes to "P1" or "P2"
+// /**
+// * @description Converts and writes inputs to one file that contains formatting for a custom-font and US FGC notation
+// **/
+// function writeInputCNV()
+// {
+//   const P1_InputsDECSplit = pMem.P1_Input_DEC.split(',');
+//   const P2_InputsDECSplit = pMem.P2_Input_DEC.split(',');
+//   let playerInputResults = ""; // holds each result for P1 and P2
+//   let playerInputsCNVArray = []; // contains transformed results for P1 and P2
+//   let tempP1OrP2 = ""; // Changes to "P1" or "P2"
 
-  const buttonConversionVersion1 =
-  {
-    "6": 1024,  // 6 = right
-    "4": 2048,  // 4 = left
-    "2": 4096,  // 2 = down
-    "8": 8192,  // 8 = up
-    "u": 512,   // LP = u
-    "j": 64,    // LK = j
-    "i": 256,   // HP = i
-    "k": 32,    // HK = k
-    "o": 128,   // A1 = o
-    "l": 16,    // A2 = l
-    "(": 32768, // START = (
-    ")": 2,     // SELECT = )
-  };
+//   const buttonConversionVersion1 =
+//   {
+//     "6": 1024,  // 6 = right
+//     "4": 2048,  // 4 = left
+//     "2": 4096,  // 2 = down
+//     "8": 8192,  // 8 = up
+//     "u": 512,   // LP = u
+//     "j": 64,    // LK = j
+//     "i": 256,   // HP = i
+//     "k": 32,    // HK = k
+//     "o": 128,   // A1 = o
+//     "l": 16,    // A2 = l
+//     "(": 32768, // START = (
+//     ")": 2,     // SELECT = )
+//   };
 
-  const buttonConversionVersion2 =
-  {
-    "6": 1024,
-    "4": 2048,
-    "2": 4096,
-    "8": 8192,
-    "LP": 512,
-    "LK": 64,
-    "HP": 256,
-    "HK": 32,
-    "AA": 128,
-    "AB": 16,
-    "START": 32768,
-    "SELECT": 2,
-  };
+//   const buttonConversionVersion2 =
+//   {
+//     "6": 1024,
+//     "4": 2048,
+//     "2": 4096,
+//     "8": 8192,
+//     "LP": 512,
+//     "LK": 64,
+//     "HP": 256,
+//     "HK": 32,
+//     "AA": 128,
+//     "AB": 16,
+//     "START": 32768,
+//     "SELECT": 2,
+//   };
 
-  for (let playersLen = 1; playersLen < 3; playersLen++)
-  {
-    playersLen == 1 ? tempP1OrP2 = P1_InputsDECSplit : tempP1OrP2 = P2_InputsDECSplit;
-    // Input Conversion Type 1
-    for (const input in tempP1OrP2)
-    {
-      for (const button in Object.entries(buttonConversionVersion1))
-      {
-        if ((tempP1OrP2[input] & Object.values(buttonConversionVersion1)[button]) != 0)
-        {
-          playerInputResults += `${ Object.keys(buttonConversionVersion1)[button] }`;
-        }
-      }
-      playerInputsCNVArray.push(playerInputResults);
-      playerInputResults = "";
-    }
-    fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
-      `var result = [];\nresult[0] = ["` +
-      `${ playerInputsCNVArray.toString()
-        .replace(/24/gi, "1")
-        .replace(/42/gi, "1")
-        .replace(/26/gi, "3")
-        .replace(/62/gi, "3")
-        .replace(/48/gi, "7")
-        .replace(/84/gi, "7")
-        .replace(/86/gi, "9")
-        .replace(/68/gi, "9")
-      }"];\n`,
-      {encoding: 'utf8'});
-    playerInputsCNVArray = [];
+//   for (let playersLen = 1; playersLen < 3; playersLen++)
+//   {
+//     playersLen == 1 ? tempP1OrP2 = P1_InputsDECSplit : tempP1OrP2 = P2_InputsDECSplit;
+//     // Input Conversion Type 1
+//     for (const input in tempP1OrP2)
+//     {
+//       for (const button in Object.entries(buttonConversionVersion1))
+//       {
+//         if ((tempP1OrP2[input] & Object.values(buttonConversionVersion1)[button]) != 0)
+//         {
+//           playerInputResults += `${ Object.keys(buttonConversionVersion1)[button] }`;
+//         }
+//       }
+//       playerInputsCNVArray.push(playerInputResults);
+//       playerInputResults = "";
+//     }
+//     fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
+//       `var result = [];\nresult[0] = ["` +
+//       `${ playerInputsCNVArray.toString()
+//         .replace(/24/gi, "1")
+//         .replace(/42/gi, "1")
+//         .replace(/26/gi, "3")
+//         .replace(/62/gi, "3")
+//         .replace(/48/gi, "7")
+//         .replace(/84/gi, "7")
+//         .replace(/86/gi, "9")
+//         .replace(/68/gi, "9")
+//       }"];\n`,
+//       {encoding: 'utf8'});
+//     playerInputsCNVArray = [];
 
-    // Input Conversion Type 2
-    for (const input in tempP1OrP2)
-    {
-      for (const button in Object.entries(buttonConversionVersion2))
-      {
-        if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, the value is converted
-        {
-          playerInputResults += Object.keys(buttonConversionVersion2)[button];
-        }
-      }
-      playerInputsCNVArray.push(playerInputResults);
-      playerInputResults = "";
-    }
-    fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
-      `result[1] = ["${ playerInputsCNVArray.toString()
-        // Fix diagonals
-        .replace(/24/gi, "1")
-        .replace(/42/gi, "1")
-        .replace(/26/gi, "3")
-        .replace(/62/gi, "3")
-        .replace(/48/gi, "7")
-        .replace(/84/gi, "7")
-        .replace(/86/gi, "9")
-        .replace(/68/gi, "9")
-        // Add "+" to each button
-        .replace(/LP/gi, "LP+")
-        .replace(/LK/gi, "LK+")
-        .replace(/HP/gi, "HP+")
-        .replace(/HK/gi, "HK+")
-        .replace(/AA/gi, "AA+")
-        .replace(/AB/gi, "AB+")
-        .replace(/START/gi, "START+")
-        .replace(/SELECT/gi, "SELECT+")
-        // Add "+" to multiple button inputs
-        .replace(/([1-9](?=\w+))/gm, "$1+") // Looking ahead for a button+ input
-        // Replace numbers with Letter-notation
-        .replace(/2|2\+/gm, "D+")
-        .replace(/6|6\+/gm, "R+")
-        .replace(/8|8\+/gm, "U+")
-        .replace(/4|4\+/gm, "L+")
-        .replace(/1|1\+/gm, "DL+")
-        .replace(/3|3\+/gm, "DR+")
-        .replace(/9|9\+/gm, "UR+")
-        .replace(/7|7\+/gm, "UL+")
-        // Re-write assists" notation
-        .replace(/AA/gi, "A1")
-        .replace(/AB/gi, "A2")
-        // Remove trailing "+" if a comma follows
-        .replace(/\+(?=,)/gm, "")
-        // Replace "++" with "+"
-        .replace(/\+\+/gm, "+")
-      }"];`,
-      {encoding: 'utf8'}
-    );
-    playerInputsCNVArray = [];
+//     // Input Conversion Type 2
+//     for (const input in tempP1OrP2)
+//     {
+//       for (const button in Object.entries(buttonConversionVersion2))
+//       {
+//         if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, the value is converted
+//         {
+//           playerInputResults += Object.keys(buttonConversionVersion2)[button];
+//         }
+//       }
+//       playerInputsCNVArray.push(playerInputResults);
+//       playerInputResults = "";
+//     }
+//     fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
+//       `result[1] = ["${ playerInputsCNVArray.toString()
+//         // Fix diagonals
+//         .replace(/24/gi, "1")
+//         .replace(/42/gi, "1")
+//         .replace(/26/gi, "3")
+//         .replace(/62/gi, "3")
+//         .replace(/48/gi, "7")
+//         .replace(/84/gi, "7")
+//         .replace(/86/gi, "9")
+//         .replace(/68/gi, "9")
+//         // Add "+" to each button
+//         .replace(/LP/gi, "LP+")
+//         .replace(/LK/gi, "LK+")
+//         .replace(/HP/gi, "HP+")
+//         .replace(/HK/gi, "HK+")
+//         .replace(/AA/gi, "AA+")
+//         .replace(/AB/gi, "AB+")
+//         .replace(/START/gi, "START+")
+//         .replace(/SELECT/gi, "SELECT+")
+//         // Add "+" to multiple button inputs
+//         .replace(/([1-9](?=\w+))/gm, "$1+") // Looking ahead for a button+ input
+//         // Replace numbers with Letter-notation
+//         .replace(/2|2\+/gm, "D+")
+//         .replace(/6|6\+/gm, "R+")
+//         .replace(/8|8\+/gm, "U+")
+//         .replace(/4|4\+/gm, "L+")
+//         .replace(/1|1\+/gm, "DL+")
+//         .replace(/3|3\+/gm, "DR+")
+//         .replace(/9|9\+/gm, "UR+")
+//         .replace(/7|7\+/gm, "UL+")
+//         // Re-write assists" notation
+//         .replace(/AA/gi, "A1")
+//         .replace(/AB/gi, "A2")
+//         // Remove trailing "+" if a comma follows
+//         .replace(/\+(?=,)/gm, "")
+//         // Replace "++" with "+"
+//         .replace(/\+\+/gm, "+")
+//       }"];`,
+//       {encoding: 'utf8'}
+//     );
+//     playerInputsCNVArray = [];
 
-    // Input Conversion Type 3
-    for (const input in tempP1OrP2)
-    {
-      for (const button in Object.entries(buttonConversionVersion2))
-      {
-        if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, the value is converted
-        {
-          playerInputResults += Object.keys(buttonConversionVersion2)[button];
-        }
-      }
-      playerInputsCNVArray.push(playerInputResults);
-      playerInputResults = "";
-    }
-    fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
-      `\nresult[2] = ["${ playerInputsCNVArray.toString()
-        // Fix diagonals
-        .replace(/24/gi, "1")
-        .replace(/42/gi, "1")
-        .replace(/26/gi, "3")
-        .replace(/62/gi, "3")
-        .replace(/48/gi, "7")
-        .replace(/84/gi, "7")
-        .replace(/86/gi, "9")
-        .replace(/68/gi, "9")
-        // Add "+" to each button
-        .replace(/LP/gi, "LP+")
-        .replace(/LK/gi, "LK+")
-        .replace(/HP/gi, "HP+")
-        .replace(/HK/gi, "HK+")
-        .replace(/AA/gi, "AA+")
-        .replace(/AB/gi, "AB+")
-        .replace(/START/gi, "START+")
-        .replace(/SELECT/gi, "SELECT+")
-        // Add "+" to multiple button inputs
-        .replace(/([1-9](?=\w+))/gm, "$1+") // Looking ahead for a button+ input
-        // Replace numbers with Letter-notation
-        .replace(/2|2\+/gm, "Down+")
-        .replace(/6|6\+/gm, "Right+")
-        .replace(/8|8\+/gm, "Up+")
-        .replace(/4|4\+/gm, "Left+")
-        .replace(/1|1\+/gm, "Downleft+")
-        .replace(/3|3\+/gm, "Downright+")
-        .replace(/9|9\+/gm, "Upright+")
-        .replace(/7|7\+/gm, "Upleft+")
-        // Re-write assists" notation
-        .replace(/AA/gi, "A1")
-        .replace(/AB/gi, "A2")
-        // Remove trailing "+" if a comma follows
-        .replace(/\+(?=,)/gm, "")
-        // Replace "++" with "+"
-        .replace(/\+\+/gm, "+")
-      }"];`,
-      {encoding: 'utf8'}
-    );
-    playerInputsCNVArray = [];
-  }
-}
-writeInputCNV()
+//     // Input Conversion Type 3
+//     for (const input in tempP1OrP2)
+//     {
+//       for (const button in Object.entries(buttonConversionVersion2))
+//       {
+//         if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, the value is converted
+//         {
+//           playerInputResults += Object.keys(buttonConversionVersion2)[button];
+//         }
+//       }
+//       playerInputsCNVArray.push(playerInputResults);
+//       playerInputResults = "";
+//     }
+//     fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
+//       `\nresult[2] = ["${ playerInputsCNVArray.toString()
+//         // Fix diagonals
+//         .replace(/24/gi, "1")
+//         .replace(/42/gi, "1")
+//         .replace(/26/gi, "3")
+//         .replace(/62/gi, "3")
+//         .replace(/48/gi, "7")
+//         .replace(/84/gi, "7")
+//         .replace(/86/gi, "9")
+//         .replace(/68/gi, "9")
+//         // Add "+" to each button
+//         .replace(/LP/gi, "LP+")
+//         .replace(/LK/gi, "LK+")
+//         .replace(/HP/gi, "HP+")
+//         .replace(/HK/gi, "HK+")
+//         .replace(/AA/gi, "AA+")
+//         .replace(/AB/gi, "AB+")
+//         .replace(/START/gi, "START+")
+//         .replace(/SELECT/gi, "SELECT+")
+//         // Add "+" to multiple button inputs
+//         .replace(/([1-9](?=\w+))/gm, "$1+") // Looking ahead for a button+ input
+//         // Replace numbers with Letter-notation
+//         .replace(/2|2\+/gm, "Down+")
+//         .replace(/6|6\+/gm, "Right+")
+//         .replace(/8|8\+/gm, "Up+")
+//         .replace(/4|4\+/gm, "Left+")
+//         .replace(/1|1\+/gm, "Downleft+")
+//         .replace(/3|3\+/gm, "Downright+")
+//         .replace(/9|9\+/gm, "Upright+")
+//         .replace(/7|7\+/gm, "Upleft+")
+//         // Re-write assists" notation
+//         .replace(/AA/gi, "A1")
+//         .replace(/AB/gi, "A2")
+//         // Remove trailing "+" if a comma follows
+//         .replace(/\+(?=,)/gm, "")
+//         // Replace "++" with "+"
+//         .replace(/\+\+/gm, "+")
+//       }"];`,
+//       {encoding: 'utf8'}
+//     );
+//     playerInputsCNVArray = [];
+//   }
+// }
+// writeInputCNV()
 
 
 /**

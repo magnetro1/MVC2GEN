@@ -1,5 +1,11 @@
+/*
+--------------------------------------------------
+Step 0: Import the necessary modules
+--------------------------------------------------
+*/
+
 import * as fs from 'fs';
-import clipboard from "clipboardy";
+// import clipboard from "clipboardy";
 import
 {
   FLOATING_POINT_ADDRESSES,
@@ -28,7 +34,13 @@ function sleep(ms)
     return setTimeout(resolve, ms);
   });
 }
-// Get the csv file names
+
+/*
+--------------------------------------------------
+Step 1: Get the CSV file names from a directory
+--------------------------------------------------
+*/
+
 var csvFilesArrayList = [];
 fs.readdirSync(DIR_CSVS).forEach(function (file)
 {
@@ -38,14 +50,21 @@ fs.readdirSync(DIR_CSVS).forEach(function (file)
   }
 });
 // truncate the .csv from the file names
-var csvSoloName = [];
+var csvSoloNameArr = [];
 csvFilesArrayList.forEach((name) =>
 {
   let temp = '';
   temp = name.toString().replace('.csv', '')
-  csvSoloName.push(temp);
+  csvSoloNameArr.push(temp);
 });
-// main loop for each csv file
+
+/*
+--------------------------------------------------
+Step 2: Process the array of CSVs
+--------------------------------------------------
+*/
+
+// Main loop starts here
 for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx++)
 {
   var FILENAME_NO_EXT = DIR_CSVS + csvFilesArrayList[csv_list_idx];
@@ -64,7 +83,7 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
     } return null;
   });
 
-  // // Sorting by the first column's first value (Total_Frames)
+  // Sorting by the first column's first value (Total_Frames)
   allDataArray.sort((a, b) => a[0] - b[0]);
 
   /**
@@ -119,7 +138,8 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
     }
     return largestValueKey;
   }
-  // Find true data
+  // ! Find true data
+  // TODO Update the logic for this function
   var tempDataArr = [];
   for (let totalLines = 1; totalLines < allDataArray.length - 1; totalLines++)
   {
@@ -183,7 +203,7 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
       check--; // go back to original line in order to check the next line again
     }
   }
-  // // Transpose the array by columns
+  // Transpose the array by columns
   var allArrayStructure = [];
   for (let headerIndex = 0; headerIndex < headersArray.length; headerIndex++)
   {
@@ -197,6 +217,12 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
       allArrayStructure[colIdx].push(allDataArray[rowIdx][colIdx]);
     }
   }
+
+  /*
+  --------------------------------------------------
+  Step 3: Make dataObject & Start Functions
+  --------------------------------------------------
+  */
   // Make entire file buffer v1
   let dataObject = {};
   // make the values of each key into a string
@@ -213,7 +239,7 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
       missingEntries.push(`Missing data entry after Total_Frame Number: ${ allArrayStructure[0][i] }\n`);
     }
   }
-  let fileNameNoExt = csvSoloName[csv_list_idx];
+  let fileNameNoExt = csvSoloNameArr[csv_list_idx];
   const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ fileNameNoExt }/`;
   // Make Output folder for AE files
   if (!fs.existsSync(`${ DIR_OUTPATH }`))
@@ -270,23 +296,12 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
           {
             tempArray[i] = parseFloat(tempArray[i]).toFixed(toFixedDigits[digit]);
           }
+          //Merge tempArray into the dataObject
           dataObject[prefixes[playerPrefix] + FLOATING_POINT_ADDRESSES[floatAdr] + '_' + toFixedDigits[digit]] = tempArray.join(',');
         }
       }
     }
   }
-
-  // /*
-  // Write the dataObject into a file
-  let dataObjectString = `var ${ csvSoloName[csv_list_idx] }_Object = \n` + JSON.stringify(dataObject);
-  dataObjectString = dataObjectString.replace(/{"/g, '{\n\t"');
-  dataObjectString = dataObjectString.replace(/"}/g, '"\n}');
-  dataObjectString = dataObjectString.replace(/","/g, '",\n\t"');
-
-  fs.writeFileSync(`${ DIR_SORTED_JS }${ csvSoloName[csv_list_idx] }Object.js`, dataObjectString);
-  // */
-
-  await sleep(1000);
 
   let POINT_OBJ_P1 =
   {
@@ -435,16 +450,400 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
     return playerMemoryEntries;
   }
 
+  // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
+  /**
+   * @returns {Number[]} returns an array of numbers and writes a file with _CNV appended to its name
+   * @description Writes and converts the point character's values for Knockdown State, Is_Prox_Block, ID_2 and _PortraitsToTime
+  */
+  function writeStaticDataCNV()
+  {
+    const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
+    const STATIC_DATA_ADRS = ["Knockdown_State", "Is_Prox_Block", "ID_2", "ID_2"]
+    let staticLookupResultsArray = [[], [], []];
+
+    for (let playersLen = 1; playersLen < 3; playersLen++)
+    {
+      for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
+      {
+        // Make directories if they don't exist
+        if (!fs.existsSync(DIR_OUTPATH))
+          fs.mkdirSync(DIR_OUTPATH);
+        // Write base file
+        if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+        {
+          fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`,
+            `var result = [];` + "\n",
+            {encoding: 'utf8'});
+        }
+        else
+        {
+          fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`,
+            `var result = [];` + "\n",
+            {encoding: 'utf8'});
+        }
+      }
+      for (let staticDataEntry = 0; staticDataEntry < STATIC_DATA_ADRS.length; staticDataEntry++)
+      {
+        const callPlayerMemoryFN = writePlayerMemory(`${ playersLen }`, STATIC_DATA_ADRS[staticDataEntry], 0);
+        for (let characterSlotI = 0; characterSlotI < callPlayerMemoryFN.length; characterSlotI++) // [0][1][2]
+        {
+          // Push and convert all three arrays' values
+          for (let clipLen = 0; clipLen < callPlayerMemoryFN[characterSlotI].length; clipLen++) // CLIPLENGTH
+          {
+            staticLookupResultsArray[characterSlotI].push(`"${ Object.values(STATIC_DATA_OBJS[staticDataEntry])[callPlayerMemoryFN[characterSlotI][clipLen]] }"`);
+          }
+
+          if (STATIC_DATA_OBJS[staticDataEntry] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+          {
+            fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ characterSlotI }] = [${ staticLookupResultsArray[characterSlotI] }];\n`,
+              {encoding: 'utf8'});
+            staticLookupResultsArray = [[], [], []];
+          }
+          else
+          {
+            fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataEntry] }_CNV.js`, `result[${ characterSlotI }] = [${ staticLookupResultsArray[characterSlotI] }];\n`,
+              {encoding: 'utf8'});
+            staticLookupResultsArray = [[], [], []];
+          }
+        }
+      }
+    }
+  };
+  /**
+ * @description outputs 3 arrays containing Total_Frames in ascending and then descending order, and Max number in clip.
+ */
+  function writeTotalFramesCNV()
+  {
+    let totalFrameArrT1 = [];
+    let totalFrameArrT2 = [];
+
+    Object.values(dataObject['Total_Frames']).forEach((frame, indexT1) =>
+    {
+      totalFrameArrT1.push(indexT1);
+    });
+    // Padded Zeroes for program pad comp
+    Object.values(dataObject['Total_Frames']).forEach((frame, indexT2) =>
+    {
+      if (indexT2 == 0)
+      {
+        indexT2++
+      }
+      else if (indexT2 < 10)
+      {
+        indexT2.toString()
+        indexT2 = '000' + indexT2
+      }
+      else if (indexT2 < 100)
+      {
+        indexT2.toString()
+        indexT2 = '00' + indexT2
+      }
+      else if (indexT2 < 1000)
+      {
+        indexT2.toString()
+        indexT2 = '0' + indexT2
+      }
+      else
+      {
+        indexT2
+      }
+      totalFrameArrT2.push(indexT2);
+    });
+
+    // T1 for Normal Compositions
+    fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+      `var result = [];\nresult[0] = [${ totalFrameArrT1 }];\n`,
+      {encoding: 'utf8'});
+    totalFrameArrT1.reverse()
+    fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+      `result[1] = [${ totalFrameArrT1 }];\n`,
+      {encoding: 'utf8'});
+    for (let idx in totalFrameArrT1)
+    {
+      totalFrameArrT1[idx] = totalFrameArrT1[0]
+    }
+    fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+      `result[2] = [${ totalFrameArrT1 }];\n`,
+      {encoding: 'utf8'});
+
+    // T2 for ASCII Pad Composition
+    totalFrameArrT2.splice(0, 1)
+    fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+      `result[3] = ['${ totalFrameArrT2 }'];\n`,
+      {encoding: 'utf8'});
+    totalFrameArrT2.reverse()
+    fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+      `result[4] = ['${ totalFrameArrT2 }'];\n`,
+      {encoding: 'utf8'});
+    for (let idx in totalFrameArrT2)
+    {
+      totalFrameArrT2[idx] = totalFrameArrT2[0]
+    }
+    fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
+      `result[5] = ['${ totalFrameArrT2 }'];\n`,
+      {encoding: 'utf8'});
+    // }
+  };
+
+  function writeStageDataCNV() // Fills out color data for stages in Hex in result[1]
+  {
+    let stageData = [];
+    let stageDataCNV = [];
+    // Numbers
+    dataObject['Stage_Selector'].split(',').forEach((frame) =>
+    {
+      stageData.push(frame)
+    });
+    // console.log(stageData);
+    // Hex
+    dataObject['Stage_Selector'].split(',').forEach((frame) =>
+    {
+      stageDataCNV.push(`"${ Object.values(STAGES_OBJ)[frame] }"`)
+    });
+    fs.writeFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
+      `var result = [];\nresult[0] = [${ stageData }];\n`,
+      {encoding: 'utf8'});
+    fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
+      `result[1] = [${ stageDataCNV }];\n`,
+      {encoding: 'utf8'});
+    // console.log(stageDataCNV);
+    stageData = [];
+    stageDataCNV = [];
+    // }
+  };
+  /**
+  * @description Converts and writes inputs to one file that contains formatting for a custom-font and US FGC notation
+  **/
+  function writeInputCNV()
+  {
+    const P1_InputsDECSplit = dataObject['P1_Input_DEC'].split(',')
+    const P2_InputsDECSplit = dataObject['P2_Input_DEC'].split(',')
+    let playerInputResults = ""; // holds each result for P1 and P2
+    let playerInputsCNVArray = []; // contains transformed results for P1 and P2
+    let tempP1OrP2 = ""; // Changes to "P1" or "P2"
+
+    /**
+    * @description Uses custom font in After Effects to display the inputs.
+    **/
+    const buttonConversionVersion1 =
+    {
+      "6": 1024,  // 6 = right
+      "4": 2048,  // 4 = left
+      "2": 4096,  // 2 = down
+      "8": 8192,  // 8 = up
+      "u": 512,   // LP = u
+      "j": 64,    // LK = j
+      "i": 256,   // HP = i
+      "k": 32,    // HK = k
+      "o": 128,   // A1 = o
+      "l": 16,    // A2 = l
+      "(": 32768, // START = (
+      ")": 2,     // SELECT = )
+    };
+    /**
+    * @description Readable FGC Notation.
+    **/
+    const buttonConversionVersion2 =
+    {
+      "6": 1024,
+      "4": 2048,
+      "2": 4096,
+      "8": 8192,
+      "LP": 512,
+      "LK": 64,
+      "HP": 256,
+      "HK": 32,
+      "AA": 128,
+      "AB": 16,
+      "START": 32768,
+      "SELECT": 2,
+    };
+
+    for (let playersLen = 1; playersLen < 3; playersLen++)
+    {
+      playersLen == 1 ? tempP1OrP2 = P1_InputsDECSplit : tempP1OrP2 = P2_InputsDECSplit;
+      // Input Conversion Type 1
+      for (const input in tempP1OrP2)
+      {
+        for (const button in Object.entries(buttonConversionVersion1))
+        {
+          if ((tempP1OrP2[input] & Object.values(buttonConversionVersion1)[button]) != 0)
+          {
+            playerInputResults += `${ Object.keys(buttonConversionVersion1)[button] }`;
+          }
+        }
+        playerInputsCNVArray.push(playerInputResults);
+        playerInputResults = "";
+      }
+      fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
+        `var result = [];\nresult[0] = ["` +
+        `${ playerInputsCNVArray.toString()
+          .replace(/24/gi, "1")
+          .replace(/42/gi, "1")
+          .replace(/26/gi, "3")
+          .replace(/62/gi, "3")
+          .replace(/48/gi, "7")
+          .replace(/84/gi, "7")
+          .replace(/86/gi, "9")
+          .replace(/68/gi, "9")
+        }"];\n`,
+        {encoding: 'utf8'});
+      playerInputsCNVArray = [];
+
+      // Input Conversion Type 2
+      for (const input in tempP1OrP2)
+      {
+        for (const button in Object.entries(buttonConversionVersion2))
+        {
+          if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, the value is converted
+          {
+            playerInputResults += Object.keys(buttonConversionVersion2)[button];
+          }
+        }
+        playerInputsCNVArray.push(playerInputResults);
+        playerInputResults = "";
+      }
+      fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
+        `result[1] = ["${ playerInputsCNVArray.toString()
+          // Fix diagonals
+          .replace(/24/gi, "1")
+          .replace(/42/gi, "1")
+          .replace(/26/gi, "3")
+          .replace(/62/gi, "3")
+          .replace(/48/gi, "7")
+          .replace(/84/gi, "7")
+          .replace(/86/gi, "9")
+          .replace(/68/gi, "9")
+          // Add "+" to each button
+          .replace(/LP/gi, "LP+")
+          .replace(/LK/gi, "LK+")
+          .replace(/HP/gi, "HP+")
+          .replace(/HK/gi, "HK+")
+          .replace(/AA/gi, "AA+")
+          .replace(/AB/gi, "AB+")
+          .replace(/START/gi, "START+")
+          .replace(/SELECT/gi, "SELECT+")
+          // Add "+" to multiple button inputs
+          .replace(/([1-9](?=\w+))/gm, "$1+") // Looking ahead for a button+ input
+          // Replace numbers with Letter-notation
+          .replace(/2|2\+/gm, "D+")
+          .replace(/6|6\+/gm, "R+")
+          .replace(/8|8\+/gm, "U+")
+          .replace(/4|4\+/gm, "L+")
+          .replace(/1|1\+/gm, "DL+")
+          .replace(/3|3\+/gm, "DR+")
+          .replace(/9|9\+/gm, "UR+")
+          .replace(/7|7\+/gm, "UL+")
+          // Re-write assists" notation
+          .replace(/AA/gi, "A1")
+          .replace(/AB/gi, "A2")
+          // Remove trailing "+" if a comma follows
+          .replace(/\+(?=,)/gm, "")
+          // Replace "++" with "+"
+          .replace(/\+\+/gm, "+")
+        }"];`,
+        {encoding: 'utf8'}
+      );
+      playerInputsCNVArray = [];
+
+      // Input Conversion Type 3
+      for (const input in tempP1OrP2)
+      {
+        for (const button in Object.entries(buttonConversionVersion2))
+        {
+          if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, the value is converted
+          {
+            playerInputResults += Object.keys(buttonConversionVersion2)[button];
+          }
+        }
+        playerInputsCNVArray.push(playerInputResults);
+        playerInputResults = "";
+      }
+      fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_Inputs_CNV.js`,
+        `\nresult[2] = ["${ playerInputsCNVArray.toString()
+          // Fix diagonals
+          .replace(/24/gi, "1")
+          .replace(/42/gi, "1")
+          .replace(/26/gi, "3")
+          .replace(/62/gi, "3")
+          .replace(/48/gi, "7")
+          .replace(/84/gi, "7")
+          .replace(/86/gi, "9")
+          .replace(/68/gi, "9")
+          // Add "+" to each button
+          .replace(/LP/gi, "LP+")
+          .replace(/LK/gi, "LK+")
+          .replace(/HP/gi, "HP+")
+          .replace(/HK/gi, "HK+")
+          .replace(/AA/gi, "AA+")
+          .replace(/AB/gi, "AB+")
+          .replace(/START/gi, "START+")
+          .replace(/SELECT/gi, "SELECT+")
+          // Add "+" to multiple button inputs
+          .replace(/([1-9](?=\w+))/gm, "$1+") // Looking ahead for a button+ input
+          // Replace numbers with Letter-notation
+          .replace(/2|2\+/gm, "Down+")
+          .replace(/6|6\+/gm, "Right+")
+          .replace(/8|8\+/gm, "Up+")
+          .replace(/4|4\+/gm, "Left+")
+          .replace(/1|1\+/gm, "Downleft+")
+          .replace(/3|3\+/gm, "Downright+")
+          .replace(/9|9\+/gm, "Upright+")
+          .replace(/7|7\+/gm, "Upleft+")
+          // Re-write assists" notation
+          .replace(/AA/gi, "A1")
+          .replace(/AB/gi, "A2")
+          // Remove trailing "+" if a comma follows
+          .replace(/\+(?=,)/gm, "")
+          // Replace "++" with "+"
+          .replace(/\+\+/gm, "+")
+        }"];`,
+        {encoding: 'utf8'}
+      );
+      playerInputsCNVArray = [];
+    }
+  } // end of InputCNV
+
+  /*
+  --------------------------------------------------
+  Step 4: Call Functions that Write Data to Files
+  --------------------------------------------------
+  */
+  // 📞 Functions
+  // writeInputCNV() //TODO push this data into the main dataObject
+  // writeStageDataCNV() //TODO push this data into the main dataObject
+  // writeStaticDataCNV() //TODO push this data into the main dataObject
+  // writeTotalFramesCNV();//TODO push this data into the main dataObject
+  // // Parse csv for player-memory entries
   // getPlayerMemoryEntries().forEach((label, index) =>
   // {
   //   // console.log(`${ index }: ${ label }`);
   //   writePlayerMemory(1, label.toString(), 1);
   //   writePlayerMemory(2, label.toString(), 1);
   // });
-
-  // // break apart the dataObject and write eaach value into its own file using the key of the object as the filename
+  // dataObject to JS files
   // for (let key in dataObject)
   // {
   //   fs.writeFileSync(`${ DIR_OUTPATH }/${ key }.js`, `var result = [${ dataObject[key] }];`, {encoding: 'utf8'});
+  //   if (key == undefined) {continue;}
   // }
-}
+  // Write the dataObject into a file
+  // let dataObjectString = `var ${ csvSoloName[csv_list_idx] }_Object = \n` + JSON.stringify(dataObject);
+  // dataObjectString = dataObjectString.replace(/{"/g, '{\n\t"');
+  // dataObjectString = dataObjectString.replace(/"}/g, '"\n}');
+  // dataObjectString = dataObjectString.replace(/","/g, '",\n\t"');
+  // dataObjectString = dataObjectString.replace(/"/g, `'`);
+  // dataObjectString = dataObjectString.replace(/'(\w*)'/g, `$1`);
+
+  // fs.writeFileSync(`${ DIR_SORTED_JS }${ csvSoloName[csv_list_idx] }Object.js`, dataObjectString);
+  // console.log(missingEntries);
+} // End of main forloop
+
+/*
+General goals:
+- [x] Parse CSV
+- [x] Track missing entries and write them into _SortedJS.js
+- [x] Write CSV data to JS files
+- [ ] module-export the functions
+- [ ] make unit tests for each function (?)
+*/
