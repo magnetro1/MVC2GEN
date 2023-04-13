@@ -6,34 +6,29 @@ Step 0: Import the necessary modules
 
 import * as fs from 'fs';
 // import clipboard from "clipboardy";
+
+// Import the static data
 import
 {
   FLOATING_POINT_ADDRESSES,
   KNOCKDOWN_STATE_OBJ,
   MIN_MAX_ADDRESSES,
-  MISC_ADDRESSES,
+  P1P2_ADDRESSES,
   NAME_TABLE_OBJ,
   PORTRAITS_TO_TIME_OBJ,
   PROX_BLOCK_OBJ,
   STAGES_OBJ
 } from './JS_UTIL_staticData.js';
 
+// Import directories; Order matters!
 import
 {
+  TAIL_TEXT,
   DIR_SORTED_JS,
   DIR_EXPORT_TO_AE,
-  TAIL_TEXT,
   DIR_CSVS
 } from './JS_UTIL_paths.js';
 
-const SLEEP_AMOUNT = 700;
-function sleep(ms)
-{
-  return new Promise(function (resolve)
-  {
-    return setTimeout(resolve, ms);
-  });
-}
 
 /*
 --------------------------------------------------
@@ -41,37 +36,42 @@ Step 1: Get the CSV file names from a directory
 --------------------------------------------------
 */
 
-var csvFilesArrayList = [];
+let csvFilesArr = [];
+let csvSoloNameArr = [];
+
 fs.readdirSync(DIR_CSVS).forEach(function (file)
 {
   if (file.endsWith('.csv') || file.endsWith('.CSV'))
   {
-    csvFilesArrayList.push(file);
+    csvFilesArr.push(file);
   }
 });
 // truncate the .csv from the file names
-var csvSoloNameArr = [];
-csvFilesArrayList.forEach((name) =>
+csvFilesArr.forEach((name) =>
 {
   let temp = '';
-  temp = name.toString().replace('.csv', '')
+  temp = name.toString().replace('.csv', '') || name.toString().replace('.CSV', '')
   csvSoloNameArr.push(temp);
 });
 
 /*
 --------------------------------------------------
-Step 2: Process the array of CSVs
+Step 2: Process CSV
 --------------------------------------------------
 */
 
 // Main loop starts here
-for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx++)
+for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++)
 {
-  var FILENAME_NO_EXT = DIR_CSVS + csvFilesArrayList[csv_list_idx];
-  var headersArray = [];
-  var allDataArray = [];
-
-  fs.readFileSync(FILENAME_NO_EXT, 'utf8').split('\r\n').map((line, index) =>
+  let headersArray = [];
+  let allDataArray = [];
+  const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ csvSoloNameArr[csvFilesIDX] }/`;
+  // Make Output folder for AE files
+  if (!fs.existsSync(`${ DIR_OUTPATH }`))
+  {
+    fs.mkdirSync(`${ DIR_OUTPATH }`);
+  }
+  fs.readFileSync(DIR_CSVS + csvFilesArr[csvFilesIDX], 'utf8').split('\r\n').map((line, index) =>
   {
     if (index === 0)
     {
@@ -140,7 +140,7 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
   }
   // ! Find true data
   // TODO Update the logic for this function
-  var tempDataArr = [];
+  let tempDataArr = [];
   for (let totalLines = 1; totalLines < allDataArray.length - 1; totalLines++)
   {
     if (allDataArray[totalLines][0] == allDataArray[totalLines + 1][0]) // we are in a duplicate line entry based on total_frames
@@ -220,101 +220,80 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
 
   /*
   --------------------------------------------------
-  Step 3: Make dataObject & Start Functions
+  Step 3: Make dataObject & Start Core Functions
   --------------------------------------------------
   */
-  // Make entire file buffer v1
+
   let dataObject = {};
   // make the values of each key into a string
   for (let i = 0; i < headersArray.length; i++)
   {
     dataObject[headersArray[i]] = allArrayStructure[i].join(','); // the key is the header name[i], the value are the numbers joined by a comma
   }
-  // Make Total_Frames info. Write into the beginning of the file
-  let missingEntries = [];
-  for (let i = 0; i < allArrayStructure[0].length - 1; i++) // total frames
-  {
-    if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1)
-    {
-      missingEntries.push(`Missing data entry after Total_Frame Number: ${ allArrayStructure[0][i] }\n`);
-    }
-  }
-  let fileNameNoExt = csvSoloNameArr[csv_list_idx];
-  const DIR_OUTPATH = `${ DIR_EXPORT_TO_AE }${ fileNameNoExt }/`;
-  // Make Output folder for AE files
-  if (!fs.existsSync(`${ DIR_OUTPATH }`))
-  {
-    fs.mkdirSync(`${ DIR_OUTPATH }`);
-  }
+  const CLIP_LENGTH = dataObject['A_2D_Game_Timer'].split(',').length;
+
 
   //Append MIN&MAX value to buffer
-  let tempMinMaxBuffer = '\n';
-  let CLIP_LENGTH = dataObject['A_2D_Game_Timer'].split(',').length;
-
-  for (let adr in MIN_MAX_ADDRESSES)
+  function appendMinMaxRound()
   {
-    const KEY = MIN_MAX_ADDRESSES[adr];
+    let tempMinMaxBuffer = '\n';
 
-    const VALUE = dataObject[MIN_MAX_ADDRESSES[adr]].split(','); // Fetch the value by finding the key using its string name
-    const MIN = Math.min(...VALUE);
-    const MAX = Math.max(...VALUE);
-    let tempMin = [];
-    let tempMax = [];
-    for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
+    for (let adr in MIN_MAX_ADDRESSES)
     {
-      tempMax[clipLen] = MAX;
-      tempMin[clipLen] = MIN;
-    }
-    tempMinMaxBuffer += `${ KEY }_Max=${ tempMax }\n`;
-    tempMinMaxBuffer += `${ KEY }_Min=${ tempMin }\n`;
-  }
+      const KEY = MIN_MAX_ADDRESSES[adr];
 
-  // Merge tempMinMaxBuffer into the dataObject
-  var tempMinMaxBufferSplit = tempMinMaxBuffer.split('\n');
-  for (let line in tempMinMaxBufferSplit)
-  {
-    var lineSplit = tempMinMaxBufferSplit[line].split('=');
-    dataObject[lineSplit[0]] = lineSplit[1]; // [0] is the key, [1] is the value
-  }
-
-  // Round off floating point addresses using FLOATING_POINT_ADDRESSES
-  var prefixes = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_']
-  var toFixedDigits = [0, 2, 4]; // 7 is the default
-  for (let playerPrefix in prefixes)
-  {
-    for (let floatAdr in FLOATING_POINT_ADDRESSES)
-    {
-      // check if the floatAdr exist in this player prefix
-      if (dataObject[prefixes[playerPrefix] + FLOATING_POINT_ADDRESSES[floatAdr]] !== undefined)
+      const VALUE = dataObject[MIN_MAX_ADDRESSES[adr]].split(','); // Fetch the value by finding the key using its string name
+      const MIN = Math.min(...VALUE);
+      const MAX = Math.max(...VALUE);
+      let tempMin = [];
+      let tempMax = [];
+      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
       {
-        // console.log(`Rounding off ${ prefixes[playerPrefix] + FLOATING_POINT_ADDRESSES[floatAdr] }`);
-        // round off each address by each number inside of toFixedDigits
-        for (let digit in toFixedDigits)
+        tempMax[clipLen] = MAX;
+        tempMin[clipLen] = MIN;
+      }
+      tempMinMaxBuffer += `${ KEY }_Max=${ tempMax }\n`;
+      tempMinMaxBuffer += `${ KEY }_Min=${ tempMin }\n`;
+    }
+
+    // Push tempMinMaxBuffer into the dataObject
+    var tempMinMaxBufferSplit = tempMinMaxBuffer.split('\n');
+    for (let line in tempMinMaxBufferSplit)
+    {
+      var lineSplit = tempMinMaxBufferSplit[line].split('=');
+      dataObject[lineSplit[0]] = lineSplit[1]; // [0] is the key, [1] is the value
+    }
+
+    // Round off floating point addresses using FLOATING_POINT_ADDRESSES
+    var preFixes = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_']
+    var postFixes = ['', '_Min', '_Max']
+    var toFixedDigits = [0, 2]; // 7 is the default
+    for (let playerPrefix in preFixes)
+    {
+      for (let floatAdr in FLOATING_POINT_ADDRESSES)
+      {
+        for (let postFix in postFixes)
         {
-          let tempArray = dataObject[prefixes[playerPrefix] + FLOATING_POINT_ADDRESSES[floatAdr]].split(',');
-          for (let i = 0; i < tempArray.length; i++)
+          let stringAddress = FLOATING_POINT_ADDRESSES[floatAdr] + postFixes[postFix];
+
+          // round off each address by each number inside of toFixedDigits
+          for (let digit in toFixedDigits)
           {
-            tempArray[i] = parseFloat(tempArray[i]).toFixed(toFixedDigits[digit]);
+            let tempArray = dataObject[preFixes[playerPrefix] + stringAddress].split(',');
+
+            for (let i = 0; i < tempArray.length; i++)
+            {
+              tempArray[i] = parseFloat(tempArray[i]).toFixed(toFixedDigits[digit]);
+            }
+            // Merge tempArray into the dataObject so that it is written later. Includes combo_meter min and maxes
+            dataObject[preFixes[playerPrefix] + stringAddress + '_' + toFixedDigits[digit]] = tempArray.join(',');
           }
-          //Merge tempArray into the dataObject
-          dataObject[prefixes[playerPrefix] + FLOATING_POINT_ADDRESSES[floatAdr] + '_' + toFixedDigits[digit]] = tempArray.join(',');
         }
       }
     }
   }
 
-  let POINT_OBJ_P1 =
-  {
-    P1_A_: dataObject['P1_A_Is_Point'].split(','),
-    P1_B_: dataObject['P1_B_Is_Point'].split(','),
-    P1_C_: dataObject['P1_C_Is_Point'].split(',')
-  };
-  let POINT_OBJ_P2 =
-  {
-    P2_A_: dataObject['P2_A_Is_Point'].split(','),
-    P2_B_: dataObject['P2_B_Is_Point'].split(','),
-    P2_C_: dataObject['P2_C_Is_Point'].split(',')
-  };
+
   // Main function to write data to files OR return finalValues array
   /**
    * @param {number|string} PlayerOneOrPlayerTwo number or string, ex: 1 or "P1"
@@ -325,9 +304,27 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
    */
   function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) 
   {
+    let POINT_OBJ_P1 =
+    {
+      P1_A_: dataObject['P1_A_Is_Point'].split(','),
+      P1_B_: dataObject['P1_B_Is_Point'].split(','),
+      P1_C_: dataObject['P1_C_Is_Point'].split(',')
+    };
+    let POINT_OBJ_P2 =
+    {
+      P2_A_: dataObject['P2_A_Is_Point'].split(','),
+      P2_B_: dataObject['P2_B_Is_Point'].split(','),
+      P2_C_: dataObject['P2_C_Is_Point'].split(',')
+    };
+
     let finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
+    /**@description Switches between the Player1 and Player2 objects,
+     * ex: POINT_OBJ_P1 or POINT_OBJ_P2 which contain key value pairs of
+     * P1_A... and P2_A... to `dataObject['P1_A_Is_Point'].split(',')`... etc
+     */
     let playerObjectSwitcher;// Switches between the Player1 and Player2 objects
-    /**@description P1 | P2 */
+
+    /**@description "P1" | "P2" */
     let playerSwitcher; // Switches between "P1" and "P2"
 
     if ((PlayerOneOrPlayerTwo == 1) || (PlayerOneOrPlayerTwo == "P1"))
@@ -340,7 +337,8 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
       playerObjectSwitcher = POINT_OBJ_P2;
       playerSwitcher = "P2";
     }
-    // Push all player memory addresses to finalValuesArray depending on the if-statement-logic
+
+    // Pushes the POINT_OBJ values (P1_A[n]) into the finalValuesArray
     for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) // length of clip
     {
       // 3-Character Bug Logic
@@ -409,24 +407,35 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
     }
     else if ((write == 1) || (write == true))
     {
-      (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`))
-      {
-        fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`,
-          `var result = [];` + "\n",
-          {flag: "a+", encoding: 'utf8'});
+      // (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`))
+      // {
+      fs.writeFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`,
+        `var result = [];` + "\n",
+        {flag: "a+", encoding: 'utf8'});
 
-        // Append main data
-        for (let dataArrayPerCharacter in finalValuesArray)
-        {
-          fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`,
-            `result[${ dataArrayPerCharacter }] = [${ finalValuesArray[dataArrayPerCharacter] }];\n`,
-            {encoding: 'utf8'});
-        }
+      // Append main data
+      for (let dataArrayPerCharacter in finalValuesArray)
+      {
+        fs.appendFileSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`,
+          `result[${ dataArrayPerCharacter }] = [${ finalValuesArray[dataArrayPerCharacter] }];\n`,
+          'utf8'
+        );
       }
+      // Merge the finalValuesArray into the dataObject
+      // dataObject[`${ playerSwitcher }_${ playerMemoryAddress.split(',') }`] = finalValuesArray;
+      // }
     }
   }// end of find-point-player-memory-function
 
-  // Function to getPlayerMemoryEntries from the dataObject
+  /**
+   * @description Finds the player memory addresses inside of the dataObject
+   * and returns an array of the unique items. The other core functions will
+   * push more entries into the dataObject before it gets processed by this
+   * function.
+   * 
+   * @returns {String[]} returns an array of strings to be processed by the
+   * main player-memory-function.
+  */
   function getPlayerMemoryEntries()
   {
     let playerMemoryEntries = [];
@@ -444,7 +453,7 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
       return label.replace(playerMemoryRegex, '');
     });
 
-    // // Remove duplicates
+    // Remove duplicates
     playerMemoryEntries = [...new Set(playerMemoryEntries)];
     // console.log(...playerMemoryEntries);
     return playerMemoryEntries;
@@ -454,6 +463,7 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
   /**
    * @returns {Number[]} returns an array of numbers and writes a file with _CNV appended to its name
    * @description Writes and converts the point character's values for Knockdown State, Is_Prox_Block, ID_2 and _PortraitsToTime
+   * Files are written and then appended as the function loops over each player-memory-address & player.
   */
   function writeStaticDataCNV()
   {
@@ -473,13 +483,15 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
         {
           fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`,
             `var result = [];` + "\n",
-            {encoding: 'utf8'});
+            'utf8'
+          );
         }
         else
         {
           fs.writeFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataLen] }_CNV.js`,
             `var result = [];` + "\n",
-            {encoding: 'utf8'});
+            'utf8'
+          );
         }
       }
       for (let staticDataEntry = 0; staticDataEntry < STATIC_DATA_ADRS.length; staticDataEntry++)
@@ -495,14 +507,18 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
 
           if (STATIC_DATA_OBJS[staticDataEntry] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
           {
-            fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`, `result[${ characterSlotI }] = [${ staticLookupResultsArray[characterSlotI] }];\n`,
-              {encoding: 'utf8'});
+            fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_PortraitsToTime.js`,
+              `result[${ characterSlotI }] = [${ staticLookupResultsArray[characterSlotI] }];\n`,
+              'utf8'
+            );
             staticLookupResultsArray = [[], [], []];
           }
           else
           {
-            fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataEntry] }_CNV.js`, `result[${ characterSlotI }] = [${ staticLookupResultsArray[characterSlotI] }];\n`,
-              {encoding: 'utf8'});
+            fs.appendFileSync(`${ DIR_OUTPATH }P${ playersLen }_${ STATIC_DATA_ADRS[staticDataEntry] }_CNV.js`,
+              `result[${ characterSlotI }] = [${ staticLookupResultsArray[characterSlotI] }];\n`,
+              'utf8'
+            );
             staticLookupResultsArray = [[], [], []];
           }
         }
@@ -510,7 +526,9 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
     }
   };
   /**
- * @description outputs 3 arrays containing Total_Frames in ascending and then descending order, and Max number in clip.
+ * @description outputs arrays containing Total_Frames in ascending and 
+ * descending order, and Max number in clip. The first three arrays are
+ * arrays of numbers, the remaining are arrays of strings
  */
   function writeTotalFramesCNV()
   {
@@ -547,44 +565,52 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
       {
         indexT2
       }
-      totalFrameArrT2.push(indexT2);
+      totalFrameArrT2.push(`'${ indexT2 }'`);
     });
 
     // T1 for Normal Compositions
     fs.writeFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
       `var result = [];\nresult[0] = [${ totalFrameArrT1 }];\n`,
-      {encoding: 'utf8'});
+      'utf8'
+    );
     totalFrameArrT1.reverse()
     fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
       `result[1] = [${ totalFrameArrT1 }];\n`,
-      {encoding: 'utf8'});
+      'utf8'
+    );
     for (let idx in totalFrameArrT1)
     {
       totalFrameArrT1[idx] = totalFrameArrT1[0]
     }
     fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
       `result[2] = [${ totalFrameArrT1 }];\n`,
-      {encoding: 'utf8'});
+      'utf8'
+    );
 
-    // T2 for ASCII Pad Composition
+    // T2 for ASCII Pad Composition. 
+    //Uses an array of Strings since the numbers are padded with zeroes
     totalFrameArrT2.splice(0, 1)
     fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-      `result[3] = ['${ totalFrameArrT2 }'];\n`,
-      {encoding: 'utf8'});
+      // replace two '' with one '
+      `result[3] = [${ totalFrameArrT2.toString() }];\n`,
+      'utf8'
+    )
+      ;
     totalFrameArrT2.reverse()
     fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-      `result[4] = ['${ totalFrameArrT2 }'];\n`,
-      {encoding: 'utf8'});
+      `result[4] = [${ totalFrameArrT2 }];\n`,
+      'utf8'
+    );
     for (let idx in totalFrameArrT2)
     {
       totalFrameArrT2[idx] = totalFrameArrT2[0]
     }
     fs.appendFileSync(`${ DIR_OUTPATH }Total_Frames_CNV.js`,
-      `result[5] = ['${ totalFrameArrT2 }'];\n`,
-      {encoding: 'utf8'});
+      `result[5] = [${ totalFrameArrT2 }];\n`,
+      'utf8'
+    );
     // }
   };
-
   function writeStageDataCNV() // Fills out color data for stages in Hex in result[1]
   {
     let stageData = [];
@@ -594,22 +620,19 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
     {
       stageData.push(frame)
     });
-    // console.log(stageData);
     // Hex
     dataObject['Stage_Selector'].split(',').forEach((frame) =>
     {
-      stageDataCNV.push(`"${ Object.values(STAGES_OBJ)[frame] }"`)
+      stageDataCNV.push(`'${ Object.values(STAGES_OBJ)[frame] }'`)
     });
+    // Merge the stageDataCNV into the dataObject
+    // dataObject['Stage_Selector_CNV'] = stageDataCNV;
     fs.writeFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
-      `var result = [];\nresult[0] = [${ stageData }];\n`,
-      {encoding: 'utf8'});
-    fs.appendFileSync(`${ DIR_OUTPATH }Stage_Selector_CNV.js`,
-      `result[1] = [${ stageDataCNV }];\n`,
-      {encoding: 'utf8'});
-    // console.log(stageDataCNV);
+      `var result = [];\nresult[0] = [${ stageData }];\nresult[1] = [${ stageDataCNV }];\n`,
+      'utf8'
+    );
     stageData = [];
     stageDataCNV = [];
-    // }
   };
   /**
   * @description Converts and writes inputs to one file that contains formatting for a custom-font and US FGC notation
@@ -687,7 +710,8 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
           .replace(/86/gi, "9")
           .replace(/68/gi, "9")
         }"];\n`,
-        {encoding: 'utf8'});
+        'utf8'
+      );
       playerInputsCNVArray = [];
 
       // Input Conversion Type 2
@@ -742,7 +766,7 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
           // Replace "++" with "+"
           .replace(/\+\+/gm, "+")
         }"];`,
-        {encoding: 'utf8'}
+        'utf8'
       );
       playerInputsCNVArray = [];
 
@@ -798,52 +822,137 @@ for (let csv_list_idx = 0; csv_list_idx < csvFilesArrayList.length; csv_list_idx
           // Replace "++" with "+"
           .replace(/\+\+/gm, "+")
         }"];`,
-        {encoding: 'utf8'}
+        'utf8'
       );
       playerInputsCNVArray = [];
     }
   } // end of InputCNV
+  /**
+   * @description Writes individual JS files for each address in MISC_ADDRESSES.
+   * 
+   */
+  function writeP1P2Addresses() 
+  {
+    const p1p2AddressesArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View"
+    for (const p1p2AdrIDX in P1P2_ADDRESSES)
+    {
+      dataObject[P1P2_ADDRESSES[p1p2AdrIDX]].split(',').forEach((address) =>
+      {
+        p1p2AddressesArray[0].push(address);
+      });
+
+      if (!fs.existsSync(`${ DIR_OUTPATH }${ P1P2_ADDRESSES[p1p2AdrIDX] }.js`))
+      {
+        fs.writeFileSync(`${ DIR_OUTPATH }${ P1P2_ADDRESSES[p1p2AdrIDX] }.js`,
+          `var result = [];\nresult[0] = [${ p1p2AddressesArray }];`,
+          'utf8'
+        );
+        p1p2AddressesArray[0] = []; // clear the array for the next player iteration.
+      }
+    }
+  };
+
+  function countIsPausedCNV()
+  {
+    let State_Is_Paused = [];
+    let counter = 0;
+    dataObject.Is_Paused.split(',').forEach((element, index) =>
+    {
+      if (element == 0)
+      {
+        counter = 0
+        State_Is_Paused[index] = 0
+      }
+      else
+      {
+        State_Is_Paused[index] = (counter + 1)
+        counter++
+      }
+    });
+    // merge State_Is_Paused into dataObject
+    // dataObject['State_Is_Paused'] = State_Is_Paused;
+    fs.writeFileSync(`${ DIR_OUTPATH }Is_Paused_CNV.js`,
+      `var result = [];\nresult[0] = [${ dataObject['Is_Paused'] }];\nresult[1] = ["${ State_Is_Paused.toString() }];`,
+      'utf8'
+    );
+  }
 
   /*
   --------------------------------------------------
-  Step 4: Call Functions that Write Data to Files
+  End of Core Functions
+  --------------------------------------------------
+  
+  --------------------------------------------------
+  Step 4: Begin Write-State Functions
   --------------------------------------------------
   */
-  // 📞 Functions
-  // writeInputCNV() //TODO push this data into the main dataObject
-  // writeStageDataCNV() //TODO push this data into the main dataObject
-  // writeStaticDataCNV() //TODO push this data into the main dataObject
-  // writeTotalFramesCNV();//TODO push this data into the main dataObject
-  // // Parse csv for player-memory entries
-  // getPlayerMemoryEntries().forEach((label, index) =>
-  // {
-  //   // console.log(`${ index }: ${ label }`);
-  //   writePlayerMemory(1, label.toString(), 1);
-  //   writePlayerMemory(2, label.toString(), 1);
-  // });
-  // dataObject to JS files
+
+
+
+
+
+
+
+  /*
+  --------------------------------------------------
+  Step 5: Call Functions that Write Data to Files
+  --------------------------------------------------
+  Each Core Function is called, the dataObject is
+  appended by each function, then the dataObject is
+  put through the Player-Memory function, then the
+  dataObject is written into a single JS object file,
+  along with the rest of the individual JS files.
+  --------------------------------------------------
+  */
+  // 📞 Core Functions
+
+  appendMinMaxRound();
+  writeP1P2Addresses();
+  countIsPausedCNV();
+  writeInputCNV();
+  writeStageDataCNV();
+  writeStaticDataCNV();
+  writeTotalFramesCNV();
+
+  getPlayerMemoryEntries().forEach((label, index) =>
+  {
+    writePlayerMemory(1, label.toString(), 1);
+    writePlayerMemory(2, label.toString(), 1);
+  });
+
+  // Write dataObject to JS files
   // for (let key in dataObject)
   // {
-  //   fs.writeFileSync(`${ DIR_OUTPATH }/${ key }.js`, `var result = [${ dataObject[key] }];`, {encoding: 'utf8'});
-  //   if (key == undefined) {continue;}
+  //   if ((key == undefined) || (key == null) || (key == ''))
+  //   {
+  //     continue;
+  //   }
+  //   fs.writeFileSync(`${ DIR_OUTPATH }/${ key }.js`,
+  //     `var result = [${ dataObject[key] }];`,
+  //     'utf8'
+  //   );
   // }
-  // Write the dataObject into a file
-  // let dataObjectString = `var ${ csvSoloName[csv_list_idx] }_Object = \n` + JSON.stringify(dataObject);
-  // dataObjectString = dataObjectString.replace(/{"/g, '{\n\t"');
-  // dataObjectString = dataObjectString.replace(/"}/g, '"\n}');
-  // dataObjectString = dataObjectString.replace(/","/g, '",\n\t"');
-  // dataObjectString = dataObjectString.replace(/"/g, `'`);
-  // dataObjectString = dataObjectString.replace(/'(\w*)'/g, `$1`);
 
-  // fs.writeFileSync(`${ DIR_SORTED_JS }${ csvSoloName[csv_list_idx] }Object.js`, dataObjectString);
-  // console.log(missingEntries);
+  let missingEntries = [`/*\n`];
+  for (let i = 0; i < allArrayStructure[0].length - 1; i++) // total frames
+  {
+    if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1)
+    {
+      missingEntries.push(`Missing data entry after Total_Frame Number: ${ allArrayStructure[0][i] }\n`);
+    }
+    else
+    {
+      continue
+    }
+  }
+  // If MissingEntries is empty, then there are no missing entries. Push a comment to the array.
+  if (missingEntries.length == 0)
+  {
+    missingEntries.push('/*\nNo missing entries\n');
+  }
+  missingEntries.push(`\nFirst entry in Total_Frames: ${ allArrayStructure[0][0] }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }\n*/\n`)
+
+
+  fs.writeFileSync(`${ DIR_OUTPATH }_${ csvSoloNameArr[csvFilesIDX] }.js`, missingEntries.toString().replace(/,/g, ''));
+
 } // End of main forloop
-
-/*
-General goals:
-- [x] Parse CSV
-- [x] Track missing entries and write them into _SortedJS.js
-- [x] Write CSV data to JS files
-- [ ] module-export the functions
-- [ ] make unit tests for each function (?)
-*/

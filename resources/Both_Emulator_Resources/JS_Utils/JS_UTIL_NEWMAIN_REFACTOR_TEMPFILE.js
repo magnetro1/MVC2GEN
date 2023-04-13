@@ -306,29 +306,29 @@ const DO_ROM_FILES = false; // Do or Skip ROM logic files
 // };
 // writeStaticDataCNV();
 
-/**
- * @description Writes P1 & P2 addresses to their own JS files. Ex: P1_Combo_Meter_Value.js. One array per entry.
- */
-function writeP1P2Addresses() 
-{
-  const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View", "Timer_Secondary"
-  for (const miscAdrI in MISC_ADDRESSES)
-  {
-    pMem[MISC_ADDRESSES[miscAdrI]].split(',').forEach((clipLenEntry) => // accessing pMem object key by string, splitting its content, and pushing each frame's value
-    {
-      miscAdrArray[0].push(clipLenEntry);
-    });
+// /**
+//  * @description Writes P1 & P2 addresses to their own JS files. Ex: P1_Combo_Meter_Value.js. One array per entry.
+//  */
+// function writeP1P2Addresses() 
+// {
+//   const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View", "Timer_Secondary"
+//   for (const miscAdrI in MISC_ADDRESSES)
+//   {
+//     pMem[MISC_ADDRESSES[miscAdrI]].split(',').forEach((clipLenEntry) => // accessing pMem object key by string, splitting its content, and pushing each frame's value
+//     {
+//       miscAdrArray[0].push(clipLenEntry);
+//     });
 
-    if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADDRESSES[miscAdrI] }.js`))
-    {
-      fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADDRESSES[miscAdrI] }.js`,
-        `var result = [];\nresult[0] = [${ miscAdrArray }];`,
-        {encoding: 'utf8'});
-      miscAdrArray[0] = []; // clear the array for the next player iteration.
-    }
-  }
-};
-writeP1P2Addresses();
+//     if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADDRESSES[miscAdrI] }.js`))
+//     {
+//       fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADDRESSES[miscAdrI] }.js`,
+//         `var result = [];\nresult[0] = [${ miscAdrArray }];`,
+//         {encoding: 'utf8'});
+//       miscAdrArray[0] = []; // clear the array for the next player iteration.
+//     }
+//   }
+// };
+// writeP1P2Addresses();
 
 // /**
 //  * @description outputs 3 arrays containing Total_Frames in ascending and then descending order, and Max number in clip.
@@ -623,6 +623,46 @@ writeP1P2Addresses();
 // }
 // writeInputCNV()
 
+// function writeP1P2Addresses() 
+// {
+//   const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View"
+//   for (const miscAdrIterator in MISC_ADDRESSES)
+//   {
+//     pMem[MISC_ADDRESSES[miscAdrIterator]].split(',').forEach((address) => // accessing pMem object key by string, splitting its content, and pushing each array element
+//     {
+//       miscAdrArray[0].push(address);
+//     });
+
+//     if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADDRESSES[miscAdrIterator] }.js`))
+//     {
+//       fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADDRESSES[miscAdrIterator] }.js`,
+//         `var result = [];\nresult[0] = [${ miscAdrArray }];`,
+//         {encoding: 'utf8'});
+//       miscAdrArray[0] = []; // clear the array for the next player iteration.
+//     }
+//   }
+// };
+// function countIsPaused()
+// {
+//   let State_Is_Paused = [];
+//   var counter = 0;
+//   pMem.Is_Paused.split(',').forEach((element, index) =>
+//   {
+//     if (element == 0)
+//     {
+//       counter = 0
+//       State_Is_Paused[index] = 0
+//     }
+//     else
+//     {
+//       State_Is_Paused[index] = (counter + 1)
+//       counter++
+//     }
+//   });
+//   fs.writeFileSync(`${ DIR_OUTPATH }State_Is_Paused.js`,
+//     `var result = [];\nresult[0] = [${ State_Is_Paused }];`,
+//     {encoding: 'utf8'});
+// }
 
 /**
  * @description Writes State-Files that count and increment consecutive true values. 
@@ -980,7 +1020,7 @@ function writeNewStates()
           && (getAir_Dash_Count)[playerSlotI][clipLen] == 1
           ? allNewStateObject.State_ROM_08_InputC_MK[playerSlotI].push(1)
           : allNewStateObject.State_ROM_08_InputC_MK[playerSlotI].push(0);
-        // // "ROM_09_ChoiceF" (Did Magneto wait before doing a SJ.MK after a SJ.DLK?)
+        // "ROM_09_ChoiceF" (Did Magneto wait before doing a SJ.MK after a SJ.DLK?)
         (((getNormal_Strength)[playerSlotI][clipLen] == 0) // Weak
           && ((getKnockdown_State)[playerSlotI][clipLen] == 20) // Normal Attacks
           && ((getPunchKick)[playerSlotI][clipLen] == 1))  // Medium
@@ -1812,61 +1852,6 @@ function writeNewStates()
   }
 }
 writeNewStates()
-
-function writeP1P2Addresses() 
-{
-  const miscAdrArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View"
-  for (const miscAdrIterator in MISC_ADDRESSES)
-  {
-    pMem[MISC_ADDRESSES[miscAdrIterator]].split(',').forEach((address) => // accessing pMem object key by string, splitting its content, and pushing each array element
-    {
-      miscAdrArray[0].push(address);
-    });
-
-    if (!fs.existsSync(`${ DIR_OUTPATH }${ MISC_ADDRESSES[miscAdrIterator] }.js`))
-    {
-      fs.writeFileSync(`${ DIR_OUTPATH }${ MISC_ADDRESSES[miscAdrIterator] }.js`,
-        `var result = [];\nresult[0] = [${ miscAdrArray }];`,
-        {encoding: 'utf8'});
-      miscAdrArray[0] = []; // clear the array for the next player iteration.
-    }
-  }
-};
-function countIsPaused()
-{
-  let State_Is_Paused = [];
-  var counter = 0;
-  pMem.Is_Paused.split(',').forEach((element, index) =>
-  {
-    if (element == 0)
-    {
-      counter = 0
-      State_Is_Paused[index] = 0
-    }
-    else
-    {
-      State_Is_Paused[index] = (counter + 1)
-      counter++
-    }
-  });
-  fs.writeFileSync(`${ DIR_OUTPATH }State_Is_Paused.js`,
-    `var result = [];\nresult[0] = [${ State_Is_Paused }];`,
-    {encoding: 'utf8'});
-}
-countIsPaused()
-fs.closeSync(0);
-    })
-      .then(() =>
-{
-  // fs.unlinkSync(NEW_JS_FILE); // delete the temp file
-  // Move the CSV file to the Processed_CSVs folder
-  // if (!fs.existsSync(`${ DIR_CSVS }/Processed_CSVs`))
-  // {
-  //   fs.mkdirSync(`${ DIR_CSVS }/Processed_CSVs`);
-  // }
-  // fs.renameSync(`${ DIR_CSVS }${ knownName[csvFilesIDX] }.csv`, `${ DIR_CSVS }/Processed_CSVs/${ knownName[csvFilesIDX] }.csv`);
-})
-  );
 
 clipboard.writeSync(DIR_OUTPATH);
 console.log(`Done processing ${ knownName[csvFilesIDX] } ` || ``);

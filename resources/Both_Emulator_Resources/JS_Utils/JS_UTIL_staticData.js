@@ -133,18 +133,6 @@ export const NAME_TABLE_OBJ =
   58: 'Servbot'
 };
 
-export const FLOATING_POINT_ADDRESSES =
-  [
-    'X_Gravity',
-    'X_Position_Arena',
-    'X_Position_From_Enemy',
-    'X_Position_Screen',
-    'Y_Gravity',
-    'Y_Position_Arena',
-    'Y_Position_From_Enemy',
-    'Y_Position_Screen',
-    'Y_Velocity'
-  ];
 export const MIN_MAX_ADDRESSES =
   [
     'P1_A_X_Gravity',
@@ -255,13 +243,38 @@ export const MIN_MAX_ADDRESSES =
     'P2_C_Sentinel_214kk_Timer',
     'P2_C_Storm_214kk_Timer',
     'P2_C_War_Machine_214kk_Timer',
+
     'P1_Combo_Meter_Value',
     'P2_Combo_Meter_Value',
   ];
+
+export const FLOATING_POINT_ADDRESSES =
+  [
+    'X_Gravity',
+    'X_Position_Arena',
+    'X_Position_From_Enemy',
+    'X_Position_Screen',
+    'Y_Gravity',
+    'Y_Position_Arena',
+    'Y_Position_From_Enemy',
+    'Y_Position_Screen',
+    'Y_Velocity',
+
+    // 'Bison_214kk_Timer',
+    // 'Dhalsim_214kk_Timer',
+    // 'Doom_214kk_Timer',
+    // 'Iron_Man_214kk_Timer',
+    // 'Magneto_214kk_Timer',
+    // 'Megaman_214kk_Timer',
+    // 'Sentinel_214kk_Timer',
+    // 'Storm_214kk_Timer',
+    // 'War_Machine_214kk_Timer',
+  ];
+
 /**
-* @description Miscellaneous addresses for which special calculations are not necessary. Example: P1_Combo_Meter_Value, P2_Meter_Big
+* @description Miscellaneous addresses for which special calculations are not necessary. Example: A_2D_Game_Timer
 **/
-export const MISC_ADDRESSES =
+export const P1P2_ADDRESSES =
   [
     'Total_Frames',
     'Camera_Field_of_View',
