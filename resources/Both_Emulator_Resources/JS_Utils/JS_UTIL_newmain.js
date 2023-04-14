@@ -23,8 +23,6 @@ import
 // Import directories; Order matters!
 import
 {
-  TAIL_TEXT,
-  DIR_SORTED_JS,
   DIR_EXPORT_TO_AE,
   DIR_CSVS
 } from './JS_UTIL_paths.js';
@@ -217,6 +215,28 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++)
       allArrayStructure[colIdx].push(allDataArray[rowIdx][colIdx]);
     }
   }
+  // Check for missing entries & Write to file
+  let missingEntries = [`/*\n`];
+  for (let i = 0; i < allArrayStructure[0].length - 1; i++) // total frames
+  {
+    if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1)
+    {
+      missingEntries.push(`Missing data entry after Total_Frame Number: ${ allArrayStructure[0][i] }\n`);
+    }
+    else
+    {
+      continue
+    }
+  }
+  // If MissingEntries is empty, then there are no missing entries. Push a comment to the array.
+  if (missingEntries.length == 0)
+  {
+    missingEntries.push('/*\nNo missing entries\n');
+  }
+  missingEntries.push(`\nFirst entry in Total_Frames: ${ allArrayStructure[0][0] }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }\n*/\n`)
+
+
+  fs.writeFileSync(`${ DIR_OUTPATH }_${ csvSoloNameArr[csvFilesIDX] }.js`, missingEntries.toString().replace(/,/g, ''));
 
   /*
   --------------------------------------------------
@@ -475,9 +495,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++)
     {
       for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++)
       {
-        // Make directories if they don't exist
-        if (!fs.existsSync(DIR_OUTPATH))
-          fs.mkdirSync(DIR_OUTPATH);
+
         // Write base file
         if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
         {
@@ -841,14 +859,14 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++)
         p1p2AddressesArray[0].push(address);
       });
 
-      if (!fs.existsSync(`${ DIR_OUTPATH }${ P1P2_ADDRESSES[p1p2AdrIDX] }.js`))
-      {
-        fs.writeFileSync(`${ DIR_OUTPATH }${ P1P2_ADDRESSES[p1p2AdrIDX] }.js`,
-          `var result = [];\nresult[0] = [${ p1p2AddressesArray }];`,
-          'utf8'
-        );
-        p1p2AddressesArray[0] = []; // clear the array for the next player iteration.
-      }
+      // if (!fs.existsSync(`${ DIR_OUTPATH }${ P1P2_ADDRESSES[p1p2AdrIDX] }.js`))
+      // {
+      fs.writeFileSync(`${ DIR_OUTPATH }${ P1P2_ADDRESSES[p1p2AdrIDX] }.js`,
+        `var result = [];\nresult[0] = [${ p1p2AddressesArray }];`,
+        'utf8'
+      );
+      p1p2AddressesArray[0] = []; // clear the array for the next player iteration.
+      // }
     }
   };
 
@@ -869,8 +887,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++)
         counter++
       }
     });
-    // merge State_Is_Paused into dataObject
-    // dataObject['State_Is_Paused'] = State_Is_Paused;
+
     fs.writeFileSync(`${ DIR_OUTPATH }Is_Paused_CNV.js`,
       `var result = [];\nresult[0] = [${ dataObject['Is_Paused'] }];\nresult[1] = ["${ State_Is_Paused.toString() }];`,
       'utf8'
@@ -899,9 +916,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++)
   --------------------------------------------------
   Each Core Function is called, the dataObject is
   appended by each function, then the dataObject is
-  put through the Player-Memory function, then the
-  dataObject is written into a single JS object file,
-  along with the rest of the individual JS files.
+  put through the Player-Memory function.
   --------------------------------------------------
   */
   // 📞 Core Functions
@@ -914,7 +929,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++)
   writeStaticDataCNV();
   writeTotalFramesCNV();
 
-  getPlayerMemoryEntries().forEach((label, index) =>
+  getPlayerMemoryEntries().forEach((label) =>
   {
     writePlayerMemory(1, label.toString(), 1);
     writePlayerMemory(2, label.toString(), 1);
@@ -933,26 +948,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++)
   //   );
   // }
 
-  let missingEntries = [`/*\n`];
-  for (let i = 0; i < allArrayStructure[0].length - 1; i++) // total frames
-  {
-    if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1)
-    {
-      missingEntries.push(`Missing data entry after Total_Frame Number: ${ allArrayStructure[0][i] }\n`);
-    }
-    else
-    {
-      continue
-    }
-  }
-  // If MissingEntries is empty, then there are no missing entries. Push a comment to the array.
-  if (missingEntries.length == 0)
-  {
-    missingEntries.push('/*\nNo missing entries\n');
-  }
-  missingEntries.push(`\nFirst entry in Total_Frames: ${ allArrayStructure[0][0] }\nFinal entry in Total_Frames: ${ allArrayStructure[0][allArrayStructure[0].length - 1] }\nTotal_Frames in Clip: ${ allArrayStructure[0].length }\n*/\n`)
-
-
-  fs.writeFileSync(`${ DIR_OUTPATH }_${ csvSoloNameArr[csvFilesIDX] }.js`, missingEntries.toString().replace(/,/g, ''));
-
 } // End of main forloop
+
+//TODO register the State Functions into this file
+//TODO register the MVC2 Combo-Hit to Message conversion for AE
+//TODO register the AE Position locations for-each character, and create a file for it to read from. scale too?
