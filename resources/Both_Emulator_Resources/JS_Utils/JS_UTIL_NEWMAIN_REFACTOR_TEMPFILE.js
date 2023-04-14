@@ -754,6 +754,7 @@ function writeNewStates()
       for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
       {
         // Pushing the boolean-results for each State. Example BeingHit result = [ 0,0,0,1,1,1,1,1... ]
+
         // Being_Hit
         (
           ((getKnockdown_State)[playerSlotI][clipLen] == 32)
@@ -940,10 +941,10 @@ function writeNewStates()
         )
           ? allNewStateObject.State_Thrown_Ground[playerSlotI].push(1)
           : allNewStateObject.State_Thrown_Ground[playerSlotI].push(0);
-        // // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
+        // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
         // NEW_STATE_ADD_HERE
 
-        // // ROM-Specific State Checks
+        // ROM-Specific State Checks
 
         // ROM_01_OpponentA. Goal is to find if dummy is high or low. Starting wth setting the end-point of a ROM Cycle.
         (getKnockdown_State)[playerSlotI][clipLen] == 4 // Magneto is landing from the air.
