@@ -5,18 +5,23 @@
   "type": "module",
   "description": "Finished all functionality",
   "repository": {
-  "type": "git",
-  "url": "git+https://github.com/magnetro1/MVC2GEN.git"
+    "type": "git",
+    "url": "git+https://github.com/magnetro1/MVC2GEN.git"
   },
   "keywords": [],
   "author": "Magnetro",
   "license": "ISC",
   "homepage": "https://github.com/magnetro1/MVC2GEN",
   "dependencies": {
-  "clipboardy": "^3.0.0",
-  "readline": "^1.3.0"
+    "clipboardy": "^3.0.0",
+    "readline": "^1.3.0"
   },
   "scripts": {
-  "js_util": "node ./resources/Both_Emulator_Resources/JS_Utils/JS_UTIL_newmain.js"
+    "js_util": "node ./resources/Both_Emulator_Resources/JS_Utils/JS_UTIL_newmain.js"
+  },
+  "devDependencies": {
+    "eslint": "^8.38.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5"
   }
 }

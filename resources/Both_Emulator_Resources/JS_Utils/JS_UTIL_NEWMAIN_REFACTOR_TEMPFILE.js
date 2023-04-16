@@ -668,16 +668,14 @@ const DO_ROM_FILES = false; // Do or Skip ROM logic files
  * @description Writes State-Files that count and increment consecutive true values. 
  * Search for "NEW_STATE_ADD_HERE" across the function to append address fetches and new states.
  */
-function writeNewStates()
-{
+function writeNewStates() {
   // Temps for switching P1 and P2
   let tempPlayerValue, tempPlayerString;
   // Temps for ROM data
   let tempROMCounter = 0;
   let tempROMSwitch = 0;
   // P1 and P2
-  for (tempPlayerValue = 1; tempPlayerValue < 3; tempPlayerValue++)
-  {
+  for (tempPlayerValue = 1; tempPlayerValue < 3; tempPlayerValue++) {
     tempPlayerValue == 1 ? tempPlayerString = 'P1' : tempPlayerString = 'P2';
 
     // Fetches relevant SINGLE addresses for State-Logic-Checking
@@ -748,11 +746,9 @@ function writeNewStates()
     }
 
     // for each slot (abc) in a Player's side
-    for (let playerSlotI = 0; playerSlotI < 3; playerSlotI++)
-    {
+    for (let playerSlotI = 0; playerSlotI < 3; playerSlotI++) {
       // for each frame in a clip
-      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-      {
+      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
         // Pushing the boolean-results for each State. Example BeingHit result = [ 0,0,0,1,1,1,1,1... ]
 
         // Being_Hit
@@ -1035,18 +1031,14 @@ function writeNewStates()
       // Applies to ROM cases as well!
       var counter = 0;
 
-      for (let stateDataEntryI in Object.entries(allNewStateObject))
-      {
-        Object.values(allNewStateObject)[stateDataEntryI][playerSlotI].forEach((element, index) =>
-        {
-          if (element == 0)
-          {
+      for (let stateDataEntryI in Object.entries(allNewStateObject)) {
+        Object.values(allNewStateObject)[stateDataEntryI][playerSlotI].forEach((element, index) => {
+          if (element == 0) {
             counter = 0
             return 0;
             // return Object.values(allDataObject)[stateDataEntryI][playerSlotI][index];
           }
-          else
-          {
+          else {
             Object.values(allNewStateObject)[stateDataEntryI][playerSlotI][index] = (element + counter);
             counter++
             return Object.values(allNewStateObject)[stateDataEntryI][playerSlotI][index + counter]
@@ -1070,16 +1062,12 @@ function writeNewStates()
           Object.values(allNewStateObject.State_ROM_01_OpponentStateA),
         ];
       // console.log(ROM_OPPONENTSTATES);
-      for (let romFile in ROM_OPPONENTSTATES)
-      {
-        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if ((getAirborne)[playerSlotI][clipLen] == 0)
-          {
+      for (let romFile in ROM_OPPONENTSTATES) {
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if ((getAirborne)[playerSlotI][clipLen] == 0) {
             ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 65535;
           }
-          else if ((getY_VELOCITY)[playerSlotI][clipLen] == 0)
-          {
+          else if ((getY_VELOCITY)[playerSlotI][clipLen] == 0) {
             ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 65535;
           }
         }
@@ -1092,25 +1080,21 @@ function writeNewStates()
         // }
       };
 
-      for (let romFile in ROM_OPPONENTSTATES)
-      {
+      for (let romFile in ROM_OPPONENTSTATES) {
         // Checking when we are Rising-To-SuperJump (before we wait or not wait)
-        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           ((getKnockdown_State)[playerSlotI][clipLen] == 13) // 13: "Rising to Super Jump",
             ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 255 // Set to 255 to indicate that we are Rising-To-SuperJump
             : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
         }
         // Checking when we are Rising-to-SuperJump AND the Enemy's distance being HIGHER to the ground
-        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           ((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] >= 140)
             ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 888 // Turns 255 to 888 (high)
             : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
         }
         // Checking when we are Rising-to-SuperJump AND the Enemy's distance being LOWER to the ground
-        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           ((getKnockdown_State)[playerSlotI][clipLen] == 13) && ((getY_Position_From_Enemy)[playerSlotI][clipLen] <= 139)
             ? ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = 777 // Turns 255 to 777 (low)
             : ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen];
@@ -1119,42 +1103,32 @@ function writeNewStates()
         // Setting Booleans for ROM_OpponentStateA results per ROM cycle.
         // High Air
         let AirSwitch = 0;
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 888)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 888) {
             AirSwitch = 1;
             ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = "High"; // High
           }
-          else if (AirSwitch == 1)
-          {
-            if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] != 65535)
-            {
+          else if (AirSwitch == 1) {
+            if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] != 65535) {
               ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = "High";
             }
-            else if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 65535)
-            {
+            else if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 65535) {
               AirSwitch = 0;
             }
           }
         }
         // Low Air
         AirSwitch = 0;
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 777)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 777) {
             AirSwitch = 1;
             ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = "Low";
           }
-          else if (AirSwitch == 1)
-          {
-            if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] != 65535)
-            {
+          else if (AirSwitch == 1) {
+            if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] != 65535) {
               ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] = "Low";
             }
-            else if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 65535)
-            {
+            else if (ROM_OPPONENTSTATES[romFile][playerSlotI][clipLen] == 65535) {
               AirSwitch = 0;
             }
           }
@@ -1171,30 +1145,24 @@ function writeNewStates()
         Object.values(allNewStateObject.State_ROM_08_InputC_MK),
       ];
       // Setting the end-point of a ROM Cycle.
-      for (const romFile in ROM_INPUTS)
-      {
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if ((getAirborne)[playerSlotI][clipLen] == 0)
-          {
+      for (const romFile in ROM_INPUTS) {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if ((getAirborne)[playerSlotI][clipLen] == 0) {
             ROM_INPUTS[romFile][playerSlotI][clipLen] = 65535;
           }
-          else if ((getY_VELOCITY)[playerSlotI][clipLen] == 0)
-          {
+          else if ((getY_VELOCITY)[playerSlotI][clipLen] == 0) {
             ROM_INPUTS[romFile][playerSlotI][clipLen] = 65535;
           }
         }
         // Sets the rest of the ROM cycle to active or inactive.
         var GroundSwitch = 0;
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           if (ROM_INPUTS[romFile][playerSlotI][clipLen] == 1) // Started an input (air)
           {
             GroundSwitch = 1;
             ROM_INPUTS[romFile][playerSlotI][clipLen] = 1;
           }
-          else if (GroundSwitch == 1)
-          {
+          else if (GroundSwitch == 1) {
             if (ROM_INPUTS[romFile][playerSlotI][clipLen] != 65535) // if NOT grounded
             {
               ROM_INPUTS[romFile][playerSlotI][clipLen] = 1;
@@ -1212,23 +1180,18 @@ function writeNewStates()
       for (var arrayWithROMData in ROM_CHOICEB)// 3 arrays
       {
         // Find Grounded state for ROM loops
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if (((getAirborne)[arrayWithROMData][clipLen] == 0)) 
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if (((getAirborne)[arrayWithROMData][clipLen] == 0)) {
             ROM_CHOICEB[arrayWithROMData][clipLen] = 65535;
           }
         }
         var GroundSwitch = 0
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if ((ROM_CHOICEB[arrayWithROMData][clipLen] != 65535) && (ROM_CHOICEB[arrayWithROMData][clipLen] != 0))
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if ((ROM_CHOICEB[arrayWithROMData][clipLen] != 65535) && (ROM_CHOICEB[arrayWithROMData][clipLen] != 0)) {
             GroundSwitch = 1;
             ROM_CHOICEB[arrayWithROMData][clipLen] = 1;
           }
-          else if (GroundSwitch == 1)
-          {
+          else if (GroundSwitch == 1) {
             if (ROM_CHOICEB[arrayWithROMData][clipLen] != 65535) // if NOT grounded
             {
               ROM_CHOICEB[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
@@ -1240,59 +1203,46 @@ function writeNewStates()
           }
         }
         // Label the LKs & MKs
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if (ROM_CHOICEB[arrayWithROMData][clipLen] == 1)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if (ROM_CHOICEB[arrayWithROMData][clipLen] == 1) {
             // Am I MK?
-            if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
-            {
+            if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0)) {
               ROM_CHOICEB[arrayWithROMData][clipLen] = `MK`;
             }
-            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
-            {
+            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0)) {
               ROM_CHOICEB[arrayWithROMData][clipLen] = `LK`;
             }
-            else if (((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1) && ((getKnockdown_State)[arrayWithROMData][clipLen] != 20))
-            {
+            else if (((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1) && ((getKnockdown_State)[arrayWithROMData][clipLen] != 20)) {
               ROM_CHOICEB[arrayWithROMData][clipLen] = 0;
             }
           }
         }
         // Count the frames of LKs using tempCounter
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if (ROM_CHOICEB[arrayWithROMData][clipLen] == `LK`)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if (ROM_CHOICEB[arrayWithROMData][clipLen] == `LK`) {
             tempROMCounter += 1;
           }
           // Stop on encountering a MK
           else if (ROM_CHOICEB[arrayWithROMData][clipLen] == `MK`) // We hit a MK
           {
             // Lookahead
-            for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++)
-            {
+            for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++) {
               // Everything until 65535 is = tempCounter
-              if (ROM_CHOICEB[arrayWithROMData][clipLen + positiveI] != 65535)
-              {
+              if (ROM_CHOICEB[arrayWithROMData][clipLen + positiveI] != 65535) {
                 tempROMSwitch = 1
                 ROM_CHOICEB[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
               }
-              else if (tempROMSwitch == 1)
-              {
+              else if (tempROMSwitch == 1) {
                 ROM_CHOICEB[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
-                if (ROM_CHOICEB[arrayWithROMData][clipLen + positiveI] == 65535)
-                {
+                if (ROM_CHOICEB[arrayWithROMData][clipLen + positiveI] == 65535) {
                   tempROMSwitch = 0;
                 }
                 break // lookahead is done, we hit 65535
               }
             }
             // Lookbehind, expect the number of LKs to equal the tempCounter value
-            for (let negativeI = 1; negativeI < tempROMCounter + 1; negativeI++)
-            {
-              if (ROM_CHOICEB[arrayWithROMData][clipLen - negativeI] == `LK`)
-              {
+            for (let negativeI = 1; negativeI < tempROMCounter + 1; negativeI++) {
+              if (ROM_CHOICEB[arrayWithROMData][clipLen - negativeI] == `LK`) {
                 ROM_CHOICEB[arrayWithROMData][clipLen - negativeI] = tempROMCounter;
               }
             }
@@ -1304,28 +1254,23 @@ function writeNewStates()
           }
         }
         // Clean up the values for AE Part1
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           if ((ROM_CHOICEB[arrayWithROMData][clipLen] != 65535)
             && (ROM_CHOICEB[arrayWithROMData][clipLen] >= 0)
             && (ROM_CHOICEB[arrayWithROMData][clipLen] < 3)
-            || (ROM_CHOICEB[arrayWithROMData][clipLen] == `LK`))
-          {
+            || (ROM_CHOICEB[arrayWithROMData][clipLen] == `LK`)) {
             ROM_CHOICEB[arrayWithROMData][clipLen] = 0;
           }
         }
         // Clean up the values for AE Part2
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           if ((ROM_CHOICEB[arrayWithROMData][clipLen] != 65535)
-            && (ROM_CHOICEB[arrayWithROMData][clipLen] >= 10))
-          {
+            && (ROM_CHOICEB[arrayWithROMData][clipLen] >= 10)) {
             ROM_CHOICEB[arrayWithROMData][clipLen] = `Wait`
           }
           else if (((ROM_CHOICEB[arrayWithROMData][clipLen] != 65535))
             && (ROM_CHOICEB[arrayWithROMData][clipLen] < 10)
-            && (ROM_CHOICEB[arrayWithROMData][clipLen] > 0))
-          {
+            && (ROM_CHOICEB[arrayWithROMData][clipLen] > 0)) {
             ROM_CHOICEB[arrayWithROMData][clipLen] = `No-Wait`
           }
         }
@@ -1336,10 +1281,8 @@ function writeNewStates()
       for (let arrayWithROMData in ROM_CHOICEC) // 3 arrays
       {
         // Find Grounded state for ROM loops
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if ((getAirborne)[arrayWithROMData][clipLen] == 0)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if ((getAirborne)[arrayWithROMData][clipLen] == 0) {
             ROM_CHOICEC[arrayWithROMData][clipLen] = 65535;
           }
           else if ((getY_VELOCITY)[arrayWithROMData][clipLen] == 0) // if grounded
@@ -1349,15 +1292,12 @@ function writeNewStates()
         }
         // Find 1 ROM Cycle after establishing ground state
         var GroundSwitch = 0
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if ((ROM_CHOICEC[arrayWithROMData][clipLen] != 65535) && (ROM_CHOICEC[arrayWithROMData][clipLen] != 0))
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if ((ROM_CHOICEC[arrayWithROMData][clipLen] != 65535) && (ROM_CHOICEC[arrayWithROMData][clipLen] != 0)) {
             GroundSwitch = 1;
             ROM_CHOICEC[arrayWithROMData][clipLen] = 1;
           }
-          else if (GroundSwitch == 1)
-          {
+          else if (GroundSwitch == 1) {
             if (ROM_CHOICEC[arrayWithROMData][clipLen] != 65535) // if NOT grounded
             {
               ROM_CHOICEC[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
@@ -1369,63 +1309,49 @@ function writeNewStates()
           }
         }
         // Label the LKs & AirDashes
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if (ROM_CHOICEC[arrayWithROMData][clipLen] == 1)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if (ROM_CHOICEC[arrayWithROMData][clipLen] == 1) {
             // Am I AirDash
-            if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1))
-            {
+            if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) {
               ROM_CHOICEC[arrayWithROMData][clipLen] = `AirDash`;
             }
-            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
-            {
+            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0)) {
               ROM_CHOICEC[arrayWithROMData][clipLen] = `LK`;
             }
-            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
-            {
+            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0)) {
               ROM_CHOICEC[arrayWithROMData][clipLen] = `MK`; // First MK
             }
-            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1))
-            {
+            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) {
               ROM_CHOICEC[arrayWithROMData][clipLen] = `AirDash`; // Second MK
             }
           }
         }
         // Count LKs before AirDash
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if (ROM_CHOICEC[arrayWithROMData][clipLen] == `LK`)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if (ROM_CHOICEC[arrayWithROMData][clipLen] == `LK`) {
             tempROMCounter += 1;
           }
           // Stop on encountering an AirDash
           else if (ROM_CHOICEC[arrayWithROMData][clipLen] == `AirDash`) // We hit an AirDash
           {
             // Lookahead
-            for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++)
-            {
+            for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++) {
               // Everything until 65535 is = tempCounter
-              if (ROM_CHOICEC[arrayWithROMData][clipLen + positiveI] != 65535)
-              {
+              if (ROM_CHOICEC[arrayWithROMData][clipLen + positiveI] != 65535) {
                 tempROMSwitch = 1
                 ROM_CHOICEC[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
               }
-              else if (tempROMSwitch == 1)
-              {
+              else if (tempROMSwitch == 1) {
                 ROM_CHOICEC[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
-                if (ROM_CHOICEC[arrayWithROMData][clipLen + positiveI] == 65535)
-                {
+                if (ROM_CHOICEC[arrayWithROMData][clipLen + positiveI] == 65535) {
                   tempROMSwitch = 0;
                 }
                 break // lookahead is done, we hit 65535
               }
             }
             // Lookbehind, expect the number of LKs to equal the tempCounter value
-            for (let negativeI = 1; negativeI < tempROMCounter + 1; negativeI++)
-            {
-              if (ROM_CHOICEC[arrayWithROMData][clipLen - negativeI] == `LK`)
-              {
+            for (let negativeI = 1; negativeI < tempROMCounter + 1; negativeI++) {
+              if (ROM_CHOICEC[arrayWithROMData][clipLen - negativeI] == `LK`) {
                 ROM_CHOICEC[arrayWithROMData][clipLen - negativeI] = tempROMCounter;
               }
             }
@@ -1437,25 +1363,20 @@ function writeNewStates()
           }
         }
         // Clean up the values for AE Part1
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           if ((ROM_CHOICEC[arrayWithROMData][clipLen] != 65535)
-            && (ROM_CHOICEC[arrayWithROMData][clipLen] >= 18))
-          {
+            && (ROM_CHOICEC[arrayWithROMData][clipLen] >= 18)) {
             ROM_CHOICEC[arrayWithROMData][clipLen] = `Wait`
           }
           else if (((ROM_CHOICEC[arrayWithROMData][clipLen] != 65535))
             && (ROM_CHOICEC[arrayWithROMData][clipLen] < 18)
-            && (ROM_CHOICEC[arrayWithROMData][clipLen] > 1))
-          {
+            && (ROM_CHOICEC[arrayWithROMData][clipLen] > 1)) {
             ROM_CHOICEC[arrayWithROMData][clipLen] = `No-Wait`
           }
         }
         // Clean up the values for AE Part2
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if ((ROM_CHOICEC[arrayWithROMData][clipLen] == `LK`) || (ROM_CHOICEC[arrayWithROMData][clipLen] == `MK`))
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if ((ROM_CHOICEC[arrayWithROMData][clipLen] == `LK`) || (ROM_CHOICEC[arrayWithROMData][clipLen] == `MK`)) {
             ROM_CHOICEC[arrayWithROMData][clipLen] = 0;
           }
         }
@@ -1466,28 +1387,23 @@ function writeNewStates()
       for (let arrayWithROMData in ROM_CHOICED) // 3 arrays
       {
         // Find Grounded state for ROM loops
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if ((getAirborne)[arrayWithROMData][clipLen] == 0)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if ((getAirborne)[arrayWithROMData][clipLen] == 0) {
             ROM_CHOICED[arrayWithROMData][clipLen] = 65535;
           }
-          else if ((getY_VELOCITY)[arrayWithROMData][clipLen] == 0)
-          {
+          else if ((getY_VELOCITY)[arrayWithROMData][clipLen] == 0) {
             ROM_CHOICED[arrayWithROMData][clipLen] = 65535;
           }
         }
         // Find 1 ROM Cycle after establishing ground state
         var GroundSwitch = 0
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           if ((ROM_CHOICED[arrayWithROMData][clipLen] != 65535) && (ROM_CHOICED[arrayWithROMData][clipLen] != 0)) // we are doing a MK
           {
             GroundSwitch = 1;
             ROM_CHOICED[arrayWithROMData][clipLen] = 1;
           }
-          else if (GroundSwitch == 1)
-          {
+          else if (GroundSwitch == 1) {
             if (ROM_CHOICED[arrayWithROMData][clipLen] != 65535) // if NOT grounded
             {
               ROM_CHOICED[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
@@ -1499,62 +1415,49 @@ function writeNewStates()
           }
         }
         // Label the MKs & AirDashes
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if (ROM_CHOICED[arrayWithROMData][clipLen] == 1)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if (ROM_CHOICED[arrayWithROMData][clipLen] == 1) {
             if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) // AirDash during MK
             {
               ROM_CHOICED[arrayWithROMData][clipLen] = `AirDash`;
             }
-            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
-            {
+            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 0) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0)) {
               ROM_CHOICED[arrayWithROMData][clipLen] = `LK`; // First LK
             }
-            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0))
-            {
+            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 0)) {
               ROM_CHOICED[arrayWithROMData][clipLen] = `MK`; // First MK
             }
-            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1))
-            {
+            else if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1) && ((getAir_Dash_Count)[arrayWithROMData][clipLen] == 1)) {
               ROM_CHOICED[arrayWithROMData][clipLen] = `AirDash`; // Second MK
             }
           }
         }
         // Count MKs before AirDash
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if (ROM_CHOICED[arrayWithROMData][clipLen] == `MK`)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if (ROM_CHOICED[arrayWithROMData][clipLen] == `MK`) {
             tempROMCounter += 1;
           }
           // Stop on encountering an AirDash
           else if (ROM_CHOICED[arrayWithROMData][clipLen] == `AirDash`) // We hit an AirDash
           {
             // Lookahead
-            for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++)
-            {
+            for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++) {
               // Everything until 65535 is = tempCounter
-              if (ROM_CHOICED[arrayWithROMData][clipLen + positiveI] != 65535)
-              {
+              if (ROM_CHOICED[arrayWithROMData][clipLen + positiveI] != 65535) {
                 tempROMSwitch = 1
                 ROM_CHOICED[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
               }
-              else if (tempROMSwitch == 1)
-              {
+              else if (tempROMSwitch == 1) {
                 ROM_CHOICED[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
-                if (ROM_CHOICED[arrayWithROMData][clipLen + positiveI] == 65535)
-                {
+                if (ROM_CHOICED[arrayWithROMData][clipLen + positiveI] == 65535) {
                   tempROMSwitch = 0;
                 }
                 break // lookahead is done, we hit 65535
               }
             }
             // Lookbehind, expect the number of MKs to equal the tempCounter value. Wipe the values until we hit the ground.
-            for (let negativeI = 1; negativeI < tempROMCounter + 1; negativeI++)
-            {
-              if (ROM_CHOICED[arrayWithROMData][clipLen - negativeI] == `MK`)
-              {
+            for (let negativeI = 1; negativeI < tempROMCounter + 1; negativeI++) {
+              if (ROM_CHOICED[arrayWithROMData][clipLen - negativeI] == `MK`) {
                 ROM_CHOICED[arrayWithROMData][clipLen - negativeI] = tempROMCounter;
               }
             }
@@ -1566,25 +1469,20 @@ function writeNewStates()
           }
         }
         // Clean up the values for AE Part1
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           if ((ROM_CHOICED[arrayWithROMData][clipLen] != 65535)
-            && (ROM_CHOICED[arrayWithROMData][clipLen] >= 18))
-          {
+            && (ROM_CHOICED[arrayWithROMData][clipLen] >= 18)) {
             ROM_CHOICED[arrayWithROMData][clipLen] = `Wait`
           }
           else if (((ROM_CHOICED[arrayWithROMData][clipLen] != 65535))
             && (ROM_CHOICED[arrayWithROMData][clipLen] < 18)
-            && (ROM_CHOICED[arrayWithROMData][clipLen] > 1))
-          {
+            && (ROM_CHOICED[arrayWithROMData][clipLen] > 1)) {
             ROM_CHOICED[arrayWithROMData][clipLen] = `No-Wait`
           }
         }
         // Clean up the values for AE Part2
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if ((ROM_CHOICED[arrayWithROMData][clipLen] == `LK`) || (ROM_CHOICED[arrayWithROMData][clipLen] == `MK`))
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if ((ROM_CHOICED[arrayWithROMData][clipLen] == `LK`) || (ROM_CHOICED[arrayWithROMData][clipLen] == `MK`)) {
             ROM_CHOICED[arrayWithROMData][clipLen] = 0;
           }
         }
@@ -1595,10 +1493,8 @@ function writeNewStates()
       for (let arrayWithROMData in ROM_CHOICEE) // 3 arrays
       {
         // Find Grounded state for ROM loops
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if ((getAirborne)[arrayWithROMData][clipLen] == 0)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if ((getAirborne)[arrayWithROMData][clipLen] == 0) {
             ROM_CHOICEE[arrayWithROMData][clipLen] = 65535;
           }
           else if ((getY_VELOCITY)[arrayWithROMData][clipLen] == 0) // if grounded
@@ -1608,15 +1504,13 @@ function writeNewStates()
         }
         // Find 1 ROM Cycle after establishing ground state
         var GroundSwitch = 0
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           if ((ROM_CHOICEE[arrayWithROMData][clipLen] != 65535) && (ROM_CHOICEE[arrayWithROMData][clipLen] != 0)) // we are air dashing
           {
             GroundSwitch = 1;
             ROM_CHOICEE[arrayWithROMData][clipLen] = 1;
           }
-          else if (GroundSwitch == 1)
-          {
+          else if (GroundSwitch == 1) {
             if (ROM_CHOICEE[arrayWithROMData][clipLen] != 65535) // if NOT grounded
             {
               ROM_CHOICEE[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
@@ -1627,40 +1521,31 @@ function writeNewStates()
             }
           }
         }
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if (ROM_CHOICEE[arrayWithROMData][clipLen] == 1)
-          {
-            if ((getKnockdown_State)[arrayWithROMData][clipLen] == 26)
-            {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if (ROM_CHOICEE[arrayWithROMData][clipLen] == 1) {
+            if ((getKnockdown_State)[arrayWithROMData][clipLen] == 26) {
               tempROMCounter += 1;
               ROM_CHOICEE[arrayWithROMData][clipLen] = tempROMCounter;
             }
-            else if (ROM_CHOICEE[arrayWithROMData][clipLen] == 1)
-            {
+            else if (ROM_CHOICEE[arrayWithROMData][clipLen] == 1) {
               // look behind and replace the values until 0 with tempCounter
               for (let negativeI = 1; negativeI < CLIP_LENGTH; negativeI++) // look behind until we hit 0
               {
-                if (ROM_CHOICEE[arrayWithROMData][clipLen - negativeI] != 0)
-                {
+                if (ROM_CHOICEE[arrayWithROMData][clipLen - negativeI] != 0) {
                   ROM_CHOICEE[arrayWithROMData][clipLen - negativeI] = tempROMCounter;
                 }
-                else if (ROM_CHOICEE[arrayWithROMData][clipLen - negativeI] == 0)
-                {
+                else if (ROM_CHOICEE[arrayWithROMData][clipLen - negativeI] == 0) {
                   break
                 }
               }
               // look ahead until we hit 65535
-              for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++)
-              {
-                if (ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] != 65535)
-                {
+              for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++) {
+                if (ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] != 65535) {
                   let newTempNumber = ROM_CHOICEE[arrayWithROMData][clipLen - 1]
                   ROM_CHOICEE[arrayWithROMData][clipLen - 1] = newTempNumber;
                   ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] = newTempNumber;
                 }
-                else if (ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] == 65535)
-                {
+                else if (ROM_CHOICEE[arrayWithROMData][clipLen + positiveI] == 65535) {
                   tempROMCounter = 1;
                   break
                 }
@@ -1669,17 +1554,14 @@ function writeNewStates()
           }
         }
         // Clean up the values for AE Part1
-        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           if ((ROM_CHOICEE[arrayWithROMData][clipLen] != 65535)
             && (ROM_CHOICEE[arrayWithROMData][clipLen] > 0)
-            && (ROM_CHOICEE[arrayWithROMData][clipLen] <= 3))
-          {
+            && (ROM_CHOICEE[arrayWithROMData][clipLen] <= 3)) {
             ROM_CHOICEE[arrayWithROMData][clipLen] = `No-Wait`
           }
           else if (((ROM_CHOICEE[arrayWithROMData][clipLen] != 65535))
-            && (ROM_CHOICEE[arrayWithROMData][clipLen] > 3))
-          {
+            && (ROM_CHOICEE[arrayWithROMData][clipLen] > 3)) {
             ROM_CHOICEE[arrayWithROMData][clipLen] = `Wait`
           }
         }
@@ -1690,10 +1572,8 @@ function writeNewStates()
       var ROM_ChoiceF = Object.values(allNewStateObject.State_ROM_09_ChoiceF);
       for (const arrayWithROMData in ROM_ChoiceF) // 3 arrays
       {
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if ((getAirborne)[arrayWithROMData][clipLen] == 0)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if ((getAirborne)[arrayWithROMData][clipLen] == 0) {
             ROM_ChoiceF[arrayWithROMData][clipLen] = 65535;
           }
           else if ((getY_VELOCITY)[arrayWithROMData][clipLen] == 0) // if grounded
@@ -1702,15 +1582,12 @@ function writeNewStates()
           }
         }
         var GroundSwitch = 0
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if ((ROM_ChoiceF[arrayWithROMData][clipLen] != 65535) && (ROM_ChoiceF[arrayWithROMData][clipLen] != 0))
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if ((ROM_ChoiceF[arrayWithROMData][clipLen] != 65535) && (ROM_ChoiceF[arrayWithROMData][clipLen] != 0)) {
             GroundSwitch = 1;
             ROM_ChoiceF[arrayWithROMData][clipLen] = 1;
           }
-          else if (GroundSwitch == 1)
-          {
+          else if (GroundSwitch == 1) {
             if (ROM_ChoiceF[arrayWithROMData][clipLen] != 65535) // if NOT grounded
             {
               ROM_ChoiceF[arrayWithROMData][clipLen] = 1; // my ROM cycle is still going
@@ -1723,10 +1600,8 @@ function writeNewStates()
         }
 
         // Label the LKs & MKs
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if (ROM_ChoiceF[arrayWithROMData][clipLen] == 1)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if (ROM_ChoiceF[arrayWithROMData][clipLen] == 1) {
             // Am I MK?
             if (((getNormal_Strength)[arrayWithROMData][clipLen] == 1)
               && ((getAttack_Number)[arrayWithROMData][clipLen] == 16)
@@ -1741,10 +1616,8 @@ function writeNewStates()
           }
         }
         // Count the frames of LKs using tempCounter
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
-          if (ROM_ChoiceF[arrayWithROMData][clipLen] == `DLK`)
-          {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          if (ROM_ChoiceF[arrayWithROMData][clipLen] == `DLK`) {
             tempROMCounter += 1;
           }
           // Stop on encountering a MK
@@ -1754,26 +1627,21 @@ function writeNewStates()
             for (let positiveI = 0; positiveI < CLIP_LENGTH; positiveI++) // CLIP_LENGTH is used, but we will break out of the loop before it is reached
             {
               // Everything until 65535 is = tempCounter
-              if (ROM_ChoiceF[arrayWithROMData][clipLen + positiveI] != 65535)
-              {
+              if (ROM_ChoiceF[arrayWithROMData][clipLen + positiveI] != 65535) {
                 tempROMSwitch = 1
                 ROM_ChoiceF[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
               }
-              else if (tempROMSwitch == 1)
-              {
+              else if (tempROMSwitch == 1) {
                 ROM_ChoiceF[arrayWithROMData][clipLen + positiveI] = tempROMCounter;
-                if (ROM_ChoiceF[arrayWithROMData][clipLen + positiveI] == 65535)
-                {
+                if (ROM_ChoiceF[arrayWithROMData][clipLen + positiveI] == 65535) {
                   tempROMSwitch = 0;
                 }
                 break // lookahead is done, we hit 65535
               }
             }
             // Lookbehind, expect the number of 2LKs to equal the tempCounter value
-            for (let negativeI = 1; negativeI < tempROMCounter + 1; negativeI++)
-            {
-              if (ROM_ChoiceF[arrayWithROMData][clipLen - negativeI] == `DLK`)
-              {
+            for (let negativeI = 1; negativeI < tempROMCounter + 1; negativeI++) {
+              if (ROM_ChoiceF[arrayWithROMData][clipLen - negativeI] == `DLK`) {
                 ROM_ChoiceF[arrayWithROMData][clipLen - negativeI] = tempROMCounter;
               }
             }
@@ -1785,8 +1653,7 @@ function writeNewStates()
           }
         }
         // Clean up the values for AE Part1
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           if ((ROM_ChoiceF[arrayWithROMData][clipLen] != 65535)
             && (ROM_ChoiceF[arrayWithROMData][clipLen] >= 0)
             && (ROM_ChoiceF[arrayWithROMData][clipLen] < 3))
@@ -1796,17 +1663,14 @@ function writeNewStates()
           }
         }
         // Clean up the values for AE Part2
-        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++)
-        {
+        for (var clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           if ((ROM_ChoiceF[arrayWithROMData][clipLen] != 65535)
-            && (ROM_ChoiceF[arrayWithROMData][clipLen] >= 17))
-          {
+            && (ROM_ChoiceF[arrayWithROMData][clipLen] >= 17)) {
             ROM_ChoiceF[arrayWithROMData][clipLen] = `Wait`
           }
           else if (((ROM_ChoiceF[arrayWithROMData][clipLen] != 65535))
             && (ROM_ChoiceF[arrayWithROMData][clipLen] < 17)
-            && (ROM_ChoiceF[arrayWithROMData][clipLen] > 0))
-          {
+            && (ROM_ChoiceF[arrayWithROMData][clipLen] > 0)) {
             ROM_ChoiceF[arrayWithROMData][clipLen] = `No-Wait`
           }
         }
@@ -1815,31 +1679,25 @@ function writeNewStates()
       // End ROMStuff End ROM Stuff
 
       // Write the files
-      for (let stateFileIndex = 0; stateFileIndex < Object.entries(allNewStateObject).length; stateFileIndex++)
-      {
-        if (DO_ROM_FILES == false)
-        {
-          if (Object.keys(allNewStateObject)[stateFileIndex].toString().match('ROM'))
-          {
+      for (let stateFileIndex = 0; stateFileIndex < Object.entries(allNewStateObject).length; stateFileIndex++) {
+        if (DO_ROM_FILES == false) {
+          if (Object.keys(allNewStateObject)[stateFileIndex].toString().match('ROM')) {
             continue;
           }
         }
-        fs.writeFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ Object.keys(allNewStateObject)[stateFileIndex] }.js`,
+        fs.writeFileSync(`${DIR_OUTPATH}${tempPlayerString}_${Object.keys(allNewStateObject)[stateFileIndex]}.js`,
           `var result = []; ` + '\n', {encoding: 'utf8'});
       }
 
       // Append data arrays into files
-      for (let stateFileDataIndex = 0; stateFileDataIndex < Object.entries(allNewStateObject).length; stateFileDataIndex++)
-      {
-        if (DO_ROM_FILES == false)
-        {
-          if (Object.keys(allNewStateObject)[stateFileDataIndex].toString().match('ROM'))
-          {
+      for (let stateFileDataIndex = 0; stateFileDataIndex < Object.entries(allNewStateObject).length; stateFileDataIndex++) {
+        if (DO_ROM_FILES == false) {
+          if (Object.keys(allNewStateObject)[stateFileDataIndex].toString().match('ROM')) {
             continue;
           }
         }
 
-        fs.appendFileSync(`${ DIR_OUTPATH }${ tempPlayerString }_${ Object.keys(allNewStateObject)[stateFileDataIndex] }.js`,
+        fs.appendFileSync(`${DIR_OUTPATH}${tempPlayerString}_${Object.keys(allNewStateObject)[stateFileDataIndex]}.js`,
           JSON.stringify(Object.values(allNewStateObject)[stateFileDataIndex])
             .replace('[[', `result[0] = [`)
             .replace(',[', '\nresult[1] = [')
@@ -1855,10 +1713,9 @@ function writeNewStates()
 writeNewStates()
 
 clipboard.writeSync(DIR_OUTPATH);
-console.log(`Done processing ${ knownName[csvFilesIDX] } ` || ``);
+console.log(`Done processing ${knownName[csvFilesIDX]} ` || ``);
 
-if ((knownName[csvFilesIDX + 1] == undefined) || (knownName[csvFilesIDX + 1] == null))
-{
+if ((knownName[csvFilesIDX + 1] == undefined) || (knownName[csvFilesIDX + 1] == null)) {
   console.log(`Done processing all files!`);
   // await sleep(SLEEP_AMOUNT);
   process.exit();
