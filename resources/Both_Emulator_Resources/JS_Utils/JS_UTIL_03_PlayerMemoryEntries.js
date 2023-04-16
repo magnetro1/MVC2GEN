@@ -1,3 +1,4 @@
+//! This might only be giving 1 set of entries, not n.
 import giantObject from './JS_UTIL_01_SortCSV.js';
 import findMinMaxRound from './JS_UTIL_02_MinMaxRound.js';
 
@@ -16,3 +17,4 @@ for (const tempDataObject in findMinMaxRound(giantObject)) {
 const playerMemoryEntries = tempArr;
 
 export default playerMemoryEntries;
+// console.log(...playerMemoryEntries);

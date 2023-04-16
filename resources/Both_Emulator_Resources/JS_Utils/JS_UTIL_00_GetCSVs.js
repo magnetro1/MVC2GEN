@@ -17,7 +17,7 @@ try {
     }
   });
 } catch (error) {
-  console.log(error);
+  throw new Error(error);
 }
 
 export default CSV_FILES_ARRAY;

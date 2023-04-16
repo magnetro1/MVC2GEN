@@ -19,6 +19,9 @@ function countReplayData(arrayOfNumbers) {
   // Count the values in the arrays and store them in an object
   const counterObject = {};
   for (let numbersIdx = 0; numbersIdx < arrayOfNumbers.length; numbersIdx++) {
+    // If the value doesn't exist (undefined),
+    // add it into the counter object,
+    // else add 1 to it
     if (counterObject[arrayOfNumbers[numbersIdx]] === undefined) {
       counterObject[arrayOfNumbers[numbersIdx]] = 1;
     } else {
@@ -50,6 +53,7 @@ function countReplayData(arrayOfNumbers) {
       return arrayOfNumbers[0];
     }
   }
+  // console.log(`largestValueKey: ${largestValueKey}`);
   return largestValueKey;
 }
 /**
@@ -72,13 +76,19 @@ function processCSV(arrayOfCSVs) {
     if (!fs.existsSync(`${DIR_OUTPATH}`)) {
       fs.mkdirSync(`${DIR_OUTPATH}`);
     }
-    fs.readFileSync(`${DIR_CSVS + arrayOfCSVs[csvFilesIDX]}.csv`, 'utf8').split('\r\n').map((line, index) => {
-      if (index === 0) {
-        headersArray = line.split(',');
-      } else {
-        allDataArray.push(line.split(','));
-      } return null;
-    });
+    fs.readFileSync(
+      `${DIR_CSVS + arrayOfCSVs[csvFilesIDX]}.csv`,
+      'utf8',
+    ).split('\r\n')
+      .map((line, index) => {
+        if (index === 0) {
+          // Get the headers
+          headersArray = line.split(',');
+        } else {
+          // Get the data
+          allDataArray.push(line.split(','));
+        } return null;
+      });
 
     // Sorting by the first column's first value (Total_Frames)
     allDataArray.sort((a, b) => a[0] - b[0]);
@@ -133,7 +143,8 @@ function processCSV(arrayOfCSVs) {
     // Removing duplicates using the first column's value (Total_Frames)
     // length-1 because we're checking the next element
     for (let check = 0; check < allDataArray.length - 1; check++) {
-      if ((allDataArray[check + 1][0] === allDataArray[check][0])) { // line number is the same
+      // line number is the same as the next line
+      if ((allDataArray[check + 1][0] === allDataArray[check][0])) {
         allDataArray.splice(check + 1, 1); // remove the next line
         check -= 1; // go back to original line in order to check the next line again
       }
@@ -153,20 +164,32 @@ function processCSV(arrayOfCSVs) {
     const missingEntries = ['/*\n'];
     for (let i = 0; i < allArrayStructure[0].length - 1; i++) {
       if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1) {
-        missingEntries.push(`Missing data entry after Total_Frame Number: ${allArrayStructure[0][i]}\n`);
+        missingEntries.push(
+          `Missing data entry after Total_Frame Number: ${allArrayStructure[0][i]}\n`,
+        );
       }
     }
     // If MissingEntries is empty, then there are no missing entries. Push a comment to the array.
-    if (missingEntries.length === 0) {
-      missingEntries.push('/*\nNo missing entries\n');
+    // console.log(missingEntries);
+    if (missingEntries.length === 1) {
+      missingEntries.push(
+        'No missing entries\n',
+        `\nFirst entry in Total_Frames: ${allArrayStructure[0][0]}\n`
+        + `Final entry in Total_Frames: ${allArrayStructure[0][allArrayStructure[0].length - 1]}\n`
+        + `Total_Frames in Clip: ${allArrayStructure[0].length}\n*/\n`,
+      );
+    } else {
+      missingEntries.push(
+        `\nFirst entry in Total_Frames: ${allArrayStructure[0][0]}\n`
+        + `Final entry in Total_Frames: ${allArrayStructure[0][allArrayStructure[0].length - 1]}\n`
+        + `Total_Frames in Clip: ${allArrayStructure[0].length}\n*/\n`,
+      );
     }
-    missingEntries.push(
-      `\nFirst entry in Total_Frames: ${allArrayStructure[0][0]}\n`
-      + `Final entry in Total_Frames: ${allArrayStructure[0][allArrayStructure[0].length - 1]}\n`
-      + `Total_Frames in Clip: ${allArrayStructure[0].length}\n*/\n`,
-    );
     // Write an info-file.
-    fs.writeFileSync(`${DIR_OUTPATH}_${arrayOfCSVs[csvFilesIDX]}.js`, missingEntries.toString().replace(/,/g, ''));
+    fs.writeFileSync(
+      `${DIR_OUTPATH}_${arrayOfCSVs[csvFilesIDX]}.js`,
+      missingEntries.toString().replace(/,/g, ''),
+    );
     // Make an object inside of giantObject for each set of data from the csv
     giantObject[arrayOfCSVs[csvFilesIDX]] = {};
     // Fill the object with the data from the csv
@@ -179,10 +202,12 @@ function processCSV(arrayOfCSVs) {
       // Target the values that are arrays
       if (Array.isArray(giantObject[arrayOfCSVs[csvFilesIDX]][key])) {
         // Turn the array into a string
-        giantObject[arrayOfCSVs[csvFilesIDX]][key] = giantObject[arrayOfCSVs[csvFilesIDX]][key].join(',');
+        let tmpStr = giantObject[arrayOfCSVs[csvFilesIDX]][key];
+        tmpStr = tmpStr.join(',');
       }
     }
   }
+  // console.log('giantObject: ', giantObject);
   return giantObject;
 }
 

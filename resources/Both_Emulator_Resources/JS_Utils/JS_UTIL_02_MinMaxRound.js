@@ -1,4 +1,3 @@
-/* eslint-disable prefer-destructuring */
 // import * as fs from 'fs';
 // import DIR_EXPORT_TO_AE from './JS_UTIL_paths.js';
 import {
@@ -15,18 +14,20 @@ import giantObject from './JS_UTIL_01_SortCSV.js';
 *  @returns {Object} giantObject
 */
 export default function findMinMaxRound(objectFN) {
+  const newObj = objectFN;
   const toFixedDigits = [0, 2, 4]; // 7 is the default
   const preFixes = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_'];
   const suffixes = ['', '_Min', '_Max'];
-  for (const tempDataObject in objectFN) {
-    const CLIP_LENGTH = objectFN[tempDataObject].Total_Frames.length;
+  for (const tempDataObject in newObj) {
+    const CLIP_LENGTH = newObj[tempDataObject].Total_Frames.length;
     let tempMinMaxBuffer = '';
     for (const adr in MIN_MAX_ADDRESSES) {
       const KEY = MIN_MAX_ADDRESSES[adr];
       // So all the values are a string, but we need to convert it into an array of numbers
       // We have to set the value equal to the new value, otherwise it won't change
-      objectFN[tempDataObject][MIN_MAX_ADDRESSES[adr]] = objectFN[tempDataObject][MIN_MAX_ADDRESSES[adr]].split(',');
-      const VALUE = objectFN[tempDataObject][MIN_MAX_ADDRESSES[adr]];
+      const tempArray = newObj[tempDataObject][MIN_MAX_ADDRESSES[adr]].split(',');
+      newObj[tempDataObject][MIN_MAX_ADDRESSES[adr]] = tempArray;
+      const VALUE = newObj[tempDataObject][MIN_MAX_ADDRESSES[adr]];
       const MIN = Math.min(...VALUE);
       const MAX = Math.max(...VALUE);
       const tempMin = [];
@@ -41,12 +42,14 @@ export default function findMinMaxRound(objectFN) {
     const tempMinMaxBufferSplit = tempMinMaxBuffer.split('\n');
     for (const line in tempMinMaxBufferSplit) {
       const lineSplit = tempMinMaxBufferSplit[line].split('=');
-      objectFN[tempDataObject][lineSplit[0]] = lineSplit[1];// [0] is the key, [1] is the value
+      const lineSplit0 = lineSplit[0];
+      const lineSplit1 = lineSplit[1];
+      newObj[tempDataObject][lineSplit0] = lineSplit1;// [0] is the key, [1] is the value
     }
-    for (const item in objectFN[tempDataObject]) {
+    for (const item in newObj[tempDataObject]) {
       // convert any object into a string
-      if (typeof objectFN[tempDataObject][item] === 'object') {
-        objectFN[tempDataObject][item] = objectFN[tempDataObject][item].toString();
+      if (typeof newObj[tempDataObject][item] === 'object') {
+        newObj[tempDataObject][item] = newObj[tempDataObject][item].toString();
       }
     }
     // Round the FLOATING_POINT_ADDRESSES using the toFixedDigits array.
@@ -56,8 +59,8 @@ export default function findMinMaxRound(objectFN) {
       for (const pre in preFixes) {
         for (const suf in suffixes) {
           tempFullAddressString = preFixes[pre] + FLOATING_POINT_ADDRESSES[adr] + suffixes[suf];
-          if (objectFN[tempDataObject][tempFullAddressString]) {
-            const dataSplit = objectFN[tempDataObject][tempFullAddressString].split(',');
+          if (newObj[tempDataObject][tempFullAddressString]) {
+            const dataSplit = newObj[tempDataObject][tempFullAddressString].split(',');
             for (const digit in toFixedDigits) {
               const tempNewAddress = `${tempFullAddressString}_${toFixedDigits[digit]}`;
               let tempNewArray = [];
@@ -65,27 +68,28 @@ export default function findMinMaxRound(objectFN) {
                 tempNewArray[item] = parseFloat(dataSplit[item]).toFixed(toFixedDigits[digit]);
               }
               tempNewArray = tempNewArray.toString();
-              objectFN[tempDataObject][tempNewAddress] = tempNewArray;
+              newObj[tempDataObject][tempNewAddress] = tempNewArray;
             }
           } else {
-            console.log(`No address found for ${tempFullAddressString}`);
+            throw new Error(`Error: ${tempFullAddressString} does not exist in ${tempDataObject}`);
           }
         }
       }
     }
   }
   // console.log(giantObject);
-  return objectFN;
+  return newObj;
   // // write the giantObject to a file with the name of the CSV file as the name of each object
-  // for (let obj in objectFN)
+  // for (let obj in newObj)
   // {
   //   let tempString = '';
-  //   for (let item in objectFN[obj])
+  //   for (let item in newObj[obj])
   //   {
-  //     tempString += `${ item }=${ objectFN[obj][item] }\n`;
+  //     tempString += `${ item }=${ newObj[obj][item] }\n`;
   //   }
   //   // console.log(tempString);
   // fs.writeFileSync(`${DIR_EXPORT_TO_AE}/${obj}.txt`, tempString);
   // }
 }
+
 findMinMaxRound(giantObject);
