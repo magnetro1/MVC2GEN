@@ -18,6 +18,11 @@
     "no-continue": "warn",
     "import/extensions": "off",
     "guard-for-in": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "max-len": [ "error", {
+        "code": 150,
+        "comments": 150
+      }
+    ]
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 import * as fs from 'fs';
 
 import {
@@ -159,7 +160,11 @@ function processCSV(arrayOfCSVs) {
     if (missingEntries.length === 0) {
       missingEntries.push('/*\nNo missing entries\n');
     }
-    missingEntries.push(`\nFirst entry in Total_Frames: ${allArrayStructure[0][0]}\nFinal entry in Total_Frames: ${allArrayStructure[0][allArrayStructure[0].length - 1]}\nTotal_Frames in Clip: ${allArrayStructure[0].length}\n*/\n`);
+    missingEntries.push(
+      `\nFirst entry in Total_Frames: ${allArrayStructure[0][0]}\n`
+      + `Final entry in Total_Frames: ${allArrayStructure[0][allArrayStructure[0].length - 1]}\n`
+      + `Total_Frames in Clip: ${allArrayStructure[0].length}\n*/\n`,
+    );
     // Write an info-file.
     fs.writeFileSync(`${DIR_OUTPATH}_${arrayOfCSVs[csvFilesIDX]}.js`, missingEntries.toString().replace(/,/g, ''));
     // Make an object inside of giantObject for each set of data from the csv

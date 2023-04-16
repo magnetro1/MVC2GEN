@@ -1,0 +1,18 @@
+import giantObject from './JS_UTIL_01_SortCSV.js';
+import findMinMaxRound from './JS_UTIL_02_MinMaxRound.js';
+
+let tempArr = [];
+for (const tempDataObject in findMinMaxRound(giantObject)) {
+  const playerMemoryRegex = /(P[1-2]_[A-C]_)/g; // [1] = P1_A
+  for (const key in giantObject[tempDataObject]) {
+    if (key.toString().match(playerMemoryRegex)) {
+      tempArr.push(key);
+    }
+  }
+  tempArr = tempArr.map((label) => label.replace(playerMemoryRegex, ''));
+  tempArr = [...new Set(tempArr)];
+  // console.log(tempArr);
+}
+const playerMemoryEntries = tempArr;
+
+export default playerMemoryEntries;

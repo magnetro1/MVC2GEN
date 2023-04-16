@@ -1,4 +1,4 @@
-
+/* eslint-disable */
 const DO_ROM_FILES = false; // Do or Skip ROM logic files
 // var FILE_NAME_NO_EXT = knownName[csvFilesIDX];
 
@@ -1686,7 +1686,7 @@ function writeNewStates() {
           }
         }
         fs.writeFileSync(`${DIR_OUTPATH}${tempPlayerString}_${Object.keys(allNewStateObject)[stateFileIndex]}.js`,
-          `var result = []; ` + '\n', {encoding: 'utf8'});
+          `var result = []; ` + '\n', { encoding: 'utf8' });
       }
 
       // Append data arrays into files

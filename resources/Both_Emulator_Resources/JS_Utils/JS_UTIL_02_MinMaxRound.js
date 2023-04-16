@@ -5,6 +5,7 @@ import {
   FLOATING_POINT_ADDRESSES,
   MIN_MAX_ADDRESSES,
 } from './JS_UTIL_staticData.js';
+
 import giantObject from './JS_UTIL_01_SortCSV.js';
 
 /**
@@ -18,8 +19,6 @@ export default function findMinMaxRound(objectFN) {
   const preFixes = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_'];
   const suffixes = ['', '_Min', '_Max'];
   for (const tempDataObject in objectFN) {
-    // If object has property
-
     const CLIP_LENGTH = objectFN[tempDataObject].Total_Frames.length;
     let tempMinMaxBuffer = '';
     for (const adr in MIN_MAX_ADDRESSES) {
@@ -49,9 +48,6 @@ export default function findMinMaxRound(objectFN) {
       if (typeof objectFN[tempDataObject][item] === 'object') {
         objectFN[tempDataObject][item] = objectFN[tempDataObject][item].toString();
       }
-
-      // Log the value
-      // console.log(`${ item } = ${ objectFN[tempDataObject][item] }`);
     }
     // Round the FLOATING_POINT_ADDRESSES using the toFixedDigits array.
     // The addresses' prefixes and suffxes need to be constructed into a tempString
@@ -78,7 +74,7 @@ export default function findMinMaxRound(objectFN) {
       }
     }
   }
-  console.log(giantObject);
+  // console.log(giantObject);
   return objectFN;
   // // write the giantObject to a file with the name of the CSV file as the name of each object
   // for (let obj in objectFN)
