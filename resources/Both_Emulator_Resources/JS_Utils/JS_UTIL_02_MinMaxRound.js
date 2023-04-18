@@ -1,5 +1,5 @@
 // import * as fs from 'fs';
-// import DIR_EXPORT_TO_AE from './JS_UTIL_paths.js';
+// import { DIR_EXPORT_TO_AE } from './JS_UTIL_paths.js';
 import {
   FLOATING_POINT_ADDRESSES,
   MIN_MAX_ADDRESSES,
@@ -15,7 +15,8 @@ import giantObject from './JS_UTIL_01_SortCSV.js';
 */
 export default function findMinMaxRound(objectFN) {
   const newObj = objectFN;
-  const toFixedDigits = [0, 2, 4]; // 7 is the default
+  // const toFixedDigits = [0, 2, 4]; // 7 is the default
+  const toFixedDigits = [0]; // 7 is the default
   const preFixes = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_'];
   const suffixes = ['', '_Min', '_Max'];
   for (const tempDataObject in newObj) {
@@ -77,19 +78,19 @@ export default function findMinMaxRound(objectFN) {
       }
     }
   }
-  // console.log(giantObject);
-  return newObj;
-  // // write the giantObject to a file with the name of the CSV file as the name of each object
-  // for (let obj in newObj)
-  // {
-  //   let tempString = '';
-  //   for (let item in newObj[obj])
-  //   {
-  //     tempString += `${ item }=${ newObj[obj][item] }\n`;
+  // Write each entry from each object into a JS File.
+  // for (const tempObj in newObj) {
+  //   const DIR_OUTPATH = `${DIR_EXPORT_TO_AE}${tempObj}/`;
+  //   for (const item in newObj[tempObj]) {
+  //     const tempString = `var result = ['${newObj[tempObj][item]}'];`;
+  //     fs.writeFileSync(`${DIR_OUTPATH}${item}.js`, tempString);
   //   }
-  //   // console.log(tempString);
-  // fs.writeFileSync(`${DIR_EXPORT_TO_AE}/${obj}.txt`, tempString);
   // }
+  return newObj;
 }
+// make a deep copy of the newObj that gets returned from the function
+export const giantObjectCopy = JSON.parse(JSON.stringify(findMinMaxRound(giantObject)));
 
-findMinMaxRound(giantObject);
+// console.log('giantObjectCopy', giantObjectCopy);
+
+// findMinMaxRound(giantObject);

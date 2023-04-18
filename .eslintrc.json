@@ -16,16 +16,25 @@
         "allowForLoopAfterthoughts": true
       }
     ],
-    "import/extensions": "off",
-    "no-console": "warn",
-    "no-continue": "warn",
-    "guard-for-in": "off",
-    "no-restricted-syntax": "off",
     "max-len": [ "error", {
         "code": 100,
         "comments": 100
       }
     ],
+    "no-unused-expressions": [ "error",
+      {
+        "allowShortCircuit": true,
+        "allowTernary": true
+      }
+    ],
+    "no-console": "warn",
+    "no-continue": "warn",
+    "import/extensions": "off",
+    "guard-for-in": "off",
+    "no-restricted-syntax": "off",
+    "prefer-destructuring": "off",
+    "no-param-reassign": "off",
+    "no-bitwise": "off",
     "radix": "off" // wow
   }
 }

@@ -1,8 +1,5 @@
-/* eslint-disable import/extensions */
 import * as fs from 'fs';
-import {
-  DIR_CSVS,
-} from './JS_UTIL_paths.js';
+import { DIR_CSVS } from './JS_UTIL_paths.js';
 
 const CSV_FILES_ARRAY = [];
 
