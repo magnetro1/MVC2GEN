@@ -2,10 +2,8 @@
 /* eslint-disable no-multi-spaces */
 import * as fs from 'fs';
 import { DIR_EXPORT_TO_AE } from './JS_UTIL_paths.js';
-// import giantObjectCopy from './JS_UTIL_02_MinMaxRound.js';
 
 const enableLogging = false;
-// console.time('pMem');
 /**
  * @param {object} updatedObj the full object containing other objects.
  * @param {string} objectName string
@@ -18,7 +16,7 @@ const enableLogging = false;
  * for the pMemAdr in the clip. Can write.
 */
 // eslint-disable-next-line consistent-return
-export default function writePlayerMemory(updatedObj, objectName, P1OrP2, pMemAdr, write) {
+export default function getPMem(updatedObj, objectName, P1OrP2, pMemAdr, write) {
   // console.log(objectName);
   if (enableLogging) {
     console.log(objectName, P1OrP2, pMemAdr, write);
@@ -44,7 +42,7 @@ export default function writePlayerMemory(updatedObj, objectName, P1OrP2, pMemAd
    * @example POINT_OBJ_P1 or POINT_OBJ_P2 which contain key value pairs of
    * P1_A... and P2_A... to
    * `updatedObject[tempDataObject]['P1_A_Is_Point'].split(',')`... etc
-   */
+  */
   let p1OrP2Obj;// Switches between the Player1 and Player2 objects
 
   /** @description "P1" | "P2" */
@@ -180,7 +178,6 @@ export default function writePlayerMemory(updatedObj, objectName, P1OrP2, pMemAd
   }
   if ((write === 1) || (write === true)) {
     // Create file if it doesn't exist
-    // console.time('WritePMem');
     const tempStr = `${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`;
     if (!fs.existsSync(tempStr)) {
       fs.writeFileSync(
@@ -197,10 +194,7 @@ export default function writePlayerMemory(updatedObj, objectName, P1OrP2, pMemAd
         );
       }
     } else {
-      return false;
+      return true;
     }
-    // console.timeEnd('WritePMem');
   }
 }
-
-// console.timeEnd('pMem');

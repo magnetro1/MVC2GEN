@@ -1,19 +1,20 @@
+/* eslint-disable max-len */
 /* eslint-disable eqeqeq */
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 import * as fs from 'fs';
 import { DIR_EXPORT_TO_AE } from './JS_UTIL_paths.js';
-import writePlayerMemory from './JS_UTIL_03_PlayerMemory.js';
+import getPMem from './JS_UTIL_03_PlayerMemory.js';
 
 /**
  * @description Writes State-Files that count and increment consecutive true values.
  * Search for "NEW_STATE_ADD_HERE" across the function to append address fetches and new states.
  */
-export default function writeNewStates(giantObjectFN) {
-  for (const tempObj in giantObjectFN) {
+export default function writeNewStates(wObjFN) {
+  for (const tempObj in wObjFN) {
     const objName = tempObj.toString();
     const DIR_OUTPATH = `${DIR_EXPORT_TO_AE}${tempObj}/`;
-    const CLIP_LENGTH = giantObjectFN[tempObj].Total_Frames.split(',').length;
+    const CLIP_LENGTH = wObjFN[tempObj].Total_Frames.split(',').length;
 
     // Temps for switching P1 and P2
     let plVal;
@@ -22,29 +23,29 @@ export default function writeNewStates(giantObjectFN) {
       plVal === 1 ? p1OrP2 = 'P1' : p1OrP2 = 'P2';
 
       // Fetches relevant SINGLE addresses for State-Logic-Checking
-      const Action_Flags = writePlayerMemory(objName, p1OrP2, 'Action_Flags', 0);
-      const Air_Dash_Count = writePlayerMemory(objName, p1OrP2, 'Air_Dash_Count', 0);
-      const Airborne = writePlayerMemory(objName, p1OrP2, 'Airborne', 0);
-      const Animation_Timer_Main = writePlayerMemory(objName, p1OrP2, 'Animation_Timer_Main', 0);
-      const Attack_Immune = writePlayerMemory(objName, p1OrP2, 'Attack_Immune', 0);
-      const Attack_Number = writePlayerMemory(objName, p1OrP2, 'Attack_Number', 0);
-      const Block_Meter = writePlayerMemory(objName, p1OrP2, 'Block_Meter', 0);
-      const Dizzy = writePlayerMemory(objName, p1OrP2, 'Dizzy', 0);
-      const Dizzy_Reset_Timer = writePlayerMemory(objName, p1OrP2, 'Dizzy_Reset_Timer', 0);
-      const HitStop = writePlayerMemory(objName, p1OrP2, 'Hitstop2', 0);
-      const Knockdown_State = writePlayerMemory(objName, p1OrP2, 'Knockdown_State', 0);
-      const FlyingScreen = writePlayerMemory(objName, p1OrP2, 'FlyingScreen', 0);
-      const FSI_Points = writePlayerMemory(objName, p1OrP2, 'FlyingScreen', 0);
-      const Is_Prox_Block = writePlayerMemory(objName, p1OrP2, 'Is_Prox_Block', 0);
-      const Normal_Strength = writePlayerMemory(objName, p1OrP2, 'Normal_Strength', 0);
-      const PunchKick = writePlayerMemory(objName, p1OrP2, 'PunchKick', 0);
-      const SJ_Counter = writePlayerMemory(objName, p1OrP2, 'SJ_Counter', 0);
-      const X_Position_Arena = writePlayerMemory(objName, p1OrP2, 'X_Position_Arena', 0);
-      const X_Position_From_Enemy = writePlayerMemory(objName, p1OrP2, 'X_Position_From_Enemy', 0);
-      const X_Velocity = writePlayerMemory(objName, p1OrP2, 'X_Velocity', 0);
-      const Y_Position_Arena = writePlayerMemory(objName, p1OrP2, 'Y_Position_Arena', 0);
-      const Y_Position_From_Enemy = writePlayerMemory(objName, p1OrP2, 'Y_Position_From_Enemy', 0);
-      const Y_Velocity = writePlayerMemory(objName, p1OrP2, 'Y_Velocity', 0);
+      const Action_Flags = getPMem(wObjFN, objName, p1OrP2, 'Action_Flags', 0);
+      const Air_Dash_Count = getPMem(wObjFN, objName, p1OrP2, 'Air_Dash_Count', 0);
+      const Airborne = getPMem(wObjFN, objName, p1OrP2, 'Airborne', 0);
+      const Animation_Timer_Main = getPMem(wObjFN, objName, p1OrP2, 'Animation_Timer_Main', 0);
+      const Attack_Immune = getPMem(wObjFN, objName, p1OrP2, 'Attack_Immune', 0);
+      const Attack_Number = getPMem(wObjFN, objName, p1OrP2, 'Attack_Number', 0);
+      const Block_Meter = getPMem(wObjFN, objName, p1OrP2, 'Block_Meter', 0);
+      const Dizzy = getPMem(wObjFN, objName, p1OrP2, 'Dizzy', 0);
+      const Dizzy_Reset_Timer = getPMem(wObjFN, objName, p1OrP2, 'Dizzy_Reset_Timer', 0);
+      const HitStop = getPMem(wObjFN, objName, p1OrP2, 'Hitstop2', 0);
+      const Knockdown_State = getPMem(wObjFN, objName, p1OrP2, 'Knockdown_State', 0);
+      const FlyingScreen = getPMem(wObjFN, objName, p1OrP2, 'FlyingScreen', 0);
+      const FSI_Points = getPMem(wObjFN, objName, p1OrP2, 'FlyingScreen', 0);
+      const Is_Prox_Block = getPMem(wObjFN, objName, p1OrP2, 'Is_Prox_Block', 0);
+      const Normal_Strength = getPMem(wObjFN, objName, p1OrP2, 'Normal_Strength', 0);
+      const PunchKick = getPMem(wObjFN, objName, p1OrP2, 'PunchKick', 0);
+      const SJ_Counter = getPMem(wObjFN, objName, p1OrP2, 'SJ_Counter', 0);
+      const X_Position_Arena = getPMem(wObjFN, objName, p1OrP2, 'X_Position_Arena', 0);
+      const X_Position_From_Enemy = getPMem(wObjFN, objName, p1OrP2, 'X_Position_From_Enemy', 0);
+      const X_Velocity = getPMem(wObjFN, objName, p1OrP2, 'X_Velocity', 0);
+      const Y_Position_Arena = getPMem(wObjFN, objName, p1OrP2, 'Y_Position_Arena', 0);
+      const Y_Position_From_Enemy = getPMem(wObjFN, objName, p1OrP2, 'Y_Position_From_Enemy', 0);
+      const Y_Velocity = getPMem(wObjFN, objName, p1OrP2, 'Y_Velocity', 0);
       // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here
       // List of files to be written. Will have prefix of P1_ or P2_
       const newStatesObj = {

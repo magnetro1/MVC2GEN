@@ -208,6 +208,7 @@ function processCSV(arrayOfCSVs) {
       }
     }
   }
+  console.time('UTIL_01');
   // Write each entry from each object into a JS File.
   for (const tempObj in giantObject) {
     const DIR_OUTPATH = `${DIR_EXPORT_TO_AE}${tempObj}/`;
@@ -226,6 +227,7 @@ function processCSV(arrayOfCSVs) {
       }
     }
   }
+  console.timeEnd('UTIL_01');
   return giantObject;
 }
 

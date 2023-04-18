@@ -10,7 +10,7 @@ import {
 import {
   DIR_EXPORT_TO_AE,
 } from './JS_UTIL_paths.js';
-import writePlayerMemory from './JS_UTIL_03_PlayerMemory.js'; // used with Knockdown_State
+import getPMem from './JS_UTIL_03_PlayerMemory.js'; // used with Knockdown_State
 
 /**
  * @returns {Number[]} returns an array of numbers and writes a file with
@@ -61,7 +61,7 @@ export function writeStaticDataCNV(giantObjectCopy) {
       for (let dataIDX = 0; dataIDX < STATIC_PMEM_ADRS.length; dataIDX++) {
         const staticPMem = [STATIC_PMEM_ADRS[dataIDX]].toString();
         const strForFn = tempObj.toString();
-        const callPMemFN = writePlayerMemory(strForFn, p1OrP2, staticPMem, 0);
+        const callPMemFN = getPMem(giantObjectCopy, strForFn, p1OrP2, staticPMem, 0);
         for (let pSlot = 0; pSlot < callPMemFN.length; pSlot++) {
           // Push and convert all three arrays' values
           for (let clipLen = 0; clipLen < callPMemFN[pSlot].length; clipLen++) {
