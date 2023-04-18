@@ -77,6 +77,7 @@ function findMinMaxRound(objectFN) {
   }
   return newObj;
 }
-// make a deep copy of the newObj that gets returned from the function
+// console.time('findMinMaxRound');
 const giantObjectCopy = JSON.parse(JSON.stringify(findMinMaxRound(giantObject)));
 export default giantObjectCopy;
+// console.timeEnd('findMinMaxRound');

@@ -1,27 +1,27 @@
 /* eslint-disable no-console */
 /* eslint-disable no-multi-spaces */
 import * as fs from 'fs';
-import giantObjectCopy from './JS_UTIL_02_MinMaxRound.js';
 import { DIR_EXPORT_TO_AE } from './JS_UTIL_paths.js';
+// import giantObjectCopy from './JS_UTIL_02_MinMaxRound.js';
 
-const updatedObj = giantObjectCopy;
 const enableLogging = false;
-
-// Main function to write data to files OR return finalValues array
+// console.time('pMem');
 /**
-* @param {string} objectName string
-* @param {number|string} PlayerOneOrPlayerTwo number or string, ex: 1 or "P1"
-* @param {string} pMemAdr string, ex: "Health_Big"
-* @param {number|boolean} write flag to return array or write to file
-* @returns {Number[]} returns an array of numbers or writes a file for
-* the pMemAdr in the clip.
-* @description Finds the point character, and returns an array of numbers
-* for the pMemAdr in the clip.
+ * @param {object} updatedObj the full object containing other objects.
+ * @param {string} objectName string
+ * @param {number|string} P1OrP2 number or string, ex: 1 or "P1" or "1"
+ * @param {string} pMemAdr string, ex: "Health_Big", "X_Velocity"
+ * @param {number|boolean} write flag to return array or write to file
+ * @returns {Number[]} returns an array of numbers or writes a file for
+ * the pMemAdr in the clip.
+ * @description Finds the point character, and returns an array of numbers
+ * for the pMemAdr in the clip. Can write.
 */
 // eslint-disable-next-line consistent-return
-export default function writePlayerMemory(objectName, PlayerOneOrPlayerTwo, pMemAdr, write) {
+export default function writePlayerMemory(updatedObj, objectName, P1OrP2, pMemAdr, write) {
+  // console.log(objectName);
   if (enableLogging) {
-    console.log(objectName, PlayerOneOrPlayerTwo, pMemAdr, write);
+    console.log(objectName, P1OrP2, pMemAdr, write);
   }
   const DIR_OUTPATH = `${DIR_EXPORT_TO_AE}${objectName}`;
   const CLIP_LENGTH = updatedObj[objectName].A_2D_Game_Timer.split(',').length;
@@ -50,14 +50,14 @@ export default function writePlayerMemory(objectName, PlayerOneOrPlayerTwo, pMem
   /** @description "P1" | "P2" */
   let playerSwitcher; // Switches between "P1" and "P2"
 
-  if ((PlayerOneOrPlayerTwo === 1)
-    || (PlayerOneOrPlayerTwo === 'P1')
-    || (PlayerOneOrPlayerTwo === '1')) {
+  if ((P1OrP2 === 1)
+    || (P1OrP2 === 'P1')
+    || (P1OrP2 === '1')) {
     p1OrP2Obj = POINT_OBJ_P1;
     playerSwitcher = 'P1';
-  } else if ((PlayerOneOrPlayerTwo === 2)
-    || (PlayerOneOrPlayerTwo === 'P2')
-    || (PlayerOneOrPlayerTwo === '2')) {
+  } else if ((P1OrP2 === 2)
+    || (P1OrP2 === 'P2')
+    || (P1OrP2 === '2')) {
     p1OrP2Obj = POINT_OBJ_P2;
     playerSwitcher = 'P2';
   }
@@ -180,6 +180,7 @@ export default function writePlayerMemory(objectName, PlayerOneOrPlayerTwo, pMem
   }
   if ((write === 1) || (write === true)) {
     // Create file if it doesn't exist
+    // console.time('WritePMem');
     const tempStr = `${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`;
     if (!fs.existsSync(tempStr)) {
       fs.writeFileSync(
@@ -196,7 +197,10 @@ export default function writePlayerMemory(objectName, PlayerOneOrPlayerTwo, pMem
         );
       }
     } else {
-      throw new Error('Error: File already exists.');
+      return false;
     }
+    // console.timeEnd('WritePMem');
   }
 }
+
+// console.timeEnd('pMem');

@@ -221,6 +221,8 @@ function processCSV(arrayOfCSVs) {
       // Check if the file doesn't exist already before wrting it.
       if (!fs.existsSync(`${DIR_OUTPATH}${item}.js`)) {
         fs.writeFileSync(`${DIR_OUTPATH}${item}.js`, tempString);
+      } else {
+        continue;
       }
     }
   }
