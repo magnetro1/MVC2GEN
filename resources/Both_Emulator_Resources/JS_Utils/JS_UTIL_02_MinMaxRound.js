@@ -1,11 +1,8 @@
-// import * as fs from 'fs';
-// import { DIR_EXPORT_TO_AE } from './JS_UTIL_paths.js';
+import giantObject from './JS_UTIL_01_SortCSV.js';
 import {
   FLOATING_POINT_ADDRESSES,
   MIN_MAX_ADDRESSES,
 } from './JS_UTIL_staticData.js';
-
-import giantObject from './JS_UTIL_01_SortCSV.js';
 
 /**
 *  @description Rounds the floating point addresses and adds the
@@ -13,7 +10,7 @@ import giantObject from './JS_UTIL_01_SortCSV.js';
 *  @param {Object} objectFN giantObject
 *  @returns {Object} giantObject
 */
-export default function findMinMaxRound(objectFN) {
+function findMinMaxRound(objectFN) {
   const newObj = objectFN;
   // const toFixedDigits = [0, 2, 4]; // 7 is the default
   const toFixedDigits = [0]; // 7 is the default
@@ -78,19 +75,8 @@ export default function findMinMaxRound(objectFN) {
       }
     }
   }
-  // Write each entry from each object into a JS File.
-  // for (const tempObj in newObj) {
-  //   const DIR_OUTPATH = `${DIR_EXPORT_TO_AE}${tempObj}/`;
-  //   for (const item in newObj[tempObj]) {
-  //     const tempString = `var result = ['${newObj[tempObj][item]}'];`;
-  //     fs.writeFileSync(`${DIR_OUTPATH}${item}.js`, tempString);
-  //   }
-  // }
   return newObj;
 }
 // make a deep copy of the newObj that gets returned from the function
-export const giantObjectCopy = JSON.parse(JSON.stringify(findMinMaxRound(giantObject)));
-
-// console.log('giantObjectCopy', giantObjectCopy);
-
-// findMinMaxRound(giantObject);
+const giantObjectCopy = JSON.parse(JSON.stringify(findMinMaxRound(giantObject)));
+export default giantObjectCopy;

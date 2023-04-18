@@ -1,6 +1,5 @@
 /* eslint-disable no-continue */
 import * as fs from 'fs';
-
 import {
   DIR_EXPORT_TO_AE,
   DIR_CSVS,
@@ -160,7 +159,7 @@ function processCSV(arrayOfCSVs) {
         allArrayStructure[colIdx].push(allDataArray[rowIdx][colIdx]);
       }
     }
-    // Check for missing entries & Write to file
+    // Check for missing entries
     const missingEntries = ['/*\n'];
     for (let i = 0; i < allArrayStructure[0].length - 1; i++) {
       if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1) {
@@ -185,11 +184,13 @@ function processCSV(arrayOfCSVs) {
         + `Total_Frames in Clip: ${allArrayStructure[0].length}\n*/\n`,
       );
     }
-    // Write an info-file.
-    fs.writeFileSync(
-      `${DIR_OUTPATH}_${arrayOfCSVs[csvFilesIDX]}.js`,
-      missingEntries.toString().replace(/,/g, ''),
-    );
+    // Write an info-file if the file doesn't exist
+    if (!fs.existsSync(`${DIR_OUTPATH}_${arrayOfCSVs[csvFilesIDX]}.js`)) {
+      fs.writeFileSync(
+        `${DIR_OUTPATH}_${arrayOfCSVs[csvFilesIDX]}.js`,
+        missingEntries.toString().replace(/,/g, ''),
+      );
+    }
     // Make an object inside of giantObject for each set of data from the csv
     giantObject[arrayOfCSVs[csvFilesIDX]] = {};
     // Fill the object with the data from the csv
@@ -207,7 +208,22 @@ function processCSV(arrayOfCSVs) {
       }
     }
   }
-  // console.log('giantObject: ', giantObject);
+  // Write each entry from each object into a JS File.
+  for (const tempObj in giantObject) {
+    const DIR_OUTPATH = `${DIR_EXPORT_TO_AE}${tempObj}/`;
+    for (const item in giantObject[tempObj]) {
+      // if the item in the object matches this regex, skip it.
+      const playerMemoryRegex = /(P[1-2]_[A-C]_)|Camera\w+/g; // [1] = P1_A
+      if (playerMemoryRegex.test(item)) {
+        continue;
+      }
+      const tempString = `var result = ['${giantObject[tempObj][item]}'];`;
+      // Check if the file doesn't exist already before wrting it.
+      if (!fs.existsSync(`${DIR_OUTPATH}${item}.js`)) {
+        fs.writeFileSync(`${DIR_OUTPATH}${item}.js`, tempString);
+      }
+    }
+  }
   return giantObject;
 }
 

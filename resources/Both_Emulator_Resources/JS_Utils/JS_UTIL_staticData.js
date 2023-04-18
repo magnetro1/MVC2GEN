@@ -242,8 +242,8 @@ export const MIN_MAX_ADDRESSES = [
   'P2_C_Storm_214kk_Timer',
   'P2_C_War_Machine_214kk_Timer',
 
-  'P1_Combo_Meter_Value',
-  'P2_Combo_Meter_Value',
+  // 'P1_Combo_Meter_Value',
+  // 'P2_Combo_Meter_Value',
 ];
 
 export const FLOATING_POINT_ADDRESSES = [
