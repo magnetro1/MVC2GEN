@@ -20,7 +20,6 @@ writeInputCNV(updatedObj);
 writeP1P2Addresses(updatedObj);
 writeNewStates(updatedObj);
 
-console.time('timer');
 for (const tempObj in updatedObj) {
   let tempArr = [];
   const playerMemoryRegex = /(P[1-2]_[A-C]_)/g; // [1] = P1_A
@@ -40,5 +39,4 @@ for (const tempObj in updatedObj) {
     getPMem(giantObjectCopy, tempObj.toString(), 2, pMemAdr.toString(), 1);
     // console.timeEnd('pMemP2');
   });
-  console.timeEnd('timer');
 }

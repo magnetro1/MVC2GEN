@@ -300,10 +300,11 @@ export default function writeNewStates(wObjFN) {
                 if (err) throw err;
               },
             );
-          } else {
-            // console.log(`File ${tempFile.split('/').pop()} already exists. Skipping...`);
-            continue;
           }
+          // else {
+          //   // console.log(`File ${tempFile.split('/').pop()} already exists. Skipping...`);
+          //   continue;
+          // }
         }
       }
     }

@@ -77,7 +77,7 @@ function findMinMaxRound(objectFN) {
   }
   return newObj;
 }
-console.time('UTIL_02');
+// console.time('UTIL_02');
 const giantObjectCopy = JSON.parse(JSON.stringify(findMinMaxRound(giantObject)));
 export default giantObjectCopy;
-console.timeEnd('UTIL_02');
+// console.timeEnd('UTIL_02');
