@@ -1,4 +1,5 @@
 /* eslint-disable */
+
 /*
 --------------------------------------------------
 Step 0: Import the necessary modules
@@ -26,13 +27,12 @@ import {
   DIR_CSVS
 } from './JS_UTIL_paths.js';
 
-
+console.time('writeAllData');
 /*
 --------------------------------------------------
 Step 1: Get the CSV file names from a directory
 --------------------------------------------------
 */
-
 let csvFilesArr = [];
 let csvSoloNameArr = [];
 
@@ -380,7 +380,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       // {
       fs.writeFileSync(`${DIR_OUTPATH}/${playerSwitcher}_${playerMemoryAddress.split(',')}.js`,
         `var result = [];` + "\n",
-        {flag: "a+", encoding: 'utf8'});
+        { flag: "a+", encoding: 'utf8' });
 
       // Append main data
       for (let dataArrayPerCharacter in finalValuesArray) {
@@ -482,10 +482,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     }
   };
   /**
- * @description outputs arrays containing Total_Frames in ascending and 
- * descending order, and Max number in clip. The first three arrays are
- * arrays of numbers, the remaining are arrays of strings
- */
+   * @description outputs arrays containing Total_Frames in ascending and 
+   * descending order, and Max number in clip. The first three arrays are
+   * arrays of numbers, the remaining are arrays of strings
+   */
   function writeTotalFramesCNV() {
     let totalFrameArrT1 = [];
     let totalFrameArrT2 = [];
@@ -808,13 +808,310 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   --------------------------------------------------
   End of Core Functions
   --------------------------------------------------
-  
+    
   --------------------------------------------------
   Step 4: Begin Write-State Functions
   --------------------------------------------------
   */
+  /**
+   * @description Writes State-Files that count and increment consecutive true values. 
+   * Search for "NEW_STATE_ADD_HERE" across the function to append address fetches and new states.
+   */
+  function writeNewStates() {
+    // Temps for switching P1 and P2
+    let tempPlayerValue, tempPlayerString;
+    // P1 and P2
+    for (tempPlayerValue = 1; tempPlayerValue < 3; tempPlayerValue++) {
+      tempPlayerValue == 1 ? tempPlayerString = 'P1' : tempPlayerString = 'P2';
 
+      // Fetches relevant SINGLE addresses for State-Logic-Checking
+      var getAction_Flags = writePlayerMemory(tempPlayerString, 'Action_Flags', 0);
+      var getAir_Dash_Count = writePlayerMemory(tempPlayerString, 'Air_Dash_Count', 0);
+      var getAirborne = writePlayerMemory(tempPlayerString, 'Airborne', 0);
+      var getAnimation_Timer_Main = writePlayerMemory(tempPlayerString, 'Animation_Timer_Main', 0);
+      var getAttack_Immune = writePlayerMemory(tempPlayerString, 'Attack_Immune', 0);
+      var getAttack_Number = writePlayerMemory(tempPlayerString, 'Attack_Number', 0);
+      var getBlock_Meter = writePlayerMemory(tempPlayerString, 'Block_Meter', 0);
+      var getDizzy = writePlayerMemory(tempPlayerString, 'Dizzy', 0);
+      var getDizzy_Reset_Timer = writePlayerMemory(tempPlayerString, 'Dizzy_Reset_Timer', 0);
+      var getHitStop = writePlayerMemory(tempPlayerString, 'Hitstop2', 0);
+      var getKnockdown_State = writePlayerMemory(tempPlayerString, 'Knockdown_State', 0);
+      var getFlyingScreen = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
+      var getFSI_Points = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
+      var getIs_Prox_Block = writePlayerMemory(tempPlayerString, 'Is_Prox_Block', 0);
+      var getNormal_Strength = writePlayerMemory(tempPlayerString, 'Normal_Strength', 0);
+      var getPunchKick = writePlayerMemory(tempPlayerString, 'PunchKick', 0);
+      var getSJ_Counter = writePlayerMemory(tempPlayerString, 'SJ_Counter', 0);
+      var getY_Position_Arena = writePlayerMemory(tempPlayerString, 'Y_Position_Arena', 0);
+      var getY_Position_From_Enemy = writePlayerMemory(tempPlayerString, 'Y_Position_From_Enemy', 0);
+      var getY_VELOCITY = writePlayerMemory(tempPlayerString, 'Y_Velocity', 0);
+      // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here if you need something that isn't on the list.
 
+      // List of files to be written. Will have prefix of P1_ or P2_
+      var allNewStateObject =
+      {
+        State_Being_Hit: [[], [], []],
+        State_Flying_Screen_Air: [[], [], []],
+        State_Flying_Screen_OTG: [[], [], []],
+        State_FS_Install_1: [[], [], []],
+        State_FS_Install_2: [[], [], []],
+        State_NJ_Air: [[], [], []],
+        State_NJ_Rising: [[], [], []],
+        State_OTG_Extra_Stun: [[], [], []],
+        State_OTG_Forced_Stun: [[], [], []],
+        State_OTG_Hit: [[], [], []],
+        State_OTG_Roll_Invincible: [[], [], []],
+        State_OTG_Roll_Stunned: [[], [], []],
+        State_ProxBlock_Air: [[], [], []],
+        State_ProxBlock_Ground: [[], [], []],
+        State_Pushblock_Air: [[], [], []],
+        State_Pushblock_Ground: [[], [], []],
+        State_Rising_Invincibility: [[], [], []],
+        State_SJ_Air: [[], [], []],
+        State_SJ_Counter: [[], [], []],
+        State_Stun: [[], [], []],
+        State_Tech_Hit: [[], [], []],
+        State_Thrown_Air: [[], [], []],
+        State_Thrown_Ground: [[], [], []],
+        State_InUnDizzy: [[], [], []],
+        // NEW_STATE_ADD_HERE ⏫
+      }
+
+      // for each slot (abc) in a Player's side
+      for (let playerSlotI = 0; playerSlotI < 3; playerSlotI++) {
+        // for each frame in a clip
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+          // Pushing the boolean-results for each State. Example BeingHit result = [ 0,0,0,1,1,1,1,1... ]
+
+          // Being_Hit
+          (
+            ((getKnockdown_State)[playerSlotI][clipLen] == 32)
+            && ((getHitStop)[playerSlotI][clipLen] > 0)
+          )
+            ? allNewStateObject.State_Being_Hit[playerSlotI].push(1)
+            : allNewStateObject.State_Being_Hit[playerSlotI].push(0);
+          // "Flying_Screen_Air"
+          (
+            ((getFlyingScreen)[playerSlotI][clipLen] == 1)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 32)
+            && ((getAirborne)[playerSlotI][clipLen] == 2)
+          )
+            ? allNewStateObject.State_Flying_Screen_Air[playerSlotI].push(1)
+            : allNewStateObject.State_Flying_Screen_Air[playerSlotI].push(0);
+          // "Flying_Screen_OTG"
+          (
+            ((getFlyingScreen)[playerSlotI][clipLen] == 1)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 32)
+            && ((getAirborne)[playerSlotI][clipLen] == 3)
+          )
+            ? allNewStateObject.State_Flying_Screen_OTG[playerSlotI].push(1)
+            : allNewStateObject.State_Flying_Screen_OTG[playerSlotI].push(0);
+          // "FS_Install_1"
+          (
+            ((getFSI_Points)[playerSlotI][clipLen] == 8)
+            || ((getFSI_Points)[playerSlotI][clipLen] == 9)
+          )
+            ? allNewStateObject.State_FS_Install_1[playerSlotI].push(1)
+            : allNewStateObject.State_FS_Install_1[playerSlotI].push(0);
+          // "FS_Install_2"
+          (
+            ((getFSI_Points)[playerSlotI][clipLen] > 9)
+          )
+            ? allNewStateObject.State_FS_Install_2[playerSlotI].push(1)
+            : allNewStateObject.State_FS_Install_2[playerSlotI].push(0);
+          // "NJ_Air"
+          (
+            ((getAirborne)[playerSlotI][clipLen] == 2)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 3)
+            && ((getSJ_Counter)[playerSlotI][clipLen] == 0)
+          )
+            ? allNewStateObject.State_NJ_Air[playerSlotI].push(1)
+            : allNewStateObject.State_NJ_Air[playerSlotI].push(0);
+          // "NJ_Rising
+          (
+            ((getAirborne)[playerSlotI][clipLen] == 0)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 2)
+            && ((getSJ_Counter)[playerSlotI][clipLen] == 0)
+          )
+            ? allNewStateObject.State_NJ_Rising[playerSlotI].push(1)
+            : allNewStateObject.State_NJ_Rising[playerSlotI].push(0);
+          // "OTG_Extra_Stun"
+          (
+            ((getKnockdown_State)[playerSlotI][clipLen] == 23)
+            && (((getAirborne)[playerSlotI][clipLen] == 3))
+          )
+            ? allNewStateObject.State_OTG_Extra_Stun[playerSlotI].push(1)
+            : allNewStateObject.State_OTG_Extra_Stun[playerSlotI].push(0);
+
+          // "OTG_Forced_Stun"
+          (
+            ((getKnockdown_State)[playerSlotI][clipLen] == 32)
+            && (((getAirborne)[playerSlotI][clipLen] == 3))
+          )
+            ? allNewStateObject.State_OTG_Forced_Stun[playerSlotI].push(1)
+            : allNewStateObject.State_OTG_Forced_Stun[playerSlotI].push(0);
+          // "OTG_Hit"
+          (
+            ((getAction_Flags)[playerSlotI][clipLen] == 0)
+            && ((getAirborne)[playerSlotI][clipLen] == 3)
+            && (((getKnockdown_State)[playerSlotI][clipLen] == 32))
+          )
+            ? allNewStateObject.State_OTG_Hit[playerSlotI].push(1)
+            : allNewStateObject.State_OTG_Hit[playerSlotI].push(0);
+          // "OTG_Roll_Invincible"
+          (
+            ((getAction_Flags)[playerSlotI][clipLen] == 2)
+            && ((getAirborne)[playerSlotI][clipLen] == 1)
+            && (((getAttack_Immune)[playerSlotI][clipLen] == 1)
+              && ((getKnockdown_State)[playerSlotI][clipLen] == 17))
+          )
+            ? allNewStateObject.State_OTG_Roll_Invincible[playerSlotI].push(1)
+            : allNewStateObject.State_OTG_Roll_Invincible[playerSlotI].push(0);
+
+          // "OTG_Roll_Stunned"
+          (
+            ((getAction_Flags)[playerSlotI][clipLen] == 1)
+            && ((getAirborne)[playerSlotI][clipLen] == 3)
+            && (((getKnockdown_State)[playerSlotI][clipLen] == 32))
+          )
+            ? allNewStateObject.State_OTG_Roll_Stunned[playerSlotI].push(1)
+            : allNewStateObject.State_OTG_Roll_Stunned[playerSlotI].push(0);
+          // "ProxBlock_Air"
+          (
+            ((getIs_Prox_Block)[playerSlotI][clipLen] == 6)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 19)
+          )
+            ? allNewStateObject.State_ProxBlock_Air[playerSlotI].push(1)
+            : allNewStateObject.State_ProxBlock_Air[playerSlotI].push(0);
+          // "ProxBlock_Ground"
+          (
+            ((getIs_Prox_Block)[playerSlotI][clipLen] == 5)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 18)
+          )
+            ? allNewStateObject.State_ProxBlock_Ground[playerSlotI].push(1)
+            : allNewStateObject.State_ProxBlock_Ground[playerSlotI].push(0);
+          // "Pushblock_Air"
+          (
+            ((getBlock_Meter)[playerSlotI][clipLen] > 0)
+            && ((getAnimation_Timer_Main)[playerSlotI][clipLen] < 28)
+            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 6)
+            && ((getAction_Flags)[playerSlotI][clipLen] == 2)
+          )
+            ? allNewStateObject.State_Pushblock_Air[playerSlotI].push(1)
+            : allNewStateObject.State_Pushblock_Air[playerSlotI].push(0);
+          // "Pushblock_Ground"
+          (
+            ((getBlock_Meter)[playerSlotI][clipLen] > 0)
+            && ((getAnimation_Timer_Main)[playerSlotI][clipLen] < 28)
+            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 5)
+            && (((getAction_Flags)[playerSlotI][clipLen] == 3))
+          )
+            ? allNewStateObject.State_Pushblock_Ground[playerSlotI].push(1)
+            : allNewStateObject.State_Pushblock_Ground[playerSlotI].push(0);
+          // "Rising_Invincibility"
+          (
+            ((getAirborne)[playerSlotI][clipLen] == 0)
+            && ((getAttack_Immune)[playerSlotI][clipLen] == 1)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 17)
+          )
+            ? allNewStateObject.State_Rising_Invincibility[playerSlotI].push(1)
+            : allNewStateObject.State_Rising_Invincibility[playerSlotI].push(0);
+          // "SJ_Air"
+          (
+            ((getAirborne)[playerSlotI][clipLen] == 2)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 14)
+            && ((getSJ_Counter)[playerSlotI][clipLen] == 1)
+          )
+            ? allNewStateObject.State_SJ_Air[playerSlotI].push(1)
+            : allNewStateObject.State_SJ_Air[playerSlotI].push(0);
+          // "SJ_Counter"
+          (
+            ((getSJ_Counter)[playerSlotI][clipLen] == 2)
+          )
+            ? allNewStateObject.State_SJ_Counter[playerSlotI].push(1)
+            : allNewStateObject.State_SJ_Counter[playerSlotI].push(0);
+          // "Stun"
+          (
+            ((getKnockdown_State)[playerSlotI][clipLen] == 32)
+            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 13)
+          )
+            ? allNewStateObject.State_Stun[playerSlotI].push(1)
+            : allNewStateObject.State_Stun[playerSlotI].push(0);
+          // "Tech_Hit"
+          (
+            ((getKnockdown_State)[playerSlotI][clipLen] == 27)
+          )
+            ? allNewStateObject.State_Tech_Hit[playerSlotI].push(1)
+            : allNewStateObject.State_Tech_Hit[playerSlotI].push(0);
+          // "Thrown_Air"
+          (
+            ((getAirborne)[playerSlotI][clipLen] == 2)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 31)
+            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 16)
+          )
+            ? allNewStateObject.State_Thrown_Air[playerSlotI].push(1)
+            : allNewStateObject.State_Thrown_Air[playerSlotI].push(0);
+          // "Thrown_Ground"
+          (
+            ((getAirborne)[playerSlotI][clipLen] == 0)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 31)
+            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 16)
+          )
+            ? allNewStateObject.State_Thrown_Ground[playerSlotI].push(1)
+            : allNewStateObject.State_Thrown_Ground[playerSlotI].push(0);
+          // "Undizzy"
+          (
+            ((getAttack_Immune)[playerSlotI][clipLen] == 2)
+            && ((getKnockdown_State)[playerSlotI][clipLen] == 32)
+            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 13)
+            && ((getDizzy)[playerSlotI][clipLen] == 80)
+            && ((getDizzy_Reset_Timer)[playerSlotI][clipLen] == 60)
+          )
+            ? allNewStateObject.State_Thrown_Ground[playerSlotI].push(1)
+            : allNewStateObject.State_Thrown_Ground[playerSlotI].push(0);
+          // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
+          // NEW_STATE_ADD_HERE
+        } // clipLen Scope
+
+        // Count | Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
+        var counter = 0;
+
+        for (let stateDataEntryI in Object.entries(allNewStateObject)) {
+          Object.values(allNewStateObject)[stateDataEntryI][playerSlotI].forEach((element, index) => {
+            if (element == 0) {
+              counter = 0
+              return 0;
+              // return Object.values(allDataObject)[stateDataEntryI][playerSlotI][index];
+            }
+            else {
+              Object.values(allNewStateObject)[stateDataEntryI][playerSlotI][index] = (element + counter);
+              counter++
+              return Object.values(allNewStateObject)[stateDataEntryI][playerSlotI][index + counter]
+            }
+          });
+        }
+
+        // Write the files
+        for (let stateFileIndex = 0; stateFileIndex < Object.entries(allNewStateObject).length; stateFileIndex++) {
+          fs.writeFileSync(`${DIR_OUTPATH}${tempPlayerString}_${Object.keys(allNewStateObject)[stateFileIndex]}.js`,
+            `var result = []; ` + '\n', { encoding: 'utf8' });
+        }
+
+        // Append data arrays into files
+        for (let stateFileDataIndex = 0; stateFileDataIndex < Object.entries(allNewStateObject).length; stateFileDataIndex++) {
+          fs.appendFileSync(`${DIR_OUTPATH}${tempPlayerString}_${Object.keys(allNewStateObject)[stateFileDataIndex]}.js`,
+            JSON.stringify(Object.values(allNewStateObject)[stateFileDataIndex])
+              .replace('[[', `result[0] = [`)
+              .replace(',[', '\nresult[1] = [')
+              .replace(',[', '\nresult[2] = [')
+              .replace(']]', ']')
+              .replace(/]$/gm, '];') // end of line close-bracket gets semi-colon
+              .replace(/"/gm, '\'') // replace double-quotes with single-quotes
+          );
+        }
+      }
+    }
+  }
 
 
 
@@ -843,22 +1140,24 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     writePlayerMemory(1, label.toString(), 1);
     writePlayerMemory(2, label.toString(), 1);
   });
-
+  writeNewStates()
   // Write dataObject to JS files
-  // for (let key in dataObject)
-  // {
-  //   if ((key == undefined) || (key == null) || (key == ''))
-  //   {
-  //     continue;
-  //   }
-  //   fs.writeFileSync(`${ DIR_OUTPATH }/${ key }.js`,
-  //     `var result = [${ dataObject[key] }];`,
-  //     'utf8'
-  //   );
-  // }
+  for (let key in dataObject) {
+    if ((key == undefined) || (key == null) || (key == '')) {
+      continue;
+    }
+    const playerMemoryRegex = /(P[1-2]_[A-C]_)|Camera\w+/g; // [1] = P1_A
+    if (playerMemoryRegex.test(key)) {
+      continue;
+    }
+    fs.writeFileSync(`${DIR_OUTPATH}/${key}.js`,
+      `var result = [${dataObject[key]}];`,
+      'utf8'
+    );
+  }
 
 } // End of main forloop
-
+console.timeEnd('writeAllData');
 //TODO register the State Functions into this file
 //TODO register the MVC2 Combo-Hit to Message conversion for AE
 //TODO register the AE Position locations for-each character, and create a file for it to read from. scale too?
