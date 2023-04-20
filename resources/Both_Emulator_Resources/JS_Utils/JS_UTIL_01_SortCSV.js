@@ -56,17 +56,13 @@ function countReplayData(arrayOfNumbers) {
   return largestValueKey;
 }
 /**
- // create empty objects named after each csv file
- CSV_FILES_ARRAY.forEach((csvFile) => {
-   giantObject[csvFile] = {};
- });
  * @description Processes array of CSV files and pushes their content into dataObject.
  * Also writes a folder with an info file in the exportToAE folder.
  * @param {String[]} arrayOfCSVs Array of CSV files used as directory location pointers
  * @returns {Object} giantArrayObject
 */
 
-function processCSV(arrayOfCSVs) {
+export function processCSV(arrayOfCSVs) {
   for (let csvFilesIDX = 0; csvFilesIDX < arrayOfCSVs.length; csvFilesIDX++) {
     let headersArray = [];
     const allDataArray = [];
@@ -221,16 +217,12 @@ function processCSV(arrayOfCSVs) {
       const tempString = `var result = ['${giantObject[tempObj][item]}'];`;
       // Check if the file doesn't exist already before wrting it.
       if (!fs.existsSync(`${DIR_OUTPATH}${item}.js`)) {
-        fs.writeFileSync(`${DIR_OUTPATH}${item}.js`, tempString);
-      } else {
-        continue;
+        fs.writeFile(`${DIR_OUTPATH}${item}.js`, tempString, (err) => { if (err) throw err; });
       }
     }
   }
   // console.timeEnd('UTIL_01');
-  return giantObject;
 }
-
 processCSV(CSV_FILES_ARRAY);
 
 export default giantObject;
