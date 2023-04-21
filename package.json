@@ -13,6 +13,7 @@
   "license": "ISC",
   "homepage": "https://github.com/magnetro1/MVC2GEN",
   "dependencies": {
+    "after-effects-node": "^0.0.1",
     "clipboardy": "^3.0.0",
     "readline": "^1.3.0"
   },

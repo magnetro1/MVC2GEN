@@ -18,7 +18,8 @@ import {
   NAME_TABLE_OBJ,
   PORTRAITS_TO_TIME_OBJ,
   PROX_BLOCK_OBJ,
-  STAGES_OBJ
+  STAGES_OBJ,
+  COMBO_CALLOUTS
 } from './JS_UTIL_staticData.js';
 
 // Import directories; Order matters!
@@ -461,7 +462,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           {
             staticLookupResultsArray[characterSlotI].push(`"${Object.values(STATIC_DATA_OBJS[staticDataEntry])[callPlayerMemoryFN[characterSlotI][clipLen]]}"`);
           }
-
+          // TODO hook into this entry to write the portrait's position for AE
+          // TODO in arrays depending on the character.
+          // TODO `var result = [[\d,\d],...]
+          // TODO bring in the static data for the key value pairs and use that
           if (STATIC_DATA_OBJS[staticDataEntry] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
           {
             fs.appendFileSync(`${DIR_OUTPATH}P${playersLen}_PortraitsToTime.js`,
@@ -490,11 +494,12 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     let totalFrameArrT1 = [];
     let totalFrameArrT2 = [];
 
-    Object.values(dataObject['Total_Frames']).forEach((frame, indexT1) => {
+    (dataObject['Total_Frames']).split(',').forEach((frame, indexT1) => {
       totalFrameArrT1.push(indexT1);
     });
-    // Padded Zeroes for program pad comp
-    Object.values(dataObject['Total_Frames']).forEach((frame, indexT2) => {
+
+    // // Padded Zeroes for program pad comp
+    (dataObject['Total_Frames']).split(',').forEach((frame, indexT2) => {
       if (indexT2 == 0) {
         indexT2++
       }
@@ -555,8 +560,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       `result[5] = [${totalFrameArrT2}];\n`,
       'utf8'
     );
-    // }
-  };
+  }
+  // };
   function writeStageDataCNV() // Fills out color data for stages in Hex in result[1]
   {
     let stageData = [];
@@ -1130,12 +1135,50 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     }
   }
 
+  function writeComboCallouts() {
+    for (let p1OrP2 = 1; p1OrP2 <= 2; p1OrP2++) {
+      let tempP1OrP2Str = dataObject[`P${p1OrP2}_Combo_Meter_Value`].split(',');
+      let resultsArr = [];
+      // console.log(...tempP1OrP2Str);
+      tempP1OrP2Str.forEach((element, index) => {
+        if (parseInt(element) <= 2) {
+          resultsArr.push(''); // ''
+        } else if (parseInt(element) == 3) {
+          resultsArr.push(`${COMBO_CALLOUTS[0]}`); // Yes
+        } else if ((parseInt(element) == 4) || (parseInt(element) == 5)) {
+          resultsArr.push(`${COMBO_CALLOUTS[1]}`); // Good
+        } else if ((parseInt(element) == 6) || (parseInt(element) == 7)) {
+          resultsArr.push(`${COMBO_CALLOUTS[2]}`); // Great
+        } else if ((parseInt(element) == 8) || (parseInt(element) == 9)) {
+          resultsArr.push(`${COMBO_CALLOUTS[3]}`); // Very Good
+        } else if ((parseInt(element) >= 10) && (parseInt(element) <= 29)) {
+          resultsArr.push(`${COMBO_CALLOUTS[4]}`); // Wonderful
+        } else if ((parseInt(element) >= 30) && (parseInt(element) <= 49)) {
+          resultsArr.push(`${COMBO_CALLOUTS[5]}`); // Fantastic
+        } else if ((parseInt(element) >= 50) && (parseInt(element) <= 99)) {
+          resultsArr.push(`${COMBO_CALLOUTS[6]}`); // Monster
+        } else if ((parseInt(element) >= 100)) {
+          resultsArr.push(`${COMBO_CALLOUTS[7]}`); // Marvelous
+        } else {
+          resultsArr.push('');
+        }
+      });
+      //Write results array to a file and put qutoes around each element if it's not empty.
+      fs.writeFile(`${DIR_OUTPATH}/P${p1OrP2}_Combo_Callouts.js`,
+        `var result = [${resultsArr.map((element) => {
+          return (element == '') ? '' : `'${element}'`
+        })}];`,
+        'utf8', (err) => { if (err) throw err; }
+      );
+    }
+  }
+
   /*
   --------------------------------------------------
   Step 5:  📞 Call Functions that Write Data to Files
   --------------------------------------------------
   */
-  // Core Functions
+  writeComboCallouts();
   // appendMinMaxRound();
   // writeP1P2Addresses();
   // countIsPausedCNV();
@@ -1148,12 +1191,12 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   //   writePlayerMemory(1, label.toString(), 1);
   //   writePlayerMemory(2, label.toString(), 1);
   // });
-  writeNewStates()
-  // Write dataObject contents to JS files
-  writeDataObject();
+  // writeNewStates()
+  // writeDataObject();
 
 } // End of main forloop
 console.timeEnd('writeAllData');
-//TODO register the State Functions into this file
-//TODO register the MVC2 Combo-Hit to Message conversion for AE
-//TODO register the AE Position locations for-each character, and create a file for it to read from. scale too?
+
+//TODO Fix CSV 'real-data' finder function.
+//TODO Make Tests for each of the functions!
+//TODO AE Position create a file for it to read from. // import static data

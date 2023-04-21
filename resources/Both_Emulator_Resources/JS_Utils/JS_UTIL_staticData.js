@@ -17,7 +17,7 @@ export const PROX_BLOCK_OBJ = {
   14: '???',
   15: 'Throwing',
   16: 'Being thrown',
-  17: 'Invuln OTG Rise',
+  17: 'OTG Rise',
   18: 'Match Start',
   19: 'Win Pose',
   20: 'Tag-in & OC Launcher',
@@ -53,11 +53,11 @@ export const KNOCKDOWN_STATE_OBJ = {
   21: 'Special Attacks',
   22: 'Post-Match Pose',
   23: 'Extra OTG Stun',
-  24: 'Flight Neutral',
+  24: 'Neutral Flight',
   25: 'Corner Jump',
   26: 'Air Dash',
   27: 'Tech Hit',
-  28: 'Tagging & Assist-is-Called',
+  28: 'Tagging & Calling Assists',
   29: 'Freezes & Flashes',
   30: 'Throwing',
   31: 'Being Thrown',
@@ -333,6 +333,29 @@ export const STAGES_OBJ = {
   16: '8CA7DFFF', // 'Raft1'
 };
 /**
+* @description Contains text call-outs based on the Combo Meter value
+* @description /*
+03:     Yes
+04-05:  Good
+06-07:  Great
+08-09:  Very Good
+10-29:  Wonderful
+30-49:  Fantastic
+50-99:  Monster
+100+:   Marvelous
+* */
+export const COMBO_CALLOUTS = [
+  'Yes',
+  'Good',
+  'Great',
+  'Very Good',
+  'Wonderful',
+  'Fantastic',
+  'Monster',
+  'Marvelous',
+];
+
+/**
 * @description Contains the decimal value of each character, and its alphabetical value in time for
 an After Effects timer remap. Ex: decimal: 30, second: 4 (Akuma)
 * */
@@ -396,6 +419,67 @@ export const PORTRAITS_TO_TIME_OBJ = {
   7: 57,  // Wolverine (Adamantium)
   57: 58, // Wolverine (Bone)
   1: 59,  // Zangief
+};
+export const AE_TO_POSITION = {
+  1: [0, 0],        // Abyss-1
+  2: [0, 0],        // Abyss-2
+  3: [0, 0],        // Abyss-3
+  4: [122, 1976],   // Akuma
+  5: [176, 1986],   // Amingo
+  6: [188, 1766],   // Anakaris
+  7: [288, 1689],   // B.B. Hood
+  8: [-1, 2080],    // Blackheart
+  9: [385, 2080],   // Cable
+  10: [557, 1590],  // Cammy
+  11: [198, 2005],  // Captain America
+  12: [143, 2193],  // Captain Commando
+  13: [120, 1990],  // Charlie
+  14: [560, 1900],  // Chun-Li
+  15: [80, 1650],   // Colossus
+  16: [75, 1822],   // Cyclopsnm
+  17: [275, 1867],  // Dan
+  18: [-513, 1560], // Dhalsim
+  19: [322, 1911],  // Doctor Doom
+  20: [211, 1678],  // Felicia
+  21: [286, 1933],  // Gambit
+  22: [-138, 1791], // Guile
+  23: [199, 1830],  // Hayato
+  24: [-36, 1726],  // Hulk
+  25: [251, 1488],  // Iceman
+  26: [273, 1488],  // Iron Man
+  27: [502, 1658],  // Jill
+  28: [60, 1658],   // Jin
+  29: [119, 1768],  // Juggernaut
+  30: [-5, 1985],   // Ken
+  31: [-29, 1869],  // M.Bison
+  32: [120, 1875],  // Magneto
+  33: [-155, 1634], // Marrow
+  34: [150, 1600],  // Megaman
+  35: [418, 2083],  // Morrigan
+  36: [8, 2063],    // Omega Red
+  37: [194, 1784],  // Psylocke
+  38: [96, 1982],   // Rogue
+  39: [380, 1894],  // Roll
+  40: [149, 2000],  // Ruby Heart
+  41: [-135, 1560], // Ryu
+  42: [81, 1861],   // Sabretooth
+  43: [-123, 1523], // Sakura
+  44: [-86, 2025],  // Sentinel
+  45: [149, 1464],  // Servbot
+  46: [-87, 1751],  // Shuma-Gorath
+  47: [186, 1751],  // Silver Samurai
+  48: [0, 0],       // Sonson
+  49: [273, 1958],  // Spider-Man
+  50: [275, 1850],  // Spiral
+  51: [209, 1761],  // Storm
+  52: [229, 1668],  // Strider Hiryu
+  53: [128, 1654],  // Thanos
+  54: [105, 1733],  // Tron Bonne
+  55: [-45, 1975],  // Venom
+  56: [-78, 1883],  // War Machine
+  57: [-56, 1849],  // Wolverine (Adamantium)
+  58: [126, 1882],  // Wolverine (Bone)
+  59: [257, 1731],  // Zangief
 };
 /**
  * @description Addresses to exclude from the project for CTScraper.js file
