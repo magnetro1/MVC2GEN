@@ -797,7 +797,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         counter++
       }
     });
-
     fs.writeFileSync(`${DIR_OUTPATH}Is_Paused_CNV.js`,
       `var result = [];\nresult[0] = [${dataObject['Is_Paused']}];\nresult[1] = ["${State_Is_Paused.toString()}];`,
       'utf8'
@@ -873,7 +872,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         State_Tech_Hit: [[], [], []],
         State_Thrown_Air: [[], [], []],
         State_Thrown_Ground: [[], [], []],
-        State_InUnDizzy: [[], [], []],
+        State_UnDizzy: [[], [], []],
         // NEW_STATE_ADD_HERE ⏫
       }
 
@@ -1067,8 +1066,9 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
             && ((getDizzy)[playerSlotI][clipLen] == 80)
             && ((getDizzy_Reset_Timer)[playerSlotI][clipLen] == 60)
           )
-            ? allNewStateObject.State_Thrown_Ground[playerSlotI].push(1)
-            : allNewStateObject.State_Thrown_Ground[playerSlotI].push(0);
+            ? allNewStateObject.State_UnDizzy[playerSlotI].push(1)
+            : allNewStateObject.State_UnDizzy[playerSlotI].push(0);
+
           // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
           // NEW_STATE_ADD_HERE
         } // clipLen Scope
@@ -1113,48 +1113,44 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     }
   }
 
-
-
-
+  function writeDataObject() {
+    for (let key in dataObject) {
+      if ((key == undefined) || (key == null) || (key == '')) {
+        continue;
+      }
+      // Don't write PMem or Camera data
+      const playerMemoryRegex = /(P[1-2]_[A-C]_)|Camera\w+/g;
+      if (playerMemoryRegex.test(key)) {
+        continue;
+      }
+      fs.writeFile(`${DIR_OUTPATH}/${key}.js`,
+        `var result = [${dataObject[key]}];`,
+        'utf8', (err) => { if (err) throw err; }
+      );
+    }
+  }
 
   /*
   --------------------------------------------------
-  Step 5: Call Functions that Write Data to Files
-  --------------------------------------------------
-  Each Core Function is called, the dataObject is
-  appended by each function, then the dataObject is
-  put through the Player-Memory function.
+  Step 5:  📞 Call Functions that Write Data to Files
   --------------------------------------------------
   */
-  // 📞 Core Functions
+  // Core Functions
+  // appendMinMaxRound();
+  // writeP1P2Addresses();
+  // countIsPausedCNV();
+  // writeInputCNV();
+  // writeStageDataCNV();
+  // writeStaticDataCNV();
+  // writeTotalFramesCNV();
 
-  appendMinMaxRound();
-  writeP1P2Addresses();
-  countIsPausedCNV();
-  writeInputCNV();
-  writeStageDataCNV();
-  writeStaticDataCNV();
-  writeTotalFramesCNV();
-
-  getPlayerMemoryEntries().forEach((label) => {
-    writePlayerMemory(1, label.toString(), 1);
-    writePlayerMemory(2, label.toString(), 1);
-  });
+  // getPlayerMemoryEntries().forEach((label) => {
+  //   writePlayerMemory(1, label.toString(), 1);
+  //   writePlayerMemory(2, label.toString(), 1);
+  // });
   writeNewStates()
-  // Write dataObject to JS files
-  for (let key in dataObject) {
-    if ((key == undefined) || (key == null) || (key == '')) {
-      continue;
-    }
-    const playerMemoryRegex = /(P[1-2]_[A-C]_)|Camera\w+/g; // [1] = P1_A
-    if (playerMemoryRegex.test(key)) {
-      continue;
-    }
-    fs.writeFileSync(`${DIR_OUTPATH}/${key}.js`,
-      `var result = [${dataObject[key]}];`,
-      'utf8'
-    );
-  }
+  // Write dataObject contents to JS files
+  writeDataObject();
 
 } // End of main forloop
 console.timeEnd('writeAllData');
