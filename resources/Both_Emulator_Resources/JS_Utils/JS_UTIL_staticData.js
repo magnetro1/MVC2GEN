@@ -420,7 +420,7 @@ export const PORTRAITS_TO_TIME_OBJ = {
   57: 58, // Wolverine (Bone)
   1: 59,  // Zangief
 };
-export const AE_TO_POSITION = {
+export const AE_TO_POSITION_OBJ = {
   1: [0, 0],        // Abyss-1
   2: [0, 0],        // Abyss-2
   3: [0, 0],        // Abyss-3

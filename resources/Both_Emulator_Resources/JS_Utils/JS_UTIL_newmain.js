@@ -258,33 +258,30 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     for (let playerPrefix in preFixes) {
       for (let floatAdr in FLOATING_POINT_ADDRESSES) {
         for (let postFix in postFixes) {
-          let stringAddress = FLOATING_POINT_ADDRESSES[floatAdr] + postFixes[postFix];
-
+          let fullAdr = FLOATING_POINT_ADDRESSES[floatAdr] + postFixes[postFix];
           // round off each address by each number inside of toFixedDigits
           for (let digit in toFixedDigits) {
-            let tempArray = dataObject[preFixes[playerPrefix] + stringAddress].split(',');
-
+            let tempArray = dataObject[preFixes[playerPrefix] + fullAdr].split(',');
             for (let i = 0; i < tempArray.length; i++) {
               tempArray[i] = parseFloat(tempArray[i]).toFixed(toFixedDigits[digit]);
             }
             // Merge tempArray into the dataObject so that it is written later. Includes combo_meter min and maxes
-            dataObject[preFixes[playerPrefix] + stringAddress + '_' + toFixedDigits[digit]] = tempArray.join(',');
+            dataObject[preFixes[playerPrefix] + fullAdr + '_' + toFixedDigits[digit]] = tempArray.join(',');
           }
         }
       }
     }
   }
 
-
   // Main function to write data to files OR return finalValues array
   /**
-   * @param {number|string} PlayerOneOrPlayerTwo number or string, ex: 1 or "P1"
-   * @param {string} playerMemoryAddress string, ex: "Health_Big"
+   * @param {number|string} p1OrP2 number or string, ex: 1 or "P1"
+   * @param {string} pMemAdr string, ex: "Health_Big"
    * @param {number|boolean} write flag to return array or write to file
    * @returns {Number[]} returns an array of numbers or writes a file for the playerMemoryAddress in the clip.
    * @description Finds the point character, and returns an array of numbers for the playerMemoryAddress in the clip.
    */
-  function writePlayerMemory(PlayerOneOrPlayerTwo, playerMemoryAddress, write) {
+  function writePlayerMemory(p1OrP2, pMemAdr, write) {
     let POINT_OBJ_P1 =
     {
       P1_A_: dataObject['P1_A_Is_Point'].split(','),
@@ -298,22 +295,22 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       P2_C_: dataObject['P2_C_Is_Point'].split(',')
     };
 
-    let finalValuesArray = [[], [], []]; // 3 Arrays to hold all 3 player slots.
+    let valArr = [[], [], []]; // 3 Arrays to hold all 3 player slots.
     /**@description Switches between the Player1 and Player2 objects,
      * ex: POINT_OBJ_P1 or POINT_OBJ_P2 which contain key value pairs of
      * P1_A... and P2_A... to `dataObject['P1_A_Is_Point'].split(',')`... etc
      */
-    let playerObjectSwitcher;// Switches between the Player1 and Player2 objects
+    let pObjSwitch;// Switches between the Player1 and Player2 objects
 
     /**@description "P1" | "P2" */
     let playerSwitcher; // Switches between "P1" and "P2"
 
-    if ((PlayerOneOrPlayerTwo == 1) || (PlayerOneOrPlayerTwo == "P1")) {
-      playerObjectSwitcher = POINT_OBJ_P1;
+    if ((p1OrP2 == 1) || (p1OrP2 == "P1")) {
+      pObjSwitch = POINT_OBJ_P1;
       playerSwitcher = "P1";
     }
-    else if ((PlayerOneOrPlayerTwo == 2) || (PlayerOneOrPlayerTwo == "P2")) {
-      playerObjectSwitcher = POINT_OBJ_P2;
+    else if ((p1OrP2 == 2) || (p1OrP2 == "P2")) {
+      pObjSwitch = POINT_OBJ_P2;
       playerSwitcher = "P2";
     }
 
@@ -321,72 +318,72 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) // length of clip
     {
       // 3-Character Bug Logic
-      if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
-        && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
-        && (Object.values(playerObjectSwitcher)[2][clipLen] == 0)) {
+      if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+        && (Object.values(pObjSwitch)[1][clipLen] == 0)
+        && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
         // console.log( `${ playerSwitcher}: 3-Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
-        finalValuesArray[0].push(dataObject[`${Object.keys(playerObjectSwitcher)[0]}${playerMemoryAddress}`].split(',')[clipLen]);
-        finalValuesArray[1].push(dataObject[`${Object.keys(playerObjectSwitcher)[1]}${playerMemoryAddress}`].split(',')[clipLen]);
-        finalValuesArray[2].push(dataObject[`${Object.keys(playerObjectSwitcher)[2]}${playerMemoryAddress}`].split(',')[clipLen]);
+        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+        valArr[1].push(dataObject[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+        valArr[2].push(dataObject[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
       }
       // 2-Character Bug Logic
-      else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
-        && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
-        && (Object.values(playerObjectSwitcher)[2][clipLen] != 0)) {
+      else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+        && (Object.values(pObjSwitch)[1][clipLen] == 0)
+        && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
         // console.log( `${ playerSwitcher}: 2-Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
-        finalValuesArray[0].push(dataObject[`${Object.keys(playerObjectSwitcher)[0]}${playerMemoryAddress}`].split(',')[clipLen]);
-        finalValuesArray[1].push(dataObject[`${Object.keys(playerObjectSwitcher)[1]}${playerMemoryAddress}`].split(',')[clipLen]);
+        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+        valArr[1].push(dataObject[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
       }
-      else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
-        && (Object.values(playerObjectSwitcher)[1][clipLen] != 0)
-        && (Object.values(playerObjectSwitcher)[2][clipLen] == 0)) {
+      else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+        && (Object.values(pObjSwitch)[1][clipLen] != 0)
+        && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
         // console.log( `${ playerSwitcher}: 2-Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
-        finalValuesArray[0].push(dataObject[`${Object.keys(playerObjectSwitcher)[0]}${playerMemoryAddress}`].split(',')[clipLen]);
-        finalValuesArray[1].push(dataObject[`${Object.keys(playerObjectSwitcher)[2]}${playerMemoryAddress}`].split(',')[clipLen]);
+        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+        valArr[1].push(dataObject[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
       }
-      else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0)
-        && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
-        && (Object.values(playerObjectSwitcher)[2][clipLen] == 0)) {
+      else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
+        && (Object.values(pObjSwitch)[1][clipLen] == 0)
+        && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
         // console.log( `${ playerSwitcher}: 2-Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
-        finalValuesArray[0].push(dataObject[`${Object.keys(playerObjectSwitcher)[1]}${playerMemoryAddress}`].split(',')[clipLen]);
-        finalValuesArray[1].push(dataObject[`${Object.keys(playerObjectSwitcher)[2]}${playerMemoryAddress}`].split(',')[clipLen]);
+        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+        valArr[1].push(dataObject[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
       }
       // 1-Character Logic
-      else if ((Object.values(playerObjectSwitcher)[0][clipLen] == 0)
-        && (Object.values(playerObjectSwitcher)[1][clipLen] != 0)
-        && (Object.values(playerObjectSwitcher)[2][clipLen] != 0)) {
+      else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+        && (Object.values(pObjSwitch)[1][clipLen] != 0)
+        && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
         // console.log(`${ playerSwitcher }: 1-Character Logic: A == 0 && B != 0 && C != 0        P1: A`);
-        finalValuesArray[0].push(dataObject[`${Object.keys(playerObjectSwitcher)[0]}${playerMemoryAddress}`].split(',')[clipLen]);
-      }//                                                           P1|P2        P1_A        Health_Big                        i     
-      else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0)
-        && (Object.values(playerObjectSwitcher)[1][clipLen] == 0)
-        && (Object.values(playerObjectSwitcher)[2][clipLen] != 0)) {
+        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+      }//                       P1|P2        P1_A        Health_Big                        i     
+      else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
+        && (Object.values(pObjSwitch)[1][clipLen] == 0)
+        && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
         // console.log(`${ playerSwitcher }: 1-Character Logic: A != 0 && B == 0 && C != 0        P1: B`);
-        finalValuesArray[0].push(dataObject[`${Object.keys(playerObjectSwitcher)[1]}${playerMemoryAddress}`].split(',')[clipLen]);
+        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
       }
-      else if ((Object.values(playerObjectSwitcher)[0][clipLen] != 0)
-        && (Object.values(playerObjectSwitcher)[1][clipLen] != 0)
-        && (Object.values(playerObjectSwitcher)[2][clipLen] == 0)) {
+      else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
+        && (Object.values(pObjSwitch)[1][clipLen] != 0)
+        && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
         // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C`);
-        finalValuesArray[0].push(dataObject[`${Object.keys(playerObjectSwitcher)[2]}${playerMemoryAddress}`].split(',')[clipLen]);
+        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
       }
     } // loop end
 
     // Return if not writing files
     if ((write == 0) || (write == false)) {
-      return finalValuesArray
+      return valArr
     }
     else if ((write == 1) || (write == true)) {
       // (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`))
       // {
-      fs.writeFileSync(`${DIR_OUTPATH}/${playerSwitcher}_${playerMemoryAddress.split(',')}.js`,
+      fs.writeFileSync(`${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`,
         `var result = [];` + "\n",
         { flag: "a+", encoding: 'utf8' });
 
       // Append main data
-      for (let dataArrayPerCharacter in finalValuesArray) {
-        fs.appendFileSync(`${DIR_OUTPATH}/${playerSwitcher}_${playerMemoryAddress.split(',')}.js`,
-          `result[${dataArrayPerCharacter}] = [${finalValuesArray[dataArrayPerCharacter]}];\n`,
+      for (let dataArrayPerCharacter in valArr) {
+        fs.appendFileSync(`${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`,
+          `result[${dataArrayPerCharacter}] = [${valArr[dataArrayPerCharacter]}];\n`,
           'utf8'
         );
       }
@@ -1175,24 +1172,24 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
   /*
   --------------------------------------------------
-  Step 5:  📞 Call Functions that Write Data to Files
+  Step 5: 📞 Call Functions that Write Data to Files
   --------------------------------------------------
   */
   writeComboCallouts();
-  // appendMinMaxRound();
-  // writeP1P2Addresses();
-  // countIsPausedCNV();
-  // writeInputCNV();
-  // writeStageDataCNV();
-  // writeStaticDataCNV();
-  // writeTotalFramesCNV();
+  appendMinMaxRound();
+  writeP1P2Addresses();
+  countIsPausedCNV();
+  writeInputCNV();
+  writeStageDataCNV();
+  writeStaticDataCNV();
+  writeTotalFramesCNV();
 
-  // getPlayerMemoryEntries().forEach((label) => {
-  //   writePlayerMemory(1, label.toString(), 1);
-  //   writePlayerMemory(2, label.toString(), 1);
-  // });
-  // writeNewStates()
-  // writeDataObject();
+  getPlayerMemoryEntries().forEach((label) => {
+    writePlayerMemory(1, label.toString(), 1);
+    writePlayerMemory(2, label.toString(), 1);
+  });
+  writeNewStates()
+  writeDataObject();
 
 } // End of main forloop
 console.timeEnd('writeAllData');
