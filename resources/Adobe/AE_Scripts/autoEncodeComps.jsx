@@ -1,38 +1,39 @@
 ﻿/* eslint-disable */ // XD
 
 // NEEDS '\\' instead of '/' for AME!
+var aePath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\fromAE";
 var myPaths =
   [
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_1_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_2_pccsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_3_pccsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_4_pccsx2__Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_5_pccsx2__Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_6_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_7_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_8_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_9_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_10_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_11_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_12_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_13_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_14_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_15_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_16_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_17_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_18_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_19_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_20_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_21_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_22_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_23_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_24_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_25_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_26_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_27_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_28_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_29_pcsx2_Original",
-    "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE\\Opener_30_pcsx2_Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_1_pcsx2_Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_2_pccsx2_Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_3_pccsx2_Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_4_pccsx2__Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_5_pccsx2__Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_6_pcsx2_Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_7_pcsx2_Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_8_pcsx2_Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_9_pcsx2_Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_10_pcsx2_Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_11_pcsx2_Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_12_pcsx2_Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_13_pcsx2_Original",
+    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_14_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_15_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_16_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_17_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_18_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_19_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_20_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_21_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_22_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_23_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_24_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_25_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_26_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_27_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_28_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_29_pcsx2_Original",
+    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_30_pcsx2_Original",
   ];
 for (var path = 0; path < myPaths.length; path++) {
   // Get file name from the path list of each item in the array
@@ -72,7 +73,7 @@ for (var path = 0; path < myPaths.length; path++) {
   myComp.workAreaDuration = totalSecondsInFile;
 
   // Push to AME
-  var pathToOutput = "H:\\Git\\MVC2GEN\\resources\\Adobe\\AE_Scripts\\";
+  var pathToOutput = aePath;
   var rqItem = app.project.renderQueue.items.add(myComp);
   var module = rqItem.outputModule(1);
   // Name output file after the fileName from myPaths array
@@ -82,5 +83,5 @@ for (var path = 0; path < myPaths.length; path++) {
   // set the output module to use the last-used settings
   app.project.renderQueue.queueInAME(true);
   // Wait for the file to populate to finish
-  $.sleep(2000);
+  $.sleep(2400);
 }
