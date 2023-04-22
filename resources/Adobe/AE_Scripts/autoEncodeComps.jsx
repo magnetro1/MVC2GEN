@@ -1,50 +1,18 @@
 ﻿/* eslint-disable */ // XD
 
 // NEEDS '\\' instead of '/' for AME!
-var aePath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\fromAE";
-var myPaths =
-  [
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_1_pcsx2_Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_2_pccsx2_Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_3_pccsx2_Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_4_pccsx2__Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_5_pccsx2__Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_6_pcsx2_Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_7_pcsx2_Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_8_pcsx2_Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_9_pcsx2_Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_10_pcsx2_Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_11_pcsx2_Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_12_pcsx2_Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_13_pcsx2_Original",
-    // "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_14_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_15_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_16_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_17_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_18_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_19_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_20_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_21_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_22_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_23_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_24_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_25_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_26_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_27_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_28_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_29_pcsx2_Original",
-    "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE\\Opener_30_pcsx2_Original",
-  ];
+var aePath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE";
+var myPaths = new Folder(aePath).getFiles();
+
 for (var path = 0; path < myPaths.length; path++) {
-  // Get file name from the path list of each item in the array
-  var fileName = myPaths[path].split("\\").pop();
-  // Get PathString comp
-  $.writeln('Path: ' + myPaths[path])
+  var folderName = myPaths[path].toString().replace(/\/d/g, "D:");
+  $.writeln(folderName);
+  var fileName = myPaths[path].toString().split("/").pop();
 
   for (var i = 1; i <= app.project.numItems; i++) {
     if ((app.project.item(i) instanceof CompItem) && (app.project.item(i).name == "PathString")) {
       var myComp = app.project.item(i);
-      myComp.layer("MainPathString")("ADBE Text Properties")("ADBE Text Document").setValue(myPaths[path])
+      myComp.layer("MainPathString")("ADBE Text Properties")("ADBE Text Document").setValue(folderName);
       break;
     }
   }
