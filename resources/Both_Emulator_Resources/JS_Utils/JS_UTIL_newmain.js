@@ -7,7 +7,7 @@ Step 0: Import the necessary modules
 */
 
 import * as fs from 'fs';
-// import clipboard from "clipboardy";
+import clipboard from "clipboardy";
 
 // Import the static data
 import {
@@ -19,7 +19,8 @@ import {
   PORTRAITS_TO_TIME_OBJ,
   PROX_BLOCK_OBJ,
   STAGES_OBJ,
-  COMBO_CALLOUTS
+  COMBO_CALLOUTS,
+  AE_TO_POSITION_OBJ,
 } from './JS_UTIL_staticData.js';
 
 // Import directories; Order matters!
@@ -27,6 +28,10 @@ import {
   DIR_EXPORT_TO_AE,
   DIR_CSVS
 } from './JS_UTIL_paths.js';
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 console.time('writeAllData');
 /*
@@ -222,11 +227,23 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   }
 
   const CLIP_LENGTH = dataObject['A_2D_Game_Timer'].split(',').length;
+  const POINT_OBJ_P1 =
+  {
+    P1_A_: dataObject['P1_A_Is_Point'].split(','),
+    P1_B_: dataObject['P1_B_Is_Point'].split(','),
+    P1_C_: dataObject['P1_C_Is_Point'].split(',')
+  };
+  const POINT_OBJ_P2 =
+  {
+    P2_A_: dataObject['P2_A_Is_Point'].split(','),
+    P2_B_: dataObject['P2_B_Is_Point'].split(','),
+    P2_C_: dataObject['P2_C_Is_Point'].split(',')
+  };
 
 
   //Append MIN&MAX value to dataObject
   function appendMinMaxRound() {
-    let tempMinMaxBuffer = '\n';
+    let tempMinMaxBuffer = '';
 
     for (let adr in MIN_MAX_ADDRESSES) {
       const KEY = MIN_MAX_ADDRESSES[adr];
@@ -273,126 +290,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     }
   }
 
-  // Main function to write data to files OR return finalValues array
-  /**
-   * @param {number|string} p1OrP2 number or string, ex: 1 or "P1"
-   * @param {string} pMemAdr string, ex: "Health_Big"
-   * @param {number|boolean} write flag to return array or write to file
-   * @returns {Number[]} returns an array of numbers or writes a file for the playerMemoryAddress in the clip.
-   * @description Finds the point character, and returns an array of numbers for the playerMemoryAddress in the clip.
-   */
-  function writePlayerMemory(p1OrP2, pMemAdr, write) {
-    let POINT_OBJ_P1 =
-    {
-      P1_A_: dataObject['P1_A_Is_Point'].split(','),
-      P1_B_: dataObject['P1_B_Is_Point'].split(','),
-      P1_C_: dataObject['P1_C_Is_Point'].split(',')
-    };
-    let POINT_OBJ_P2 =
-    {
-      P2_A_: dataObject['P2_A_Is_Point'].split(','),
-      P2_B_: dataObject['P2_B_Is_Point'].split(','),
-      P2_C_: dataObject['P2_C_Is_Point'].split(',')
-    };
-
-    let valArr = [[], [], []]; // 3 Arrays to hold all 3 player slots.
-    /**@description Switches between the Player1 and Player2 objects,
-     * ex: POINT_OBJ_P1 or POINT_OBJ_P2 which contain key value pairs of
-     * P1_A... and P2_A... to `dataObject['P1_A_Is_Point'].split(',')`... etc
-     */
-    let pObjSwitch;// Switches between the Player1 and Player2 objects
-
-    /**@description "P1" | "P2" */
-    let playerSwitcher; // Switches between "P1" and "P2"
-
-    if ((p1OrP2 == 1) || (p1OrP2 == "P1")) {
-      pObjSwitch = POINT_OBJ_P1;
-      playerSwitcher = "P1";
-    }
-    else if ((p1OrP2 == 2) || (p1OrP2 == "P2")) {
-      pObjSwitch = POINT_OBJ_P2;
-      playerSwitcher = "P2";
-    }
-
-    // Pushes the POINT_OBJ values (P1_A[n]) into the finalValuesArray
-    for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) // length of clip
-    {
-      // 3-Character Bug Logic
-      if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-        && (Object.values(pObjSwitch)[1][clipLen] == 0)
-        && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-        // console.log( `${ playerSwitcher}: 3-Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
-        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-        valArr[1].push(dataObject[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-        valArr[2].push(dataObject[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
-      }
-      // 2-Character Bug Logic
-      else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-        && (Object.values(pObjSwitch)[1][clipLen] == 0)
-        && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
-        // console.log( `${ playerSwitcher}: 2-Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
-        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-        valArr[1].push(dataObject[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-      }
-      else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-        && (Object.values(pObjSwitch)[1][clipLen] != 0)
-        && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-        // console.log( `${ playerSwitcher}: 2-Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
-        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-        valArr[1].push(dataObject[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
-      }
-      else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
-        && (Object.values(pObjSwitch)[1][clipLen] == 0)
-        && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-        // console.log( `${ playerSwitcher}: 2-Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
-        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-        valArr[1].push(dataObject[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
-      }
-      // 1-Character Logic
-      else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-        && (Object.values(pObjSwitch)[1][clipLen] != 0)
-        && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
-        // console.log(`${ playerSwitcher }: 1-Character Logic: A == 0 && B != 0 && C != 0        P1: A`);
-        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-      }//                       P1|P2        P1_A        Health_Big                        i     
-      else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
-        && (Object.values(pObjSwitch)[1][clipLen] == 0)
-        && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
-        // console.log(`${ playerSwitcher }: 1-Character Logic: A != 0 && B == 0 && C != 0        P1: B`);
-        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-      }
-      else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
-        && (Object.values(pObjSwitch)[1][clipLen] != 0)
-        && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-        // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C`);
-        valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
-      }
-    } // loop end
-
-    // Return if not writing files
-    if ((write == 0) || (write == false)) {
-      return valArr
-    }
-    else if ((write == 1) || (write == true)) {
-      // (!fs.existsSync(`${ DIR_OUTPATH }/${ playerSwitcher }_${ playerMemoryAddress.split(',') }.js`))
-      // {
-      fs.writeFileSync(`${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`,
-        `var result = [];` + "\n",
-        { flag: "a+", encoding: 'utf8' });
-
-      // Append main data
-      for (let dataArrayPerCharacter in valArr) {
-        fs.appendFileSync(`${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`,
-          `result[${dataArrayPerCharacter}] = [${valArr[dataArrayPerCharacter]}];\n`,
-          'utf8'
-        );
-      }
-      // Merge the finalValuesArray into the dataObject
-      // dataObject[`${ playerSwitcher }_${ playerMemoryAddress.split(',') }`] = finalValuesArray;
-      // }
-    }
-  }// end of find-point-player-memory-function
-
   /**
    * @description Finds the player memory addresses inside of the dataObject
    * and returns an array of the unique items. The other core functions will
@@ -403,6 +300,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
    * main player-memory-function.
   */
   function getPlayerMemoryEntries() {
+    // import(`file://${DIR_EXPORT_TO_AE}/dataObjectExport.js`).then((dataObject) => {
     let playerMemoryEntries = [];
     let playerMemoryRegex = /(P[1-2]_[A-C]_)/g; //[1] = P1_A
     for (let key in dataObject) {
@@ -414,74 +312,188 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     playerMemoryEntries = playerMemoryEntries.map((label) => {
       return label.replace(playerMemoryRegex, '');
     });
-
     // Remove duplicates
     playerMemoryEntries = [...new Set(playerMemoryEntries)];
     // console.log(...playerMemoryEntries);
     return playerMemoryEntries;
+    // });
   }
-
-  // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
-  /**
-   * @returns {Number[]} returns an array of numbers and writes a file with _CNV appended to its name
-   * @description Writes and converts the point character's values for Knockdown State, Is_Prox_Block, ID_2 and _PortraitsToTime
-   * Files are written and then appended as the function loops over each player-memory-address & player.
-  */
-  function writeStaticDataCNV() {
-    const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
-    const STATIC_DATA_ADRS = ["Knockdown_State", "Is_Prox_Block", "ID_2", "ID_2"]
-    let staticLookupResultsArray = [[], [], []];
-
-    for (let playersLen = 1; playersLen < 3; playersLen++) {
-      for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++) {
-
-        // Write base file
-        if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
-        {
-          fs.writeFileSync(`${DIR_OUTPATH}P${playersLen}_PortraitsToTime.js`,
-            `var result = [];` + "\n",
-            'utf8'
-          );
-        }
-        else {
-          fs.writeFileSync(`${DIR_OUTPATH}P${playersLen}_${STATIC_DATA_ADRS[staticDataLen]}_CNV.js`,
-            `var result = [];` + "\n",
-            'utf8'
-          );
-        }
-      }
-      for (let staticDataEntry = 0; staticDataEntry < STATIC_DATA_ADRS.length; staticDataEntry++) {
-        const callPlayerMemoryFN = writePlayerMemory(`${playersLen}`, STATIC_DATA_ADRS[staticDataEntry], 0);
-        for (let characterSlotI = 0; characterSlotI < callPlayerMemoryFN.length; characterSlotI++) // [0][1][2]
-        {
-          // Push and convert all three arrays' values
-          for (let clipLen = 0; clipLen < callPlayerMemoryFN[characterSlotI].length; clipLen++) // CLIPLENGTH
-          {
-            staticLookupResultsArray[characterSlotI].push(`"${Object.values(STATIC_DATA_OBJS[staticDataEntry])[callPlayerMemoryFN[characterSlotI][clipLen]]}"`);
-          }
-          // TODO hook into this entry to write the portrait's position for AE
-          // TODO in arrays depending on the character.
-          // TODO `var result = [[\d,\d],...]
-          // TODO bring in the static data for the key value pairs and use that
-          if (STATIC_DATA_OBJS[staticDataEntry] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
-          {
-            fs.appendFileSync(`${DIR_OUTPATH}P${playersLen}_PortraitsToTime.js`,
-              `result[${characterSlotI}] = [${staticLookupResultsArray[characterSlotI]}];\n`,
-              'utf8'
-            );
-            staticLookupResultsArray = [[], [], []];
-          }
-          else {
-            fs.appendFileSync(`${DIR_OUTPATH}P${playersLen}_${STATIC_DATA_ADRS[staticDataEntry]}_CNV.js`,
-              `result[${characterSlotI}] = [${staticLookupResultsArray[characterSlotI]}];\n`,
-              'utf8'
-            );
-            staticLookupResultsArray = [[], [], []];
-          }
-        }
+  // export the dataObject into a SortedJS file for reading
+  async function exportDataObject() {
+    let dataObjectExport = '';
+    for (let key in dataObject) {
+      // if key is not undefined
+      if (dataObject[key]) {
+        dataObjectExport += `export const ${key} = '${dataObject[key]}';\n`;
       }
     }
-  };
+    fs.writeFileSync(`${DIR_EXPORT_TO_AE}/dataObjectExport.js`, dataObjectExport);
+  }
+
+  // Main function to write data to files OR return finalValues array
+  /**
+   * @param {number|string} p1OrP2 number or string, ex: 1 or "P1"
+   * @param {string} pMemAdr string, ex: "Health_Big"
+   * @param {number|boolean} write flag to return array or write to file
+   * @returns {Number[]} returns an array of numbers or writes a file for the playerMemoryAddress in the clip.
+   * @description Finds the point character, and returns an array of numbers for the playerMemoryAddress in the clip.
+   */
+  async function writePlayerMemory(p1OrP2, pMemAdr, write) {
+    let valArr = [[], [], []];
+    /** 
+     * @description Switches between the Player1 and Player2 objects,
+     * ex: POINT_OBJ_P1 or POINT_OBJ_P2 which contain key value pairs of
+     * P1_A... and P2_A... to `dataObject['P1_A_Is_Point'].split(',')`... etc
+     */
+    let pObjSwitch;// Switches between the Player1 and Player2 objects
+    /**
+     * @description "P1" | "P2"
+    */
+    let playerSwitcher; // Switches between "P1" and "P2"
+
+    if ((p1OrP2 == 1) || (p1OrP2 == "P1") || (p1OrP2 == "1")) {
+      pObjSwitch = POINT_OBJ_P1;
+      playerSwitcher = "P1";
+    }
+    else if ((p1OrP2 == 2) || (p1OrP2 == "P2") || (p1OrP2 == "2")) {
+      pObjSwitch = POINT_OBJ_P2;
+      playerSwitcher = "P2";
+    }
+    if (write == false || write == 0) {
+      await import(`file://${DIR_EXPORT_TO_AE}/dataObjectExport.js`).then((pMemFile) => {
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) // length of clip
+        {
+          // 3-Character Bug Logic
+          if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+            && (Object.values(pObjSwitch)[1][clipLen] == 0)
+            && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+            // console.log( `${ playerSwitcher }: 3 - Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+            valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+            valArr[2].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          }
+          // 2-Character Bug Logic
+          else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+            && (Object.values(pObjSwitch)[1][clipLen] == 0)
+            && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
+            // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+            valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          }
+          else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+            && (Object.values(pObjSwitch)[1][clipLen] != 0)
+            && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+            // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+            valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          }
+          else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
+            && (Object.values(pObjSwitch)[1][clipLen] == 0)
+            && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+            // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+            valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          }
+          // 1-Character Logic
+          else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+            && (Object.values(pObjSwitch)[1][clipLen] != 0)
+            && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
+            // console.log(`${playerSwitcher}: 1 - Character Logic: A == 0 && B != 0 && C != 0        P1: A`);
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          }//                       P1|P2        P1_A        Health_Big                        i     
+          else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
+            && (Object.values(pObjSwitch)[1][clipLen] == 0)
+            && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
+            // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B == 0 && C != 0        P1: B`);
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          }
+          else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
+            && (Object.values(pObjSwitch)[1][clipLen] != 0)
+            && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+            // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C`);
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          }
+        }
+      });
+
+    } else if ((write == 1) || (write == true)) {
+      import(`file://${DIR_EXPORT_TO_AE}/dataObjectExport.js`).then((pMemFile) => {
+        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) // length of clip
+        {
+          // 3-Character Bug Logic
+          if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+            && (Object.values(pObjSwitch)[1][clipLen] == 0)
+            && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+            // console.log( `${ playerSwitcher }: 3 - Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+            valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+            valArr[2].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          }
+          // 2-Character Bug Logic
+          else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+            && (Object.values(pObjSwitch)[1][clipLen] == 0)
+            && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
+            // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+            valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          }
+          else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+            && (Object.values(pObjSwitch)[1][clipLen] != 0)
+            && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+            // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+            valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          }
+          else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
+            && (Object.values(pObjSwitch)[1][clipLen] == 0)
+            && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+            // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+            valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          }
+          // 1-Character Logic
+          else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+            && (Object.values(pObjSwitch)[1][clipLen] != 0)
+            && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
+            // console.log(`${ playerSwitcher }: 1 - Character Logic: A == 0 && B != 0 && C != 0        P1: A`);
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          }//                       P1|P2        P1_A        Health_Big                        i     
+          else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
+            && (Object.values(pObjSwitch)[1][clipLen] == 0)
+            && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
+            // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B == 0 && C != 0        P1: B`);
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          }
+          else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
+            && (Object.values(pObjSwitch)[1][clipLen] != 0)
+            && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+            // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C`);
+            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          }
+        } // loop end
+
+        // Write the file if it doesn't exist yet.
+        if (!fs.existsSync(`${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`)) {
+          fs.writeFileSync(
+            `${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`,
+            `var result = []; ` + "\n",
+            'utf8',
+          )
+          // Append main data
+          for (let dataArrayPerCharacter in valArr) {
+            fs.appendFileSync(
+              `${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`,
+              `result[${dataArrayPerCharacter}] = [${valArr[dataArrayPerCharacter]}];\n`,
+              'utf8',
+            )
+          }
+        } else {
+          // console.log(`File ${playerSwitcher}_${pMemAdr.split(',')} already exists. Skipping...`);
+        }
+      });
+    }
+  }
+
   /**
    * @description outputs arrays containing Total_Frames in ascending and 
    * descending order, and Max number in clip. The first three arrays are
@@ -820,32 +832,34 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
    */
   function writeNewStates() {
     // Temps for switching P1 and P2
-    let tempPlayerValue, tempPlayerString;
+    let playerI, p1OrP2;
     // P1 and P2
-    for (tempPlayerValue = 1; tempPlayerValue < 3; tempPlayerValue++) {
-      tempPlayerValue == 1 ? tempPlayerString = 'P1' : tempPlayerString = 'P2';
+    for (playerI = 1; playerI < 3; playerI++) {
+      playerI == 1 ? p1OrP2 = 'P1' : p1OrP2 = 'P2';
 
       // Fetches relevant SINGLE addresses for State-Logic-Checking
-      var getAction_Flags = writePlayerMemory(tempPlayerString, 'Action_Flags', 0);
-      var getAir_Dash_Count = writePlayerMemory(tempPlayerString, 'Air_Dash_Count', 0);
-      var getAirborne = writePlayerMemory(tempPlayerString, 'Airborne', 0);
-      var getAnimation_Timer_Main = writePlayerMemory(tempPlayerString, 'Animation_Timer_Main', 0);
-      var getAttack_Immune = writePlayerMemory(tempPlayerString, 'Attack_Immune', 0);
-      var getAttack_Number = writePlayerMemory(tempPlayerString, 'Attack_Number', 0);
-      var getBlock_Meter = writePlayerMemory(tempPlayerString, 'Block_Meter', 0);
-      var getDizzy = writePlayerMemory(tempPlayerString, 'Dizzy', 0);
-      var getDizzy_Reset_Timer = writePlayerMemory(tempPlayerString, 'Dizzy_Reset_Timer', 0);
-      var getHitStop = writePlayerMemory(tempPlayerString, 'Hitstop2', 0);
-      var getKnockdown_State = writePlayerMemory(tempPlayerString, 'Knockdown_State', 0);
-      var getFlyingScreen = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
-      var getFSI_Points = writePlayerMemory(tempPlayerString, 'FlyingScreen', 0);
-      var getIs_Prox_Block = writePlayerMemory(tempPlayerString, 'Is_Prox_Block', 0);
-      var getNormal_Strength = writePlayerMemory(tempPlayerString, 'Normal_Strength', 0);
-      var getPunchKick = writePlayerMemory(tempPlayerString, 'PunchKick', 0);
-      var getSJ_Counter = writePlayerMemory(tempPlayerString, 'SJ_Counter', 0);
-      var getY_Position_Arena = writePlayerMemory(tempPlayerString, 'Y_Position_Arena', 0);
-      var getY_Position_From_Enemy = writePlayerMemory(tempPlayerString, 'Y_Position_From_Enemy', 0);
-      var getY_VELOCITY = writePlayerMemory(tempPlayerString, 'Y_Velocity', 0);
+      var Action_Flags = writePlayerMemory(p1OrP2, 'Action_Flags', 0);
+      var Air_Dash_Count = writePlayerMemory(p1OrP2, 'Air_Dash_Count', 0);
+      var Airborne = writePlayerMemory(p1OrP2, 'Airborne', 0);
+      var Animation_Timer_Main = writePlayerMemory(p1OrP2, 'Animation_Timer_Main', 0);
+      var Attack_Immune = writePlayerMemory(p1OrP2, 'Attack_Immune', 0);
+      var Attack_Number = writePlayerMemory(p1OrP2, 'Attack_Number', 0);
+      var Block_Meter = writePlayerMemory(p1OrP2, 'Block_Meter', 0);
+      var Dizzy = writePlayerMemory(p1OrP2, 'Dizzy', 0);
+      var Dizzy_Reset_Timer = writePlayerMemory(p1OrP2, 'Dizzy_Reset_Timer', 0);
+      var FlyingScreen = writePlayerMemory(p1OrP2, 'FlyingScreen', 0);
+      var FSI_Points = writePlayerMemory(p1OrP2, 'FlyingScreen', 0);
+      var HitStop = writePlayerMemory(p1OrP2, 'Hitstop2', 0);
+      var Is_Prox_Block = writePlayerMemory(p1OrP2, 'Is_Prox_Block', 0);
+      var Knockdown_State = writePlayerMemory(p1OrP2, 'Knockdown_State', 0);
+      var Normal_Strength = writePlayerMemory(p1OrP2, 'Normal_Strength', 0);
+      var PunchKick = writePlayerMemory(p1OrP2, 'PunchKick', 0);
+      var Special_Attack_ID = writePlayerMemory(p1OrP2, 'Special_Attack_ID', 0);
+      var Special_Strength = writePlayerMemory(p1OrP2, 'Special_Strength', 0);
+      var SJ_Counter = writePlayerMemory(p1OrP2, 'SJ_Counter', 0);
+      var Y_Position_Arena = writePlayerMemory(p1OrP2, 'Y_Position_Arena', 0);
+      var Y_Position_From_Enemy = writePlayerMemory(p1OrP2, 'Y_Position_From_Enemy', 0);
+      var Y_Velocity = writePlayerMemory(p1OrP2, 'Y_Velocity', 0);
       // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here if you need something that isn't on the list.
 
       // List of files to be written. Will have prefix of P1_ or P2_
@@ -879,197 +893,197 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       }
 
       // for each slot (abc) in a Player's side
-      for (let playerSlotI = 0; playerSlotI < 3; playerSlotI++) {
+      for (let pSlot = 0; pSlot < 3; pSlot++) {
         // for each frame in a clip
         for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
           // Pushing the boolean-results for each State. Example BeingHit result = [ 0,0,0,1,1,1,1,1... ]
 
           // Being_Hit
           (
-            ((getKnockdown_State)[playerSlotI][clipLen] == 32)
-            && ((getHitStop)[playerSlotI][clipLen] > 0)
+            ((Knockdown_State)[pSlot][clipLen] == 32)
+            && ((HitStop)[pSlot][clipLen] > 0)
           )
-            ? allNewStateObject.State_Being_Hit[playerSlotI].push(1)
-            : allNewStateObject.State_Being_Hit[playerSlotI].push(0);
+            ? allNewStateObject.State_Being_Hit[pSlot].push(1)
+            : allNewStateObject.State_Being_Hit[pSlot].push(0);
           // "Flying_Screen_Air"
           (
-            ((getFlyingScreen)[playerSlotI][clipLen] == 1)
-            && ((getKnockdown_State)[playerSlotI][clipLen] == 32)
-            && ((getAirborne)[playerSlotI][clipLen] == 2)
+            ((FlyingScreen)[pSlot][clipLen] == 1)
+            && ((Knockdown_State)[pSlot][clipLen] == 32)
+            && ((Airborne)[pSlot][clipLen] == 2)
           )
-            ? allNewStateObject.State_Flying_Screen_Air[playerSlotI].push(1)
-            : allNewStateObject.State_Flying_Screen_Air[playerSlotI].push(0);
+            ? allNewStateObject.State_Flying_Screen_Air[pSlot].push(1)
+            : allNewStateObject.State_Flying_Screen_Air[pSlot].push(0);
           // "Flying_Screen_OTG"
           (
-            ((getFlyingScreen)[playerSlotI][clipLen] == 1)
-            && ((getKnockdown_State)[playerSlotI][clipLen] == 32)
-            && ((getAirborne)[playerSlotI][clipLen] == 3)
+            ((FlyingScreen)[pSlot][clipLen] == 1)
+            && ((Knockdown_State)[pSlot][clipLen] == 32)
+            && ((Airborne)[pSlot][clipLen] == 3)
           )
-            ? allNewStateObject.State_Flying_Screen_OTG[playerSlotI].push(1)
-            : allNewStateObject.State_Flying_Screen_OTG[playerSlotI].push(0);
+            ? allNewStateObject.State_Flying_Screen_OTG[pSlot].push(1)
+            : allNewStateObject.State_Flying_Screen_OTG[pSlot].push(0);
           // "FS_Install_1"
           (
-            ((getFSI_Points)[playerSlotI][clipLen] == 8)
-            || ((getFSI_Points)[playerSlotI][clipLen] == 9)
+            ((FSI_Points)[pSlot][clipLen] == 8)
+            || ((FSI_Points)[pSlot][clipLen] == 9)
           )
-            ? allNewStateObject.State_FS_Install_1[playerSlotI].push(1)
-            : allNewStateObject.State_FS_Install_1[playerSlotI].push(0);
+            ? allNewStateObject.State_FS_Install_1[pSlot].push(1)
+            : allNewStateObject.State_FS_Install_1[pSlot].push(0);
           // "FS_Install_2"
           (
-            ((getFSI_Points)[playerSlotI][clipLen] > 9)
+            ((FSI_Points)[pSlot][clipLen] > 9)
           )
-            ? allNewStateObject.State_FS_Install_2[playerSlotI].push(1)
-            : allNewStateObject.State_FS_Install_2[playerSlotI].push(0);
+            ? allNewStateObject.State_FS_Install_2[pSlot].push(1)
+            : allNewStateObject.State_FS_Install_2[pSlot].push(0);
           // "NJ_Air"
           (
-            ((getAirborne)[playerSlotI][clipLen] == 2)
-            && ((getKnockdown_State)[playerSlotI][clipLen] == 3)
-            && ((getSJ_Counter)[playerSlotI][clipLen] == 0)
+            ((Airborne)[pSlot][clipLen] == 2)
+            && ((Knockdown_State)[pSlot][clipLen] == 3)
+            && ((SJ_Counter)[pSlot][clipLen] == 0)
           )
-            ? allNewStateObject.State_NJ_Air[playerSlotI].push(1)
-            : allNewStateObject.State_NJ_Air[playerSlotI].push(0);
+            ? allNewStateObject.State_NJ_Air[pSlot].push(1)
+            : allNewStateObject.State_NJ_Air[pSlot].push(0);
           // "NJ_Rising
           (
-            ((getAirborne)[playerSlotI][clipLen] == 0)
-            && ((getKnockdown_State)[playerSlotI][clipLen] == 2)
-            && ((getSJ_Counter)[playerSlotI][clipLen] == 0)
+            ((Airborne)[pSlot][clipLen] == 0)
+            && ((Knockdown_State)[pSlot][clipLen] == 2)
+            && ((SJ_Counter)[pSlot][clipLen] == 0)
           )
-            ? allNewStateObject.State_NJ_Rising[playerSlotI].push(1)
-            : allNewStateObject.State_NJ_Rising[playerSlotI].push(0);
+            ? allNewStateObject.State_NJ_Rising[pSlot].push(1)
+            : allNewStateObject.State_NJ_Rising[pSlot].push(0);
           // "OTG_Extra_Stun"
           (
-            ((getKnockdown_State)[playerSlotI][clipLen] == 23)
-            && (((getAirborne)[playerSlotI][clipLen] == 3))
+            ((Knockdown_State)[pSlot][clipLen] == 23)
+            && (((Airborne)[pSlot][clipLen] == 3))
           )
-            ? allNewStateObject.State_OTG_Extra_Stun[playerSlotI].push(1)
-            : allNewStateObject.State_OTG_Extra_Stun[playerSlotI].push(0);
+            ? allNewStateObject.State_OTG_Extra_Stun[pSlot].push(1)
+            : allNewStateObject.State_OTG_Extra_Stun[pSlot].push(0);
 
           // "OTG_Forced_Stun"
           (
-            ((getKnockdown_State)[playerSlotI][clipLen] == 32)
-            && (((getAirborne)[playerSlotI][clipLen] == 3))
+            ((Knockdown_State)[pSlot][clipLen] == 32)
+            && (((Airborne)[pSlot][clipLen] == 3))
           )
-            ? allNewStateObject.State_OTG_Forced_Stun[playerSlotI].push(1)
-            : allNewStateObject.State_OTG_Forced_Stun[playerSlotI].push(0);
+            ? allNewStateObject.State_OTG_Forced_Stun[pSlot].push(1)
+            : allNewStateObject.State_OTG_Forced_Stun[pSlot].push(0);
           // "OTG_Hit"
           (
-            ((getAction_Flags)[playerSlotI][clipLen] == 0)
-            && ((getAirborne)[playerSlotI][clipLen] == 3)
-            && (((getKnockdown_State)[playerSlotI][clipLen] == 32))
+            ((Action_Flags)[pSlot][clipLen] == 0)
+            && ((Airborne)[pSlot][clipLen] == 3)
+            && (((Knockdown_State)[pSlot][clipLen] == 32))
           )
-            ? allNewStateObject.State_OTG_Hit[playerSlotI].push(1)
-            : allNewStateObject.State_OTG_Hit[playerSlotI].push(0);
+            ? allNewStateObject.State_OTG_Hit[pSlot].push(1)
+            : allNewStateObject.State_OTG_Hit[pSlot].push(0);
           // "OTG_Roll_Invincible"
           (
-            ((getAction_Flags)[playerSlotI][clipLen] == 2)
-            && ((getAirborne)[playerSlotI][clipLen] == 1)
-            && (((getAttack_Immune)[playerSlotI][clipLen] == 1)
-              && ((getKnockdown_State)[playerSlotI][clipLen] == 17))
+            ((Action_Flags)[pSlot][clipLen] == 2)
+            && ((Airborne)[pSlot][clipLen] == 1)
+            && (((Attack_Immune)[pSlot][clipLen] == 1)
+              && ((Knockdown_State)[pSlot][clipLen] == 17))
           )
-            ? allNewStateObject.State_OTG_Roll_Invincible[playerSlotI].push(1)
-            : allNewStateObject.State_OTG_Roll_Invincible[playerSlotI].push(0);
+            ? allNewStateObject.State_OTG_Roll_Invincible[pSlot].push(1)
+            : allNewStateObject.State_OTG_Roll_Invincible[pSlot].push(0);
 
           // "OTG_Roll_Stunned"
           (
-            ((getAction_Flags)[playerSlotI][clipLen] == 1)
-            && ((getAirborne)[playerSlotI][clipLen] == 3)
-            && (((getKnockdown_State)[playerSlotI][clipLen] == 32))
+            ((Action_Flags)[pSlot][clipLen] == 1)
+            && ((Airborne)[pSlot][clipLen] == 3)
+            && (((Knockdown_State)[pSlot][clipLen] == 32))
           )
-            ? allNewStateObject.State_OTG_Roll_Stunned[playerSlotI].push(1)
-            : allNewStateObject.State_OTG_Roll_Stunned[playerSlotI].push(0);
+            ? allNewStateObject.State_OTG_Roll_Stunned[pSlot].push(1)
+            : allNewStateObject.State_OTG_Roll_Stunned[pSlot].push(0);
           // "ProxBlock_Air"
           (
-            ((getIs_Prox_Block)[playerSlotI][clipLen] == 6)
-            && ((getKnockdown_State)[playerSlotI][clipLen] == 19)
+            ((Is_Prox_Block)[pSlot][clipLen] == 6)
+            && ((Knockdown_State)[pSlot][clipLen] == 19)
           )
-            ? allNewStateObject.State_ProxBlock_Air[playerSlotI].push(1)
-            : allNewStateObject.State_ProxBlock_Air[playerSlotI].push(0);
+            ? allNewStateObject.State_ProxBlock_Air[pSlot].push(1)
+            : allNewStateObject.State_ProxBlock_Air[pSlot].push(0);
           // "ProxBlock_Ground"
           (
-            ((getIs_Prox_Block)[playerSlotI][clipLen] == 5)
-            && ((getKnockdown_State)[playerSlotI][clipLen] == 18)
+            ((Is_Prox_Block)[pSlot][clipLen] == 5)
+            && ((Knockdown_State)[pSlot][clipLen] == 18)
           )
-            ? allNewStateObject.State_ProxBlock_Ground[playerSlotI].push(1)
-            : allNewStateObject.State_ProxBlock_Ground[playerSlotI].push(0);
+            ? allNewStateObject.State_ProxBlock_Ground[pSlot].push(1)
+            : allNewStateObject.State_ProxBlock_Ground[pSlot].push(0);
           // "Pushblock_Air"
           (
-            ((getBlock_Meter)[playerSlotI][clipLen] > 0)
-            && ((getAnimation_Timer_Main)[playerSlotI][clipLen] < 28)
-            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 6)
-            && ((getAction_Flags)[playerSlotI][clipLen] == 2)
+            ((Block_Meter)[pSlot][clipLen] > 0)
+            && ((Animation_Timer_Main)[pSlot][clipLen] < 28)
+            && ((Is_Prox_Block)[pSlot][clipLen] == 6)
+            && ((Action_Flags)[pSlot][clipLen] == 2)
           )
-            ? allNewStateObject.State_Pushblock_Air[playerSlotI].push(1)
-            : allNewStateObject.State_Pushblock_Air[playerSlotI].push(0);
+            ? allNewStateObject.State_Pushblock_Air[pSlot].push(1)
+            : allNewStateObject.State_Pushblock_Air[pSlot].push(0);
           // "Pushblock_Ground"
           (
-            ((getBlock_Meter)[playerSlotI][clipLen] > 0)
-            && ((getAnimation_Timer_Main)[playerSlotI][clipLen] < 28)
-            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 5)
-            && (((getAction_Flags)[playerSlotI][clipLen] == 3))
+            ((Block_Meter)[pSlot][clipLen] > 0)
+            && ((Animation_Timer_Main)[pSlot][clipLen] < 28)
+            && ((Is_Prox_Block)[pSlot][clipLen] == 5)
+            && (((Action_Flags)[pSlot][clipLen] == 3))
           )
-            ? allNewStateObject.State_Pushblock_Ground[playerSlotI].push(1)
-            : allNewStateObject.State_Pushblock_Ground[playerSlotI].push(0);
+            ? allNewStateObject.State_Pushblock_Ground[pSlot].push(1)
+            : allNewStateObject.State_Pushblock_Ground[pSlot].push(0);
           // "Rising_Invincibility"
           (
-            ((getAirborne)[playerSlotI][clipLen] == 0)
-            && ((getAttack_Immune)[playerSlotI][clipLen] == 1)
-            && ((getKnockdown_State)[playerSlotI][clipLen] == 17)
+            ((Airborne)[pSlot][clipLen] == 0)
+            && ((Attack_Immune)[pSlot][clipLen] == 1)
+            && ((Knockdown_State)[pSlot][clipLen] == 17)
           )
-            ? allNewStateObject.State_Rising_Invincibility[playerSlotI].push(1)
-            : allNewStateObject.State_Rising_Invincibility[playerSlotI].push(0);
+            ? allNewStateObject.State_Rising_Invincibility[pSlot].push(1)
+            : allNewStateObject.State_Rising_Invincibility[pSlot].push(0);
           // "SJ_Air"
           (
-            ((getAirborne)[playerSlotI][clipLen] == 2)
-            && ((getKnockdown_State)[playerSlotI][clipLen] == 14)
-            && ((getSJ_Counter)[playerSlotI][clipLen] == 1)
+            ((Airborne)[pSlot][clipLen] == 2)
+            && ((Knockdown_State)[pSlot][clipLen] == 14)
+            && ((SJ_Counter)[pSlot][clipLen] == 1)
           )
-            ? allNewStateObject.State_SJ_Air[playerSlotI].push(1)
-            : allNewStateObject.State_SJ_Air[playerSlotI].push(0);
+            ? allNewStateObject.State_SJ_Air[pSlot].push(1)
+            : allNewStateObject.State_SJ_Air[pSlot].push(0);
           // "SJ_Counter"
           (
-            ((getSJ_Counter)[playerSlotI][clipLen] == 2)
+            ((SJ_Counter)[pSlot][clipLen] == 2)
           )
-            ? allNewStateObject.State_SJ_Counter[playerSlotI].push(1)
-            : allNewStateObject.State_SJ_Counter[playerSlotI].push(0);
+            ? allNewStateObject.State_SJ_Counter[pSlot].push(1)
+            : allNewStateObject.State_SJ_Counter[pSlot].push(0);
           // "Stun"
           (
-            ((getKnockdown_State)[playerSlotI][clipLen] == 32)
-            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 13)
+            ((Knockdown_State)[pSlot][clipLen] == 32)
+            && ((Is_Prox_Block)[pSlot][clipLen] == 13)
           )
-            ? allNewStateObject.State_Stun[playerSlotI].push(1)
-            : allNewStateObject.State_Stun[playerSlotI].push(0);
+            ? allNewStateObject.State_Stun[pSlot].push(1)
+            : allNewStateObject.State_Stun[pSlot].push(0);
           // "Tech_Hit"
           (
-            ((getKnockdown_State)[playerSlotI][clipLen] == 27)
+            ((Knockdown_State)[pSlot][clipLen] == 27)
           )
-            ? allNewStateObject.State_Tech_Hit[playerSlotI].push(1)
-            : allNewStateObject.State_Tech_Hit[playerSlotI].push(0);
+            ? allNewStateObject.State_Tech_Hit[pSlot].push(1)
+            : allNewStateObject.State_Tech_Hit[pSlot].push(0);
           // "Thrown_Air"
           (
-            ((getAirborne)[playerSlotI][clipLen] == 2)
-            && ((getKnockdown_State)[playerSlotI][clipLen] == 31)
-            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 16)
+            ((Airborne)[pSlot][clipLen] == 2)
+            && ((Knockdown_State)[pSlot][clipLen] == 31)
+            && ((Is_Prox_Block)[pSlot][clipLen] == 16)
           )
-            ? allNewStateObject.State_Thrown_Air[playerSlotI].push(1)
-            : allNewStateObject.State_Thrown_Air[playerSlotI].push(0);
+            ? allNewStateObject.State_Thrown_Air[pSlot].push(1)
+            : allNewStateObject.State_Thrown_Air[pSlot].push(0);
           // "Thrown_Ground"
           (
-            ((getAirborne)[playerSlotI][clipLen] == 0)
-            && ((getKnockdown_State)[playerSlotI][clipLen] == 31)
-            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 16)
+            ((Airborne)[pSlot][clipLen] == 0)
+            && ((Knockdown_State)[pSlot][clipLen] == 31)
+            && ((Is_Prox_Block)[pSlot][clipLen] == 16)
           )
-            ? allNewStateObject.State_Thrown_Ground[playerSlotI].push(1)
-            : allNewStateObject.State_Thrown_Ground[playerSlotI].push(0);
+            ? allNewStateObject.State_Thrown_Ground[pSlot].push(1)
+            : allNewStateObject.State_Thrown_Ground[pSlot].push(0);
           // "Undizzy"
           (
-            ((getAttack_Immune)[playerSlotI][clipLen] == 2)
-            && ((getKnockdown_State)[playerSlotI][clipLen] == 32)
-            && ((getIs_Prox_Block)[playerSlotI][clipLen] == 13)
-            && ((getDizzy)[playerSlotI][clipLen] == 80)
-            && ((getDizzy_Reset_Timer)[playerSlotI][clipLen] == 60)
+            ((Attack_Immune)[pSlot][clipLen] == 2)
+            && ((Knockdown_State)[pSlot][clipLen] == 32)
+            && ((Is_Prox_Block)[pSlot][clipLen] == 13)
+            && ((Dizzy)[pSlot][clipLen] == 80)
+            && ((Dizzy_Reset_Timer)[pSlot][clipLen] == 60)
           )
-            ? allNewStateObject.State_UnDizzy[playerSlotI].push(1)
-            : allNewStateObject.State_UnDizzy[playerSlotI].push(0);
+            ? allNewStateObject.State_UnDizzy[pSlot].push(1)
+            : allNewStateObject.State_UnDizzy[pSlot].push(0);
 
           // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
           // NEW_STATE_ADD_HERE
@@ -1079,29 +1093,29 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         var counter = 0;
 
         for (let stateDataEntryI in Object.entries(allNewStateObject)) {
-          Object.values(allNewStateObject)[stateDataEntryI][playerSlotI].forEach((element, index) => {
+          Object.values(allNewStateObject)[stateDataEntryI][pSlot].forEach((element, index) => {
             if (element == 0) {
               counter = 0
               return 0;
               // return Object.values(allDataObject)[stateDataEntryI][playerSlotI][index];
             }
             else {
-              Object.values(allNewStateObject)[stateDataEntryI][playerSlotI][index] = (element + counter);
+              Object.values(allNewStateObject)[stateDataEntryI][pSlot][index] = (element + counter);
               counter++
-              return Object.values(allNewStateObject)[stateDataEntryI][playerSlotI][index + counter]
+              return Object.values(allNewStateObject)[stateDataEntryI][pSlot][index + counter]
             }
           });
         }
 
         // Write the files
         for (let stateFileIndex = 0; stateFileIndex < Object.entries(allNewStateObject).length; stateFileIndex++) {
-          fs.writeFileSync(`${DIR_OUTPATH}${tempPlayerString}_${Object.keys(allNewStateObject)[stateFileIndex]}.js`,
+          fs.writeFileSync(`${DIR_OUTPATH}${p1OrP2}_${Object.keys(allNewStateObject)[stateFileIndex]}.js`,
             `var result = []; ` + '\n', { encoding: 'utf8' });
         }
 
         // Append data arrays into files
         for (let stateFileDataIndex = 0; stateFileDataIndex < Object.entries(allNewStateObject).length; stateFileDataIndex++) {
-          fs.appendFileSync(`${DIR_OUTPATH}${tempPlayerString}_${Object.keys(allNewStateObject)[stateFileDataIndex]}.js`,
+          fs.appendFileSync(`${DIR_OUTPATH}${p1OrP2}_${Object.keys(allNewStateObject)[stateFileDataIndex]}.js`,
             JSON.stringify(Object.values(allNewStateObject)[stateFileDataIndex])
               .replace('[[', `result[0] = [`)
               .replace(',[', '\nresult[1] = [')
@@ -1126,7 +1140,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         continue;
       }
       fs.writeFile(`${DIR_OUTPATH}/${key}.js`,
-        `var result = [${dataObject[key]}];`,
+        `var result = [];\nresult[0] = [${dataObject[key]}];`,
         'utf8', (err) => { if (err) throw err; }
       );
     }
@@ -1162,38 +1176,132 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       });
       //Write results array to a file and put qutoes around each element if it's not empty.
       fs.writeFile(`${DIR_OUTPATH}/P${p1OrP2}_Combo_Callouts.js`,
-        `var result = [${resultsArr.map((element) => {
-          return (element == '') ? '' : `'${element}'`
+        `var result = [];\nresult[0] = [${resultsArr.map((element) => {
+          // return (element == '') ? ' ' : `'${element}'`
+          return `"${element}"`
         })}];`,
         'utf8', (err) => { if (err) throw err; }
       );
     }
   }
 
+
+  // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
+  /**
+   * @returns {Number[]} returns an array of numbers and writes a file with _CNV appended to its name
+   * @description Writes and converts the point character's values for Knockdown State, Is_Prox_Block, ID_2 and _PortraitsToTime
+   * Files are written and then appended as the function loops over each player-memory-address & player.
+  */
+  function writeStaticDataCNV() {
+    const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
+    const STATIC_DATA_ADRS = ["Knockdown_State", "Is_Prox_Block", "ID_2", "ID_2"]
+    // import(`file://${DIR_EXPORT_TO_AE}/dataObjectExport.js`).then((pMemFile) => {
+    let lookUpArr = [[], [], []];
+
+    for (let p1OrP2 = 1; p1OrP2 < 3; p1OrP2++) {
+      for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++) {
+
+        // Write base file
+        if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+        {
+          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitsToTime.js`,
+            `var result = [];` + "\n",
+            'utf8'
+          );
+          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitPosition.js`,
+            `var result = [];` + "\n",
+            'utf8'
+          );
+        }
+        else {
+          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[staticDataLen]}_CNV.js`,
+            `var result = [];` + "\n",
+            'utf8'
+          );
+        }
+      }
+
+      for (let statAdr = 0; statAdr < STATIC_DATA_ADRS.length; statAdr++) {
+        // make a promise for writePlayerMemory so that it awaits the values before continuing
+        const callPlayerMemoryFN = new Promise((resolve, reject) => {
+          writePlayerMemory(`${p1OrP2}`, STATIC_DATA_ADRS[statAdr], 0);
+          resolve(
+            writePlayerMemory(`${p1OrP2}`, STATIC_DATA_ADRS[statAdr], 0),
+          );
+          reject("Error");
+        })
+
+        for (let pMemI = 0; pMemI < callPlayerMemoryFN.length; pMemI++) // [0][1][2]
+        {
+          // Push and convert all three arrays' values
+          for (let clipLen = 0; clipLen < callPlayerMemoryFN[pMemI].length; clipLen++) // CLIPLENGTH
+          {
+            lookUpArr[pMemI].push(`"${Object.values(STATIC_DATA_OBJS[statAdr])[callPlayerMemoryFN[pMemI][clipLen]]}"`);
+          }
+          if (STATIC_DATA_OBJS[statAdr] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+          {
+            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitsToTime.js`,
+              `result[${pMemI}] = [${lookUpArr[pMemI]}];\n`,
+              'utf8'
+            );
+            // console.log(lookUpArr[pMemI]);
+
+            // look up the staticLookupResults in the AE_TO_POSITION_OBJ
+            // and write the result to a file
+            let positionArray = lookUpArr[pMemI].map((portrait) => {
+              portrait = portrait.toString();
+              portrait = portrait.replace(/"/g, '');
+              portrait = AE_TO_POSITION_OBJ[portrait];
+              portrait = [`[${portrait}]`];
+              return portrait;
+            });
+            // write positionArray to a file as an array of arrays
+            // console.log(positionArray);
+            // append to file as an array of arrays
+            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitPosition.js`,
+              `result[${pMemI}] = [${positionArray}];\n`,
+              'utf8'
+            );
+            lookUpArr = [[], [], []];
+          }
+          else {
+            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[statAdr]}_CNV.js`,
+              `result[${pMemI}] = [${lookUpArr[pMemI]}];\n`,
+              'utf8'
+            );
+            lookUpArr = [[], [], []];
+          }
+        }
+      }
+    }
+    // });
+  };
+
   /*
   --------------------------------------------------
   Step 5: 📞 Call Functions that Write Data to Files
   --------------------------------------------------
   */
-  writeComboCallouts();
   appendMinMaxRound();
-  writeP1P2Addresses();
-  countIsPausedCNV();
-  writeInputCNV();
-  writeStageDataCNV();
-  writeStaticDataCNV();
-  writeTotalFramesCNV();
+  await exportDataObject();
+  // getPlayerMemoryEntries().forEach((label) => {
+  // writePlayerMemory(1, label.toString(), 1);
+  //   writePlayerMemory(2, label.toString(), 1);
+  // });
 
-  getPlayerMemoryEntries().forEach((label) => {
-    writePlayerMemory(1, label.toString(), 1);
-    writePlayerMemory(2, label.toString(), 1);
-  });
-  writeNewStates()
-  writeDataObject();
+  // writeP1P2Addresses();
+  // writeComboCallouts();
+  // countIsPausedCNV();
+  // writeInputCNV();
+  // writeStageDataCNV();
+  // writeTotalFramesCNV();
+  // writeDataObject();
+  console.log(writePlayerMemory(1, "ID_2", 0))
+  // writeStaticDataCNV();
+  // writeNewStates()
+}
 
-} // End of main forloop
 console.timeEnd('writeAllData');
 
 //TODO Fix CSV 'real-data' finder function.
 //TODO Make Tests for each of the functions!
-//TODO AE Position create a file for it to read from. // import static data

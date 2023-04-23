@@ -1,2 +1,1 @@
-
-            .replace(/\+\+/gm, '+')
+await

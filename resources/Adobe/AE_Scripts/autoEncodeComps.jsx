@@ -1,14 +1,17 @@
 ﻿/* eslint-disable */ // XD
 
 // NEEDS '\\' instead of '/' for AME!
-var aePath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE";
-var myPaths = new Folder(aePath).getFiles();
+// var dataPath = "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE";
+var dataPath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE";
+var videoPath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\fromAE";
+var getDataArr = new Folder(dataPath).getFiles();
 
-for (var path = 0; path < myPaths.length; path++) {
-  var folderName = myPaths[path].toString().replace(/\/d/g, "D:");
+for (var fldr = 0; fldr < getDataArr.length; fldr++) {
+  var folderName = getDataArr[fldr].toString().replace(/\/d/g, "D:");
   $.writeln(folderName);
-  var fileName = myPaths[path].toString().split("/").pop();
+  var fileName = getDataArr[fldr].toString().split("/").pop();
 
+  // Write/Set the path into the text layer
   for (var i = 1; i <= app.project.numItems; i++) {
     if ((app.project.item(i) instanceof CompItem) && (app.project.item(i).name == "PathString")) {
       var myComp = app.project.item(i);
@@ -17,7 +20,7 @@ for (var path = 0; path < myPaths.length; path++) {
     }
   }
 
-  // Get Normal_Composition comp
+  // Get Normal_Composition comp and make it active.
   for (var i = 1; i <= app.project.numItems; i++) {
     if ((app.project.item(i) instanceof CompItem) && (app.project.item(i).name == "Normal_Composition")) {
       //Make this composition the active item in the project
@@ -25,11 +28,10 @@ for (var path = 0; path < myPaths.length; path++) {
       break;
     }
   }
-  // Read the active composition's first layer's source text value
+  // Set the Normal_Comp's in/out points
+
   var myComp = app.project.activeItem;
-  // Move the time indicator to the first frame of the composition
   myComp.time = 0;
-  // Read the total number of frames in the file and parse it as an integer
   var totalFramesInFile = parseInt(myComp.layer(1).property("Source Text").value); // Reading the FIRST LAYER in Comp.
   $.writeln('Total Frames: ' + totalFramesInFile);
   // Set the composition's work area start time to 0
@@ -41,11 +43,11 @@ for (var path = 0; path < myPaths.length; path++) {
   myComp.workAreaDuration = totalSecondsInFile;
 
   // Push to AME
-  var pathToOutput = aePath;
+
   var rqItem = app.project.renderQueue.items.add(myComp);
   var module = rqItem.outputModule(1);
   // Name output file after the fileName from myPaths array
-  module.file = File(pathToOutput + fileName);
+  module.file = File(videoPath + fileName);
   // set the encoding preset output module to Cineform_RGBA
   module.applyTemplate("CineformRGBA");
   // set the output module to use the last-used settings

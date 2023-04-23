@@ -35,7 +35,7 @@ export const KNOCKDOWN_STATE_OBJ = {
   3: 'Normal Jump',
   4: 'Landing from Jump',
   5: 'Starting Crouch',
-  6: 'Fully-Crouched',
+  6: 'Crouched',
   7: 'Rising to Standing',
   8: 'Turning',
   9: 'Crouch Turning',
@@ -47,8 +47,8 @@ export const KNOCKDOWN_STATE_OBJ = {
   15: 'Air Recovery',
   16: '???',
   17: 'Rising from Knockdown',
-  18: 'Ground: Pre-Block & Block & Pushblock',
-  19: 'Air: Pre-Block & Block & Pushblock',
+  18: 'Ground Blocking',
+  19: 'Air Blocking',
   20: 'Normal Attacks',
   21: 'Special Attacks',
   22: 'Post-Match Pose',
@@ -57,7 +57,7 @@ export const KNOCKDOWN_STATE_OBJ = {
   25: 'Corner Jump',
   26: 'Air Dash',
   27: 'Tech Hit',
-  28: 'Tagging & Calling Assists',
+  28: 'Tagging & Assists',
   29: 'Freezes & Flashes',
   30: 'Throwing',
   31: 'Being Thrown',
@@ -314,7 +314,7 @@ export const P1P2_ADDRESSES = [
 After Effects to use for it
 * */
 export const STAGES_OBJ = {
-  0: '2D456DFF', // 'Boat1',
+  0: '788998FF', // 'Boat1',
   1: 'E1540CFF', // 'Desert1',
   2: '6D574FFF', // 'Factory',
   3: 'CF461BFF', // 'Carnival1',
@@ -436,7 +436,7 @@ export const AE_TO_POSITION_OBJ = {
   13: [120, 1990],  // Charlie
   14: [560, 1900],  // Chun-Li
   15: [80, 1650],   // Colossus
-  16: [75, 1822],   // Cyclopsnm
+  16: [75, 1822],   // Cyclopsn
   17: [275, 1867],  // Dan
   18: [-513, 1560], // Dhalsim
   19: [322, 1911],  // Doctor Doom
