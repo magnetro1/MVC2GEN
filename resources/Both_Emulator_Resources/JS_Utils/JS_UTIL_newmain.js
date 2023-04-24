@@ -865,7 +865,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here if you need something that isn't on the list.
 
       // List of files to be written. Will have prefix of P1_ or P2_
-      var allNewStateObject =
+      var allStateObj =
       {
         State_Being_Hit: [[], [], []],
         // State_Flying_Screen_Air: [[], [], []],
@@ -903,102 +903,102 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           // Magneto MoveList
           // Normals
           if (((Attack_Number)[pSlot][cLen] == 0) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("S.LP")
+            allStateObj.State_Magneto_Moves[pSlot].push("S.LP")
           } else if (((Attack_Number)[pSlot][cLen] == 1) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("S.MP")
+            allStateObj.State_Magneto_Moves[pSlot].push("S.MP")
           } else if (((Attack_Number)[pSlot][cLen] == 2) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("S.HP")
+            allStateObj.State_Magneto_Moves[pSlot].push("S.HP")
           } else if (((Attack_Number)[pSlot][cLen] == 3) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("S.LK")
+            allStateObj.State_Magneto_Moves[pSlot].push("S.LK")
           } else if (((Attack_Number)[pSlot][cLen] == 4) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("S.MK")
+            allStateObj.State_Magneto_Moves[pSlot].push("S.MK")
           } else if (((Attack_Number)[pSlot][cLen] == 5) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("S.HK(1)")
+            allStateObj.State_Magneto_Moves[pSlot].push("S.HK(1)")
           } else if (((Attack_Number)[pSlot][cLen] == 25) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("S.HK (2)")
+            allStateObj.State_Magneto_Moves[pSlot].push("S.HK (2)")
           } else if (((Attack_Number)[pSlot][cLen] == 6) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("C.LP")
+            allStateObj.State_Magneto_Moves[pSlot].push("C.LP")
           } else if (((Attack_Number)[pSlot][cLen] == 7) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("C.MP")
+            allStateObj.State_Magneto_Moves[pSlot].push("C.MP")
           } else if (((Attack_Number)[pSlot][cLen] == 8) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("C.HP")
+            allStateObj.State_Magneto_Moves[pSlot].push("C.HP")
           } else if (((Attack_Number)[pSlot][cLen] == 9) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("C.LK")
+            allStateObj.State_Magneto_Moves[pSlot].push("C.LK")
           } else if (((Attack_Number)[pSlot][cLen] == 10) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("C.MK")
+            allStateObj.State_Magneto_Moves[pSlot].push("C.MK")
           } else if (((Attack_Number)[pSlot][cLen] == 11) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("C.HK")
+            allStateObj.State_Magneto_Moves[pSlot].push("C.HK")
           } else if (((Attack_Number)[pSlot][cLen] == 12) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("J.LP")
+            allStateObj.State_Magneto_Moves[pSlot].push("J.LP")
           } else if (((Attack_Number)[pSlot][cLen] == 13) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("J.MP")
+            allStateObj.State_Magneto_Moves[pSlot].push("J.MP")
           } else if (((Attack_Number)[pSlot][cLen] == 14) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("J.HP")
+            allStateObj.State_Magneto_Moves[pSlot].push("J.HP")
           } else if (((Attack_Number)[pSlot][cLen] == 15) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("J.LK")
+            allStateObj.State_Magneto_Moves[pSlot].push("J.LK")
           } else if (((Attack_Number)[pSlot][cLen] == 16) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("J.MK")
+            allStateObj.State_Magneto_Moves[pSlot].push("J.MK")
           } else if (((Attack_Number)[pSlot][cLen] == 17) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("J.HK")
+            allStateObj.State_Magneto_Moves[pSlot].push("J.HK")
           } else if (((Attack_Number)[pSlot][cLen] == 18) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("J.D+LK")
+            allStateObj.State_Magneto_Moves[pSlot].push("J.D+LK")
           } else if (((Attack_Number)[pSlot][cLen] == 65) && ((Knockdown_State)[pSlot][cLen] == 34)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("OC Launcher")
+            allStateObj.State_Magneto_Moves[pSlot].push("OC Launcher")
             // Throws
           } else if (((Airborne)[pSlot][cLen] == 0) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 0)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Grd_Throw (HP)")
+            allStateObj.State_Magneto_Moves[pSlot].push("Ground Throw (HP)")
           } else if (((Airborne)[pSlot][cLen] == 0) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 1)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Grd_Throw (HK)")
+            allStateObj.State_Magneto_Moves[pSlot].push("Ground Throw (HK)")
           } else if (((Airborne)[pSlot][cLen] == 2) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 0)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Air_Throw (HP)")
+            allStateObj.State_Magneto_Moves[pSlot].push("Air Throw (HP)")
           } else if (((Airborne)[pSlot][cLen] == 2) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 1)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Air_Throw (HK)")
+            allStateObj.State_Magneto_Moves[pSlot].push("Air Throw (HK)")
             // Specials
             // E.M. Disruptor
           } else if (((Attack_Number)[pSlot][cLen] == 48) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("E.M. Disruptor (LP)")
+            allStateObj.State_Magneto_Moves[pSlot].push("E.M. Disruptor (LP)")
           } else if (((Attack_Number)[pSlot][cLen] == 50) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("E.M. Disruptor (HP)")
+            allStateObj.State_Magneto_Moves[pSlot].push("E.M. Disruptor (HP)")
             // Magnetic Blast
           } else if (((Attack_Number)[pSlot][cLen] == 54) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 0) && ((Special_Attack_ID)[pSlot][cLen] == 7)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Magnetic Blast (LP)")
+            allStateObj.State_Magneto_Moves[pSlot].push("Magnetic Blast (LP)")
           } else if (((Attack_Number)[pSlot][cLen] == 54) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 1) && ((Special_Attack_ID)[pSlot][cLen] == 7)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Magnetic Blast (HP)")
+            allStateObj.State_Magneto_Moves[pSlot].push("Magnetic Blast (HP)")
             // Forcefield
           } else if (((Special_Attack_ID)[pSlot][cLen] == 8) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 0)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Forcefield (LK)")
+            allStateObj.State_Magneto_Moves[pSlot].push("Forcefield (LK)")
           } else if (((Special_Attack_ID)[pSlot][cLen] == 8) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 1)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Forcefield (HK)")
+            allStateObj.State_Magneto_Moves[pSlot].push("Forcefield (HK)")
             // Hyper-Grav
           } else if ((Attack_Number[pSlot][cLen] == 51) && ((Special_Attack_ID)[pSlot][cLen] == 1) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 0)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Hyper-Grav (LK)")
+            allStateObj.State_Magneto_Moves[pSlot].push("Hyper-Grav (LK)")
           } else if ((Attack_Number[pSlot][cLen] == 51) && ((Special_Attack_ID)[pSlot][cLen] == 1) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 1)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Hyper-Grav (HK)")
+            allStateObj.State_Magneto_Moves[pSlot].push("Hyper-Grav (HK)")
             // Tag-In
           } else if ((Attack_Number[pSlot][cLen] == 61) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Tag-In")
+            allStateObj.State_Magneto_Moves[pSlot].push("Tag-In")
             // Snapback
           } else if ((Attack_Number[pSlot][cLen] == 63) && ((Knockdown_State)[pSlot][cLen] == 29)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Snapback")
+            allStateObj.State_Magneto_Moves[pSlot].push("Snapback")
             // Flight-Startup
           } else if ((Special_Attack_ID[pSlot][cLen] == 4) && ((Flight_Flag)[pSlot][cLen] == 255) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Flight-Start")
+            allStateObj.State_Magneto_Moves[pSlot].push("Flight-Start")
             // Flight_Active
             // } else if ((Flight_Flag)[pSlot][cLen] == 255) {
             //   allNewStateObject.State_Magneto_Moves[pSlot].push("Flight_Active")
             // Taunt
           } else if ((Special_Attack_ID[pSlot][cLen] == 6) && ((Is_Prox_Block)[pSlot][cLen] == 19) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Taunt")
+            allStateObj.State_Magneto_Moves[pSlot].push("Taunt")
             // Supers
             // Shockwave
           } else if ((Attack_Number[pSlot][cLen] == 52) && ((Knockdown_State)[pSlot][cLen] == 29)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Shockwave")
+            allStateObj.State_Magneto_Moves[pSlot].push("Shockwave")
             // Tempest
           } else if ((Attack_Number[pSlot][cLen] == 53) && ((Knockdown_State)[pSlot][cLen] == 29)) {
-            allNewStateObject.State_Magneto_Moves[pSlot].push("Tempest")
+            allStateObj.State_Magneto_Moves[pSlot].push("Tempest")
             // ELSE NOTHING
           } else {
-            allNewStateObject.State_Magneto_Moves[pSlot].push(",")
+            allStateObj.State_Magneto_Moves[pSlot].push(",")
           }
 
           // Being_Hit
@@ -1006,8 +1006,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
             ((Knockdown_State)[pSlot][cLen] == 32)
             && ((HitStop)[pSlot][cLen] > 0)
           )
-            ? allNewStateObject.State_Being_Hit[pSlot].push(1)
-            : allNewStateObject.State_Being_Hit[pSlot].push(0);
+            ? allStateObj.State_Being_Hit[pSlot].push(1)
+            : allStateObj.State_Being_Hit[pSlot].push(0);
           // // "Flying_Screen_Air"
           // (
           //   ((FlyingScreen)[pSlot][clipLen] == 1)
@@ -1210,15 +1210,15 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         // }
 
         // Write the files
-        for (let stateFileIndex = 0; stateFileIndex < Object.entries(allNewStateObject).length; stateFileIndex++) {
-          fs.writeFileSync(`${DIR_OUTPATH}${p1OrP2}_${Object.keys(allNewStateObject)[stateFileIndex]}.js`,
+        for (let stateFileIndex = 0; stateFileIndex < Object.entries(allStateObj).length; stateFileIndex++) {
+          fs.writeFileSync(`${DIR_OUTPATH}${p1OrP2}_${Object.keys(allStateObj)[stateFileIndex]}.js`,
             `var result = []; ` + '\n', 'utf8');
         }
 
         // Append data arrays into files
-        for (let stateFileDataIndex = 0; stateFileDataIndex < Object.entries(allNewStateObject).length; stateFileDataIndex++) {
-          fs.appendFileSync(`${DIR_OUTPATH}${p1OrP2}_${Object.keys(allNewStateObject)[stateFileDataIndex]}.js`,
-            JSON.stringify(Object.values(allNewStateObject)[stateFileDataIndex])
+        for (let stateFileDataIndex = 0; stateFileDataIndex < Object.entries(allStateObj).length; stateFileDataIndex++) {
+          fs.appendFileSync(`${DIR_OUTPATH}${p1OrP2}_${Object.keys(allStateObj)[stateFileDataIndex]}.js`,
+            JSON.stringify(Object.values(allStateObj)[stateFileDataIndex])
               .replace('[[', `result[0] = [`)
               .replace(',[', '\nresult[1] = [')
               .replace(',[', '\nresult[2] = [')
