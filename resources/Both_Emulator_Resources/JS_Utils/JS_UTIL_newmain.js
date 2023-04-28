@@ -26,14 +26,15 @@ import {
 // Import directories; Order matters!
 import {
   DIR_EXPORT_TO_AE,
-  DIR_CSVS
+  DIR_CSVS,
+  DIR_SORTED_JS
 } from './JS_UTIL_paths.js';
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-console.time('Your program took:');
+console.time('⏱');
 /*
 --------------------------------------------------
 Step 1: Get the CSV file names from a directory
@@ -315,8 +316,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     playerMemoryEntries = [...new Set(playerMemoryEntries)];
     return playerMemoryEntries;
   }
-  // export the dataObject into a SortedJS file for reading
   let tempJS = `${DIR_EXPORT_TO_AE}${csvSoloNameArr[csvFilesIDX]}.js`;
+
   async function exportDataObject() {
     let dataObjectExport = '';
     for (let key in dataObject) {
@@ -325,7 +326,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         dataObjectExport += `export const ${key} = '${dataObject[key]}';\n`;
       }
     }
-    // console.log(`Writing ${tempJSName}...`);
     fs.writeFileSync(`${DIR_EXPORT_TO_AE}${csvSoloNameArr[csvFilesIDX]}.js`, dataObjectExport);
   }
 
@@ -334,7 +334,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
    * @param {number|string} p1OrP2 number or string, ex: 1 or "P1"
    * @param {string} pMemAdr string, ex: "Health_Big"
    * @param {number|boolean} write flag to return array or write to file
-   * @returns {Number[]} returns an array of numbers or writes a file for the playerMemoryAddress in the clip.
+   * @returns {void} Writes files to disk.
    * @description Finds the point character, and returns an array of numbers for the playerMemoryAddress in the clip.
    */
   function writePlayerMemory(p1OrP2, pMemAdr, write) {
@@ -358,141 +358,166 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       pObjSwitch = POINT_OBJ_P2;
       playerSwitcher = "P2";
     }
-    if (write == false || write == 0) {
-      // await import(tempJSName).then((pMemFile) => {
-      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) // length of clip
-      {
+
+    import(`file://${tempJS}`).then((pMemFile) => {
+      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
         // 3-Character Bug Logic
         if ((Object.values(pObjSwitch)[0][clipLen] == 0)
           && (Object.values(pObjSwitch)[1][clipLen] == 0)
           && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
           // console.log( `${ playerSwitcher }: 3 - Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
-          valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(dataObject[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[2].push(dataObject[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[2].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
         // 2-Character Bug Logic
         else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
           && (Object.values(pObjSwitch)[1][clipLen] == 0)
           && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
           // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
-          valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(dataObject[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
         }
         else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
           && (Object.values(pObjSwitch)[1][clipLen] != 0)
           && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
           // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
-          valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(dataObject[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
         else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
           && (Object.values(pObjSwitch)[1][clipLen] == 0)
           && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
           // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
-          valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(dataObject[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+        }
+        // 1-Character Logic
+        else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+          && (Object.values(pObjSwitch)[1][clipLen] != 0)
+          && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
+          // console.log(`${ playerSwitcher }: 1 - Character Logic: A == 0 && B != 0 && C != 0        P1: A`);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+        }//                       P1|P2        P1_A        Health_Big                        i     
+        else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
+          && (Object.values(pObjSwitch)[1][clipLen] == 0)
+          && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
+          // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B == 0 && C != 0        P1: B`);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+        }
+        else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
+          && (Object.values(pObjSwitch)[1][clipLen] != 0)
+          && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+          // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C`);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+        }
+      } // loop end
+
+      // Write the file if it doesn't exist yet.
+      if (!fs.existsSync(`${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`)) {
+        fs.writeFileSync(
+          `${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`,
+          `var result = []; ` + "\n",
+          'utf8',
+        )
+        // Append main data
+        for (let dataArrayPerCharacter in valArr) {
+          fs.appendFileSync(
+            `${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`,
+            `result[${dataArrayPerCharacter}] = [${valArr[dataArrayPerCharacter]}];\n`,
+            'utf8',
+          )
+        }
+      }
+    });
+  }
+
+  // Main function to write data to files OR return finalValues array
+  /**
+   * @param {number|string} p1OrP2 number or string, ex: 1 or "P1"
+   * @param {string} pMemAdr sString, ex: "Health_Big"
+  //  * @param {number|boolean} write is always 0
+   * @returns {Number[]} Returns an array of numbers for the pMemAdr in the clip.
+   * @description Finds the point character, and returns an array of numbers for the playerMemoryAddress in the clip.
+   */
+  async function getPlayerMemory(p1OrP2, pMemAdr) {
+    let valArr = [[], [], []];
+    /** 
+     * @description Switches between the Player1 and Player2 objects,
+     * ex: POINT_OBJ_P1 or POINT_OBJ_P2 which contain key value pairs of
+     * P1_A... and P2_A... to `dataObject['P1_A_Is_Point'].split(',')`... etc
+     */
+    let pObjSwitch;// Switches between the Player1 and Player2 objects
+    /**
+     * @description "P1" | "P2"
+    */
+    let playerSwitcher; // Switches between "P1" and "P2"
+
+    if ((p1OrP2 == 1) || (p1OrP2 == "P1") || (p1OrP2 == "1")) {
+      pObjSwitch = POINT_OBJ_P1;
+      playerSwitcher = "P1";
+    }
+    else if ((p1OrP2 == 2) || (p1OrP2 == "P2") || (p1OrP2 == "2")) {
+      pObjSwitch = POINT_OBJ_P2;
+      playerSwitcher = "P2";
+    }
+    await import(`file://${tempJS}`).then((pMemFile) => {
+      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+        // 3-Character Bug Logic
+        if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+          && (Object.values(pObjSwitch)[1][clipLen] == 0)
+          && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+          // console.log( `${ playerSwitcher }: 3 - Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[2].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+        }
+        // 2-Character Bug Logic
+        else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+          && (Object.values(pObjSwitch)[1][clipLen] == 0)
+          && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
+          // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+        }
+        else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
+          && (Object.values(pObjSwitch)[1][clipLen] != 0)
+          && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+          // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+        }
+        else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
+          && (Object.values(pObjSwitch)[1][clipLen] == 0)
+          && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+          // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
         // 1-Character Logic
         else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
           && (Object.values(pObjSwitch)[1][clipLen] != 0)
           && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
           // console.log(`${playerSwitcher}: 1 - Character Logic: A == 0 && B != 0 && C != 0        P1: A`);
-          valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
         }//                       P1|P2        P1_A        Health_Big                        i     
         else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
           && (Object.values(pObjSwitch)[1][clipLen] == 0)
           && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
           // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B == 0 && C != 0        P1: B`);
-          valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
         }
         else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
           && (Object.values(pObjSwitch)[1][clipLen] != 0)
           && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
           // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C`);
-          valArr[0].push(dataObject[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
       }
-      return valArr;
-      // });
-
-    } else if ((write == 1) || (write == true)) {
-      import(`file://${tempJS}`).then((pMemFile) => {
-        for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) // length of clip
-        {
-          // 3-Character Bug Logic
-          if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-            && (Object.values(pObjSwitch)[1][clipLen] == 0)
-            && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-            // console.log( `${ playerSwitcher }: 3 - Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
-            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-            valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-            valArr[2].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
-          }
-          // 2-Character Bug Logic
-          else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-            && (Object.values(pObjSwitch)[1][clipLen] == 0)
-            && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
-            // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
-            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-            valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-          }
-          else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-            && (Object.values(pObjSwitch)[1][clipLen] != 0)
-            && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-            // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
-            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-            valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
-          }
-          else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
-            && (Object.values(pObjSwitch)[1][clipLen] == 0)
-            && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-            // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
-            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-            valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
-          }
-          // 1-Character Logic
-          else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-            && (Object.values(pObjSwitch)[1][clipLen] != 0)
-            && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
-            // console.log(`${ playerSwitcher }: 1 - Character Logic: A == 0 && B != 0 && C != 0        P1: A`);
-            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          }//                       P1|P2        P1_A        Health_Big                        i     
-          else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
-            && (Object.values(pObjSwitch)[1][clipLen] == 0)
-            && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
-            // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B == 0 && C != 0        P1: B`);
-            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-          }
-          else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
-            && (Object.values(pObjSwitch)[1][clipLen] != 0)
-            && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-            // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C`);
-            valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
-          }
-        } // loop end
-
-        // Write the file if it doesn't exist yet.
-        if (!fs.existsSync(`${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`)) {
-          fs.writeFileSync(
-            `${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`,
-            `var result = []; ` + "\n",
-            'utf8',
-          )
-          // Append main data
-          for (let dataArrayPerCharacter in valArr) {
-            fs.appendFileSync(
-              `${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`,
-              `result[${dataArrayPerCharacter}] = [${valArr[dataArrayPerCharacter]}];\n`,
-              'utf8',
-            )
-          }
-        } else {
-          // console.log(`File ${playerSwitcher}_${pMemAdr.split(',')} already exists. Skipping...`);
-        }
-      });
-    }
+    });
+    return valArr;
   }
+
 
   /**
    * @description outputs arrays containing Total_Frames in ascending and 
@@ -830,395 +855,391 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
    * @description Writes State-Files that count and increment consecutive true values. 
    * Search for "NEW_STATE_ADD_HERE" across the function to append address fetches and new states.
    */
-  function writeNewStates() {
-    // Temps for switching P1 and P2
-    let playerI, p1OrP2;
-    // P1 and P2
-    for (playerI = 1; playerI < 3; playerI++) {
-      playerI == 1 ? p1OrP2 = 'P1' : p1OrP2 = 'P2';
-
+  async function writeNewStates() {
+    let pI;
+    let p1OrP2;
+    for (pI = 1; pI < 3; pI++) {
+      pI == 1 ? p1OrP2 = 'P1' : p1OrP2 = 'P2';
       // Fetches relevant SINGLE addresses for State-Logic-Checking
-      const Action_Flags = writePlayerMemory(p1OrP2, 'Action_Flags', 0);
-      const Air_Dash_Count = writePlayerMemory(p1OrP2, 'Air_Dash_Count', 0);
-      const Airborne = writePlayerMemory(p1OrP2, 'Airborne', 0);
-      const Animation_Timer_Main = writePlayerMemory(p1OrP2, 'Animation_Timer_Main', 0);
-      const Attack_Immune = writePlayerMemory(p1OrP2, 'Attack_Immune', 0);
-      const Attack_Number = writePlayerMemory(p1OrP2, 'Attack_Number', 0);
-      const Block_Meter = writePlayerMemory(p1OrP2, 'Block_Meter', 0);
-      const Dizzy = writePlayerMemory(p1OrP2, 'Dizzy', 0);
-      const Dizzy_Reset_Timer = writePlayerMemory(p1OrP2, 'Dizzy_Reset_Timer', 0);
-      const Flight_Flag = writePlayerMemory(p1OrP2, 'Flight_Flag', 0);
-      const FlyingScreen = writePlayerMemory(p1OrP2, 'FlyingScreen', 0);
-      const FSI_Points = writePlayerMemory(p1OrP2, 'FlyingScreen', 0);
-      const HitStop = writePlayerMemory(p1OrP2, 'Hitstop2', 0);
-      const Is_Prox_Block = writePlayerMemory(p1OrP2, 'Is_Prox_Block', 0);
-      const Knockdown_State = writePlayerMemory(p1OrP2, 'Knockdown_State', 0);
-      const Normal_Strength = writePlayerMemory(p1OrP2, 'Normal_Strength', 0);
-      const PunchKick = writePlayerMemory(p1OrP2, 'PunchKick', 0);
-      const Special_Attack_ID = writePlayerMemory(p1OrP2, 'Special_Attack_ID', 0);
-      const Special_Strength = writePlayerMemory(p1OrP2, 'Special_Strength', 0);
-      const SJ_Counter = writePlayerMemory(p1OrP2, 'SJ_Counter', 0);
-      const Y_Position_Arena = writePlayerMemory(p1OrP2, 'Y_Position_Arena', 0);
-      const Y_Position_From_Enemy = writePlayerMemory(p1OrP2, 'Y_Position_From_Enemy', 0);
-      const Y_Velocity = writePlayerMemory(p1OrP2, 'Y_Velocity', 0);
+      const Action_Flags = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Action_Flags', 0)); reject("Error"); });
+      const Air_Dash_Count = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Air_Dash_Count', 0)); reject("Error"); });
+      const Airborne = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Airborne', 0)); reject("Error"); });
+      const Animation_Timer_Main = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Animation_Timer_Main', 0)); reject("Error"); });
+      const Attack_Immune = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Attack_Immune', 0)); reject("Error"); });
+      const Attack_Number = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Attack_Number', 0)); reject("Error"); });
+      const Block_Meter = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Block_Meter', 0)); reject("Error"); });
+      const Dizzy = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Dizzy', 0)); reject("Error"); });
+      const Dizzy_Reset_Timer = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Dizzy_Reset_Timer', 0)); reject("Error"); });
+      const Flight_Flag = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Flight_Flag', 0)); reject("Error"); });
+      const FlyingScreen = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'FlyingScreen', 0)); reject("Error"); });
+      const FSI_Points = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'FlyingScreen', 0)); reject("Error"); });
+      const HitStop = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Hitstop2', 0)); reject("Error"); });
+      const Is_Prox_Block = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Is_Prox_Block', 0)); reject("Error"); });
+      const Knockdown_State = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Knockdown_State', 0)); reject("Error"); });
+      const Normal_Strength = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Normal_Strength', 0)); reject("Error"); });
+      const PunchKick = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'PunchKick', 0)); reject("Error"); });
+      const Special_Attack_ID = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Special_Attack_ID', 0)); reject("Error"); });
+      const Special_Strength = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Special_Strength', 0)); reject("Error"); });
+      const SJ_Counter = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'SJ_Counter', 0)); reject("Error"); });
+      const Y_Position_Arena = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Y_Position_Arena', 0)); reject("Error"); });
+      const Y_Position_From_Enemy = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Y_Position_From_Enemy', 0)); reject("Error"); });
+      const Y_Velocity = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Y_Velocity', 0)); reject("Error"); });
 
       // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here if you need something that isn't on the list.
 
       // List of files to be written. Will have prefix of P1_ or P2_
-      var allStateObj =
+      var nStateObj =
       {
         State_Being_Hit: [[], [], []],
-        // State_Flying_Screen_Air: [[], [], []],
-        // State_Flying_Screen_OTG: [[], [], []],
-        // State_FS_Install_1: [[], [], []],
-        // State_FS_Install_2: [[], [], []],
-        // State_NJ_Air: [[], [], []],
-        // State_NJ_Rising: [[], [], []],
-        // State_OTG_Extra_Stun: [[], [], []],
-        // State_OTG_Forced_Stun: [[], [], []],
-        // State_OTG_Hit: [[], [], []],
-        // State_OTG_Roll_Invincible: [[], [], []],
-        // State_OTG_Roll_Stunned: [[], [], []],
-        // State_ProxBlock_Air: [[], [], []],
-        // State_ProxBlock_Ground: [[], [], []],
-        // State_Pushblock_Air: [[], [], []],
-        // State_Pushblock_Ground: [[], [], []],
-        // State_Rising_Invincibility: [[], [], []],
-        // State_SJ_Air: [[], [], []],
-        // State_SJ_Counter: [[], [], []],
-        // State_Stun: [[], [], []],
-        // State_Tech_Hit: [[], [], []],
-        // State_Thrown_Air: [[], [], []],
-        // State_Thrown_Ground: [[], [], []],
-        // State_UnDizzy: [[], [], []],
+        State_Flying_Screen_Air: [[], [], []],
+        State_Flying_Screen_OTG: [[], [], []],
+        State_FS_Install_1: [[], [], []],
+        State_FS_Install_2: [[], [], []],
+        State_NJ_Air: [[], [], []],
+        State_NJ_Rising: [[], [], []],
+        State_OTG_Extra_Stun: [[], [], []],
+        State_OTG_Forced_Stun: [[], [], []],
+        State_OTG_Hit: [[], [], []],
+        State_OTG_Roll_Invincible: [[], [], []],
+        State_OTG_Roll_Stunned: [[], [], []],
+        State_ProxBlock_Air: [[], [], []],
+        State_ProxBlock_Ground: [[], [], []],
+        State_Pushblock_Air: [[], [], []],
+        State_Pushblock_Ground: [[], [], []],
+        State_Rising_Invincibility: [[], [], []],
+        State_SJ_Air: [[], [], []],
+        State_SJ_Counter: [[], [], []],
+        State_Stun: [[], [], []],
+        State_Tech_Hit: [[], [], []],
+        State_Thrown_Air: [[], [], []],
+        State_Thrown_Ground: [[], [], []],
+        State_UnDizzy: [[], [], []],
         State_Magneto_Moves: [[], [], []],
         // NEW_STATE_ADD_HERE ⏫
       }
 
       // for each slot (abc) in a Player's side
       for (let pSlot = 0; pSlot < 3; pSlot++) {
-        // for each frame in a clip
         for (let cLen = 0; cLen < CLIP_LENGTH; cLen++) {
-          // Pushing the boolean-results for each State. Example BeingHit result = [ 0,0,0,1,1,1,1,1... ]
           // Magneto MoveList
           // Normals
-          if (((Attack_Number)[pSlot][cLen] == 0) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("S.LP")
-          } else if (((Attack_Number)[pSlot][cLen] == 1) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("S.MP")
-          } else if (((Attack_Number)[pSlot][cLen] == 2) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("S.HP")
-          } else if (((Attack_Number)[pSlot][cLen] == 3) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("S.LK")
-          } else if (((Attack_Number)[pSlot][cLen] == 4) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("S.MK")
-          } else if (((Attack_Number)[pSlot][cLen] == 5) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("S.HK(1)")
-          } else if (((Attack_Number)[pSlot][cLen] == 25) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("S.HK (2)")
-          } else if (((Attack_Number)[pSlot][cLen] == 6) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("C.LP")
-          } else if (((Attack_Number)[pSlot][cLen] == 7) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("C.MP")
-          } else if (((Attack_Number)[pSlot][cLen] == 8) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("C.HP")
-          } else if (((Attack_Number)[pSlot][cLen] == 9) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("C.LK")
-          } else if (((Attack_Number)[pSlot][cLen] == 10) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("C.MK")
-          } else if (((Attack_Number)[pSlot][cLen] == 11) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("C.HK")
-          } else if (((Attack_Number)[pSlot][cLen] == 12) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("J.LP")
-          } else if (((Attack_Number)[pSlot][cLen] == 13) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("J.MP")
-          } else if (((Attack_Number)[pSlot][cLen] == 14) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("J.HP")
-          } else if (((Attack_Number)[pSlot][cLen] == 15) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("J.LK")
-          } else if (((Attack_Number)[pSlot][cLen] == 16) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("J.MK")
-          } else if (((Attack_Number)[pSlot][cLen] == 17) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("J.HK")
-          } else if (((Attack_Number)[pSlot][cLen] == 18) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("J.D+LK")
-          } else if (((Attack_Number)[pSlot][cLen] == 65) && ((Knockdown_State)[pSlot][cLen] == 34)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("OC Launcher")
-            // Throws
-          } else if (((Airborne)[pSlot][cLen] == 0) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 0)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Ground Throw (HP)")
-          } else if (((Airborne)[pSlot][cLen] == 0) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 1)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Ground Throw (HK)")
-          } else if (((Airborne)[pSlot][cLen] == 2) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 0)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Air Throw (HP)")
-          } else if (((Airborne)[pSlot][cLen] == 2) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 1)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Air Throw (HK)")
-            // Specials
-            // E.M. Disruptor
-          } else if (((Attack_Number)[pSlot][cLen] == 48) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("E.M. Disruptor (LP)")
-          } else if (((Attack_Number)[pSlot][cLen] == 50) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("E.M. Disruptor (HP)")
-            // Magnetic Blast
-          } else if (((Attack_Number)[pSlot][cLen] == 54) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 0) && ((Special_Attack_ID)[pSlot][cLen] == 7)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Magnetic Blast (LP)")
-          } else if (((Attack_Number)[pSlot][cLen] == 54) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 1) && ((Special_Attack_ID)[pSlot][cLen] == 7)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Magnetic Blast (HP)")
-            // Forcefield
-          } else if (((Special_Attack_ID)[pSlot][cLen] == 8) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 0)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Forcefield (LK)")
-          } else if (((Special_Attack_ID)[pSlot][cLen] == 8) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 1)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Forcefield (HK)")
-            // Hyper-Grav
-          } else if ((Attack_Number[pSlot][cLen] == 51) && ((Special_Attack_ID)[pSlot][cLen] == 1) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 0)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Hyper-Grav (LK)")
-          } else if ((Attack_Number[pSlot][cLen] == 51) && ((Special_Attack_ID)[pSlot][cLen] == 1) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 1)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Hyper-Grav (HK)")
-            // Tag-In
-          } else if ((Attack_Number[pSlot][cLen] == 61) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Tag-In")
-            // Snapback
-          } else if ((Attack_Number[pSlot][cLen] == 63) && ((Knockdown_State)[pSlot][cLen] == 29)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Snapback")
-            // Flight-Startup
-          } else if ((Special_Attack_ID[pSlot][cLen] == 4) && ((Flight_Flag)[pSlot][cLen] == 255) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Flight-Start")
-            // Flight_Active
-            // } else if ((Flight_Flag)[pSlot][cLen] == 255) {
-            //   allNewStateObject.State_Magneto_Moves[pSlot].push("Flight_Active")
-            // Taunt
-          } else if ((Special_Attack_ID[pSlot][cLen] == 6) && ((Is_Prox_Block)[pSlot][cLen] == 19) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Taunt")
-            // Supers
-            // Shockwave
-          } else if ((Attack_Number[pSlot][cLen] == 52) && ((Knockdown_State)[pSlot][cLen] == 29)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Shockwave")
-            // Tempest
-          } else if ((Attack_Number[pSlot][cLen] == 53) && ((Knockdown_State)[pSlot][cLen] == 29)) {
-            allStateObj.State_Magneto_Moves[pSlot].push("Tempest")
-            // ELSE NOTHING
-          } else {
-            allStateObj.State_Magneto_Moves[pSlot].push(",")
-          }
+          // if (((Attack_Number)[pSlot][cLen] == 0) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("S.LP")
+          // } else if (((Attack_Number)[pSlot][cLen] == 1) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("S.MP")
+          // } else if (((Attack_Number)[pSlot][cLen] == 2) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("S.HP")
+          // } else if (((Attack_Number)[pSlot][cLen] == 3) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("S.LK")
+          // } else if (((Attack_Number)[pSlot][cLen] == 4) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("S.MK")
+          // } else if (((Attack_Number)[pSlot][cLen] == 5) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("S.HK(1)")
+          // } else if (((Attack_Number)[pSlot][cLen] == 25) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("S.HK (2)")
+          // } else if (((Attack_Number)[pSlot][cLen] == 6) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("C.LP")
+          // } else if (((Attack_Number)[pSlot][cLen] == 7) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("C.MP")
+          // } else if (((Attack_Number)[pSlot][cLen] == 8) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("C.HP")
+          // } else if (((Attack_Number)[pSlot][cLen] == 9) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("C.LK")
+          // } else if (((Attack_Number)[pSlot][cLen] == 10) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("C.MK")
+          // } else if (((Attack_Number)[pSlot][cLen] == 11) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("C.HK")
+          // } else if (((Attack_Number)[pSlot][cLen] == 12) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("J.LP")
+          // } else if (((Attack_Number)[pSlot][cLen] == 13) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("J.MP")
+          // } else if (((Attack_Number)[pSlot][cLen] == 14) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("J.HP")
+          // } else if (((Attack_Number)[pSlot][cLen] == 15) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("J.LK")
+          // } else if (((Attack_Number)[pSlot][cLen] == 16) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("J.MK")
+          // } else if (((Attack_Number)[pSlot][cLen] == 17) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("J.HK")
+          // } else if (((Attack_Number)[pSlot][cLen] == 18) && ((Knockdown_State)[pSlot][cLen] == 20)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("J.D+LK")
+          // } else if (((Attack_Number)[pSlot][cLen] == 65) && ((Knockdown_State)[pSlot][cLen] == 34)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("OC Launcher")
+          //   // Throws
+          // } else if (((Airborne)[pSlot][cLen] == 0) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 0)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Ground Throw (HP)")
+          // } else if (((Airborne)[pSlot][cLen] == 0) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 1)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Ground Throw (HK)")
+          // } else if (((Airborne)[pSlot][cLen] == 2) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 0)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Air Throw (HP)")
+          // } else if (((Airborne)[pSlot][cLen] == 2) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 1)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Air Throw (HK)")
+          //   // Specials
+          //   // E.M. Disruptor
+          // } else if (((Attack_Number)[pSlot][cLen] == 48) && ((Knockdown_State)[pSlot][cLen] == 21)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("E.M. Disruptor (LP)")
+          // } else if (((Attack_Number)[pSlot][cLen] == 50) && ((Knockdown_State)[pSlot][cLen] == 21)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("E.M. Disruptor (HP)")
+          //   // Magnetic Blast
+          // } else if (((Attack_Number)[pSlot][cLen] == 54) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 0) && ((Special_Attack_ID)[pSlot][cLen] == 7)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Magnetic Blast (LP)")
+          // } else if (((Attack_Number)[pSlot][cLen] == 54) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 1) && ((Special_Attack_ID)[pSlot][cLen] == 7)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Magnetic Blast (HP)")
+          //   // Forcefield
+          // } else if (((Special_Attack_ID)[pSlot][cLen] == 8) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 0)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Forcefield (LK)")
+          // } else if (((Special_Attack_ID)[pSlot][cLen] == 8) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 1)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Forcefield (HK)")
+          //   // Hyper-Grav
+          // } else if ((Attack_Number[pSlot][cLen] == 51) && ((Special_Attack_ID)[pSlot][cLen] == 1) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 0)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Hyper-Grav (LK)")
+          // } else if ((Attack_Number[pSlot][cLen] == 51) && ((Special_Attack_ID)[pSlot][cLen] == 1) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 1)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Hyper-Grav (HK)")
+          //   // Tag-In
+          // } else if ((Attack_Number[pSlot][cLen] == 61) && ((Knockdown_State)[pSlot][cLen] == 21)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Tag-In")
+          //   // Snapback
+          // } else if ((Attack_Number[pSlot][cLen] == 63) && ((Knockdown_State)[pSlot][cLen] == 29)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Snapback")
+          //   // Flight-Startup
+          // } else if ((Special_Attack_ID[pSlot][cLen] == 4) && ((Flight_Flag)[pSlot][cLen] == 255) && ((Knockdown_State)[pSlot][cLen] == 21)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Flight-Start")
+          //   // Flight_Active
+          //   // } else if ((Flight_Flag)[pSlot][cLen] == 255) {
+          //   //   nStateObj.State_Magneto_Moves[pSlot].push("Flight_Active")
+          //   // Taunt
+          // } else if ((Special_Attack_ID[pSlot][cLen] == 6) && ((Is_Prox_Block)[pSlot][cLen] == 19) && ((Knockdown_State)[pSlot][cLen] == 21)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Taunt")
+          //   // Supers
+          //   // Shockwave
+          // } else if ((Attack_Number[pSlot][cLen] == 52) && ((Knockdown_State)[pSlot][cLen] == 29)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Shockwave")
+          //   // Tempest
+          // } else if ((Attack_Number[pSlot][cLen] == 53) && ((Knockdown_State)[pSlot][cLen] == 29)) {
+          //   nStateObj.State_Magneto_Moves[pSlot].push("Tempest")
+          //   // ELSE NOTHING
+          // } else {
+          //   nStateObj.State_Magneto_Moves[pSlot].push(",")
+          // }
 
           // Being_Hit
           (
             ((Knockdown_State)[pSlot][cLen] == 32)
             && ((HitStop)[pSlot][cLen] > 0)
           )
-            ? allStateObj.State_Being_Hit[pSlot].push(1)
-            : allStateObj.State_Being_Hit[pSlot].push(0);
-          // // "Flying_Screen_Air"
-          // (
-          //   ((FlyingScreen)[pSlot][clipLen] == 1)
-          //   && ((Knockdown_State)[pSlot][clipLen] == 32)
-          //   && ((Airborne)[pSlot][clipLen] == 2)
-          // )
-          //   ? allNewStateObject.State_Flying_Screen_Air[pSlot].push(1)
-          //   : allNewStateObject.State_Flying_Screen_Air[pSlot].push(0);
-          // // "Flying_Screen_OTG"
-          // (
-          //   ((FlyingScreen)[pSlot][clipLen] == 1)
-          //   && ((Knockdown_State)[pSlot][clipLen] == 32)
-          //   && ((Airborne)[pSlot][clipLen] == 3)
-          // )
-          //   ? allNewStateObject.State_Flying_Screen_OTG[pSlot].push(1)
-          //   : allNewStateObject.State_Flying_Screen_OTG[pSlot].push(0);
-          // // "FS_Install_1"
-          // (
-          //   ((FSI_Points)[pSlot][clipLen] == 8)
-          //   || ((FSI_Points)[pSlot][clipLen] == 9)
-          // )
-          //   ? allNewStateObject.State_FS_Install_1[pSlot].push(1)
-          //   : allNewStateObject.State_FS_Install_1[pSlot].push(0);
-          // // "FS_Install_2"
-          // (
-          //   ((FSI_Points)[pSlot][clipLen] > 9)
-          // )
-          //   ? allNewStateObject.State_FS_Install_2[pSlot].push(1)
-          //   : allNewStateObject.State_FS_Install_2[pSlot].push(0);
-          // // "NJ_Air"
-          // (
-          //   ((Airborne)[pSlot][clipLen] == 2)
-          //   && ((Knockdown_State)[pSlot][clipLen] == 3)
-          //   && ((SJ_Counter)[pSlot][clipLen] == 0)
-          // )
-          //   ? allNewStateObject.State_NJ_Air[pSlot].push(1)
-          //   : allNewStateObject.State_NJ_Air[pSlot].push(0);
-          // // "NJ_Rising
-          // (
-          //   ((Airborne)[pSlot][clipLen] == 0)
-          //   && ((Knockdown_State)[pSlot][clipLen] == 2)
-          //   && ((SJ_Counter)[pSlot][clipLen] == 0)
-          // )
-          //   ? allNewStateObject.State_NJ_Rising[pSlot].push(1)
-          //   : allNewStateObject.State_NJ_Rising[pSlot].push(0);
-          // // "OTG_Extra_Stun"
-          // (
-          //   ((Knockdown_State)[pSlot][clipLen] == 23)
-          //   && (((Airborne)[pSlot][clipLen] == 3))
-          // )
-          //   ? allNewStateObject.State_OTG_Extra_Stun[pSlot].push(1)
-          //   : allNewStateObject.State_OTG_Extra_Stun[pSlot].push(0);
+            ? nStateObj.State_Being_Hit[pSlot].push(1)
+            : nStateObj.State_Being_Hit[pSlot].push(0);
+          // "Flying_Screen_Air"
+          (
+            ((FlyingScreen)[pSlot][cLen] == 1)
+            && ((Knockdown_State)[pSlot][cLen] == 32)
+            && ((Airborne)[pSlot][cLen] == 2)
+          )
+            ? nStateObj.State_Flying_Screen_Air[pSlot].push(1)
+            : nStateObj.State_Flying_Screen_Air[pSlot].push(0);
+          // "Flying_Screen_OTG"
+          (
+            ((FlyingScreen)[pSlot][cLen] == 1)
+            && ((Knockdown_State)[pSlot][cLen] == 32)
+            && ((Airborne)[pSlot][cLen] == 3)
+          )
+            ? nStateObj.State_Flying_Screen_OTG[pSlot].push(1)
+            : nStateObj.State_Flying_Screen_OTG[pSlot].push(0);
+          // "FS_Install_1"
+          (
+            ((FSI_Points)[pSlot][cLen] == 8)
+            || ((FSI_Points)[pSlot][cLen] == 9)
+          )
+            ? nStateObj.State_FS_Install_1[pSlot].push(1)
+            : nStateObj.State_FS_Install_1[pSlot].push(0);
+          // "FS_Install_2"
+          (
+            ((FSI_Points)[pSlot][cLen] > 9)
+          )
+            ? nStateObj.State_FS_Install_2[pSlot].push(1)
+            : nStateObj.State_FS_Install_2[pSlot].push(0);
+          // "NJ_Air"
+          (
+            ((Airborne)[pSlot][cLen] == 2)
+            && ((Knockdown_State)[pSlot][cLen] == 3)
+            && ((SJ_Counter)[pSlot][cLen] == 0)
+          )
+            ? nStateObj.State_NJ_Air[pSlot].push(1)
+            : nStateObj.State_NJ_Air[pSlot].push(0);
+          // "NJ_Rising
+          (
+            ((Airborne)[pSlot][cLen] == 0)
+            && ((Knockdown_State)[pSlot][cLen] == 2)
+            && ((SJ_Counter)[pSlot][cLen] == 0)
+          )
+            ? nStateObj.State_NJ_Rising[pSlot].push(1)
+            : nStateObj.State_NJ_Rising[pSlot].push(0);
+          // "OTG_Extra_Stun"
+          (
+            ((Knockdown_State)[pSlot][cLen] == 23)
+            && (((Airborne)[pSlot][cLen] == 3))
+          )
+            ? nStateObj.State_OTG_Extra_Stun[pSlot].push(1)
+            : nStateObj.State_OTG_Extra_Stun[pSlot].push(0);
 
-          // // "OTG_Forced_Stun"
-          // (
-          //   ((Knockdown_State)[pSlot][clipLen] == 32)
-          //   && (((Airborne)[pSlot][clipLen] == 3))
-          // )
-          //   ? allNewStateObject.State_OTG_Forced_Stun[pSlot].push(1)
-          //   : allNewStateObject.State_OTG_Forced_Stun[pSlot].push(0);
-          // // "OTG_Hit"
-          // (
-          //   ((Action_Flags)[pSlot][clipLen] == 0)
-          //   && ((Airborne)[pSlot][clipLen] == 3)
-          //   && (((Knockdown_State)[pSlot][clipLen] == 32))
-          // )
-          //   ? allNewStateObject.State_OTG_Hit[pSlot].push(1)
-          //   : allNewStateObject.State_OTG_Hit[pSlot].push(0);
-          // // "OTG_Roll_Invincible"
-          // (
-          //   ((Action_Flags)[pSlot][clipLen] == 2)
-          //   && ((Airborne)[pSlot][clipLen] == 1)
-          //   && (((Attack_Immune)[pSlot][clipLen] == 1)
-          //     && ((Knockdown_State)[pSlot][clipLen] == 17))
-          // )
-          //   ? allNewStateObject.State_OTG_Roll_Invincible[pSlot].push(1)
-          //   : allNewStateObject.State_OTG_Roll_Invincible[pSlot].push(0);
+          // "OTG_Forced_Stun"
+          (
+            ((Knockdown_State)[pSlot][cLen] == 32)
+            && (((Airborne)[pSlot][cLen] == 3))
+          )
+            ? nStateObj.State_OTG_Forced_Stun[pSlot].push(1)
+            : nStateObj.State_OTG_Forced_Stun[pSlot].push(0);
+          // "OTG_Hit"
+          (
+            ((Action_Flags)[pSlot][cLen] == 0)
+            && ((Airborne)[pSlot][cLen] == 3)
+            && (((Knockdown_State)[pSlot][cLen] == 32))
+          )
+            ? nStateObj.State_OTG_Hit[pSlot].push(1)
+            : nStateObj.State_OTG_Hit[pSlot].push(0);
+          // "OTG_Roll_Invincible"
+          (
+            ((Action_Flags)[pSlot][cLen] == 2)
+            && ((Airborne)[pSlot][cLen] == 1)
+            && (((Attack_Immune)[pSlot][cLen] == 1)
+              && ((Knockdown_State)[pSlot][cLen] == 17))
+          )
+            ? nStateObj.State_OTG_Roll_Invincible[pSlot].push(1)
+            : nStateObj.State_OTG_Roll_Invincible[pSlot].push(0);
 
-          // // "OTG_Roll_Stunned"
-          // (
-          //   ((Action_Flags)[pSlot][clipLen] == 1)
-          //   && ((Airborne)[pSlot][clipLen] == 3)
-          //   && (((Knockdown_State)[pSlot][clipLen] == 32))
-          // )
-          //   ? allNewStateObject.State_OTG_Roll_Stunned[pSlot].push(1)
-          //   : allNewStateObject.State_OTG_Roll_Stunned[pSlot].push(0);
-          // // "ProxBlock_Air"
-          // (
-          //   ((Is_Prox_Block)[pSlot][clipLen] == 6)
-          //   && ((Knockdown_State)[pSlot][clipLen] == 19)
-          // )
-          //   ? allNewStateObject.State_ProxBlock_Air[pSlot].push(1)
-          //   : allNewStateObject.State_ProxBlock_Air[pSlot].push(0);
-          // // "ProxBlock_Ground"
-          // (
-          //   ((Is_Prox_Block)[pSlot][clipLen] == 5)
-          //   && ((Knockdown_State)[pSlot][clipLen] == 18)
-          // )
-          //   ? allNewStateObject.State_ProxBlock_Ground[pSlot].push(1)
-          //   : allNewStateObject.State_ProxBlock_Ground[pSlot].push(0);
-          // // "Pushblock_Air"
-          // (
-          //   ((Block_Meter)[pSlot][clipLen] > 0)
-          //   && ((Animation_Timer_Main)[pSlot][clipLen] < 28)
-          //   && ((Is_Prox_Block)[pSlot][clipLen] == 6)
-          //   && ((Action_Flags)[pSlot][clipLen] == 2)
-          // )
-          //   ? allNewStateObject.State_Pushblock_Air[pSlot].push(1)
-          //   : allNewStateObject.State_Pushblock_Air[pSlot].push(0);
-          // // "Pushblock_Ground"
-          // (
-          //   ((Block_Meter)[pSlot][clipLen] > 0)
-          //   && ((Animation_Timer_Main)[pSlot][clipLen] < 28)
-          //   && ((Is_Prox_Block)[pSlot][clipLen] == 5)
-          //   && (((Action_Flags)[pSlot][clipLen] == 3))
-          // )
-          //   ? allNewStateObject.State_Pushblock_Ground[pSlot].push(1)
-          //   : allNewStateObject.State_Pushblock_Ground[pSlot].push(0);
-          // // "Rising_Invincibility"
-          // (
-          //   ((Airborne)[pSlot][clipLen] == 0)
-          //   && ((Attack_Immune)[pSlot][clipLen] == 1)
-          //   && ((Knockdown_State)[pSlot][clipLen] == 17)
-          // )
-          //   ? allNewStateObject.State_Rising_Invincibility[pSlot].push(1)
-          //   : allNewStateObject.State_Rising_Invincibility[pSlot].push(0);
-          // // "SJ_Air"
-          // (
-          //   ((Airborne)[pSlot][clipLen] == 2)
-          //   && ((Knockdown_State)[pSlot][clipLen] == 14)
-          //   && ((SJ_Counter)[pSlot][clipLen] == 1)
-          // )
-          //   ? allNewStateObject.State_SJ_Air[pSlot].push(1)
-          //   : allNewStateObject.State_SJ_Air[pSlot].push(0);
-          // // "SJ_Counter"
-          // (
-          //   ((SJ_Counter)[pSlot][clipLen] == 2)
-          // )
-          //   ? allNewStateObject.State_SJ_Counter[pSlot].push(1)
-          //   : allNewStateObject.State_SJ_Counter[pSlot].push(0);
-          // // "Stun"
-          // (
-          //   ((Knockdown_State)[pSlot][clipLen] == 32)
-          //   && ((Is_Prox_Block)[pSlot][clipLen] == 13)
-          // )
-          //   ? allNewStateObject.State_Stun[pSlot].push(1)
-          //   : allNewStateObject.State_Stun[pSlot].push(0);
-          // // "Tech_Hit"
-          // (
-          //   ((Knockdown_State)[pSlot][clipLen] == 27)
-          // )
-          //   ? allNewStateObject.State_Tech_Hit[pSlot].push(1)
-          //   : allNewStateObject.State_Tech_Hit[pSlot].push(0);
-          // // "Thrown_Air"
-          // (
-          //   ((Airborne)[pSlot][clipLen] == 2)
-          //   && ((Knockdown_State)[pSlot][clipLen] == 31)
-          //   && ((Is_Prox_Block)[pSlot][clipLen] == 16)
-          // )
-          //   ? allNewStateObject.State_Thrown_Air[pSlot].push(1)
-          //   : allNewStateObject.State_Thrown_Air[pSlot].push(0);
-          // // "Thrown_Ground"
-          // (
-          //   ((Airborne)[pSlot][clipLen] == 0)
-          //   && ((Knockdown_State)[pSlot][clipLen] == 31)
-          //   && ((Is_Prox_Block)[pSlot][clipLen] == 16)
-          // )
-          //   ? allNewStateObject.State_Thrown_Ground[pSlot].push(1)
-          //   : allNewStateObject.State_Thrown_Ground[pSlot].push(0);
-          // // "Undizzy"
-          // (
-          //   ((Attack_Immune)[pSlot][clipLen] == 2)
-          //   && ((Knockdown_State)[pSlot][clipLen] == 32)
-          //   && ((Is_Prox_Block)[pSlot][clipLen] == 13)
-          //   && ((Dizzy)[pSlot][clipLen] == 80)
-          //   && ((Dizzy_Reset_Timer)[pSlot][clipLen] == 60)
-          // )
-          //   ? allNewStateObject.State_UnDizzy[pSlot].push(1)
-          //   : allNewStateObject.State_UnDizzy[pSlot].push(0);
+          // "OTG_Roll_Stunned"
+          (
+            ((Action_Flags)[pSlot][cLen] == 1)
+            && ((Airborne)[pSlot][cLen] == 3)
+            && (((Knockdown_State)[pSlot][cLen] == 32))
+          )
+            ? nStateObj.State_OTG_Roll_Stunned[pSlot].push(1)
+            : nStateObj.State_OTG_Roll_Stunned[pSlot].push(0);
+          // "ProxBlock_Air"
+          (
+            ((Is_Prox_Block)[pSlot][cLen] == 6)
+            && ((Knockdown_State)[pSlot][cLen] == 19)
+          )
+            ? nStateObj.State_ProxBlock_Air[pSlot].push(1)
+            : nStateObj.State_ProxBlock_Air[pSlot].push(0);
+          // "ProxBlock_Ground"
+          (
+            ((Is_Prox_Block)[pSlot][cLen] == 5)
+            && ((Knockdown_State)[pSlot][cLen] == 18)
+          )
+            ? nStateObj.State_ProxBlock_Ground[pSlot].push(1)
+            : nStateObj.State_ProxBlock_Ground[pSlot].push(0);
+          // "Pushblock_Air"
+          (
+            ((Block_Meter)[pSlot][cLen] > 0)
+            && ((Animation_Timer_Main)[pSlot][cLen] < 28)
+            && ((Is_Prox_Block)[pSlot][cLen] == 6)
+            && ((Action_Flags)[pSlot][cLen] == 2)
+          )
+            ? nStateObj.State_Pushblock_Air[pSlot].push(1)
+            : nStateObj.State_Pushblock_Air[pSlot].push(0);
+          // "Pushblock_Ground"
+          (
+            ((Block_Meter)[pSlot][cLen] > 0)
+            && ((Animation_Timer_Main)[pSlot][cLen] < 28)
+            && ((Is_Prox_Block)[pSlot][cLen] == 5)
+            && (((Action_Flags)[pSlot][cLen] == 3))
+          )
+            ? nStateObj.State_Pushblock_Ground[pSlot].push(1)
+            : nStateObj.State_Pushblock_Ground[pSlot].push(0);
+          // "Rising_Invincibility"
+          (
+            ((Airborne)[pSlot][cLen] == 0)
+            && ((Attack_Immune)[pSlot][cLen] == 1)
+            && ((Knockdown_State)[pSlot][cLen] == 17)
+          )
+            ? nStateObj.State_Rising_Invincibility[pSlot].push(1)
+            : nStateObj.State_Rising_Invincibility[pSlot].push(0);
+          // "SJ_Air"
+          (
+            ((Airborne)[pSlot][cLen] == 2)
+            && ((Knockdown_State)[pSlot][cLen] == 14)
+            && ((SJ_Counter)[pSlot][cLen] == 1)
+          )
+            ? nStateObj.State_SJ_Air[pSlot].push(1)
+            : nStateObj.State_SJ_Air[pSlot].push(0);
+          // "SJ_Counter"
+          (
+            ((SJ_Counter)[pSlot][cLen] == 2)
+          )
+            ? nStateObj.State_SJ_Counter[pSlot].push(1)
+            : nStateObj.State_SJ_Counter[pSlot].push(0);
+          // "Stun"
+          (
+            ((Knockdown_State)[pSlot][cLen] == 32)
+            && ((Is_Prox_Block)[pSlot][cLen] == 13)
+          )
+            ? nStateObj.State_Stun[pSlot].push(1)
+            : nStateObj.State_Stun[pSlot].push(0);
+          // "Tech_Hit"
+          (
+            ((Knockdown_State)[pSlot][cLen] == 27)
+          )
+            ? nStateObj.State_Tech_Hit[pSlot].push(1)
+            : nStateObj.State_Tech_Hit[pSlot].push(0);
+          // "Thrown_Air"
+          (
+            ((Airborne)[pSlot][cLen] == 2)
+            && ((Knockdown_State)[pSlot][cLen] == 31)
+            && ((Is_Prox_Block)[pSlot][cLen] == 16)
+          )
+            ? nStateObj.State_Thrown_Air[pSlot].push(1)
+            : nStateObj.State_Thrown_Air[pSlot].push(0);
+          // "Thrown_Ground"
+          (
+            ((Airborne)[pSlot][cLen] == 0)
+            && ((Knockdown_State)[pSlot][cLen] == 31)
+            && ((Is_Prox_Block)[pSlot][cLen] == 16)
+          )
+            ? nStateObj.State_Thrown_Ground[pSlot].push(1)
+            : nStateObj.State_Thrown_Ground[pSlot].push(0);
+          // "Undizzy"
+          (
+            ((Attack_Immune)[pSlot][cLen] == 2)
+            && ((Knockdown_State)[pSlot][cLen] == 32)
+            && ((Is_Prox_Block)[pSlot][cLen] == 13)
+            && ((Dizzy)[pSlot][cLen] == 80)
+            && ((Dizzy_Reset_Timer)[pSlot][cLen] == 60)
+          )
+            ? nStateObj.State_UnDizzy[pSlot].push(1)
+            : nStateObj.State_UnDizzy[pSlot].push(0);
 
           // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
           // NEW_STATE_ADD_HERE
-        } // clipLen Scope
+        } // cLen Scope
 
-        // Count | Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until they hit 0.
-        // var counter = 0;
+        // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until 0 reoccurs.
+        var counter = 0;
 
-        // for (let stateDataEntryI in Object.entries(allNewStateObject)) {
-        //   Object.values(allNewStateObject)[stateDataEntryI][pSlot].forEach((element, index) => {
-        //     if (element == 0) {
-        //       counter = 0
-        //       return 0;
-        //     }
-        //     else {
-        //       Object.values(allNewStateObject)[stateDataEntryI][pSlot][index] = (element + counter);
-        //       counter++
-        //       return Object.values(allNewStateObject)[stateDataEntryI][pSlot][index + counter]
-        //     }
-        //   });
-        // }
+        for (let stateDataEntryI in Object.entries(nStateObj)) {
+          Object.values(nStateObj)[stateDataEntryI][pSlot].forEach((element, index) => {
+            if (element == 0) {
+              counter = 0
+              return 0;
+            }
+            else {
+              Object.values(nStateObj)[stateDataEntryI][pSlot][index] = (element + counter);
+              counter++
+              return Object.values(nStateObj)[stateDataEntryI][pSlot][index + counter]
+            }
+          });
+        }
 
         // Write the files
-        for (let stateFileIndex = 0; stateFileIndex < Object.entries(allStateObj).length; stateFileIndex++) {
-          fs.writeFileSync(`${DIR_OUTPATH}${p1OrP2}_${Object.keys(allStateObj)[stateFileIndex]}.js`,
+        for (let stateFileIndex = 0; stateFileIndex < Object.entries(nStateObj).length; stateFileIndex++) {
+          fs.writeFileSync(`${DIR_OUTPATH}${p1OrP2}_${Object.keys(nStateObj)[stateFileIndex]}.js`,
             `var result = []; ` + '\n', 'utf8');
         }
 
         // Append data arrays into files
-        for (let stateFileDataIndex = 0; stateFileDataIndex < Object.entries(allStateObj).length; stateFileDataIndex++) {
-          fs.appendFileSync(`${DIR_OUTPATH}${p1OrP2}_${Object.keys(allStateObj)[stateFileDataIndex]}.js`,
-            JSON.stringify(Object.values(allStateObj)[stateFileDataIndex])
+        for (let stateFileDataIndex = 0; stateFileDataIndex < Object.entries(nStateObj).length; stateFileDataIndex++) {
+          fs.appendFileSync(`${DIR_OUTPATH}${p1OrP2}_${Object.keys(nStateObj)[stateFileDataIndex]}.js`,
+            JSON.stringify(Object.values(nStateObj)[stateFileDataIndex])
               .replace('[[', `result[0] = [`)
               .replace(',[', '\nresult[1] = [')
               .replace(',[', '\nresult[2] = [')
@@ -1228,7 +1249,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           );
         }
       }
-      // console.log(allNewStateObject.State_Magneto_Moves);
+      // console.log(nStateObj.State_Magneto_Moves);
     }
   }
 
@@ -1288,19 +1309,16 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     }
   }
 
-
   // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
   /**
    * @returns {Number[]} returns an array of numbers and writes a file with _CNV appended to its name
    * @description Writes and converts the point character's values for Knockdown State, Is_Prox_Block, ID_2 and _PortraitsToTime
    * Files are written and then appended as the function loops over each player-memory-address & player.
   */
-  function writeStaticDataCNV() {
+  async function writeStaticDataCNV() {
     const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
     const STATIC_DATA_ADRS = ["Knockdown_State", "Is_Prox_Block", "ID_2", "ID_2"]
-    // import(`file://${DIR_EXPORT_TO_AE}/dataObjectExport.js`).then((pMemFile) => {
     let lookUpArr = [[], [], []];
-
     for (let p1OrP2 = 1; p1OrP2 < 3; p1OrP2++) {
       for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++) {
 
@@ -1323,46 +1341,41 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           );
         }
       }
-      // console.log(`Writing P${p1OrP2} Static Data Conversion...`);
       for (let statAdr = 0; statAdr < STATIC_DATA_ADRS.length; statAdr++) {
-        // make a promise for writePlayerMemory so that it awaits the values before continuing
-        const callPlayerMemoryFN = writePlayerMemory(`${p1OrP2}`, STATIC_DATA_ADRS[statAdr].toString(), 0);
-        for (let pMemI = 0; pMemI < callPlayerMemoryFN.length; pMemI++) // [0][1][2]
+        const myPromise = new Promise((resolve, reject) => {
+          resolve(getPlayerMemory(`${p1OrP2}`, STATIC_DATA_ADRS[statAdr].toString(), 0));
+          reject("Error");
+        });
+        const callPlayerMemoryFN = await myPromise;
+        for (let pABC = 0; pABC < callPlayerMemoryFN.length; pABC++) // [0][1][2]
         {
-          // Push and convert all three arrays' values
-          for (let clipLen = 0; clipLen < callPlayerMemoryFN[pMemI].length; clipLen++) // CLIPLENGTH
-          {
-            lookUpArr[pMemI].push(`"${Object.values(STATIC_DATA_OBJS[statAdr])[callPlayerMemoryFN[pMemI][clipLen]]}"`);
+          for (let clipLen = 0; clipLen < callPlayerMemoryFN[pABC].length; clipLen++) {
+            lookUpArr[pABC].push(`"${Object.values(STATIC_DATA_OBJS[statAdr])[callPlayerMemoryFN[pABC][clipLen]]}"`);
           }
           if (STATIC_DATA_OBJS[statAdr] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
           {
             fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitsToTime.js`,
-              `result[${pMemI}] = [${lookUpArr[pMemI]}];\n`,
+              `result[${pABC}] = [${lookUpArr[pABC]}];\n`,
               'utf8'
             );
-            // console.log(lookUpArr[pMemI]);
 
-            // look up the staticLookupResults in the AE_TO_POSITION_OBJ
-            // and write the result to a file
-            let positionArray = lookUpArr[pMemI].map((portrait) => {
+            // AE_TO_POSITION_OBJ full of arrays with Position values
+            let posArray = lookUpArr[pABC].map((portrait) => {
               portrait = portrait.toString();
               portrait = portrait.replace(/"/g, '');
               portrait = AE_TO_POSITION_OBJ[portrait];
-              portrait = [`[${portrait}]`];
+              portrait = [`[${portrait}]`]; /// wrap in brackets
               return portrait;
             });
-            // write positionArray to a file as an array of arrays
-            // console.log(positionArray);
-            // append to file as an array of arrays
+
             fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitPosition.js`,
-              `result[${pMemI}] = [${positionArray}];\n`,
+              `result[${pABC}] = [${posArray}];\n`,
               'utf8'
             );
             lookUpArr = [[], [], []];
-          }
-          else {
+          } else {
             fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[statAdr]}_CNV.js`,
-              `result[${pMemI}] = [${lookUpArr[pMemI]}];\n`,
+              `result[${pABC}] = [${lookUpArr[pABC]}];\n`,
               'utf8'
             );
             lookUpArr = [[], [], []];
@@ -1370,7 +1383,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         }
       }
     }
-    // });
   };
 
   /*
@@ -1384,7 +1396,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   //   writePlayerMemory(1, label.toString(), 1);
   //   writePlayerMemory(2, label.toString(), 1);
   // });
-
   // writeP1P2Addresses();
   // writeComboCallouts();
   // countIsPausedCNV();
@@ -1392,19 +1403,29 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   // writeStageDataCNV();
   // writeTotalFramesCNV();
   // writeDataObject();
+
   // writeStaticDataCNV();
   writeNewStates()
-
 }
 
-console.timeEnd('Your program took:');
-await sleep(1000);
-fs.readdirSync(DIR_EXPORT_TO_AE).forEach((file) => {
-  if (file.endsWith('.js')) {
-    fs.unlinkSync(`${DIR_EXPORT_TO_AE}/${file}`);
-  }
-});
 
+// const fList = [];
+// fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
+//   if (file.endsWith('.js')) {
+//     if (fs.existsSync(`${DIR_EXPORT_TO_AE}${file}`)) {
+//       fList.push(file);
+//     }
+//   }
+// });
+console.timeEnd('⏱');
+// await sleep(10000);
+// // move all the .JS files in the AE folder up a path, and into the SortedJS folder inside of JS_Utils
+// // make a list with all the js files in the AE folder
+// fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
+//   if (file.endsWith('.js')) {
+//     fs.renameSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
+//   }
+// });
 
 //TODO Fix CSV 'real-data' finder function.
 //TODO Make Tests for each of the functions!

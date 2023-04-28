@@ -1,14 +1,15 @@
 ﻿/* eslint-disable */ // XD
-
+//! Make sure AME is set to CineformARGB!
 // NEEDS '\\' instead of '/' for AME!
-// var dataPath = "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE";
-var dataPath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE";
-var videoPath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\fromAE";
+var dataPath = "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE";
+// var dataPath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE";
+var videoPath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\fromAE\\";
 var getDataArr = new Folder(dataPath).getFiles();
+$.writeln(getDataArr);
 
 for (var fldr = 0; fldr < getDataArr.length; fldr++) {
-  var folderName = getDataArr[fldr].toString().replace(/\/d/g, "D:");
-  $.writeln(folderName);
+  var folderName = getDataArr[fldr].toString().replace(/^\/([a-z])/, "$1:")
+  $.writeln('Data Directory: ' + folderName);
   var fileName = getDataArr[fldr].toString().split("/").pop();
 
   // Write/Set the path into the text layer
