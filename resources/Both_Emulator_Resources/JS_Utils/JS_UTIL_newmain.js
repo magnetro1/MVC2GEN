@@ -1384,6 +1384,43 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       }
     }
   };
+  // const grabStuff = async () => {
+  //   const results = {};
+  //   const names = [
+  //     'Action_Flags',
+  //     'Air_Dash_Count',
+  //     'Airborne',
+  //     'Animation_Timer_Main',
+  //     'Attack_Immune',
+  //     'Attack_Number',
+  //     'Block_Meter',
+  //     'Dizzy',
+  //     'Dizzy_Reset_Timer',
+  //     'Flight_Flag',
+  //     'FlyingScreen',
+  //     'FlyingScreen',
+  //     'Hitstop2',
+  //     'Is_Prox_Block',
+  //     'Knockdown_State',
+  //     'Normal_Strength',
+  //     'PunchKick',
+  //     'Special_Attack_ID',
+  //     'Special_Strength',
+  //     'SJ_Counter',
+  //     'Y_Position_Arena',
+  //     'Y_Position_From_Enemy',
+  //     'Y_Velocity',
+  //   ];
+  //   await Promise.all(
+  //     names.map(async (name) => {
+  //       results[name] = new Promise((resolve, reject) => {
+  //         resolve(getPlayerMemory(1, name, 0)); reject("Error");
+  //       })
+  //     }));
+  //   return results;
+  // };
+
+  // const Y_Velocity = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Y_Velocity', 0)); reject("Error"); });
 
   /*
   --------------------------------------------------
@@ -1405,8 +1442,12 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   // writeDataObject();
 
   // writeStaticDataCNV();
-  writeNewStates()
+  // writeNewStates()
+
+
+  // await grabStuff();
 }
+
 
 
 // const fList = [];
