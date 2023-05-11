@@ -30,6 +30,15 @@ import {
   DIR_SORTED_JS
 } from './JS_UTIL_paths.js';
 
+// Write Sorted_JS folder if it doesn't exist
+if (!fs.existsSync(DIR_SORTED_JS)) {
+  fs.mkdirSync(DIR_SORTED_JS);
+}
+// Write exportToAE folder if it doesn't exist
+if (!fs.existsSync(DIR_EXPORT_TO_AE)) {
+  fs.mkdirSync(DIR_EXPORT_TO_AE);
+}
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -54,13 +63,12 @@ csvFilesArr.forEach((name) => {
   temp = name.toString().replace('.csv', '') || name.toString().replace('.CSV', '')
   csvSoloNameArr.push(temp);
 });
-
+// console.log(`Step 1: Found ${csvFilesArr.length} CSV files.`);
 /*
 --------------------------------------------------
 Step 2: Process CSV
 --------------------------------------------------
 */
-
 // Main loop starts here
 for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   let headersArray = [];
@@ -214,6 +222,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
   fs.writeFileSync(`${DIR_OUTPATH}_${csvSoloNameArr[csvFilesIDX]}.js`, missingEntries.toString().replace(/,/g, ''));
 
+  // console.log(`Step 2: Wrote ${DIR_OUTPATH}_${csvSoloNameArr[csvFilesIDX]}.js`)
   /*
   --------------------------------------------------
   Step 3: Make dataObject & Start Core Functions
@@ -290,7 +299,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       }
     }
   }
-
   /**
    * @description Finds the player memory addresses inside of the dataObject
    * and returns an array of the unique items. The other core functions will
@@ -328,6 +336,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     }
     fs.writeFileSync(`${DIR_EXPORT_TO_AE}${csvSoloNameArr[csvFilesIDX]}.js`, dataObjectExport);
   }
+  console.log(`Step 3: Updated object with MIN&MAX and wrote tempJS file.`);
 
   // Main function to write data to files OR return finalValues array
   /**
@@ -1427,22 +1436,43 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   Step 5: 📞 Call Functions that Write Data to Files
   --------------------------------------------------
   */
+  // Base Functions (Steps 1-3)
   appendMinMaxRound();
   await exportDataObject();
-  // getPlayerMemoryEntries().forEach((label) => {
-  //   writePlayerMemory(1, label.toString(), 1);
-  //   writePlayerMemory(2, label.toString(), 1);
-  // });
-  // writeP1P2Addresses();
-  // writeComboCallouts();
-  // countIsPausedCNV();
-  // writeInputCNV();
-  // writeStageDataCNV();
-  // writeTotalFramesCNV();
-  // writeDataObject();
+  // --------------Main Functions---------------------
+  getPlayerMemoryEntries().forEach((label) => {
+    writePlayerMemory(1, label.toString(), 1);
+    writePlayerMemory(2, label.toString(), 1);
+  });
+  console.log(`Starting Core Functions for ${csvFilesArr[csvFilesIDX]}`);
+  console.log(`Wrote pMem() for ${csvFilesArr[csvFilesIDX]}`);
 
-  // writeStaticDataCNV();
-  // writeNewStates()
+  writeInputCNV();
+  // console.log(`Wrote InputCNV() for ${csvFilesArr[csvFilesIDX]}`);
+
+  writeStageDataCNV();
+  // console.log(`Wrote StageDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
+
+  writeP1P2Addresses();
+  // console.log(`Wrote P1P2Addresses() for ${csvFilesArr[csvFilesIDX]}`);
+
+  writeComboCallouts();
+  // console.log(`Wrote ComboCallouts() for ${csvFilesArr[csvFilesIDX]}`);
+
+  countIsPausedCNV();
+  // console.log(`Wrote CountIsPausedCNV() for ${csvFilesArr[csvFilesIDX]}`);
+
+  writeTotalFramesCNV();
+  // console.log(`Wrote TotalFramesCNV() for ${csvFilesArr[csvFilesIDX]}`);
+
+  writeStaticDataCNV();
+  // console.log(`Wrote StaticDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
+
+  writeDataObject();
+  // console.log(`Wrote DataObject() for ${csvFilesArr[csvFilesIDX]}`);
+
+  writeNewStates()
+  // console.log(`Step 4: Wrote NewStates() for ${csvFilesArr[csvFilesIDX]}`);
 
 
   // await grabStuff();

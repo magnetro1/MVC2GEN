@@ -1,6 +1,7 @@
-// Paths in project
-export const DIR_MAIN_TRUNK = `H:/Git/MVC2GEN/`;
-// export const DIR_MAIN_TRUNK = './';
+import { cwd } from 'process';
+
+// export const DIR_MAIN_TRUNK = `H:/Git/MVC2GEN/`;
+export const DIR_MAIN_TRUNK = `${cwd()}/`;
 export const DIR_RESOURCES = `${DIR_MAIN_TRUNK}resources/`;
 export const DIR_JS_UTILS = `${DIR_RESOURCES}Both_Emulator_Resources/JS_Utils/`;
 export const DIR_CSVS = `${DIR_JS_UTILS}CSV_FILES/`;

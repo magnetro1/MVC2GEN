@@ -14,26 +14,26 @@ console.time('CallAll');
 const updatedObj = giantObjectCopy;
 writeStaticDataCNV(updatedObj);
 writeTotalFramesCNV(updatedObj);
-writeStageDataCNV(updatedObj);
-countIsPausedCNV(updatedObj);
-writeInputCNV(updatedObj);
-writeP1P2Addresses(updatedObj);
-writeNewStates(updatedObj);
+// writeStageDataCNV(updatedObj);
+// countIsPausedCNV(updatedObj);
+// writeInputCNV(updatedObj);
+// writeP1P2Addresses(updatedObj);
+// writeNewStates(updatedObj);
 
-for (const tempObj in updatedObj) {
-  let tempArr = [];
-  const playerMemoryRegex = /(P[1-2]_[A-C]_)/g; // [1] = P1_A
-  for (const key in updatedObj[tempObj]) {
-    if (key.toString().match(playerMemoryRegex)) {
-      tempArr.push(key);
-    }
-  }
-  tempArr = tempArr.map((label) => label.replace(playerMemoryRegex, ''));
-  tempArr = [...new Set(tempArr)];
+// for (const tempObj in updatedObj) {
+//   let tempArr = [];
+//   const playerMemoryRegex = /(P[1-2]_[A-C]_)/g; // [1] = P1_A
+//   for (const key in updatedObj[tempObj]) {
+//     if (key.toString().match(playerMemoryRegex)) {
+//       tempArr.push(key);
+//     }
+//   }
+//   tempArr = tempArr.map((label) => label.replace(playerMemoryRegex, ''));
+//   tempArr = [...new Set(tempArr)];
 
-  tempArr.forEach((pMemAdr) => {
-    getPMem(giantObjectCopy, tempObj.toString(), 1, pMemAdr.toString(), 1);
-    getPMem(giantObjectCopy, tempObj.toString(), 2, pMemAdr.toString(), 1);
-  });
-}
+//   tempArr.forEach((pMemAdr) => {
+//     getPMem(giantObjectCopy, tempObj.toString(), 1, pMemAdr.toString(), 1);
+//     getPMem(giantObjectCopy, tempObj.toString(), 2, pMemAdr.toString(), 1);
+//   });
+// }
 console.timeEnd('CallAll');
