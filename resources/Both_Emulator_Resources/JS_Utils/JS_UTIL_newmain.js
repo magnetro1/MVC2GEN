@@ -336,7 +336,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     }
     fs.writeFileSync(`${DIR_EXPORT_TO_AE}${csvSoloNameArr[csvFilesIDX]}.js`, dataObjectExport);
   }
-  console.log(`Step 3: Updated object with MIN&MAX and wrote tempJS file.`);
+  // console.log(`Step 3: Updated object with MIN&MAX and wrote tempJS file.`);
 
   // Main function to write data to files OR return finalValues array
   /**
@@ -923,7 +923,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         State_Thrown_Air: [[], [], []],
         State_Thrown_Ground: [[], [], []],
         State_UnDizzy: [[], [], []],
-        State_Magneto_Moves: [[], [], []],
+        // State_Magneto_Moves: [[], [], []],
         // NEW_STATE_ADD_HERE ⏫
       }
 
@@ -1444,8 +1444,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     writePlayerMemory(1, label.toString(), 1);
     writePlayerMemory(2, label.toString(), 1);
   });
-  console.log(`Starting Core Functions for ${csvFilesArr[csvFilesIDX]}`);
-  console.log(`Wrote pMem() for ${csvFilesArr[csvFilesIDX]}`);
+  // console.log(`Starting Core Functions for ${csvFilesArr[csvFilesIDX]}`);
+  // console.log(`Wrote pMem() for ${csvFilesArr[csvFilesIDX]}`);
 
   writeInputCNV();
   // console.log(`Wrote InputCNV() for ${csvFilesArr[csvFilesIDX]}`);
