@@ -1,9 +1,10 @@
 ﻿/* eslint-disable */ // XD
 //! Make sure AME is set to CineformARGB!
-// NEEDS '\\' instead of '/' for AME!
-var dataPath = "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE";
-// var dataPath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE";
-var videoPath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\fromAE\\";
+//! Use '\\' instead of '/' for AME!
+var dataPath = "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\exportToAE"; //⭐
+// var dataPath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\Data\\exportToAE"; //⭐
+var videoPath = "D:\\MvC2-F\\Openers\\Assets\\Clips\\fromAE\\"; //⭐
+
 var getDataArr = new Folder(dataPath).getFiles();
 $.writeln(getDataArr);
 
@@ -49,10 +50,10 @@ for (var fldr = 0; fldr < getDataArr.length; fldr++) {
   var module = rqItem.outputModule(1);
   // Name output file after the fileName from myPaths array
   module.file = File(videoPath + fileName);
-  // set the encoding preset output module to Cineform_RGBA
+  // set the encoding preset output module to Cineform_RGBA 
   module.applyTemplate("CineformRGBA");
   // set the output module to use the last-used settings
-  app.project.renderQueue.queueInAME(true);
+  app.project.renderQueue.queueInAME(false);
   // Wait for the file to populate to finish
   $.sleep(2400);
 }

@@ -1,9 +1,0 @@
-For Beta Version IV:
-	VSC Extension Update:
-		- Added a Snippet for Omari to automatically generate a Skipped Frame item.
-		- Added a Snippet to insert the date as a comment; might create versions for each of us.
-		- Changed the color of some declarations -- more for VSCE version-recognition.
-	VSC Extension "Install" Issue
-		I have my own Tools branch called TF09. It contains a folder in the sptedit folder called tf09.sptedit. I don't know how to compile a .VSIX file, so the current method of installing my versiof of the extension is to drag it into your C:\users\name\.vscode\extensions folder. I'd like to be able to make releases eventually.
-	VSC General Questions
-		I'd like to be able create bracket completion and highlighting, for example, typing "Frame:" can auto-complete with "[end]"

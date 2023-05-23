@@ -314,7 +314,7 @@ export const P1P2_ADDRESSES = [
 After Effects to use for it
 * */
 export const STAGES_OBJ = {
-  0: '788998FF', // 'Boat1',
+  0: 'C09A71FF', // 'Boat1',
   1: 'E1540CFF', // 'Desert1',
   2: '6D574FFF', // 'Factory',
   3: 'CF461BFF', // 'Carnival1',
@@ -323,7 +323,7 @@ export const STAGES_OBJ = {
   6: 'D0C1ACFF', // 'Clock2',
   7: 'B764AAFF', // 'Raft2',
   8: '263548FF', // 'Abyss',
-  9: 'C09A71FF', // 'Boat2',
+  9: '788998FF', // 'Boat2', 
   10: '3F5FFFFF', // 'Desert2',
   11: '266D04FF', // 'Training',
   12: '74566EFF', // 'Carnival2',
