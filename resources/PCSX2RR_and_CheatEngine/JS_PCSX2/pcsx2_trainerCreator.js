@@ -15,8 +15,8 @@ const ENTRIES = [
   'Frame_Counter', //reserved
   'P1_Input_DEC', //reserved
   'P2_Input_DEC', //reserved
-  // 'P1_Combo_Meter_Value',
-  // 'P2_Combo_Meter_Value',
+  'P1_Combo_Meter_Value',
+  'P2_Combo_Meter_Value',
   'P1_A_X_Gravity',
   'P1_A_Y_Gravity',
   'P1_A_X_Velocity',
@@ -37,6 +37,12 @@ const luaFont0 = {
   // fSColor0: '0x000000',
   fSColor0: '0xFFFFFF',
 };
+const luaFont1 = {
+  fName1: 'Source Code Pro',
+  fSize1: 30,
+  // fSColor0: '0x000000',
+  fSColor1: '0xFF0000', //red
+};
 
 const tempLitStart =
   `[ENABLE]
@@ -52,6 +58,11 @@ local cFont0 = {
   fName = '${luaFont0.fName0}',
   fSize = ${luaFont0.fSize0},
   fColor = ${luaFont0.fSColor0},
+}
+local cFont1 = {
+  fName = '${luaFont1.fName1}',
+  fSize = ${luaFont1.fSize1},
+  fColor = ${luaFont1.fSColor1},
 }
 -- Input Converter
 local inputConverterObject = {
@@ -115,8 +126,15 @@ let labelsStr = '', descriptionsStr = '', memRecStr = '', mainFunctionStr = '', 
 
 // labels
 for (let labelsIdx = 0; labelsIdx < ENTRIES.length; labelsIdx++) {
-  labelsStr += `local vX${labelsIdx} = createLabel(MvC2DataDisplay)
-  vX${labelsIdx}.Font.Size = cFont0.fSize;vX${labelsIdx}.Font.Color = cFont0.fColor;vX${labelsIdx}.Font.Name = cFont0.fName\n`
+  if (ENTRIES[labelsIdx].includes('Combo_Meter_Value')) {
+    labelsStr += `local vX${labelsIdx} = createLabel(MvC2DataDisplay)
+      vX${labelsIdx}.Font.Size = cFont1.fSize;vX${labelsIdx}.Font.Color = cFont1.fColor;vX${labelsIdx}.Font.Name = cFont1.fName\n`
+  }
+  else {
+    labelsStr += `local vX${labelsIdx} = createLabel(MvC2DataDisplay)
+      vX${labelsIdx}.Font.Size = cFont0.fSize;vX${labelsIdx}.Font.Color = cFont0.fColor;vX${labelsIdx}.Font.Name = cFont0.fName\n`
+  }
+
 }
 // descriptions
 for (let descriptionsIdx = 0; descriptionsIdx < ENTRIES.length; descriptionsIdx++) {

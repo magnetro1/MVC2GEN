@@ -7,16 +7,16 @@ export const PROX_BLOCK_OBJ = {
   4: 'Turning Around',
   5: 'Ground Block',
   6: 'Air Block',
-  7: 'Standing Punches',
-  8: 'Standing Kicks',
-  9: 'Crouching Punches',
-  10: 'Crouching Kicks',
+  7: 'Stand Punches',
+  8: 'Stand Kicks',
+  9: 'Crouch Punches',
+  10: 'Crouch Kicks',
   11: 'Air Punches',
   12: 'Air Kicks',
   13: 'Stunned',
   14: '???',
   15: 'Throwing',
-  16: 'Being thrown',
+  16: 'Being Thrown',
   17: 'OTG Rise',
   18: 'Match Start',
   19: 'Win Pose',
@@ -31,23 +31,23 @@ export const PROX_BLOCK_OBJ = {
 export const KNOCKDOWN_STATE_OBJ = {
   0: 'Neutral',
   1: 'Walking',
-  2: 'Rising to Normal Jump',
+  2: 'Normal Jump Rise',
   3: 'Normal Jump',
-  4: 'Landing from Jump',
-  5: 'Starting Crouch',
+  4: 'Landing',
+  5: 'Crouching',
   6: 'Crouched',
-  7: 'Rising to Standing',
-  8: 'Turning',
+  7: 'Stand Rise',
+  8: 'Stand Turn',
   9: 'Crouch Turning',
   10: 'Forward Dashing',
   11: 'Back Dashing',
   12: '???',
-  13: 'Rising to Super Jump',
+  13: 'Super Jump Rise',
   14: 'Super Jumping',
   15: 'Air Recovery',
   16: '???',
-  17: 'Rising from Knockdown',
-  18: 'Ground Blocking',
+  17: 'Knockdown Rise',
+  18: 'Ground Block',
   19: 'Air Blocking',
   20: 'Normal Attacks',
   21: 'Special Attacks',
@@ -63,7 +63,7 @@ export const KNOCKDOWN_STATE_OBJ = {
   31: 'Being Thrown',
   32: 'Stunned',
   33: '???',
-  34: 'Offensive-Crouch Launcher',
+  34: 'Command Launcher',
 };
 
 /**
@@ -332,6 +332,27 @@ export const STAGES_OBJ = {
   15: '888885FF', // 'Clock1',
   16: '8CA7DFFF', // 'Raft1'
 };
+
+export const STAGES_NAMES = {
+  0: 'Boat1', // 'Boat1',
+  1: 'Desert1', // 'Desert1',
+  2: 'Factory', // 'Factory',
+  3: 'Carnival1', // 'Carnival1',
+  4: 'Bridge1', // 'Bridge1',
+  5: 'Cave2', // 'Cave2',
+  6: 'Clock2', // 'Clock2',
+  7: 'Raft2', // 'Raft2',
+  8: 'Abyss', // 'Abyss',
+  9: 'Boat2', // 'Boat2', 
+  10: 'Desert2', // 'Desert2',
+  11: 'Training', // 'Training',
+  12: 'Carnival2', // 'Carnival2',
+  13: 'Bridge2', // 'Bridge2',
+  14: 'Cave1', // 'Cave1',
+  15: 'Clock1', // 'Clock1',
+  16: 'Raft1', // 'Raft1'
+};
+
 /**
 * @description Contains text call-outs based on the Combo Meter value
 * @description /*

@@ -19,6 +19,7 @@ import {
   PORTRAITS_TO_TIME_OBJ,
   PROX_BLOCK_OBJ,
   STAGES_OBJ,
+  STAGES_NAMES,
   COMBO_CALLOUTS,
   AE_TO_POSITION_OBJ,
 } from './JS_UTIL_staticData.js';
@@ -602,26 +603,33 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   {
     let stageData = [];
     let stageDataCNV = [];
+    let stageNamesCNV = [];
     // Numbers
     dataObject['Stage_Selector'].split(',').forEach((frame) => {
       stageData.push(frame)
     });
-    // Hex
+    // Color-Hexes
     dataObject['Stage_Selector'].split(',').forEach((frame) => {
       stageDataCNV.push(`'${Object.values(STAGES_OBJ)[frame]}'`)
     });
-    // Merge the stageDataCNV into the dataObject
-    // dataObject['Stage_Selector_CNV'] = stageDataCNV;
+    // Stage Names
+    dataObject['Stage_Selector'].split(',').forEach((frame) => {
+      stageNamesCNV.push(`'${Object.values(STAGES_NAMES)[frame]}'`)
+    });
     fs.writeFileSync(`${DIR_OUTPATH}Stage_Selector_CNV.js`,
-      `var result = [];\nresult[0] = [${stageData}];\nresult[1] = [${stageDataCNV}];\n`,
+      `var result = [];\nresult[0] = [${stageData}];\nresult[1] = [${stageDataCNV}];\nresult[2] = [${stageNamesCNV}];\n`,
       'utf8'
     );
     stageData = [];
     stageDataCNV = [];
+    stageNamesCNV = [];
   };
   /**
   * @description Converts and writes inputs to one file that contains formatting for a custom-font and US FGC notation
   **/
+  let playerOneInputs = [];
+  let playerTwoInputs = [];
+
   function writeInputCNV() {
     const P1_InputsDECSplit = dataObject['P1_Input_DEC'].split(',')
     const P2_InputsDECSplit = dataObject['P2_Input_DEC'].split(',')
@@ -692,6 +700,11 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         }"];\n`,
         'utf8'
       );
+      // console.log(playersLen)
+      playersLen == 1 ? playerOneInputs = playerInputsCNVArray : playerTwoInputs = playerInputsCNVArray;
+
+      // console.log(playerOneInputs)
+      // console.log(playerTwoInputs)
       playerInputsCNVArray = [];
 
       // Input Conversion Type 2
@@ -854,6 +867,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
    * Search for "NEW_STATE_ADD_HERE" across the function to append address fetches and new states.
    */
   async function writeNewStates() {
+    // console.log(...playerOneInputs[0]);
     let pI;
     let p1OrP2;
     for (pI = 1; pI < 3; pI++) {
@@ -871,14 +885,17 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       const Flight_Flag = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Flight_Flag', 0)); reject("Error"); });
       const FlyingScreen = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'FlyingScreen', 0)); reject("Error"); });
       const FSI_Points = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'FlyingScreen', 0)); reject("Error"); });
-      const HitStop = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Hitstop2', 0)); reject("Error"); });
+      const HitStop2 = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Hitstop2', 0)); reject("Error"); });
+      const ID_2 = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'ID_2', 0)); reject("Error"); });
       const Is_Prox_Block = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Is_Prox_Block', 0)); reject("Error"); });
       const Knockdown_State = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Knockdown_State', 0)); reject("Error"); });
+      const Normal_Location = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Normal_Location', 0)); reject("Error"); });
       const Normal_Strength = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Normal_Strength', 0)); reject("Error"); });
       const PunchKick = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'PunchKick', 0)); reject("Error"); });
       const Special_Attack_ID = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Special_Attack_ID', 0)); reject("Error"); });
       const Special_Strength = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Special_Strength', 0)); reject("Error"); });
       const SJ_Counter = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'SJ_Counter', 0)); reject("Error"); });
+      const Unfly = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Unfly', 0)); reject("Error"); });
       const Y_Position_Arena = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Y_Position_Arena', 0)); reject("Error"); });
       const Y_Position_From_Enemy = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Y_Position_From_Enemy', 0)); reject("Error"); });
       const Y_Velocity = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Y_Velocity', 0)); reject("Error"); });
@@ -913,6 +930,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         State_Thrown_Ground: [[], [], []],
         State_UnDizzy: [[], [], []],
         // State_Magneto_Moves: [[], [], []],
+        State_Storm_ModifiedAirDashNJ: [[], [], []],
+        State_Storm_ModifiedAirDashSJ: [[], [], []],
         // NEW_STATE_ADD_HERE ⏫
       }
 
@@ -1023,7 +1042,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           // Being_Hit
           (
             ((Knockdown_State)[pABC][cLen] == 32)
-            && ((HitStop)[pABC][cLen] > 0)
+            && ((HitStop2)[pABC][cLen] > 0)
           )
             ? nStateObj.State_Being_Hit[pABC].push(1)
             : nStateObj.State_Being_Hit[pABC].push(0);
@@ -1207,10 +1226,37 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
             ? nStateObj.State_UnDizzy[pABC].push(1)
             : nStateObj.State_UnDizzy[pABC].push(0);
 
+          // "Storm_ModifiedAirDash_NJ"
+          (
+            ((ID_2)[pABC][cLen] == 42)
+            && ((HitStop2)[pABC][cLen] == 0)
+            && ((Unfly)[pABC][cLen] == 16) || ((Unfly)[pABC][cLen] == 1))
+            && ((Normal_Location)[pABC][cLen] == 1)
+            && ((Air_Dash_Count)[pABC][cLen] == 1)
+            && ((Knockdown_State)[pABC][cLen] == 20)
+            && (playerOneInputs[cLen].match(/7|8|9/g)
+            )
+            ? nStateObj.State_Storm_ModifiedAirDashNJ[pABC].push(1)
+            : nStateObj.State_Storm_ModifiedAirDashNJ[pABC].push(0);
+          // "Storm_ModifiedAirDash_SJ"
+          (
+            ((ID_2)[pABC][cLen] == 42))
+            && ((HitStop2)[pABC][cLen] == 0)
+            && ((SJ_Counter)[pABC][cLen] > 0)
+            && ((Normal_Location)[pABC][cLen] == 2)
+            && ((Air_Dash_Count)[pABC][cLen] == 1)
+            && ((Knockdown_State)[pABC][cLen] == 20)
+            && ((playerOneInputs[cLen].match(/7|8|9/g))
+            )
+            ? nStateObj.State_Storm_ModifiedAirDashSJ[pABC].push(1)
+            : nStateObj.State_Storm_ModifiedAirDashSJ[pABC].push(0);
+
+          // console.log(playerOneInputs[cLen].includes('8'));
+
+          // log the playerOneInputs for each frame
           // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
           // NEW_STATE_ADD_HERE
         } // cLen Scope
-
         // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until 0 reoccurs.
         var counter = 0;
 
@@ -1382,44 +1428,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       }
     }
   };
-  // const grabStuff = async () => {
-  //   const results = {};
-  //   const names = [
-  //     'Action_Flags',
-  //     'Air_Dash_Count',
-  //     'Airborne',
-  //     'Animation_Timer_Main',
-  //     'Attack_Immune',
-  //     'Attack_Number',
-  //     'Block_Meter',
-  //     'Dizzy',
-  //     'Dizzy_Reset_Timer',
-  //     'Flight_Flag',
-  //     'FlyingScreen',
-  //     'FlyingScreen',
-  //     'Hitstop2',
-  //     'Is_Prox_Block',
-  //     'Knockdown_State',
-  //     'Normal_Strength',
-  //     'PunchKick',
-  //     'Special_Attack_ID',
-  //     'Special_Strength',
-  //     'SJ_Counter',
-  //     'Y_Position_Arena',
-  //     'Y_Position_From_Enemy',
-  //     'Y_Velocity',
-  //   ];
-  //   await Promise.all(
-  //     names.map(async (name) => {
-  //       results[name] = new Promise((resolve, reject) => {
-  //         resolve(getPlayerMemory(1, name, 0)); reject("Error");
-  //       })
-  //     }));
-  //   return results;
-  // };
-
-  // const Y_Velocity = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Y_Velocity', 0)); reject("Error"); });
-
   /*
   --------------------------------------------------
   Step 5: 📞 Call Functions that Write Data to Files
@@ -1429,41 +1437,40 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   appendMinMaxRound();
   await exportDataObject();
   // --------------Main Functions---------------------
+  // ⭐
   getPlayerMemoryEntries().forEach((label) => {
     writePlayerMemory(1, label.toString());
     writePlayerMemory(2, label.toString());
   });
   // console.log(`Starting Core Functions for ${csvFilesArr[csvFilesIDX]}`);
   // console.log(`Wrote pMem() for ${csvFilesArr[csvFilesIDX]}`);
-
+  // ⭐
   writeInputCNV();
   // console.log(`Wrote InputCNV() for ${csvFilesArr[csvFilesIDX]}`);
-
+  // ⭐
   writeStageDataCNV();
   // console.log(`Wrote StageDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
-
+  // ⭐
   writeP1P2Addresses();
   // console.log(`Wrote P1P2Addresses() for ${csvFilesArr[csvFilesIDX]}`);
-
+  // ⭐
   writeComboCallouts();
   // console.log(`Wrote ComboCallouts() for ${csvFilesArr[csvFilesIDX]}`);
-
+  // ⭐
   countIsPausedCNV();
   // console.log(`Wrote CountIsPausedCNV() for ${csvFilesArr[csvFilesIDX]}`);
-
+  // ⭐
   writeTotalFramesCNV();
   // console.log(`Wrote TotalFramesCNV() for ${csvFilesArr[csvFilesIDX]}`);
-
+  // ⭐
   writeStaticDataCNV();
   // console.log(`Wrote StaticDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
-
+  // ⭐
   writeDataObject();
   // console.log(`Wrote DataObject() for ${csvFilesArr[csvFilesIDX]}`);
-
+  // ⭐
   writeNewStates()
   // console.log(`Step 4: Wrote NewStates() for ${csvFilesArr[csvFilesIDX]}`);
-
-  // await grabStuff();
 }
 
 
