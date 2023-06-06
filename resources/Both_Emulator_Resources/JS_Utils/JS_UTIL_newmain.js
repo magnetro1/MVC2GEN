@@ -624,11 +624,11 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     stageDataCNV = [];
     stageNamesCNV = [];
   };
+  let playerOneInputs = [];
+  let playerTwoInputs = [];
   /**
   * @description Converts and writes inputs to one file that contains formatting for a custom-font and US FGC notation
   **/
-  let playerOneInputs = [];
-  let playerTwoInputs = [];
 
   function writeInputCNV() {
     const P1_InputsDECSplit = dataObject['P1_Input_DEC'].split(',')
@@ -929,9 +929,13 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         State_Thrown_Air: [[], [], []],
         State_Thrown_Ground: [[], [], []],
         State_UnDizzy: [[], [], []],
+        // Magneto-Only
         // State_Magneto_Moves: [[], [], []],
+        // Storm-Only
         State_Storm_ModifiedAirDashNJ: [[], [], []],
         State_Storm_ModifiedAirDashSJ: [[], [], []],
+        State_Storm_DI: [[], [], []],
+        State_Storm_Float: [[], [], []],
         // NEW_STATE_ADD_HERE ⏫
       }
 
@@ -1225,35 +1229,110 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           )
             ? nStateObj.State_UnDizzy[pABC].push(1)
             : nStateObj.State_UnDizzy[pABC].push(0);
-
-          // "Storm_ModifiedAirDash_NJ"
-          (
-            ((ID_2)[pABC][cLen] == 42)
-            && ((HitStop2)[pABC][cLen] == 0)
-            && ((Unfly)[pABC][cLen] == 16) || ((Unfly)[pABC][cLen] == 1))
-            && ((Normal_Location)[pABC][cLen] == 1)
-            && ((Air_Dash_Count)[pABC][cLen] == 1)
-            && ((Knockdown_State)[pABC][cLen] == 20)
-            && (playerOneInputs[cLen].match(/7|8|9/g)
+          if (pI == 1) {
+            // "Storm_ModifiedAirDashNJ"
+            (
+              ((ID_2)[pABC][cLen] == 42) // Storm
+              && ((HitStop2)[pABC][cLen] == 0) // No Hitstop
+              && ((Unfly)[pABC][cLen] == 16) || ((Unfly)[pABC][cLen] == 1))
+              && ((Normal_Location)[pABC][cLen] == 1) //Normal was done in the air
+              && ((Air_Dash_Count)[pABC][cLen] == 1) // Air Dash was done once
+              && ((Knockdown_State)[pABC][cLen] == 20) // Normal Attacks
+              && (playerOneInputs[cLen].match(/7|8|9/g) // Up dirs
+              )
+              ? nStateObj.State_Storm_ModifiedAirDashNJ[pABC].push(1)
+              : nStateObj.State_Storm_ModifiedAirDashNJ[pABC].push(0);
+            // "Storm_ModifiedAirDashSJ"
+            (
+              ((ID_2)[pABC][cLen] == 42)) // Storm
+              && ((HitStop2)[pABC][cLen] == 0) // No Hitstop
+              && ((SJ_Counter)[pABC][cLen] > 0) // In SJ up or down
+              && ((Normal_Location)[pABC][cLen] == 2) // Normal was done in the air
+              && ((Air_Dash_Count)[pABC][cLen] == 1) // Air Dash was done once
+              && ((Knockdown_State)[pABC][cLen] == 20) // Normal Attacks
+              && ((playerOneInputs[cLen].match(/7|8|9/g)) // Up dirs
+              )
+              ? nStateObj.State_Storm_ModifiedAirDashSJ[pABC].push(1)
+              : nStateObj.State_Storm_ModifiedAirDashSJ[pABC].push(0);
+            // "Storm_DI"
+            (
+              ((ID_2)[pABC][cLen] == 42) // Storm
+              && ((HitStop2)[pABC][cLen] == 0) // No Hitstop
+              && ((Airborne)[pABC][cLen] == 2) // actually in the air
+              && (((Knockdown_State)[pABC][cLen] != 32)) // "Stunned"
+              && ((Knockdown_State)[pABC][cLen] != 19) // "Air Blocking"
+              && ((Knockdown_State)[pABC][cLen] != 21) // "Special Attacks"
+              && ((Knockdown_State)[pABC][cLen] != 26) // "Air Dash"
+              && (playerOneInputs[cLen].match(/1|4|7|9|6|3/g)) // L/R dirs
             )
-            ? nStateObj.State_Storm_ModifiedAirDashNJ[pABC].push(1)
-            : nStateObj.State_Storm_ModifiedAirDashNJ[pABC].push(0);
-          // "Storm_ModifiedAirDash_SJ"
-          (
-            ((ID_2)[pABC][cLen] == 42))
-            && ((HitStop2)[pABC][cLen] == 0)
-            && ((SJ_Counter)[pABC][cLen] > 0)
-            && ((Normal_Location)[pABC][cLen] == 2)
-            && ((Air_Dash_Count)[pABC][cLen] == 1)
-            && ((Knockdown_State)[pABC][cLen] == 20)
-            && ((playerOneInputs[cLen].match(/7|8|9/g))
+              ? nStateObj.State_Storm_DI[pABC].push(1)
+              : nStateObj.State_Storm_DI[pABC].push(0);
+            // "Storm_Float"
+            (
+              ((ID_2)[pABC][cLen] == 42) // Storm
+              && ((HitStop2)[pABC][cLen] == 0) // No Hitstop
+              && ((Airborne)[pABC][cLen] == 2) // Actually in the air
+              && (((Knockdown_State)[pABC][cLen] != 32)) // "Stunned"
+              && ((Knockdown_State)[pABC][cLen] != 19) // "Air Blocking"
+              && ((Knockdown_State)[pABC][cLen] != 21) // "Special Attacks"
+              && ((Knockdown_State)[pABC][cLen] != 26) // "Air Dash"
+              && (playerOneInputs[cLen].match(/7|8|9/g)) // Up dirs
             )
-            ? nStateObj.State_Storm_ModifiedAirDashSJ[pABC].push(1)
-            : nStateObj.State_Storm_ModifiedAirDashSJ[pABC].push(0);
-
-          // console.log(playerOneInputs[cLen].includes('8'));
-
-          // log the playerOneInputs for each frame
+              ? nStateObj.State_Storm_Float[pABC].push(1)
+              : nStateObj.State_Storm_Float[pABC].push(0);
+          }
+          else {
+            // "Storm_ModifiedAirDashNJ"
+            (
+              ((ID_2)[pABC][cLen] == 42)
+              && ((HitStop2)[pABC][cLen] == 0)
+              && ((Unfly)[pABC][cLen] == 16) || ((Unfly)[pABC][cLen] == 1))
+              && ((Normal_Location)[pABC][cLen] == 1)
+              && ((Air_Dash_Count)[pABC][cLen] == 1)
+              && ((Knockdown_State)[pABC][cLen] == 20)
+              && (playerTwoInputs[cLen].match(/7|8|9/g)
+              )
+              ? nStateObj.State_Storm_ModifiedAirDashNJ[pABC].push(1)
+              : nStateObj.State_Storm_ModifiedAirDashNJ[pABC].push(0);
+            // "Storm_ModifiedAirDashSJ"
+            (
+              ((ID_2)[pABC][cLen] == 42))
+              && ((HitStop2)[pABC][cLen] == 0)
+              && ((SJ_Counter)[pABC][cLen] > 0)
+              && ((Normal_Location)[pABC][cLen] == 2)
+              && ((Air_Dash_Count)[pABC][cLen] == 1)
+              && ((Knockdown_State)[pABC][cLen] == 20)
+              && ((playerTwoInputs[cLen].match(/7|8|9/g))
+              )
+              ? nStateObj.State_Storm_ModifiedAirDashSJ[pABC].push(1)
+              : nStateObj.State_Storm_ModifiedAirDashSJ[pABC].push(0);
+            // "Storm_DI"
+            (
+              ((ID_2)[pABC][cLen] == 42)
+              && ((HitStop2)[pABC][cLen] == 0)
+              && ((Airborne)[pABC][cLen] == 2)
+              && (((Knockdown_State)[pABC][cLen] != 32)) // "Stunned"
+              && ((Knockdown_State)[pABC][cLen] != 19) // "Air Blocking"
+              && ((Knockdown_State)[pABC][cLen] != 21) // "Special Attacks"
+              && ((Knockdown_State)[pABC][cLen] != 26) // "Air Dash"
+              && (playerTwoInputs[cLen].match(/1|4|7|9|6|3/g))
+            )
+              ? nStateObj.State_Storm_DI[pABC].push(1)
+              : nStateObj.State_Storm_DI[pABC].push(0);
+            // "Storm_Float"
+            (
+              ((ID_2)[pABC][cLen] == 42)
+              && ((HitStop2)[pABC][cLen] == 0)
+              && ((Airborne)[pABC][cLen] == 2)
+              && (((Knockdown_State)[pABC][cLen] != 32)) // "Stunned"
+              && ((Knockdown_State)[pABC][cLen] != 19) // "Air Blocking"
+              && ((Knockdown_State)[pABC][cLen] != 21) // "Special Attacks"
+              && ((Knockdown_State)[pABC][cLen] != 26) // "Air Dash"
+              && (playerTwoInputs[cLen].match(/7|8|9/g))
+            )
+              ? nStateObj.State_Storm_Float[pABC].push(1)
+              : nStateObj.State_Storm_Float[pABC].push(0);
+          }
           // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
           // NEW_STATE_ADD_HERE
         } // cLen Scope
