@@ -17,7 +17,7 @@ import {
   P1P2_ADDRESSES,
   NAME_TABLE_OBJ,
   PORTRAITS_TO_TIME_OBJ,
-  PROX_BLOCK_OBJ,
+  IS_PROX_BLOCK_OBJ,
   STAGES_OBJ,
   STAGES_NAMES,
   COMBO_CALLOUTS,
@@ -867,7 +867,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
    * Search for "NEW_STATE_ADD_HERE" across the function to append address fetches and new states.
    */
   async function writeNewStates() {
-    // console.log(...playerOneInputs[0]);
     let pI;
     let p1OrP2;
     for (pI = 1; pI < 3; pI++) {
@@ -1229,7 +1228,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           )
             ? nStateObj.State_UnDizzy[pABC].push(1)
             : nStateObj.State_UnDizzy[pABC].push(0);
-          if (pI == 1) {
+          if (pI == 1) { // P1
             // "Storm_ModifiedAirDashNJ"
             (
               ((ID_2)[pABC][cLen] == 42) // Storm
@@ -1260,9 +1259,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
               && ((HitStop2)[pABC][cLen] == 0) // No Hitstop
               && ((Airborne)[pABC][cLen] == 2) // actually in the air
               && (((Knockdown_State)[pABC][cLen] != 32)) // "Stunned"
+              && ((Knockdown_State)[pABC][cLen] != 26) // "Air Dash"
               && ((Knockdown_State)[pABC][cLen] != 19) // "Air Blocking"
               && ((Knockdown_State)[pABC][cLen] != 21) // "Special Attacks"
-              && ((Knockdown_State)[pABC][cLen] != 26) // "Air Dash"
+              && ((Knockdown_State)[pABC][cLen] != 29) // "Freezes and Flash"
               && (playerOneInputs[cLen].match(/1|4|7|9|6|3/g)) // L/R dirs
             )
               ? nStateObj.State_Storm_DI[pABC].push(1)
@@ -1273,15 +1273,16 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
               && ((HitStop2)[pABC][cLen] == 0) // No Hitstop
               && ((Airborne)[pABC][cLen] == 2) // Actually in the air
               && (((Knockdown_State)[pABC][cLen] != 32)) // "Stunned"
+              && ((Knockdown_State)[pABC][cLen] != 26) // "Air Dash"
               && ((Knockdown_State)[pABC][cLen] != 19) // "Air Blocking"
               && ((Knockdown_State)[pABC][cLen] != 21) // "Special Attacks"
-              && ((Knockdown_State)[pABC][cLen] != 26) // "Air Dash"
+              && ((Knockdown_State)[pABC][cLen] != 29) // "Freezes and Flash"
               && (playerOneInputs[cLen].match(/7|8|9/g)) // Up dirs
             )
               ? nStateObj.State_Storm_Float[pABC].push(1)
               : nStateObj.State_Storm_Float[pABC].push(0);
           }
-          else {
+          else { // P2
             // "Storm_ModifiedAirDashNJ"
             (
               ((ID_2)[pABC][cLen] == 42)
@@ -1312,9 +1313,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
               && ((HitStop2)[pABC][cLen] == 0)
               && ((Airborne)[pABC][cLen] == 2)
               && (((Knockdown_State)[pABC][cLen] != 32)) // "Stunned"
+              && ((Knockdown_State)[pABC][cLen] != 26) // "Air Dash"
               && ((Knockdown_State)[pABC][cLen] != 19) // "Air Blocking"
               && ((Knockdown_State)[pABC][cLen] != 21) // "Special Attacks"
-              && ((Knockdown_State)[pABC][cLen] != 26) // "Air Dash"
+              && ((Knockdown_State)[pABC][cLen] != 29) // "Freezes and Flash"
               && (playerTwoInputs[cLen].match(/1|4|7|9|6|3/g))
             )
               ? nStateObj.State_Storm_DI[pABC].push(1)
@@ -1325,9 +1327,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
               && ((HitStop2)[pABC][cLen] == 0)
               && ((Airborne)[pABC][cLen] == 2)
               && (((Knockdown_State)[pABC][cLen] != 32)) // "Stunned"
+              && ((Knockdown_State)[pABC][cLen] != 26) // "Air Dash"
               && ((Knockdown_State)[pABC][cLen] != 19) // "Air Blocking"
               && ((Knockdown_State)[pABC][cLen] != 21) // "Special Attacks"
-              && ((Knockdown_State)[pABC][cLen] != 26) // "Air Dash"
+              && ((Knockdown_State)[pABC][cLen] != 29) // "Freezes and Flash"
               && (playerTwoInputs[cLen].match(/7|8|9/g))
             )
               ? nStateObj.State_Storm_Float[pABC].push(1)
@@ -1439,7 +1442,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
    * Files are written and then appended as the function loops over each player-memory-address & player.
   */
   async function writeStaticDataCNV() {
-    const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
+    const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, IS_PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
     const STATIC_DATA_ADRS = ["Knockdown_State", "Is_Prox_Block", "ID_2", "ID_2"]
     let lookUpArr = [[], [], []];
     for (let p1OrP2 = 1; p1OrP2 < 3; p1OrP2++) {

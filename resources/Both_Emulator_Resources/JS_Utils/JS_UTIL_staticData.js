@@ -1,5 +1,5 @@
 /* eslint-disable no-multi-spaces */
-export const PROX_BLOCK_OBJ = {
+export const IS_PROX_BLOCK_OBJ = {
   0: 'Neutral',
   1: 'Air',
   2: 'Dashing',
@@ -41,11 +41,11 @@ export const KNOCKDOWN_STATE_OBJ = {
   9: 'Crouch Turning',
   10: 'Forward Dashing',
   11: 'Back Dashing',
-  12: '???',
+  12: 'Double Dizzy', // ⭐ DC-only
   13: 'Super Jump Rise',
   14: 'Super Jumping',
   15: 'Air Recovery',
-  16: '???',
+  16: '???', // ⭐
   17: 'Knockdown Rise',
   18: 'Ground Block',
   19: 'Air Blocking',
@@ -57,12 +57,12 @@ export const KNOCKDOWN_STATE_OBJ = {
   25: 'Corner Jump',
   26: 'Air Dash',
   27: 'Tech Hit',
-  28: 'Tagging & Assists',
-  29: 'Freezes & Flashes',
+  28: 'Switching & Assists',
+  29: 'Supers & Flashes',
   30: 'Throwing',
   31: 'Being Thrown',
   32: 'Stunned',
-  33: '???',
+  33: '???', // ⭐
   34: 'Command Launcher',
 };
 
