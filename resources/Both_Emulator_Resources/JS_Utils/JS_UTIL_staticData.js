@@ -448,6 +448,7 @@ export const PORTRAITS_TO_TIME_OBJ = {
   57: 58, // Wolverine (Bone)
   1: 59,  // Zangief
 };
+// Normal Composition Positions
 export const AE_TO_POSITION_OBJ = {
   1: [0, 0],        // Abyss-1
   2: [0, 0],        // Abyss-2
@@ -457,14 +458,14 @@ export const AE_TO_POSITION_OBJ = {
   6: [188, 1766],   // Anakaris
   7: [288, 1689],   // B.B. Hood
   8: [-1, 2080],    // Blackheart
-  9: [385, 2080],   // Cable
+  9: [409, 2235],   // Cable  
   10: [557, 1590],  // Cammy
   11: [198, 2005],  // Captain America
-  12: [143, 2193],  // Captain Commando
+  12: [117, 2245],  // Captain Commando   
   13: [120, 1990],  // Charlie
   14: [560, 1900],  // Chun-Li
   15: [80, 1650],   // Colossus
-  16: [75, 1822],   // Cyclopsn
+  16: [60, 2000],   // Cyclops  
   17: [275, 1867],  // Dan
   18: [-513, 1560], // Dhalsim
   19: [322, 1911],  // Doctor Doom
@@ -480,26 +481,88 @@ export const AE_TO_POSITION_OBJ = {
   29: [119, 1768],  // Juggernaut
   30: [-5, 1985],   // Ken
   31: [-29, 1869],  // M.Bison
-  32: [120, 1875],  // Magneto
+  32: [86, 2030],  // Magneto  
   33: [-155, 1634], // Marrow
   34: [150, 1600],  // Megaman
   35: [418, 2083],  // Morrigan
   36: [8, 2063],    // Omega Red
-  37: [194, 1784],  // Psylocke
+  37: [212, 1886],  // Psylocke   
   38: [96, 1982],   // Rogue
   39: [380, 1894],  // Roll
   40: [149, 2000],  // Ruby Heart
   41: [-135, 1560], // Ryu
   42: [81, 1861],   // Sabretooth
   43: [-123, 1523], // Sakura
-  44: [-86, 2025],  // Sentinel
+  44: [-106, 2161],  // Sentinel   
   45: [149, 1464],  // Servbot
   46: [-87, 1751],  // Shuma-Gorath
   47: [186, 1751],  // Silver Samurai
   48: [0, 0],       // Sonson
   49: [273, 1958],  // Spider-Man
   50: [275, 1850],  // Spiral
-  51: [209, 1761],  // Storm
+  51: [260, 1722],  // Storm  
+  52: [229, 1668],  // Strider Hiryu
+  53: [128, 1654],  // Thanos
+  54: [105, 1733],  // Tron Bonne
+  55: [-45, 1975],  // Venom
+  56: [-78, 1883],  // War Machine
+  57: [-56, 1849],  // Wolverine (Adamantium)
+  58: [126, 1882],  // Wolverine (Bone)
+  59: [257, 1731],  // Zangief
+};
+// CVS2 Healthbar Composition Positions
+export const AE_TO_CVS2_POSITION_OBJ = {
+  1: [0, 0],        // Abyss-1
+  2: [0, 0],        // Abyss-2
+  3: [0, 0],        // Abyss-3
+  4: [122, 1976],   // Akuma
+  5: [176, 1986],   // Amingo
+  6: [188, 1766],   // Anakaris
+  7: [288, 1689],   // B.B. Hood
+  8: [-1, 2080],    // Blackheart
+  9: [385, 2250],   // Cable // ✔
+  10: [557, 1590],  // Cammy
+  11: [198, 2005],  // Captain America
+  12: [143, 2193],  // Captain Commando // ✔
+  13: [120, 1990],  // Charlie
+  14: [560, 1900],  // Chun-Li
+  15: [80, 1650],   // Colossus
+  16: [75, 1822],   // Cyclops // ✔
+  17: [275, 1867],  // Dan
+  18: [-513, 1560], // Dhalsim
+  19: [322, 1911],  // Doctor Doom
+  20: [211, 1678],  // Felicia
+  21: [286, 1933],  // Gambit
+  22: [-138, 1791], // Guile
+  23: [199, 1830],  // Hayato
+  24: [-36, 1726],  // Hulk
+  25: [251, 1488],  // Iceman
+  26: [273, 1488],  // Iron Man
+  27: [502, 1658],  // Jill
+  28: [60, 1658],   // Jin
+  29: [119, 1768],  // Juggernaut
+  30: [-5, 1985],   // Ken
+  31: [-29, 1869],  // M.Bison
+  32: [120, 2115],  // Magneto // ✔
+  33: [-155, 1634], // Marrow
+  34: [150, 1600],  // Megaman
+  35: [418, 2083],  // Morrigan
+  36: [8, 2063],    // Omega Red
+  37: [194, 1784],  // Psylocke // ✔
+  38: [96, 1982],   // Rogue
+  39: [380, 1894],  // Roll
+  40: [149, 2000],  // Ruby Heart
+  41: [-135, 1560], // Ryu
+  42: [81, 1861],   // Sabretooth
+  43: [-123, 1523], // Sakura
+  44: [-86, 2125],  // Sentinel // ✔
+  45: [149, 1464],  // Servbot
+  46: [-87, 1751],  // Shuma-Gorath
+  47: [186, 1751],  // Silver Samurai
+  48: [0, 0],       // Sonson
+  49: [273, 1958],  // Spider-Man
+  50: [275, 1850],  // Spiral
+  51: [209, 1761],  // Storm // ✔
   52: [229, 1668],  // Strider Hiryu
   53: [128, 1654],  // Thanos
   54: [105, 1733],  // Tron Bonne

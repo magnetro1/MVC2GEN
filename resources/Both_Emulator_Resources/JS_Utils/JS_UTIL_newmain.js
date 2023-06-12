@@ -22,6 +22,7 @@ import {
   STAGES_NAMES,
   COMBO_CALLOUTS,
   AE_TO_POSITION_OBJ,
+  AE_TO_CVS2_POSITION_OBJ,
 } from './JS_UTIL_staticData.js';
 
 // Import directories; Order matters!
@@ -1228,6 +1229,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           )
             ? nStateObj.State_UnDizzy[pABC].push(1)
             : nStateObj.State_UnDizzy[pABC].push(0);
+
+          // StormMD; uses P1 and P2 sections
           if (pI == 1) { // P1
             // "Storm_ModifiedAirDashNJ"
             (
@@ -1459,6 +1462,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
             `var result = [];` + "\n",
             'utf8'
           );
+          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_CVS2PortraitPosition.js`,
+            `var result = [];` + "\n",
+            'utf8'
+          );
         }
         else {
           fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[staticDataLen]}_CNV.js`,
@@ -1485,7 +1492,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
               'utf8'
             );
 
-            // AE_TO_POSITION_OBJ full of arrays with Position values
+            // AE_TO_NormalComposition_POS
             let posArray = lookUpArr[pABC].map((portrait) => {
               portrait = portrait.toString();
               portrait = portrait.replace(/"/g, '');
@@ -1498,6 +1505,22 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
               `result[${pABC}] = [${posArray}];\n`,
               'utf8'
             );
+
+            // AE_TO_CVS2Composition_POS
+            let posArray2 = lookUpArr[pABC].map((portrait) => {
+              portrait = portrait.toString();
+              portrait = portrait.replace(/"/g, '');
+              portrait = AE_TO_CVS2_POSITION_OBJ[portrait];
+              portrait = [`[${portrait}]`]; /// wrap in brackets
+              return portrait;
+            });
+
+            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_CVS2PortraitPosition.js`,
+              `result[${pABC}] = [${posArray2}];\n`,
+              'utf8'
+            );
+
+
             lookUpArr = [[], [], []];
           } else {
             fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[statAdr]}_CNV.js`,
@@ -1555,8 +1578,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   // console.log(`Step 4: Wrote NewStates() for ${csvFilesArr[csvFilesIDX]}`);
 }
 
-
-
 // const fList = [];
 // fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
 //   if (file.endsWith('.js')) {
@@ -1567,13 +1588,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 // });
 console.timeEnd('⏱');
 // await sleep(10000);
-// // move all the .JS files in the AE folder up a path, and into the SortedJS folder inside of JS_Utils
-// // make a list with all the js files in the AE folder
 // fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
 //   if (file.endsWith('.js')) {
 //     fs.renameSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
 //   }
 // });
-
 //TODO Fix CSV 'real-data' finder function.
 //TODO Make Tests for each of the functions!
