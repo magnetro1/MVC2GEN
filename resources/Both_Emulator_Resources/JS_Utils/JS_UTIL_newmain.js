@@ -209,7 +209,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   for (let i = 0; i < allArrayStructure[0].length - 1; i++) // total frames
   {
     if (allArrayStructure[0][i + 1] - allArrayStructure[0][i] !== 1) {
-      missingEntries.push(`Missing data entry after Total_Frame Number: ${allArrayStructure[0][i]}\n`);
+      missingEntries.push(`Missing data after Total_Frame #: ${allArrayStructure[0][i]}\n`);
     }
     else {
       continue
@@ -219,10 +219,13 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   if (missingEntries.length == 0) {
     missingEntries.push('/*\nNo missing entries\n');
   }
-  missingEntries.push(`\nFirst entry in Total_Frames: ${allArrayStructure[0][0]}\nFinal entry in Total_Frames: ${allArrayStructure[0][allArrayStructure[0].length - 1]}\nTotal_Frames in Clip: ${allArrayStructure[0].length}\n*/\n`)
+  missingEntries.push(`\nFirst entry in Total_Frames: ${allArrayStructure[0][0]}`
+    + `Final entry in Total_Frames: ${allArrayStructure[0][allArrayStructure[0].length - 1]}`
+    + `Total_Frames in Clip: ${allArrayStructure[0].length}\n*/\n`)
 
 
-  fs.writeFileSync(`${DIR_OUTPATH}_${csvSoloNameArr[csvFilesIDX]}.js`, missingEntries.toString().replace(/,/g, ''));
+  fs.writeFileSync(`${DIR_OUTPATH}_${csvSoloNameArr[csvFilesIDX]}.js`,
+    missingEntries.toString().replace(/,/g, ''));
 
   // console.log(`Step 2: Wrote ${DIR_OUTPATH}_${csvSoloNameArr[csvFilesIDX]}.js`)
   /*
@@ -232,10 +235,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   */
 
   let dataObject = {};
-  // object keys are headers and the values converted into a string
-  // Ex: 'A_2D_Game_Timer' : '99,99,99,...'
   for (let i = 0; i < headersArray.length; i++) {
-    dataObject[headersArray[i]] = allArrayStructure[i].join(','); // the key is the header name[i], the value are the numbers joined by a comma
+    dataObject[headersArray[i]] = allArrayStructure[i].join(','); // the key is the header name[i], the value = numbers joined by a comma
   }
 
   const CLIP_LENGTH = dataObject['A_2D_Game_Timer'].split(',').length;
@@ -342,14 +343,13 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
   // Main function to write data to files OR return finalValues array
   /**
-   * @param {number|string} p1OrP2 number or string, ex: 1 or "P1"
-   * @param {string} pMemAdr string, ex: "Health_Big"
-   * @param {number|boolean} write flag to return array or write to file
+   * @param {number|string} p1OrP2 ex: 1 or "P1"
+   * @param {string} pMemAdr ex: "Health_Big"
    * @returns {void} Writes files to disk.
-   * @description Finds the point character, and returns an array of numbers for the playerMemoryAddress in the clip.
+   * @description Finds the point character for each frame and writes their PlayerMemory address to a file.
    */
   function writePlayerMemory(p1OrP2, pMemAdr) {
-    let valArr = [[], [], []];
+    let pMemArr = [[], [], []];
     /** 
      * @description Switches between the Player1 and Player2 objects,
      * ex: POINT_OBJ_P1 or POINT_OBJ_P2 which contain key value pairs of
@@ -377,50 +377,50 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           && (Object.values(pObjSwitch)[1][clipLen] == 0)
           && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
           // console.log( `${ playerSwitcher }: 3 - Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[2].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          pMemArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          pMemArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          pMemArr[2].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
         // 2-Character Bug Logic
         else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
           && (Object.values(pObjSwitch)[1][clipLen] == 0)
           && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
           // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          pMemArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          pMemArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
         }
         else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
           && (Object.values(pObjSwitch)[1][clipLen] != 0)
           && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
           // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          pMemArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          pMemArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
         else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
           && (Object.values(pObjSwitch)[1][clipLen] == 0)
           && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
           // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          pMemArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          pMemArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
         // 1-Character Logic
         else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
           && (Object.values(pObjSwitch)[1][clipLen] != 0)
           && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
           // console.log(`${ playerSwitcher }: 1 - Character Logic: A == 0 && B != 0 && C != 0        P1: A`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          pMemArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
         }//                       P1|P2        P1_A        Health_Big                        i     
         else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
           && (Object.values(pObjSwitch)[1][clipLen] == 0)
           && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
           // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B == 0 && C != 0        P1: B`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          pMemArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
         }
         else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
           && (Object.values(pObjSwitch)[1][clipLen] != 0)
           && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
           // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          pMemArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
       } // loop end
 
@@ -432,10 +432,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           'utf8',
         )
         // Append main data
-        for (let dataArrayPerCharacter in valArr) {
+        for (let dataArrayPerCharacter in pMemArr) {
           fs.appendFileSync(
             `${DIR_OUTPATH}/${playerSwitcher}_${pMemAdr.split(',')}.js`,
-            `result[${dataArrayPerCharacter}] = [${valArr[dataArrayPerCharacter]}];\n`,
+            `result[${dataArrayPerCharacter}] = [${pMemArr[dataArrayPerCharacter]}];\n`,
             'utf8',
           )
         }

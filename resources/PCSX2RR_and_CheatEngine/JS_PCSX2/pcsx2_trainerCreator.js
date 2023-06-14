@@ -2,7 +2,7 @@
   Trainer propagator for PCSX2
     - Creates a LUA script for Cheat Engine
     - Copy output into `Scritps > Trainer_V2` in Cheat Engine
-    - PCSX2 must be running & the memory records offset using the 2D Pointer action
+    - PCSX2 must be running and the memory records offset using the 2D Pointer action
  */
 
 import clipboard from "clipboardy";
@@ -17,10 +17,12 @@ const ENTRIES = [
   'P2_Input_DEC', //reserved
   'P1_Combo_Meter_Value',
   'P2_Combo_Meter_Value',
-  'P1_A_X_Gravity',
-  'P1_A_Y_Gravity',
-  'P1_A_X_Velocity',
-  'P1_A_Y_Velocity',
+  'P1_A_Dizzy',
+  'P1_B_Dizzy',
+  'P1_C_Dizzy',
+  'P2_A_Dizzy',
+  'P2_B_Dizzy',
+  'P2_C_Dizzy',
 ];
 
 // Form Constants
@@ -29,17 +31,18 @@ const luaFormWidth = 820 - 2 // subtracting due to Windows Panel // 279
 const luaFormHeight = 580 - 28 // subtracting due to Windows Panel // 480
 const luaFormXPos = 3;
 const luaFormYPos = 3;
+const luaFontSize = 25;
 // const luaLabelColOffset = 0;
-const luaLabelRowOffset = 50;
+const luaLabelRowOffset = 38;
 const luaFont0 = {
   fName0: 'Source Code Pro',
-  fSize0: 30,
+  fSize0: luaFontSize,
   // fSColor0: '0x000000',
   fSColor0: '0xFFFFFF',
 };
 const luaFont1 = {
   fName1: 'Source Code Pro',
-  fSize1: 30,
+  fSize1: luaFontSize,
   // fSColor0: '0x000000',
   fSColor1: '0xFF0000', //red
 };
@@ -79,7 +82,7 @@ local inputConverterObject = {
   ST    = 32768,
   SE    = 2,
 }
--- Timer & Form Creation
+-- Timer and Form Creation
 local timer = createTimer(nil)
 local MvC2DataDisplay = createForm()
   MvC2DataDisplay.caption = 'MvC2 Data Display'
@@ -111,6 +114,7 @@ const tempLitP1InputConverter =
   local P2Str = ''
   local p1Inputs = memRec1.Value
   local p2Inputs = memRec2.Value
+  -- & operation
   for i, v in pairs(inputConverterObject) do
     if ( bAnd(p1Inputs, inputConverterObject[i]) ~= 0 ) then
       P1Str = P1Str .. i
