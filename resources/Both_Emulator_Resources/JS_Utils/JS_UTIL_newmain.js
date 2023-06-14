@@ -289,7 +289,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       for (let floatAdr in FLOATING_POINT_ADDRESSES) {
         for (let postFix in postFixes) {
           let fullAdr = FLOATING_POINT_ADDRESSES[floatAdr] + postFixes[postFix];
-          // round off each address by each number inside of toFixedDigits
           for (let digit in toFixedDigits) {
             let tempArray = dataObject[preFixes[playerPrefix] + fullAdr].split(',');
             for (let i = 0; i < tempArray.length; i++) {
@@ -443,7 +442,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     });
   }
 
-  // Main function to write data to files OR return finalValues array
   /**
    * @param {number|string} p1OrP2 number or string, ex: 1 or "P1"
    * @param {string} pMemAdr ex: "Health_Big"
@@ -873,32 +871,32 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     for (pI = 1; pI < 3; pI++) {
       pI == 1 ? p1OrP2 = 'P1' : p1OrP2 = 'P2';
       // Fetches relevant SINGLE addresses for State-Logic-Checking
-      const Action_Flags = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Action_Flags', 0)); reject("Error"); });
-      const Air_Dash_Count = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Air_Dash_Count', 0)); reject("Error"); });
-      const Airborne = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Airborne', 0)); reject("Error"); });
-      const Animation_Timer_Main = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Animation_Timer_Main', 0)); reject("Error"); });
-      const Attack_Immune = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Attack_Immune', 0)); reject("Error"); });
-      const Attack_Number = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Attack_Number', 0)); reject("Error"); });
-      const Block_Meter = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Block_Meter', 0)); reject("Error"); });
-      const Dizzy = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Dizzy', 0)); reject("Error"); });
-      const Dizzy_Reset_Timer = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Dizzy_Reset_Timer', 0)); reject("Error"); });
-      const Flight_Flag = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Flight_Flag', 0)); reject("Error"); });
-      const FlyingScreen = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'FlyingScreen', 0)); reject("Error"); });
-      const FSI_Points = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'FlyingScreen', 0)); reject("Error"); });
-      const HitStop2 = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Hitstop2', 0)); reject("Error"); });
-      const ID_2 = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'ID_2', 0)); reject("Error"); });
-      const Is_Prox_Block = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Is_Prox_Block', 0)); reject("Error"); });
-      const Knockdown_State = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Knockdown_State', 0)); reject("Error"); });
-      const Normal_Location = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Normal_Location', 0)); reject("Error"); });
-      const Normal_Strength = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Normal_Strength', 0)); reject("Error"); });
-      const PunchKick = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'PunchKick', 0)); reject("Error"); });
-      const Special_Attack_ID = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Special_Attack_ID', 0)); reject("Error"); });
-      const Special_Strength = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Special_Strength', 0)); reject("Error"); });
-      const SJ_Counter = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'SJ_Counter', 0)); reject("Error"); });
-      const Unfly = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Unfly', 0)); reject("Error"); });
-      const Y_Position_Arena = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Y_Position_Arena', 0)); reject("Error"); });
-      const Y_Position_From_Enemy = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Y_Position_From_Enemy', 0)); reject("Error"); });
-      const Y_Velocity = await new Promise((resolve, reject) => { resolve(getPlayerMemory(p1OrP2, 'Y_Velocity', 0)); reject("Error"); });
+      const Action_Flags = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Action_Flags', 0)); rej("Err"); });
+      const Air_Dash_Count = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Air_Dash_Count', 0)); rej("Err"); });
+      const Airborne = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Airborne', 0)); rej("Err"); });
+      const Animation_Timer_Main = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Animation_Timer_Main', 0)); rej("Err"); });
+      const Attack_Immune = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Attack_Immune', 0)); rej("Err"); });
+      const Attack_Number = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Attack_Number', 0)); rej("Err"); });
+      const Block_Meter = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Block_Meter', 0)); rej("Err"); });
+      const Dizzy = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Dizzy', 0)); rej("Err"); });
+      const Dizzy_Reset_Timer = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Dizzy_Reset_Timer', 0)); rej("Err"); });
+      const Flight_Flag = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Flight_Flag', 0)); rej("Err"); });
+      const FlyingScreen = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'FlyingScreen', 0)); rej("Err"); });
+      const FSI_Points = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'FlyingScreen', 0)); rej("Err"); });
+      const HitStop2 = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Hitstop2', 0)); rej("Err"); });
+      const ID_2 = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'ID_2', 0)); rej("Err"); });
+      const Is_Prox_Block = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Is_Prox_Block', 0)); rej("Err"); });
+      const Knockdown_State = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Knockdown_State', 0)); rej("Err"); });
+      const Normal_Location = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Normal_Location', 0)); rej("Err"); });
+      const Normal_Strength = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Normal_Strength', 0)); rej("Err"); });
+      const PunchKick = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'PunchKick', 0)); rej("Err"); });
+      const Special_Attack_ID = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Special_Attack_ID', 0)); rej("Err"); });
+      const Special_Strength = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Special_Strength', 0)); rej("Err"); });
+      const SJ_Counter = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'SJ_Counter', 0)); rej("Err"); });
+      const Unfly = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Unfly', 0)); rej("Err"); });
+      const Y_Position_Arena = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Y_Position_Arena', 0)); rej("Err"); });
+      const Y_Position_From_Enemy = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Y_Position_From_Enemy', 0)); rej("Err"); });
+      const Y_Velocity = await new Promise((res, rej) => { res(getPlayerMemory(p1OrP2, 'Y_Velocity', 0)); rej("Err"); });
 
       // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here if you need something that isn't on the list.
 
@@ -930,7 +928,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         State_Thrown_Ground: [[], [], []],
         State_UnDizzy: [[], [], []],
         // Magneto-Only
-        // State_Magneto_Moves: [[], [], []],
+        State_Magneto_Moves: [[], [], []],
         // Storm-Only
         State_Storm_ModifiedAirDashNJ: [[], [], []],
         State_Storm_ModifiedAirDashSJ: [[], [], []],
@@ -944,104 +942,106 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         for (let cLen = 0; cLen < CLIP_LENGTH; cLen++) {
           // Magneto MoveList
           // Normals
-          // if (((Attack_Number)[pSlot][cLen] == 0) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("S.LP")
-          // } else if (((Attack_Number)[pSlot][cLen] == 1) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("S.MP")
-          // } else if (((Attack_Number)[pSlot][cLen] == 2) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("S.HP")
-          // } else if (((Attack_Number)[pSlot][cLen] == 3) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("S.LK")
-          // } else if (((Attack_Number)[pSlot][cLen] == 4) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("S.MK")
-          // } else if (((Attack_Number)[pSlot][cLen] == 5) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("S.HK(1)")
-          // } else if (((Attack_Number)[pSlot][cLen] == 25) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("S.HK (2)")
-          // } else if (((Attack_Number)[pSlot][cLen] == 6) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("C.LP")
-          // } else if (((Attack_Number)[pSlot][cLen] == 7) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("C.MP")
-          // } else if (((Attack_Number)[pSlot][cLen] == 8) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("C.HP")
-          // } else if (((Attack_Number)[pSlot][cLen] == 9) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("C.LK")
-          // } else if (((Attack_Number)[pSlot][cLen] == 10) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("C.MK")
-          // } else if (((Attack_Number)[pSlot][cLen] == 11) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("C.HK")
-          // } else if (((Attack_Number)[pSlot][cLen] == 12) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("J.LP")
-          // } else if (((Attack_Number)[pSlot][cLen] == 13) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("J.MP")
-          // } else if (((Attack_Number)[pSlot][cLen] == 14) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("J.HP")
-          // } else if (((Attack_Number)[pSlot][cLen] == 15) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("J.LK")
-          // } else if (((Attack_Number)[pSlot][cLen] == 16) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("J.MK")
-          // } else if (((Attack_Number)[pSlot][cLen] == 17) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("J.HK")
-          // } else if (((Attack_Number)[pSlot][cLen] == 18) && ((Knockdown_State)[pSlot][cLen] == 20)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("J.D+LK")
-          // } else if (((Attack_Number)[pSlot][cLen] == 65) && ((Knockdown_State)[pSlot][cLen] == 34)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("OC Launcher")
-          //   // Throws
-          // } else if (((Airborne)[pSlot][cLen] == 0) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 0)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Ground Throw (HP)")
-          // } else if (((Airborne)[pSlot][cLen] == 0) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 1)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Ground Throw (HK)")
-          // } else if (((Airborne)[pSlot][cLen] == 2) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 0)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Air Throw (HP)")
-          // } else if (((Airborne)[pSlot][cLen] == 2) && ((Knockdown_State)[pSlot][cLen] == 30) && ((Is_Prox_Block)[pSlot][cLen] == 15) && ((PunchKick)[pSlot][cLen] == 1)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Air Throw (HK)")
-          //   // Specials
-          //   // E.M. Disruptor
-          // } else if (((Attack_Number)[pSlot][cLen] == 48) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("E.M. Disruptor (LP)")
-          // } else if (((Attack_Number)[pSlot][cLen] == 50) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("E.M. Disruptor (HP)")
-          //   // Magnetic Blast
-          // } else if (((Attack_Number)[pSlot][cLen] == 54) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 0) && ((Special_Attack_ID)[pSlot][cLen] == 7)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Magnetic Blast (LP)")
-          // } else if (((Attack_Number)[pSlot][cLen] == 54) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 1) && ((Special_Attack_ID)[pSlot][cLen] == 7)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Magnetic Blast (HP)")
-          //   // Forcefield
-          // } else if (((Special_Attack_ID)[pSlot][cLen] == 8) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 0)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Forcefield (LK)")
-          // } else if (((Special_Attack_ID)[pSlot][cLen] == 8) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 1)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Forcefield (HK)")
-          //   // Hyper-Grav
-          // } else if ((Attack_Number[pSlot][cLen] == 51) && ((Special_Attack_ID)[pSlot][cLen] == 1) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 0)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Hyper-Grav (LK)")
-          // } else if ((Attack_Number[pSlot][cLen] == 51) && ((Special_Attack_ID)[pSlot][cLen] == 1) && ((Knockdown_State)[pSlot][cLen] == 21) && ((Special_Strength)[pSlot][cLen] == 1)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Hyper-Grav (HK)")
-          //   // Tag-In
-          // } else if ((Attack_Number[pSlot][cLen] == 61) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Tag-In")
-          //   // Snapback
-          // } else if ((Attack_Number[pSlot][cLen] == 63) && ((Knockdown_State)[pSlot][cLen] == 29)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Snapback")
-          //   // Flight-Startup
-          // } else if ((Special_Attack_ID[pSlot][cLen] == 4) && ((Flight_Flag)[pSlot][cLen] == 255) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Flight-Start")
-          //   // Flight_Active
-          //   // } else if ((Flight_Flag)[pSlot][cLen] == 255) {
-          //   //   nStateObj.State_Magneto_Moves[pSlot].push("Flight_Active")
-          //   // Taunt
-          // } else if ((Special_Attack_ID[pSlot][cLen] == 6) && ((Is_Prox_Block)[pSlot][cLen] == 19) && ((Knockdown_State)[pSlot][cLen] == 21)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Taunt")
-          //   // Supers
-          //   // Shockwave
-          // } else if ((Attack_Number[pSlot][cLen] == 52) && ((Knockdown_State)[pSlot][cLen] == 29)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Shockwave")
-          //   // Tempest
-          // } else if ((Attack_Number[pSlot][cLen] == 53) && ((Knockdown_State)[pSlot][cLen] == 29)) {
-          //   nStateObj.State_Magneto_Moves[pSlot].push("Tempest")
-          //   // ELSE NOTHING
-          // } else {
-          //   nStateObj.State_Magneto_Moves[pSlot].push(",")
-          // }
+          if ((ID_2)[pABC][cLen] == 44) {
+            if (((Attack_Number)[pABC][cLen] == 0) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("S.LP")
+            } else if (((Attack_Number)[pABC][cLen] == 1) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("S.MP")
+            } else if (((Attack_Number)[pABC][cLen] == 2) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("S.HP")
+            } else if (((Attack_Number)[pABC][cLen] == 3) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("S.LK")
+            } else if (((Attack_Number)[pABC][cLen] == 4) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("S.MK")
+            } else if (((Attack_Number)[pABC][cLen] == 5) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("S.HK(1)")
+            } else if (((Attack_Number)[pABC][cLen] == 25) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("S.HK (2)")
+            } else if (((Attack_Number)[pABC][cLen] == 6) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("C.LP")
+            } else if (((Attack_Number)[pABC][cLen] == 7) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("C.MP")
+            } else if (((Attack_Number)[pABC][cLen] == 8) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("C.HP")
+            } else if (((Attack_Number)[pABC][cLen] == 9) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("C.LK")
+            } else if (((Attack_Number)[pABC][cLen] == 10) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("C.MK")
+            } else if (((Attack_Number)[pABC][cLen] == 11) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("C.HK")
+            } else if (((Attack_Number)[pABC][cLen] == 12) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("J.LP")
+            } else if (((Attack_Number)[pABC][cLen] == 13) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("J.MP")
+            } else if (((Attack_Number)[pABC][cLen] == 14) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("J.HP")
+            } else if (((Attack_Number)[pABC][cLen] == 15) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("J.LK")
+            } else if (((Attack_Number)[pABC][cLen] == 16) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("J.MK")
+            } else if (((Attack_Number)[pABC][cLen] == 17) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("J.HK")
+            } else if (((Attack_Number)[pABC][cLen] == 18) && ((Knockdown_State)[pABC][cLen] == 20)) {
+              nStateObj.State_Magneto_Moves[pABC].push("J.D+LK")
+            } else if (((Attack_Number)[pABC][cLen] == 65) && ((Knockdown_State)[pABC][cLen] == 34)) {
+              nStateObj.State_Magneto_Moves[pABC].push("OC Launcher")
+              // Throws
+            } else if (((Airborne)[pABC][cLen] == 0) && ((Knockdown_State)[pABC][cLen] == 30) && ((Is_Prox_Block)[pABC][cLen] == 15) && ((PunchKick)[pABC][cLen] == 0)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Ground Throw (HP)")
+            } else if (((Airborne)[pABC][cLen] == 0) && ((Knockdown_State)[pABC][cLen] == 30) && ((Is_Prox_Block)[pABC][cLen] == 15) && ((PunchKick)[pABC][cLen] == 1)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Ground Throw (HK)")
+            } else if (((Airborne)[pABC][cLen] == 2) && ((Knockdown_State)[pABC][cLen] == 30) && ((Is_Prox_Block)[pABC][cLen] == 15) && ((PunchKick)[pABC][cLen] == 0)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Air Throw (HP)")
+            } else if (((Airborne)[pABC][cLen] == 2) && ((Knockdown_State)[pABC][cLen] == 30) && ((Is_Prox_Block)[pABC][cLen] == 15) && ((PunchKick)[pABC][cLen] == 1)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Air Throw (HK)")
+              // Specials
+              // E.M. Disruptor
+            } else if (((Attack_Number)[pABC][cLen] == 48) && ((Knockdown_State)[pABC][cLen] == 21)) {
+              nStateObj.State_Magneto_Moves[pABC].push("E.M. Disruptor (LP)")
+            } else if (((Attack_Number)[pABC][cLen] == 50) && ((Knockdown_State)[pABC][cLen] == 21)) {
+              nStateObj.State_Magneto_Moves[pABC].push("E.M. Disruptor (HP)")
+              // Magnetic Blast
+            } else if (((Attack_Number)[pABC][cLen] == 54) && ((Knockdown_State)[pABC][cLen] == 21) && ((Special_Strength)[pABC][cLen] == 0) && ((Special_Attack_ID)[pABC][cLen] == 7)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Magnetic Blast (LP)")
+            } else if (((Attack_Number)[pABC][cLen] == 54) && ((Knockdown_State)[pABC][cLen] == 21) && ((Special_Strength)[pABC][cLen] == 1) && ((Special_Attack_ID)[pABC][cLen] == 7)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Magnetic Blast (HP)")
+              // Forcefield
+            } else if (((Special_Attack_ID)[pABC][cLen] == 8) && ((Knockdown_State)[pABC][cLen] == 21) && ((Special_Strength)[pABC][cLen] == 0)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Forcefield (LK)")
+            } else if (((Special_Attack_ID)[pABC][cLen] == 8) && ((Knockdown_State)[pABC][cLen] == 21) && ((Special_Strength)[pABC][cLen] == 1)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Forcefield (HK)")
+              // Hyper-Grav
+            } else if ((Attack_Number[pABC][cLen] == 51) && ((Special_Attack_ID)[pABC][cLen] == 1) && ((Knockdown_State)[pABC][cLen] == 21) && ((Special_Strength)[pABC][cLen] == 0)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Hyper-Grav (LK)")
+            } else if ((Attack_Number[pABC][cLen] == 51) && ((Special_Attack_ID)[pABC][cLen] == 1) && ((Knockdown_State)[pABC][cLen] == 21) && ((Special_Strength)[pABC][cLen] == 1)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Hyper-Grav (HK)")
+              // Tag-In
+            } else if ((Attack_Number[pABC][cLen] == 61) && ((Knockdown_State)[pABC][cLen] == 21)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Tag-In")
+              // Snapback
+            } else if ((Attack_Number[pABC][cLen] == 63) && ((Knockdown_State)[pABC][cLen] == 29)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Snapback")
+              // Flight-Startup
+            } else if ((Special_Attack_ID[pABC][cLen] == 4) && ((Flight_Flag)[pABC][cLen] == 255) && ((Knockdown_State)[pABC][cLen] == 21)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Flight-Start")
+              // Flight_Active
+              // } else if ((Flight_Flag)[pABC][cLen] == 255) {
+              //   nStateObj.State_Magneto_Moves[pABC].push("Flight_Active")
+              // Taunt
+            } else if ((Special_Attack_ID[pABC][cLen] == 6) && ((Is_Prox_Block)[pABC][cLen] == 19) && ((Knockdown_State)[pABC][cLen] == 21)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Taunt")
+              // Supers
+              // Shockwave
+            } else if ((Attack_Number[pABC][cLen] == 52) && ((Knockdown_State)[pABC][cLen] == 29)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Shockwave")
+              // Tempest
+            } else if ((Attack_Number[pABC][cLen] == 53) && ((Knockdown_State)[pABC][cLen] == 29)) {
+              nStateObj.State_Magneto_Moves[pABC].push("Tempest")
+              // ELSE NOTHING
+            } else {
+              nStateObj.State_Magneto_Moves[pABC].push(",")
+            }
+          }
 
           // Being_Hit
           (
@@ -1342,10 +1342,17 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
           // NEW_STATE_ADD_HERE
         } // cLen Scope
+
+
         // Increase each consecutive "1" by 1. Ex: "1,1,1,1,1" becomes "1,2,3,4,5" until 0 reoccurs.
         var counter = 0;
 
         for (let newState in Object.entries(nStateObj)) {
+          if (Object.keys(nStateObj)[newState] == "State_Magneto_Moves") {
+            console.log("Skipping State_Magneto_Moves");
+            continue;
+          }
+
           Object.values(nStateObj)[newState][pABC].forEach((element, index) => {
             if (element == 0) {
               counter = 0
@@ -1571,10 +1578,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   writeStaticDataCNV();
   // console.log(`Wrote StaticDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
   // ⭐
-  writeDataObject();
+  // writeDataObject();
   // console.log(`Wrote DataObject() for ${csvFilesArr[csvFilesIDX]}`);
   // ⭐
-  writeNewStates()
+  await writeNewStates()
   // console.log(`Step 4: Wrote NewStates() for ${csvFilesArr[csvFilesIDX]}`);
 }
 
@@ -1588,10 +1595,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 // });
 console.timeEnd('⏱');
 // await sleep(10000);
-// fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
-//   if (file.endsWith('.js')) {
-//     fs.renameSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
-//   }
-// });
+fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
+  if (file.endsWith('.js')) {
+    fs.renameSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
+  }
+});
 //TODO Fix CSV 'real-data' finder function.
 //TODO Make Tests for each of the functions!
