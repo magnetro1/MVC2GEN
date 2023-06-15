@@ -204,7 +204,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       allArrayStructure[colIdx].push(allDataArray[rowIdx][colIdx]);
     }
   }
-  // Check for missing entries & Write to file
+  // Check for missing entries. Two strings, write once.
   let missingEntries = [`/*\n`];
   for (let i = 0; i < allArrayStructure[0].length - 1; i++) // total frames
   {
@@ -215,16 +215,20 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       continue
     }
   }
-  // If MissingEntries is empty, then there are no missing entries. Push a comment to the array.
+  // If MissingEntries is empty:
+  const CLIP_DATA_FILE = '_clipDataAE'
   if (missingEntries.length == 0) {
     missingEntries.push('/*\nNo missing entries\n');
   }
-  missingEntries.push(`\nFirst entry in Total_Frames: ${allArrayStructure[0][0]}`
-    + `Final entry in Total_Frames: ${allArrayStructure[0][allArrayStructure[0].length - 1]}`
-    + `Total_Frames in Clip: ${allArrayStructure[0].length}\n*/\n`)
+  missingEntries.push(`\nFirst entry in Total_Frames: ${allArrayStructure[0][0]}\n`
+    + `Final entry in Total_Frames: ${allArrayStructure[0][allArrayStructure[0].length - 1]}\n\n`
+    + `Total_Frames in Clip: ${allArrayStructure[0].length}\n*/\n\n`
+    + `var result = [];\n`
+    + `result[0] = '${csvSoloNameArr[csvFilesIDX]}';\n`
+  );
 
-
-  fs.writeFileSync(`${DIR_OUTPATH}_${csvSoloNameArr[csvFilesIDX]}.js`,
+  // fs.writeFileSync(`${DIR_OUTPATH}_${csvSoloNameArr[csvFilesIDX]}.js`,
+  fs.writeFileSync(`${DIR_OUTPATH}${CLIP_DATA_FILE}.js`,
     missingEntries.toString().replace(/,/g, ''));
 
   // console.log(`Step 2: Wrote ${DIR_OUTPATH}_${csvSoloNameArr[csvFilesIDX]}.js`)
@@ -284,7 +288,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     // Round off floating point addresses using FLOATING_POINT_ADDRESSES
     var preFixes = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_']
     var postFixes = ['', '_Min', '_Max']
-    var toFixedDigits = [0, 2]; // 7 is the default
+    var toFixedDigits = [0]; // 7 is the default
     for (let playerPrefix in preFixes) {
       for (let floatAdr in FLOATING_POINT_ADDRESSES) {
         for (let postFix in postFixes) {
@@ -619,6 +623,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       `var result = [];\nresult[0] = [${stageData}];\nresult[1] = [${stageDataCNV}];\nresult[2] = [${stageNamesCNV}];\n`,
       'utf8'
     );
+    fs.appendFileSync(`${DIR_OUTPATH}${CLIP_DATA_FILE}.js`,
+      `result[3] = ${stageNamesCNV[0].toString()};`
+    );
+
     stageData = [];
     stageDataCNV = [];
     stageNamesCNV = [];
@@ -851,6 +859,62 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       'utf8'
     );
   }
+
+
+  function writeTeamNames() {
+    const id = [];
+    const name = [];
+    // get IDs
+    id.push(dataObject.P1_A_ID_2.split(',')[0]);
+    id.push(dataObject.P1_B_ID_2.split(',')[0]);
+    id.push(dataObject.P1_C_ID_2.split(',')[0]);
+    id.push(dataObject.P2_A_ID_2.split(',')[0]);
+    id.push(dataObject.P2_B_ID_2.split(',')[0]);
+    id.push(dataObject.P2_C_ID_2.split(',')[0]);
+
+    id.forEach((id) => {
+      name.push(NAME_TABLE_OBJ[id]);
+    });
+
+    // Convert assist types to symbols.
+    const assistType = [];
+    const assistCNV = [];
+    const assistSymbols = ['α', 'β', 'γ']
+
+    assistType.push(dataObject.P1_A_Assist_Value.split(',')[0]);
+    assistType.push(dataObject.P1_B_Assist_Value.split(',')[0]);
+    assistType.push(dataObject.P1_C_Assist_Value.split(',')[0]);
+    assistType.push(dataObject.P2_A_Assist_Value.split(',')[0]);
+    assistType.push(dataObject.P2_B_Assist_Value.split(',')[0]);
+    assistType.push(dataObject.P2_C_Assist_Value.split(',')[0]);
+
+    // Convert assist types to symbols.
+    assistType.forEach((assist) => {
+      assistCNV.push(assistSymbols[assist]);
+    });
+
+    let playerOne = ``;
+    let playerTwo = ``;
+    playerOne += `P1: ${name[0]}-${assistCNV[0]}, `
+    playerOne += `${name[1]}-${assistCNV[1]}, `
+    playerOne += `${name[2]}-${assistCNV[2]}`
+
+    playerTwo += `P2: ${name[3]}-${assistCNV[3]}, `
+    playerTwo += `${name[4]}-${assistCNV[4]}, `
+    playerTwo += `${name[5]}-${assistCNV[5]}`;
+
+    fs.appendFileSync(`${DIR_OUTPATH}${CLIP_DATA_FILE}.js`,
+      // `var result = [];\n`
+      `result[1] = '${playerOne}';\n`
+      + `result[2] = '${playerTwo}';\n`,
+    );
+    // Clear arrays
+    // idArray = [];
+    // nameArray = [];
+    // assistTypeArray = [];
+    // assistCNVArray = [];
+  }
+  writeTeamNames();
 
   /*
   --------------------------------------------------
@@ -1349,7 +1413,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
         for (let newState in Object.entries(nStateObj)) {
           if (Object.keys(nStateObj)[newState] == "State_Magneto_Moves") {
-            console.log("Skipping State_Magneto_Moves");
+            // console.log("Skipping State_Magneto_Moves");
             continue;
           }
 
@@ -1553,36 +1617,36 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   getPlayerMemoryEntries().forEach((label) => {
     writePlayerMemory(1, label.toString());
     writePlayerMemory(2, label.toString());
-  });
+  }); // 📞
   // console.log(`Starting Core Functions for ${csvFilesArr[csvFilesIDX]}`);
   // console.log(`Wrote pMem() for ${csvFilesArr[csvFilesIDX]}`);
   // ⭐
-  writeInputCNV();
+  writeInputCNV();  // 📞
   // console.log(`Wrote InputCNV() for ${csvFilesArr[csvFilesIDX]}`);
   // ⭐
-  writeStageDataCNV();
+  writeStageDataCNV();  // 📞
   // console.log(`Wrote StageDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
   // ⭐
-  writeP1P2Addresses();
+  writeP1P2Addresses();  // 📞
   // console.log(`Wrote P1P2Addresses() for ${csvFilesArr[csvFilesIDX]}`);
   // ⭐
-  writeComboCallouts();
+  writeComboCallouts();  // 📞
   // console.log(`Wrote ComboCallouts() for ${csvFilesArr[csvFilesIDX]}`);
   // ⭐
-  countIsPausedCNV();
+  countIsPausedCNV();  // 📞
   // console.log(`Wrote CountIsPausedCNV() for ${csvFilesArr[csvFilesIDX]}`);
   // ⭐
-  writeTotalFramesCNV();
+  writeTotalFramesCNV();  // 📞
   // console.log(`Wrote TotalFramesCNV() for ${csvFilesArr[csvFilesIDX]}`);
   // ⭐
-  writeStaticDataCNV();
+  writeStaticDataCNV();  // 📞
   // console.log(`Wrote StaticDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
+  // ⭐
+  await writeNewStates()  // 📞
+  // console.log(`Step 4: Wrote NewStates() for ${csvFilesArr[csvFilesIDX]}`);
   // ⭐
   // writeDataObject();
   // console.log(`Wrote DataObject() for ${csvFilesArr[csvFilesIDX]}`);
-  // ⭐
-  await writeNewStates()
-  // console.log(`Step 4: Wrote NewStates() for ${csvFilesArr[csvFilesIDX]}`);
 }
 
 // const fList = [];
@@ -1593,12 +1657,12 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 //     }
 //   }
 // });
-console.timeEnd('⏱');
 // await sleep(10000);
 fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
   if (file.endsWith('.js')) {
     fs.renameSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
   }
 });
+console.timeEnd('⏱');
 //TODO Fix CSV 'real-data' finder function.
 //TODO Make Tests for each of the functions!

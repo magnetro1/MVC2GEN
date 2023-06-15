@@ -1,0 +1,4 @@
+    // idArray = [];
+    // nameArray = [];
+    // assistTypeArray = [];
+    // assistCNVArray = [];
