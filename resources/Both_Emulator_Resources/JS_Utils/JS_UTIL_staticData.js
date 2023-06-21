@@ -458,10 +458,11 @@ export const AE_TO_POSITION_OBJ = {
   6: [188, 1766],   // Anakaris
   7: [288, 1689],   // B.B. Hood
   8: [-1, 2080],    // Blackheart
-  9: [409, 2235],   // Cable  
+  9: [409, 2035],   // Cable  
+  // 9: [409, 2235],   // Cable  
   10: [557, 1590],  // Cammy
   11: [198, 2005],  // Captain America
-  12: [117, 2245],  // Captain Commando   
+  12: [117, 2245],  // Captain Commando
   13: [120, 1990],  // Charlie
   14: [560, 1900],  // Chun-Li
   15: [80, 1650],   // Colossus
@@ -481,26 +482,29 @@ export const AE_TO_POSITION_OBJ = {
   29: [119, 1768],  // Juggernaut
   30: [-5, 1985],   // Ken
   31: [-29, 1869],  // M.Bison
-  32: [86, 2030],  // Magneto  
+  // 32: [86, 2030],  // Magneto
+  32: [86, 1830],  // Magneto
   33: [-155, 1634], // Marrow
   34: [150, 1600],  // Megaman
   35: [418, 2083],  // Morrigan
   36: [8, 2063],    // Omega Red
-  37: [212, 1886],  // Psylocke   
+  37: [212, 1886],  // Psylocke
   38: [96, 1982],   // Rogue
   39: [380, 1894],  // Roll
   40: [149, 2000],  // Ruby Heart
   41: [-135, 1560], // Ryu
   42: [81, 1861],   // Sabretooth
   43: [-123, 1523], // Sakura
-  44: [-106, 2161],  // Sentinel   
+  44: [-106, 1979],  // Sentinel
+  // 44: [-106, 2161],  // Sentinel
   45: [149, 1464],  // Servbot
   46: [-87, 1751],  // Shuma-Gorath
   47: [186, 1751],  // Silver Samurai
   48: [0, 0],       // Sonson
   49: [273, 1958],  // Spider-Man
   50: [275, 1850],  // Spiral
-  51: [260, 1722],  // Storm  
+  // 51: [260, 1722],  // Storm
+  51: [260, 1786],  // Storm
   52: [229, 1668],  // Strider Hiryu
   53: [128, 1654],  // Thanos
   54: [105, 1733],  // Tron Bonne

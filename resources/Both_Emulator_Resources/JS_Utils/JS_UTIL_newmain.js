@@ -904,15 +904,11 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     playerTwo += `${name[5]}-${assistCNV[5]}`;
 
     fs.appendFileSync(`${DIR_OUTPATH}${CLIP_DATA_FILE}.js`,
-      // `var result = [];\n`
+      // `const p1 = '${playerOne}';\n`
+      // + `const p2 = '${playerTwo}';\n`,
       `result[1] = '${playerOne}';\n`
       + `result[2] = '${playerTwo}';\n`,
     );
-    // Clear arrays
-    // idArray = [];
-    // nameArray = [];
-    // assistTypeArray = [];
-    // assistCNVArray = [];
   }
   writeTeamNames();
 
