@@ -893,8 +893,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       assistCNV.push(assistSymbols[assist]);
     });
 
-    let playerOne = ``;
-    let playerTwo = ``;
+    let playerOne = '';
+    let playerTwo = '';
     playerOne += `P1: ${name[0]}-${assistCNV[0]}, `
     playerOne += `${name[1]}-${assistCNV[1]}, `
     playerOne += `${name[2]}-${assistCNV[2]}`

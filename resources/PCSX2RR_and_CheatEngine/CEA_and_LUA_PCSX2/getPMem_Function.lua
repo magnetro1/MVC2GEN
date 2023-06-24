@@ -35,10 +35,13 @@ Knockdown_State_OBJ[31] = "Thrown"
 Knockdown_State_OBJ[32] = "Stunned"
 Knockdown_State_OBJ[33] = "???"
 Knockdown_State_OBJ[34] = "Command Launcher"
+
+
 -- Point Checker System
 P1A = getAddressList().getMemoryRecordByDescription("P1_A_Is_Point");
 P1B = getAddressList().getMemoryRecordByDescription("P1_B_Is_Point");
 P1C = getAddressList().getMemoryRecordByDescription("P1_C_Is_Point");
+
 P2A = getAddressList().getMemoryRecordByDescription("P2_A_Is_Point");
 P2B = getAddressList().getMemoryRecordByDescription("P2_B_Is_Point");
 P2C = getAddressList().getMemoryRecordByDescription("P2_C_Is_Point");
@@ -87,4 +90,5 @@ function GetPMem(p1OrP2, memVal)
   return tonumber(getValue)
 end
 
-print(Knockdown_State_OBJ[(GetPMem("P1", "Knockdown_State"))])
+GetPMem("P2", "Dizzy")
+-- print(Knockdown_State_OBJ[(GetPMem("P1", "Knockdown_State"))])
