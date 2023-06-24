@@ -1645,15 +1645,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   // console.log(`Wrote DataObject() for ${csvFilesArr[csvFilesIDX]}`);
 }
 
-// const fList = [];
-// fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
-//   if (file.endsWith('.js')) {
-//     if (fs.existsSync(`${DIR_EXPORT_TO_AE}${file}`)) {
-//       fList.push(file);
-//     }
-//   }
-// });
-// await sleep(10000);
+// Move JS files out of working directory
 fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
   if (file.endsWith('.js')) {
     fs.renameSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
