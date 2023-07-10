@@ -42,7 +42,8 @@ var fontsMainObj = {
   'CVS2': 'CVS2500Regular',
   'MSH': 'MSHRegular',
   'MVC1': 'MvC1Type1Regular',
-  'MVC2': 'MvC2FontType1',
+  // 'MVC2': 'MvC2FontType1',
+  'MVC2': 'MvC2FontType2',
   'MVSF': 'MVCMVSFType1',
   'SFA3': 'SFA3Name1Regular',
   'XVSF': 'XvSFRegular',
@@ -60,13 +61,13 @@ var fontsSubOneObj = {
 };
 
 // Global Variables
-var GLOBAL_OUTPUT_FOLDER = 'H:/Git/MVC2GEN/resources/After Effects Projects+/Tutorial_3/AdobeScripts/Photoshop';
+// var GLOBAL_OUTPUT_FOLDER = 'H:/Git/MVC2GEN/resources/After Effects Projects+/Tutorial_3/AdobeScripts/Photoshop';
+var GLOBAL_OUTPUT_FOLDER = 'H:/';
 var GLOBAL_PARAGRAPH_TEXT = '';
 var GLOBAL_POINT_TEXT = '';
 
 // Get the date for names
-function getDateStamp()
-{
+function getDateStamp() {
   var date = new Date();
   var year = date.getFullYear();
   var month = date.getMonth() + 1;
@@ -80,15 +81,13 @@ function getDateStamp()
 /**
  * @description Creates a PNG for each font, filled with letters, numbers and symbols.
  */
-function createFontReferencePNGs()
-{
+function createFontReferencePNGs() {
   var loremIpsum = '0123456789-' + '\r'
     + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + '\r'
     + 'abcdefghijklmnopqrstuvwxyz' + '\r'
     + '`~!@#$%^&*()_=+[]{};:",<.>/?\'';
 
-  for (var font in fontsAllObj)
-  {
+  for (var font in fontsAllObj) {
     var iterativeEntry = fontsAllObj[font]
 
     var newDocument = app.documents.add(2020, 2050, 72, iterativeEntry, NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
@@ -108,28 +107,23 @@ function createFontReferencePNGs()
     app.activeDocument.trim(TrimType.TRANSPARENT, true, true, true, true);
     layers[1].remove();
 
-    try
-    {
+    try {
       // Check if directory exists
       var outputFolder = GLOBAL_OUTPUT_FOLDER + 'fontReference' + '/';
       var folder = new Folder(outputFolder);
-      if (!folder.exists)
-      {
+      if (!folder.exists) {
         folder.create();
       }
       var saveFilePNG = new File(new File(outputFolder + '/' + iterativeEntry + '.png'));
-      if (saveFilePNG.exists)
-      {
+      if (saveFilePNG.exists) {
         app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
         continue;
       }
-      else
-      {
+      else {
         SavePNG(saveFilePNG);
       }
     }
-    catch (error)
-    {
+    catch (error) {
       alert("The source document is unsaved!");
     }
   }
@@ -141,10 +135,8 @@ function createFontReferencePNGs()
  * @param {string} funcExtension set PNG || PSD
  * @description Creates a PNG for each character name, using the 'main' font of the game
  */
-function createAllCharacterTitlesPNGs(funcFont)
-{
-  for (var i = 0; i < allCharListArray.length; i++)
-  {
+function createAllCharacterTitlesPNGs(funcFont) {
+  for (var i = 0; i < allCharListArray.length; i++) {
     var iterativeEntry = allCharListArray[i];
 
     var newDocument = app.documents.add(4000, 4000, 72, iterativeEntry, NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
@@ -167,28 +159,23 @@ function createAllCharacterTitlesPNGs(funcFont)
 
     // Switch the value of funcFont to the key of the object
     var tempKeyStr = '';
-    for (var key in fontsMainObj)
-    {
-      if (fontsMainObj[key] == funcFont)
-      {
+    for (var key in fontsMainObj) {
+      if (fontsMainObj[key] == funcFont) {
         tempKeyStr = key;
       }
     }
     // Check if directory exists
     var outputFolder = GLOBAL_OUTPUT_FOLDER + 'characterTitles' + '/' + tempKeyStr + '/';
     var folder = new Folder(outputFolder);
-    if (!folder.exists)
-    {
+    if (!folder.exists) {
       folder.create();
     }
     // Save the file
-    if (funcExtension == 'PNG' || funcExtension == 'png')
-    {
+    if (funcExtension == 'PNG' || funcExtension == 'png') {
       var saveFilePNG = new File(new File(outputFolder + 'Title_' + iterativeEntry + '_' + tempKeyStr + '.png'));
       SavePNG(saveFilePNG);
     }
-    else if (funcExtension == 'PSD' || funcExtension == 'psd')
-    {
+    else if (funcExtension == 'PSD' || funcExtension == 'psd') {
       var saveFilePSD = new File(new File(outputFolder + 'Title_' + iterativeEntry + '_' + tempKeyStr + '.psd'));
       SavePSD(saveFilePSD);
     }
@@ -202,21 +189,18 @@ function createAllCharacterTitlesPNGs(funcFont)
  * @param {string} funcExtension set PNG || PSD
  * @param {boolean} promptOrNot set true for prompt || false for GLOBAL_POINT_TEXT
  */
-function writePointText(funcFont, funcSize, funcExtension, promptOrNot)
-{
+function writePointText(funcFont, funcSize, funcExtension, promptOrNot) {
   var newDocument = app.documents.add(4000, 4000, 72, 'name', NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
   var layers = newDocument.artLayers;
   var newLayer = layers.add();
   newLayer.name = 'name';
   newLayer.kind = LayerKind.TEXT;
   var pointTextItem = newLayer.textItem;
-  if (promptOrNot == true)
-  {
+  if (promptOrNot == true) {
     var promptAnswer = prompt("Enter text", "Will be used for Content and FileName");
     pointTextItem.contents = promptAnswer
   }
-  else if (promptOrNot == false)
-  {
+  else if (promptOrNot == false) {
     pointTextItem.contents = GLOBAL_POINT_TEXT;
   }
   pointTextItem.font = funcFont;
@@ -238,8 +222,7 @@ function writePointText(funcFont, funcSize, funcExtension, promptOrNot)
  * @param {string} funcExtension set PNG || PSD
  * @param {boolean} promptOrNot set true for prompt || set false to use GLOBAL_PARAGRAPH_TEXT contents
  */
-function writeParagraphText(funcFont, funcSize, funcExtension, promptOrNot)
-{
+function writeParagraphText(funcFont, funcSize, funcExtension, promptOrNot) {
   // create a new doc
   var docRef = app.documents.add(1920, 1080, 72, 'Temp', NewDocumentMode.RGB, DocumentFill.TRANSPARENT); //app.documents.add();
   // create a new layer and set the layer to text
@@ -250,13 +233,11 @@ function writeParagraphText(funcFont, funcSize, funcExtension, promptOrNot)
   //set the properties of the text field
   paragraphTextItem.kind = TextType.PARAGRAPHTEXT;
 
-  if (promptOrNot == true)
-  {
+  if (promptOrNot == true) {
     var promptAnswer = prompt("Enter text", "Will be used for Content and FileName");
     paragraphTextItem.contents = promptAnswer
   }
-  else if (promptOrNot == false)
-  {
+  else if (promptOrNot == false) {
     paragraphTextItem.contents = GLOBAL_PARAGRAPH_TEXT;
   }
 
@@ -275,22 +256,18 @@ function writeParagraphText(funcFont, funcSize, funcExtension, promptOrNot)
 }
 
 // createAllCharacterTitlesPNGs(mainFontsObj.MVC1)
-function saveLogic(funcExtension, funcFont)
-{
-  if (funcExtension == 'PNG' || funcExtension == 'png')
-  {
+function saveLogic(funcExtension, funcFont) {
+  if (funcExtension == 'PNG' || funcExtension == 'png') {
     var saveFilePNG = new File(new File(GLOBAL_OUTPUT_FOLDER + '/' + funcFont + '_' + getDateStamp().toString() + '.png'));
     SavePNG(saveFilePNG);
   }
-  else if (funcExtension == 'PSD' || funcExtension == 'psd')
-  {
+  else if (funcExtension == 'PSD' || funcExtension == 'psd') {
     var saveFilePSD = new File(new File(GLOBAL_OUTPUT_FOLDER + '/' + funcFont + '_' + getDateStamp().toString() + '.psd'));
     SavePSD(saveFilePSD);
   }
 }
 
-function SavePSD(saveFilePSD)
-{
+function SavePSD(saveFilePSD) {
   psdSaveOptions = new PhotoshopSaveOptions();
   psdSaveOptions.embedColorProfile = true;
   psdSaveOptions.alphaChannels = true;
@@ -301,8 +278,7 @@ function SavePSD(saveFilePSD)
   app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
 }
 
-function SavePNG(saveFilePNG)
-{
+function SavePNG(saveFilePNG) {
   pngSaveOptions = new PNGSaveOptions();
   pngSaveOptions.interlaced = false;
   pngSaveOptions.compression = 0;;
@@ -323,22 +299,20 @@ function SavePNG(saveFilePNG)
 // }
 
 
-GLOBAL_PARAGRAPH_TEXT = "With Save States, the file gets reloaded on the very same frame every time. This allows the ability to manipulate luck and other random issues such as mashing. But the biggest advantage is how much time it saves when programming lengthy-clips since the replay file will always work the way it was programmed."
+GLOBAL_PARAGRAPH_TEXT = "Test write whatever I want to write here."
 
 // Write paragraph text for ALL fonts
-// for (var subFont in fontsSubOneObj)
-// {
-//   writeParagraphText(/* fontsSubOneObj.XVSF */fontsSubOneObj[subFont], 55, 'png', false);
+// for (var subFont in fontsSubOneObj) {
+// writeParagraphText(fontsSubOneObj.XVSF /* fontsSubOneObj[subFont] */, 55, 'png', false);
 // }
 
 // Write point-text for each string in array
-// var texts = [];
-// for (var i = 0; i < texts.length; i++)
-// {
-//   GLOBAL_POINT_TEXT = texts[i]
-//   writePointText(fontsMainObj.MVC1, 72, 'png', false)
-// }
+var texts = ['Magnetro vs Rob2D'];
+for (var i = 0; i < texts.length; i++) {
+  GLOBAL_POINT_TEXT = texts[i]
+  writePointText(fontsMainObj.XVSF, 72, 'png', false)
+}
 
 
-GLOBAL_POINT_TEXT = "Marvel vs. Capcom 2"
-writePointText(fontsSubOneObj.COTA, 72, 'png', false);
+// GLOBAL_POINT_TEXT = "Marvel vs. Capcom 2"
+// writePointText(fontsSubOneObj.COTA, 72, 'png', false);

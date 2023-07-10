@@ -7,7 +7,7 @@ Step 0: Import the necessary modules
 */
 
 import * as fs from 'fs';
-import clipboard from "clipboardy";
+import clipboardy from "clipboardy";
 
 // Import the static data
 import {
@@ -15,7 +15,7 @@ import {
   KNOCKDOWN_STATE_OBJ,
   MIN_MAX_ADDRESSES,
   P1P2_ADDRESSES,
-  NAME_TABLE_OBJ,
+  DEC_NAME_TABLE_OBJ,
   PORTRAITS_TO_TIME_OBJ,
   IS_PROX_BLOCK_OBJ,
   STAGES_OBJ,
@@ -328,8 +328,11 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     });
     // Remove duplicates
     playerMemoryEntries = [...new Set(playerMemoryEntries)];
+    clipboardy.writeSync(playerMemoryEntries.join('\n'));
+
     return playerMemoryEntries;
   }
+
   let tempJS = `${DIR_EXPORT_TO_AE}${csvSoloNameArr[csvFilesIDX]}.js`;
 
   async function exportDataObject() {
@@ -873,7 +876,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     id.push(dataObject.P2_C_ID_2.split(',')[0]);
 
     id.forEach((id) => {
-      name.push(NAME_TABLE_OBJ[id]);
+      name.push(DEC_NAME_TABLE_OBJ[id]);
     });
 
     // Convert assist types to symbols.
@@ -910,7 +913,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       + `result[2] = '${playerTwo}';\n`,
     );
   }
-  writeTeamNames();
 
   /*
   --------------------------------------------------
@@ -1512,7 +1514,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
    * Files are written and then appended as the function loops over each player-memory-address & player.
   */
   async function writeStaticDataCNV() {
-    const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, IS_PROX_BLOCK_OBJ, NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
+    const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, IS_PROX_BLOCK_OBJ, DEC_NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
     const STATIC_DATA_ADRS = ["Knockdown_State", "Is_Prox_Block", "ID_2", "ID_2"]
     let lookUpArr = [[], [], []];
     for (let p1OrP2 = 1; p1OrP2 < 3; p1OrP2++) {
@@ -1605,12 +1607,13 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   Step 5: 📞 Call Functions that Write Data to Files
   --------------------------------------------------
   */
-  // Base Functions (Steps 1-3)
+  // --------------Base Functions---------------------
   appendMinMaxRound();
   await exportDataObject();
+
   // --------------Main Functions---------------------
   // ⭐
-  getPlayerMemoryEntries().forEach((label) => {
+getPlayerMemoryEntries().forEach((label) => {
     writePlayerMemory(1, label.toString());
     writePlayerMemory(2, label.toString());
   }); // 📞
@@ -1643,6 +1646,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   // ⭐
   // writeDataObject();
   // console.log(`Wrote DataObject() for ${csvFilesArr[csvFilesIDX]}`);
+
+  getPlayerMemoryEntries();
 }
 
 // Move JS files out of working directory
