@@ -216,7 +216,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     }
   }
   // If MissingEntries is empty:
-  const CLIP_DATA_FILE = '_clipDataAE'
+  const clipDataAE = '_clipDataAE'
   if (missingEntries.length == 0) {
     missingEntries.push('/*\nNo missing entries\n');
   }
@@ -228,7 +228,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   );
 
   // fs.writeFileSync(`${DIR_OUTPATH}_${csvSoloNameArr[csvFilesIDX]}.js`,
-  fs.writeFileSync(`${DIR_OUTPATH}${CLIP_DATA_FILE}.js`,
+  fs.writeFileSync(`${DIR_OUTPATH}${clipDataAE}.js`,
     missingEntries.toString().replace(/,/g, ''));
 
   // console.log(`Step 2: Wrote ${DIR_OUTPATH}_${csvSoloNameArr[csvFilesIDX]}.js`)
@@ -626,7 +626,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       `var result = [];\nresult[0] = [${stageData}];\nresult[1] = [${stageDataCNV}];\nresult[2] = [${stageNamesCNV}];\n`,
       'utf8'
     );
-    fs.appendFileSync(`${DIR_OUTPATH}${CLIP_DATA_FILE}.js`,
+    fs.appendFileSync(`${DIR_OUTPATH}${clipDataAE}.js`,
       `result[3] = ${stageNamesCNV[0].toString()};`
     );
 
@@ -858,7 +858,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       }
     });
     fs.writeFileSync(`${DIR_OUTPATH}Is_Paused_CNV.js`,
-      `var result = [];\nresult[0] = [${dataObject['Is_Paused']}];\nresult[1] = ["${State_Is_Paused.toString()}];`,
+      `var result = [];\nresult[0] = [${dataObject['Is_Paused']}];\nresult[1] = [${State_Is_Paused.toString()}];`,
       'utf8'
     );
   }
@@ -906,7 +906,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     playerTwo += `${name[4]}-${assistCNV[4]}, `
     playerTwo += `${name[5]}-${assistCNV[5]}`;
 
-    fs.appendFileSync(`${DIR_OUTPATH}${CLIP_DATA_FILE}.js`,
+    fs.appendFileSync(`${DIR_OUTPATH}${clipDataAE}.js`,
       // `const p1 = '${playerOne}';\n`
       // + `const p2 = '${playerTwo}';\n`,
       `result[1] = '${playerOne}';\n`
@@ -1524,21 +1524,21 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
         {
           fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitsToTime.js`,
-            `var result = [];` + "\n",
+            `var result = [];` + '\n',
             'utf8'
           );
           fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitPosition.js`,
-            `var result = [];` + "\n",
+            `var result = [];` + '\n',
             'utf8'
           );
           fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_CVS2PortraitPosition.js`,
-            `var result = [];` + "\n",
+            `var result = [];` + '\n',
             'utf8'
           );
         }
         else {
           fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[staticDataLen]}_CNV.js`,
-            `var result = [];` + "\n",
+            `var result = [];` + '\n',
             'utf8'
           );
         }
@@ -1552,7 +1552,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         for (let pABC = 0; pABC < callPlayerMemoryFN.length; pABC++) // [0][1][2]
         {
           for (let clipLen = 0; clipLen < callPlayerMemoryFN[pABC].length; clipLen++) {
-            lookUpArr[pABC].push(`"${Object.values(STATIC_DATA_OBJS[statAdr])[callPlayerMemoryFN[pABC][clipLen]]}"`);
+            lookUpArr[pABC].push(`'${Object.values(STATIC_DATA_OBJS[statAdr])[callPlayerMemoryFN[pABC][clipLen]]}'`);
           }
           if (STATIC_DATA_OBJS[statAdr] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition && Portraits to Position
           {
@@ -1608,12 +1608,13 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   --------------------------------------------------
   */
   // --------------Base Functions---------------------
+  writeTeamNames(); // 💾
   appendMinMaxRound();
   await exportDataObject();
 
   // --------------Main Functions---------------------
   // ⭐
-getPlayerMemoryEntries().forEach((label) => {
+  getPlayerMemoryEntries().forEach((label) => {
     writePlayerMemory(1, label.toString());
     writePlayerMemory(2, label.toString());
   }); // 📞
@@ -1650,10 +1651,10 @@ getPlayerMemoryEntries().forEach((label) => {
   getPlayerMemoryEntries();
 }
 
-// Move JS files out of working directory
+// delete temp JS file
 fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
   if (file.endsWith('.js')) {
-    fs.renameSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
+    fs.unlinkSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
   }
 });
 console.timeEnd('⏱');
