@@ -867,7 +867,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   function writeTeamNames() {
     const id = [];
     const name = [];
-    // get IDs
+    // put the first character of each ID into an array.
     id.push(dataObject.P1_A_ID_2.split(',')[0]);
     id.push(dataObject.P1_B_ID_2.split(',')[0]);
     id.push(dataObject.P1_C_ID_2.split(',')[0]);
@@ -883,7 +883,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     const assistType = [];
     const assistCNV = [];
     const assistSymbols = ['α', 'β', 'γ']
-
+    // 0, 1, 2 = α, β, γ
     assistType.push(dataObject.P1_A_Assist_Value.split(',')[0]);
     assistType.push(dataObject.P1_B_Assist_Value.split(',')[0]);
     assistType.push(dataObject.P1_C_Assist_Value.split(',')[0]);
@@ -907,8 +907,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     playerTwo += `${name[5]}-${assistCNV[5]}`;
 
     fs.appendFileSync(`${DIR_OUTPATH}${clipDataAE}.js`,
-      // `const p1 = '${playerOne}';\n`
-      // + `const p2 = '${playerTwo}';\n`,
       `result[1] = '${playerOne}';\n`
       + `result[2] = '${playerTwo}';\n`,
     );
@@ -1608,7 +1606,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   --------------------------------------------------
   */
   // --------------Base Functions---------------------
-  writeTeamNames(); // 💾
+  writeTeamNames(); // _clipDataAE.js stuff
   appendMinMaxRound();
   await exportDataObject();
 
