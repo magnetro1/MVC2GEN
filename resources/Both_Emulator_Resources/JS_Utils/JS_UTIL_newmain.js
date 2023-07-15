@@ -961,6 +961,18 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         State_UnDizzy: [[], [], []],
         // Magneto-Only
         State_Magneto_Moves: [[], [], []],
+        State_Magneto_ROM_01_OpponentStateA: [[], [], []],
+        State_Magneto_ROM_02_ChoiceA: [[], [], []],
+        State_Magneto_ROM_03_InputA_LK: [[], [], []],
+        State_Magneto_ROM_03_InputA_MK: [[], [], []],
+        State_Magneto_ROM_04_ChoiceB: [[], [], []],
+        State_Magneto_ROM_05_ChoiceC: [[], [], []],
+        State_Magneto_ROM_05_ChoiceD: [[], [], []],
+        State_Magneto_ROM_06_InputB_AirDash: [[], [], []],
+        State_Magneto_ROM_07_ChoiceE: [[], [], []],
+        State_Magneto_ROM_08_InputC_DLK: [[], [], []],
+        State_Magneto_ROM_08_InputC_MK: [[], [], []],
+        State_Magneto_ROM_09_ChoiceF: [[], [], []],
         // Storm-Only
         State_Storm_ModifiedAirDashNJ: [[], [], []],
         State_Storm_ModifiedAirDashSJ: [[], [], []],
@@ -972,6 +984,92 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       // for each slot (abc) in a Player's side
       for (let pABC = 0; pABC < 3; pABC++) {
         for (let cLen = 0; cLen < CLIP_LENGTH; cLen++) {
+          // Magneto ROM
+          if ((ID_2[pABC][cLen] == 44)) {
+            (Knockdown_State)[pABC][cLen] == 4 // Magneto is landing from the air.
+              ? nStateObj.State_Magneto_ROM_01_OpponentStateA[pABC].push(1)
+              : nStateObj.State_Magneto_ROM_01_OpponentStateA[pABC].push(0);
+            // "ROM_02_ChoiceA" (Did Magneto wait before doing a SJ.LK?)
+            (((Knockdown_State)[pABC][cLen] == 14)
+              && ((Air_Dash_Count)[pABC][cLen] == 0)
+              && ((Y_Position_Arena)[pABC][cLen] <= 160))
+              ? nStateObj.State_Magneto_ROM_02_ChoiceA[pABC].push(1)
+              : nStateObj.State_Magneto_ROM_02_ChoiceA[pABC].push(0);
+            // ROM_03_InputA
+            // "ROM_03_InputA_LK"
+            (((Normal_Strength)[pABC][cLen] == 0)
+              && ((Knockdown_State)[pABC][cLen] == 20)
+              && ((PunchKick)[pABC][cLen] == 1))
+              && (Attack_Number)[pABC][cLen] == 15
+              && ((Air_Dash_Count)[pABC][cLen] == 0)
+              ? nStateObj.State_Magneto_ROM_03_InputA_LK[pABC].push(1)
+              : nStateObj.State_Magneto_ROM_03_InputA_LK[pABC].push(0);
+            // "ROM_03_InputA_MK"
+            (((Normal_Strength)[pABC][cLen] == 1)
+              && ((Knockdown_State)[pABC][cLen] == 20)
+              && ((PunchKick)[pABC][cLen] == 1))
+              && ((Attack_Number)[pABC][cLen] == 16)
+              && (Air_Dash_Count)[pABC][cLen] == 0
+              ? nStateObj.State_Magneto_ROM_03_InputA_MK[pABC].push(1)
+              : nStateObj.State_Magneto_ROM_03_InputA_MK[pABC].push(0);
+            // "ROM_04_ChoiceB" (Did Magneto wait before doing a SJ.MK after a SJ.LK?)
+            (((Normal_Strength)[pABC][cLen] == 0)
+              && ((Knockdown_State)[pABC][cLen] == 20)
+              && ((PunchKick)[pABC][cLen] == 1))
+              && (Attack_Number)[pABC][cLen] == 15
+              && ((Air_Dash_Count)[pABC][cLen] == 0)
+              ? nStateObj.State_Magneto_ROM_04_ChoiceB[pABC].push(1)
+              : nStateObj.State_Magneto_ROM_04_ChoiceB[pABC].push(0);
+            // "ROM_05_ChoiceC" (Did Magneto wait before doing AirDashing after a SJ.LK?)
+            (((Normal_Strength)[pABC][cLen] == 0)
+              && ((Knockdown_State)[pABC][cLen] == 20)
+              && ((PunchKick)[pABC][cLen] == 1))
+              && (Attack_Number)[pABC][cLen] == 15
+              && ((Air_Dash_Count)[pABC][cLen] == 0)
+              ? nStateObj.State_Magneto_ROM_05_ChoiceC[pABC].push(1)
+              : nStateObj.State_Magneto_ROM_05_ChoiceC[pABC].push(0);
+            // "ROM_05_ChoiceD" (Did Magneto wait before doing AirDashing after a SJ.MK?)
+            (((Normal_Strength)[pABC][cLen] == 1)
+              && ((Knockdown_State)[pABC][cLen] == 20)
+              && ((PunchKick)[pABC][cLen] == 1))
+              && (Attack_Number)[pABC][cLen] == 16
+              && ((Air_Dash_Count)[pABC][cLen] == 0)
+              ? nStateObj.State_Magneto_ROM_05_ChoiceD[pABC].push(1)
+              : nStateObj.State_Magneto_ROM_05_ChoiceD[pABC].push(0);
+            // "ROM_06_InputB_AirDash"
+            ((Air_Dash_Count)[pABC][cLen] == 1)
+              ? nStateObj.State_Magneto_ROM_06_InputB_AirDash[pABC].push(1)
+              : nStateObj.State_Magneto_ROM_06_InputB_AirDash[pABC].push(0);
+            // "ROM_07_ChoiceE" (Did Magneto wait after AirDashing before doing a SJ.DLK?)
+            ((Knockdown_State)[pABC][cLen] == 26) // Magneto is Air Dash
+              ? nStateObj.State_Magneto_ROM_07_ChoiceE[pABC].push(1)
+              : nStateObj.State_Magneto_ROM_07_ChoiceE[pABC].push(0);
+            // "ROM_08_InputC_DLK"
+            (((Normal_Strength)[pABC][cLen] == 0)
+              && ((Knockdown_State)[pABC][cLen] == 20)
+              && ((PunchKick)[pABC][cLen] == 1))
+              && ((Attack_Number)[pABC][cLen] == 18)
+              && (Air_Dash_Count)[pABC][cLen] == 1
+              ? nStateObj.State_Magneto_ROM_08_InputC_DLK[pABC].push(1)
+              : nStateObj.State_Magneto_ROM_08_InputC_DLK[pABC].push(0);
+            // "ROM_08_InputC_MK"
+            (((Normal_Strength)[pABC][cLen] == 1)
+              && ((Knockdown_State)[pABC][cLen] == 20)
+              && ((PunchKick)[pABC][cLen] == 1))
+              && ((Attack_Number)[pABC][cLen] == 16)
+              && (Air_Dash_Count)[pABC][cLen] == 1
+              ? nStateObj.State_Magneto_ROM_08_InputC_MK[pABC].push(1)
+              : nStateObj.State_Magneto_ROM_08_InputC_MK[pABC].push(0);
+            // "ROM_09_ChoiceF" (Did Magneto wait before doing a SJ.MK after a SJ.DLK?)
+            (((Normal_Strength)[pABC][cLen] == 0) // Weak
+              && ((Knockdown_State)[pABC][cLen] == 20) // Normal Attacks
+              && ((PunchKick)[pABC][cLen] == 1))  // Medium
+              && (Attack_Number)[pABC][cLen] == 18 // DLK
+              && ((Air_Dash_Count)[pABC][cLen] == 1) // Air Dash = true
+              ? nStateObj.State_Magneto_ROM_09_ChoiceF[pABC].push(1)
+              : nStateObj.State_Magneto_ROM_09_ChoiceF[pABC].push(0);
+
+          }
           // Magneto MoveList
           // Normals
           if ((ID_2)[pABC][cLen] == 44) {
