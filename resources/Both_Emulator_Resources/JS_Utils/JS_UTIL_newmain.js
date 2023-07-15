@@ -975,99 +975,158 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           // Magneto MoveList
           // Normals
           if ((ID_2)[pABC][cLen] == 44) {
-            if (((Attack_Number)[pABC][cLen] == 0) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            if (((Attack_Number)[pABC][cLen] == 0)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("S.LP")
-            } else if (((Attack_Number)[pABC][cLen] == 1) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 1)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("S.MP")
-            } else if (((Attack_Number)[pABC][cLen] == 2) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 2)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("S.HP")
-            } else if (((Attack_Number)[pABC][cLen] == 3) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 3)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("S.LK")
-            } else if (((Attack_Number)[pABC][cLen] == 4) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 4)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("S.MK")
-            } else if (((Attack_Number)[pABC][cLen] == 5) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 5)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("S.HK(1)")
-            } else if (((Attack_Number)[pABC][cLen] == 25) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 25)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("S.HK (2)")
-            } else if (((Attack_Number)[pABC][cLen] == 6) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 6)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("C.LP")
-            } else if (((Attack_Number)[pABC][cLen] == 7) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 7)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("C.MP")
-            } else if (((Attack_Number)[pABC][cLen] == 8) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 8)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("C.HP")
-            } else if (((Attack_Number)[pABC][cLen] == 9) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 9)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("C.LK")
-            } else if (((Attack_Number)[pABC][cLen] == 10) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 10)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("C.MK")
-            } else if (((Attack_Number)[pABC][cLen] == 11) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 11)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("C.HK")
-            } else if (((Attack_Number)[pABC][cLen] == 12) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 12)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("J.LP")
-            } else if (((Attack_Number)[pABC][cLen] == 13) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 13)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("J.MP")
-            } else if (((Attack_Number)[pABC][cLen] == 14) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 14)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("J.HP")
-            } else if (((Attack_Number)[pABC][cLen] == 15) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 15)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("J.LK")
-            } else if (((Attack_Number)[pABC][cLen] == 16) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 16)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("J.MK")
-            } else if (((Attack_Number)[pABC][cLen] == 17) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 17)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("J.HK")
-            } else if (((Attack_Number)[pABC][cLen] == 18) && ((Knockdown_State)[pABC][cLen] == 20)) {
+            } else if (((Attack_Number)[pABC][cLen] == 18)
+              && ((Knockdown_State)[pABC][cLen] == 20)) {
               nStateObj.State_Magneto_Moves[pABC].push("J.D+LK")
-            } else if (((Attack_Number)[pABC][cLen] == 65) && ((Knockdown_State)[pABC][cLen] == 34)) {
+            } else if (((Attack_Number)[pABC][cLen] == 65)
+              && ((Knockdown_State)[pABC][cLen] == 34)) {
               nStateObj.State_Magneto_Moves[pABC].push("OC Launcher")
               // Throws
-            } else if (((Airborne)[pABC][cLen] == 0) && ((Knockdown_State)[pABC][cLen] == 30) && ((Is_Prox_Block)[pABC][cLen] == 15) && ((PunchKick)[pABC][cLen] == 0)) {
+            } else if (((Airborne)[pABC][cLen] == 0)
+              && ((Knockdown_State)[pABC][cLen] == 30)
+              && ((Is_Prox_Block)[pABC][cLen] == 15)
+              && ((PunchKick)[pABC][cLen] == 0)) {
               nStateObj.State_Magneto_Moves[pABC].push("Ground Throw (HP)")
-            } else if (((Airborne)[pABC][cLen] == 0) && ((Knockdown_State)[pABC][cLen] == 30) && ((Is_Prox_Block)[pABC][cLen] == 15) && ((PunchKick)[pABC][cLen] == 1)) {
+            } else if (((Airborne)[pABC][cLen] == 0)
+              && ((Knockdown_State)[pABC][cLen] == 30)
+              && ((Is_Prox_Block)[pABC][cLen] == 15)
+              && ((PunchKick)[pABC][cLen] == 1)) {
               nStateObj.State_Magneto_Moves[pABC].push("Ground Throw (HK)")
-            } else if (((Airborne)[pABC][cLen] == 2) && ((Knockdown_State)[pABC][cLen] == 30) && ((Is_Prox_Block)[pABC][cLen] == 15) && ((PunchKick)[pABC][cLen] == 0)) {
+            } else if (((Airborne)[pABC][cLen] == 2)
+              && ((Knockdown_State)[pABC][cLen] == 30)
+              && ((Is_Prox_Block)[pABC][cLen] == 15)
+              && ((PunchKick)[pABC][cLen] == 0)) {
               nStateObj.State_Magneto_Moves[pABC].push("Air Throw (HP)")
-            } else if (((Airborne)[pABC][cLen] == 2) && ((Knockdown_State)[pABC][cLen] == 30) && ((Is_Prox_Block)[pABC][cLen] == 15) && ((PunchKick)[pABC][cLen] == 1)) {
+            } else if (((Airborne)[pABC][cLen] == 2)
+              && ((Knockdown_State)[pABC][cLen] == 30)
+              && ((Is_Prox_Block)[pABC][cLen] == 15)
+              && ((PunchKick)[pABC][cLen] == 1)) {
               nStateObj.State_Magneto_Moves[pABC].push("Air Throw (HK)")
               // Specials
               // E.M. Disruptor
-            } else if (((Attack_Number)[pABC][cLen] == 48) && ((Knockdown_State)[pABC][cLen] == 21)) {
+            } else if (((Attack_Number)[pABC][cLen] == 48)
+              && ((Knockdown_State)[pABC][cLen] == 21)) {
               nStateObj.State_Magneto_Moves[pABC].push("E.M. Disruptor (LP)")
-            } else if (((Attack_Number)[pABC][cLen] == 50) && ((Knockdown_State)[pABC][cLen] == 21)) {
+            } else if (((Attack_Number)[pABC][cLen] == 50)
+              && ((Knockdown_State)[pABC][cLen] == 21)) {
               nStateObj.State_Magneto_Moves[pABC].push("E.M. Disruptor (HP)")
               // Magnetic Blast
-            } else if (((Attack_Number)[pABC][cLen] == 54) && ((Knockdown_State)[pABC][cLen] == 21) && ((Special_Strength)[pABC][cLen] == 0) && ((Special_Attack_ID)[pABC][cLen] == 7)) {
+            } else if (((Attack_Number)[pABC][cLen] == 54)
+              && ((Knockdown_State)[pABC][cLen] == 21)
+              && ((Special_Strength)[pABC][cLen] == 0)
+              && ((Special_Attack_ID)[pABC][cLen] == 7)) {
               nStateObj.State_Magneto_Moves[pABC].push("Magnetic Blast (LP)")
-            } else if (((Attack_Number)[pABC][cLen] == 54) && ((Knockdown_State)[pABC][cLen] == 21) && ((Special_Strength)[pABC][cLen] == 1) && ((Special_Attack_ID)[pABC][cLen] == 7)) {
+            } else if (((Attack_Number)[pABC][cLen] == 54)
+              && ((Knockdown_State)[pABC][cLen] == 21)
+              && ((Special_Strength)[pABC][cLen] == 1)
+              && ((Special_Attack_ID)[pABC][cLen] == 7)) {
               nStateObj.State_Magneto_Moves[pABC].push("Magnetic Blast (HP)")
               // Forcefield
-            } else if (((Special_Attack_ID)[pABC][cLen] == 8) && ((Knockdown_State)[pABC][cLen] == 21) && ((Special_Strength)[pABC][cLen] == 0)) {
+            } else if (((Special_Attack_ID)[pABC][cLen] == 8)
+              && ((Knockdown_State)[pABC][cLen] == 21)
+              && ((Special_Strength)[pABC][cLen] == 0)) {
               nStateObj.State_Magneto_Moves[pABC].push("Forcefield (LK)")
-            } else if (((Special_Attack_ID)[pABC][cLen] == 8) && ((Knockdown_State)[pABC][cLen] == 21) && ((Special_Strength)[pABC][cLen] == 1)) {
+            } else if (((Special_Attack_ID)[pABC][cLen] == 8)
+              && ((Knockdown_State)[pABC][cLen] == 21)
+              && ((Special_Strength)[pABC][cLen] == 1)) {
               nStateObj.State_Magneto_Moves[pABC].push("Forcefield (HK)")
               // Hyper-Grav
-            } else if ((Attack_Number[pABC][cLen] == 51) && ((Special_Attack_ID)[pABC][cLen] == 1) && ((Knockdown_State)[pABC][cLen] == 21) && ((Special_Strength)[pABC][cLen] == 0)) {
+            } else if ((Attack_Number[pABC][cLen] == 51)
+              && ((Special_Attack_ID)[pABC][cLen] == 1)
+              && ((Knockdown_State)[pABC][cLen] == 21)
+              && ((Special_Strength)[pABC][cLen] == 0)) {
               nStateObj.State_Magneto_Moves[pABC].push("Hyper-Grav (LK)")
-            } else if ((Attack_Number[pABC][cLen] == 51) && ((Special_Attack_ID)[pABC][cLen] == 1) && ((Knockdown_State)[pABC][cLen] == 21) && ((Special_Strength)[pABC][cLen] == 1)) {
+            } else if ((Attack_Number[pABC][cLen] == 51)
+              && ((Special_Attack_ID)[pABC][cLen] == 1)
+              && ((Knockdown_State)[pABC][cLen] == 21)
+              && ((Special_Strength)[pABC][cLen] == 1)) {
               nStateObj.State_Magneto_Moves[pABC].push("Hyper-Grav (HK)")
               // Tag-In
-            } else if ((Attack_Number[pABC][cLen] == 61) && ((Knockdown_State)[pABC][cLen] == 21)) {
+            } else if ((Attack_Number[pABC][cLen] == 61)
+              && ((Knockdown_State)[pABC][cLen] == 21)) {
               nStateObj.State_Magneto_Moves[pABC].push("Tag-In")
               // Snapback
-            } else if ((Attack_Number[pABC][cLen] == 63) && ((Knockdown_State)[pABC][cLen] == 29)) {
+            } else if ((Attack_Number[pABC][cLen] == 63)
+              && ((Knockdown_State)[pABC][cLen] == 29)) {
               nStateObj.State_Magneto_Moves[pABC].push("Snapback")
               // Flight-Startup
-            } else if ((Special_Attack_ID[pABC][cLen] == 4) && ((Flight_Flag)[pABC][cLen] == 255) && ((Knockdown_State)[pABC][cLen] == 21)) {
+            } else if ((Special_Attack_ID[pABC][cLen] == 4)
+              && ((Flight_Flag)[pABC][cLen] == 255)
+              && ((Knockdown_State)[pABC][cLen] == 21)) {
               nStateObj.State_Magneto_Moves[pABC].push("Flight-Start")
               // Flight_Active
               // } else if ((Flight_Flag)[pABC][cLen] == 255) {
               //   nStateObj.State_Magneto_Moves[pABC].push("Flight_Active")
               // Taunt
-            } else if ((Special_Attack_ID[pABC][cLen] == 6) && ((Is_Prox_Block)[pABC][cLen] == 19) && ((Knockdown_State)[pABC][cLen] == 21)) {
+            } else if ((Special_Attack_ID[pABC][cLen] == 6)
+              && ((Is_Prox_Block)[pABC][cLen] == 19)
+              && ((Knockdown_State)[pABC][cLen] == 21)) {
               nStateObj.State_Magneto_Moves[pABC].push("Taunt")
               // Supers
               // Shockwave
-            } else if ((Attack_Number[pABC][cLen] == 52) && ((Knockdown_State)[pABC][cLen] == 29)) {
+            } else if ((Attack_Number[pABC][cLen] == 52)
+              && ((Knockdown_State)[pABC][cLen] == 29)) {
               nStateObj.State_Magneto_Moves[pABC].push("Shockwave")
               // Tempest
-            } else if ((Attack_Number[pABC][cLen] == 53) && ((Knockdown_State)[pABC][cLen] == 29)) {
+            } else if ((Attack_Number[pABC][cLen] == 53)
+              && ((Knockdown_State)[pABC][cLen] == 29)) {
               nStateObj.State_Magneto_Moves[pABC].push("Tempest")
               // ELSE NOTHING
             } else {
