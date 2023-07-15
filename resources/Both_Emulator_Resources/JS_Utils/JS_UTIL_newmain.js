@@ -23,6 +23,8 @@ import {
   COMBO_CALLOUTS,
   AE_TO_POSITION_OBJ,
   AE_TO_CVS2_POSITION_OBJ,
+  buttonConversionVersion1,
+  buttonConversionVersion2,
 } from './JS_UTIL_staticData.js';
 
 // Import directories; Order matters!
@@ -75,6 +77,10 @@ Step 2: Process CSV
 for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   let headersArray = [];
   let allDataArray = [];
+  /**
+   * @description The path to the output folder for the AE files
+   * @path `resources/Both_Emulator_Resources/JS_Utils/exportToAE/`
+   */
   const DIR_OUTPATH = `${DIR_EXPORT_TO_AE}${csvSoloNameArr[csvFilesIDX]}/`;
   // Make Output folder for AE files
   if (!fs.existsSync(`${DIR_OUTPATH}`)) {
@@ -240,7 +246,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
   let dataObject = {};
   for (let i = 0; i < headersArray.length; i++) {
-    dataObject[headersArray[i]] = allArrayStructure[i].join(','); // the key is the header name[i], the value = numbers joined by a comma
+    // the key is the header name[i], the value = numbers joined by a comma
+    dataObject[headersArray[i]] = allArrayStructure[i].join(',');
   }
 
   const CLIP_LENGTH = dataObject['A_2D_Game_Timer'].split(',').length;
@@ -264,8 +271,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
     for (let adr in MIN_MAX_ADDRESSES) {
       const KEY = MIN_MAX_ADDRESSES[adr];
-
-      const VALUE = dataObject[MIN_MAX_ADDRESSES[adr]].split(','); // Fetch the value by finding the key using its string name
+      // Fetch the value by finding the key using its string name
+      const VALUE = dataObject[MIN_MAX_ADDRESSES[adr]].split(',');
       const MIN = Math.min(...VALUE);
       const MAX = Math.max(...VALUE);
       let tempMin = [];
@@ -356,16 +363,17 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
    */
   function writePlayerMemory(p1OrP2, pMemAdr) {
     let pMemArr = [[], [], []];
-    /** 
+    /**
+     * @type {Object} POINT_OBJ_P1 or POINT_OBJ_P2
      * @description Switches between the Player1 and Player2 objects,
-     * ex: POINT_OBJ_P1 or POINT_OBJ_P2 which contain key value pairs of
-     * P1_A... and P2_A... to `dataObject['P1_A_Is_Point'].split(',')`... etc
+     * which contain key value pairs of P1_A... and P2_A... 
+     * to `dataObject['P1_A_Is_Point'].split(',')`
      */
-    let pObjSwitch;// Switches between the Player1 and Player2 objects
+    let pObjSwitch;
     /**
      * @description "P1" | "P2"
     */
-    let playerSwitcher; // Switches between "P1" and "P2"
+    let playerSwitcher;
 
     if ((p1OrP2 == 1) || (p1OrP2 == "P1") || (p1OrP2 == "1")) {
       pObjSwitch = POINT_OBJ_P1;
@@ -637,7 +645,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   let playerOneInputs = [];
   let playerTwoInputs = [];
   /**
-  * @description Converts and writes inputs to one file that contains formatting for a custom-font and US FGC notation
+  * @description Converts and writes inputs to one file that 
+  * contains formatting for a custom-font and US FGC notation
   **/
 
   function writeInputCNV() {
@@ -646,43 +655,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     let playerInputResults = ""; // holds each result for P1 and P2
     let playerInputsCNVArray = []; // contains transformed results for P1 and P2
     let tempP1OrP2 = ""; // Changes to "P1" or "P2"
-
-    /**
-    * @description Uses custom font in After Effects to display the inputs.
-    **/
-    const buttonConversionVersion1 =
-    {
-      "6": 1024,  // 6 = right
-      "4": 2048,  // 4 = left
-      "2": 4096,  // 2 = down
-      "8": 8192,  // 8 = up
-      "u": 512,   // LP = u
-      "j": 64,    // LK = j
-      "i": 256,   // HP = i
-      "k": 32,    // HK = k
-      "o": 128,   // A1 = o
-      "l": 16,    // A2 = l
-      "(": 32768, // START = (
-      ")": 2,     // SELECT = )
-    };
-    /**
-    * @description Readable FGC Notation.
-    **/
-    const buttonConversionVersion2 =
-    {
-      "6": 1024,
-      "4": 2048,
-      "2": 4096,
-      "8": 8192,
-      "LP": 512,
-      "LK": 64,
-      "HP": 256,
-      "HK": 32,
-      "AA": 128,
-      "AB": 16,
-      "START": 32768,
-      "SELECT": 2,
-    };
 
     for (let playersLen = 1; playersLen < 3; playersLen++) {
       playersLen == 1 ? tempP1OrP2 = P1_InputsDECSplit : tempP1OrP2 = P2_InputsDECSplit;
@@ -720,8 +692,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       // Input Conversion Type 2
       for (const input in tempP1OrP2) {
         for (const button in Object.entries(buttonConversionVersion2)) {
-          if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, the value is converted
-          {
+          if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) {
             playerInputResults += Object.keys(buttonConversionVersion2)[button];
           }
         }
@@ -774,8 +745,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       // Input Conversion Type 3
       for (const input in tempP1OrP2) {
         for (const button in Object.entries(buttonConversionVersion2)) {
-          if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) // If the &'ed value is not 0, the value is converted
-          {
+          if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) {
             playerInputResults += Object.keys(buttonConversionVersion2)[button];
           }
         }
@@ -828,10 +798,12 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   } // end of InputCNV
   /**
    * @description Writes individual JS files for each address in MISC_ADDRESSES.
-   * 
    */
   function writeP1P2Addresses() {
-    const p1p2AddressesArray = [[]]; // Example: "P1_Meter_Big", "Camera_Field_of_View"
+    /**
+     * @example "P1_Meter_Big", "Camera_Field_of_View", "P2_Combo_Meter_Value"
+     */
+    const p1p2AddressesArray = [[]];
     for (const p1p2AdrIDX in P1P2_ADDRESSES) {
       dataObject[P1P2_ADDRESSES[p1p2AdrIDX]].split(',').forEach((address) => {
         p1p2AddressesArray[0].push(address);
