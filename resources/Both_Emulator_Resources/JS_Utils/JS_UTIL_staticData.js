@@ -1242,6 +1242,7 @@ export const buttonConversionVersion2 =
   "START": 32768,
   "SELECT": 2,
 };
+
 // Names by Shortest to Longest
 /*
 Ryu

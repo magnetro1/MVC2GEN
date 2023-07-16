@@ -305,8 +305,11 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
             for (let i = 0; i < tempArray.length; i++) {
               tempArray[i] = parseFloat(tempArray[i]).toFixed(toFixedDigits[digit]);
             }
-            // Merge tempArray into the dataObject so that it is written later. Includes combo_meter min and maxes
-            dataObject[preFixes[playerPrefix] + fullAdr + '_' + toFixedDigits[digit]] = tempArray.join(',');
+            // Merge tempArray into the dataObject so that it is written later.
+            // Includes combo_meter min and maxes
+            dataObject[preFixes[playerPrefix]
+              + fullAdr + '_'
+              + toFixedDigits[digit]] = tempArray.join(',');
           }
         }
       }
@@ -359,7 +362,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
    * @param {number|string} p1OrP2 ex: 1 or "P1"
    * @param {string} pMemAdr ex: "Health_Big"
    * @returns {void} Writes files to disk.
-   * @description Finds the point character for each frame and writes their PlayerMemory address to a file.
+   * @description Finds the point character for each frame and writes
+   * their PlayerMemory address to a file.
    */
   function writePlayerMemory(p1OrP2, pMemAdr) {
     let pMemArr = [[], [], []];
@@ -480,61 +484,60 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
     await import(`file://${tempJS}`).then((pMemFile) => {
       for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
-        // 3-Character Bug Logic
+        // 3-Character Bug
         if ((Object.values(pObjSwitch)[0][clipLen] == 0)
           && (Object.values(pObjSwitch)[1][clipLen] == 0)
           && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-          // console.log( `${ playerSwitcher }: 3 - Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
+          // console.log(`${playerSwitcher}: 3 - Character Bug: A == 0 && B == 0 && C == 0    P1: ABC`);
           valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
           valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
           valArr[2].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
-        // 2-Character Bug Logic
+        // 2-Character Bug
         else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
           && (Object.values(pObjSwitch)[1][clipLen] == 0)
           && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
-          // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
+          // console.log(`${playerSwitcher}: 2 - Character Bug: A == 0 && B == 0 && C != 0    P1: AB`);
           valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
           valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
         }
         else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
           && (Object.values(pObjSwitch)[1][clipLen] != 0)
           && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-          // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
+          // console.log(`${playerSwitcher}: 2 - Character Bug: A == 0 && B != 0 && C == 0    P1: AC`);
           valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
           valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
         else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
           && (Object.values(pObjSwitch)[1][clipLen] == 0)
           && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-          // console.log( `${ playerSwitcher }: 2 - Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
+          // console.log(`${playerSwitcher}: 2 - Character Bug: A != 0 && B == 0 && C == 0    P1: BC`);
           valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
           valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
-        // 1-Character Logic
+        // 1-Character
         else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
           && (Object.values(pObjSwitch)[1][clipLen] != 0)
           && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
-          // console.log(`${playerSwitcher}: 1 - Character Logic: A == 0 && B != 0 && C != 0        P1: A`);
+          // console.log(`${playerSwitcher}: 1 - Character: A == 0 && B != 0 && C != 0        P1: A`);
           valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
         }//          replayObject[               P1_A_            Health_Big.split(',')[i]
         else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
           && (Object.values(pObjSwitch)[1][clipLen] == 0)
           && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
-          // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B == 0 && C != 0        P1: B`);
+          // console.log(`${playerSwitcher}: 1 - Character: A != 0 && B == 0 && C != 0        P1: B`);
           valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
         }//          replayObject[               P1_B_            Health_Big.split(',')[i]
         else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
           && (Object.values(pObjSwitch)[1][clipLen] != 0)
           && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-          // console.log(`${ playerSwitcher }: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C`);
+          // console.log(`${playerSwitcher}: 1 - Character: A != 0 && B != 0 && C == 0       P1: C`);
           valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
         }//          replayObject[               P1_C_            Health_Big.split(',')[i]
       }
     });
     return valArr;
   }
-
 
   /**
    * @description outputs arrays containing Total_Frames in ascending and 
@@ -548,8 +551,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     (dataObject['Total_Frames']).split(',').forEach((frame, indexT1) => {
       totalFrameArrT1.push(indexT1);
     });
-
-    // // Padded Zeroes for program pad comp
+    // Padded Zeroes for program pad comp
     (dataObject['Total_Frames']).split(',').forEach((frame, indexT2) => {
       if (indexT2 == 0) {
         indexT2++
@@ -612,9 +614,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       'utf8'
     );
   }
-  // };
-  function writeStageDataCNV() // Fills out color data for stages in Hex in result[1]
-  {
+
+  function writeStageDataCNV() {
     let stageData = [];
     let stageDataCNV = [];
     let stageNamesCNV = [];
@@ -642,19 +643,26 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     stageDataCNV = [];
     stageNamesCNV = [];
   };
+  /**
+   * @description Used for writeNewStates()
+   * to check P1 and P2 inputs for state tracking.
+   */
   let playerOneInputs = [];
+  /**
+ * @description Used for writeNewStates()
+ * to check P1 and P2 inputs for state tracking.
+ */
   let playerTwoInputs = [];
   /**
   * @description Converts and writes inputs to one file that 
   * contains formatting for a custom-font and US FGC notation
   **/
-
   function writeInputCNV() {
     const P1_InputsDECSplit = dataObject['P1_Input_DEC'].split(',')
     const P2_InputsDECSplit = dataObject['P2_Input_DEC'].split(',')
-    let playerInputResults = ""; // holds each result for P1 and P2
+    let playerInputResults = ''; // holds each result for P1 and P2
     let playerInputsCNVArray = []; // contains transformed results for P1 and P2
-    let tempP1OrP2 = ""; // Changes to "P1" or "P2"
+    let tempP1OrP2 = ''; // Changes to 'P1' or 'P2'
 
     for (let playersLen = 1; playersLen < 3; playersLen++) {
       playersLen == 1 ? tempP1OrP2 = P1_InputsDECSplit : tempP1OrP2 = P2_InputsDECSplit;
@@ -666,7 +674,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           }
         }
         playerInputsCNVArray.push(playerInputResults);
-        playerInputResults = "";
+        playerInputResults = '';
       }
       fs.writeFileSync(`${DIR_OUTPATH}P${playersLen}_Inputs_CNV.js`,
         `var result = [];\nresult[0] = ["` +
@@ -697,7 +705,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           }
         }
         playerInputsCNVArray.push(playerInputResults);
-        playerInputResults = "";
+        playerInputResults = '';
       }
       fs.appendFileSync(`${DIR_OUTPATH}P${playersLen}_Inputs_CNV.js`,
         `result[1] = ["${playerInputsCNVArray.toString()
@@ -783,7 +791,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           .replace(/3|3\+/gm, "Downright+")
           .replace(/9|9\+/gm, "Upright+")
           .replace(/7|7\+/gm, "Upleft+")
-          // Re-write assists" notation
+          // Re-write assist notation
           .replace(/AA/gi, "A1")
           .replace(/AB/gi, "A2")
           // Remove trailing "+" if a comma follows
@@ -986,6 +994,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       // for each slot (abc) in a Player's side
       for (let pABC = 0; pABC < 3; pABC++) {
         for (let cLen = 0; cLen < CLIP_LENGTH; cLen++) {
+
           // Magneto ROM
           if ((ID_2[pABC][cLen] == 44)) {
             (Knockdown_State)[pABC][cLen] == 4 // Magneto is landing from the air.
@@ -2384,11 +2393,13 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       }
     }
   };
+
   /*
   --------------------------------------------------
   Step 5: 📞 Call Functions that Write Data to Files
   --------------------------------------------------
   */
+
   // --------------Base Functions---------------------
   writeTeamNames(); // _clipDataAE.js stuff
   appendMinMaxRound();
