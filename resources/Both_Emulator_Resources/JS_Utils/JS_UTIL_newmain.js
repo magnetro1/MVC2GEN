@@ -23,9 +23,14 @@ import {
   COMBO_CALLOUTS,
   AE_TO_POSITION_OBJ,
   AE_TO_CVS2_POSITION_OBJ,
-  buttonConversionVersion1,
-  buttonConversionVersion2,
+  INPUT_CONVERSION_1,
+  INPUT_CONVERSION_2,
+  PMEM_PREFIXES,
 } from './JS_UTIL_staticData.js';
+
+import {
+  getPlayerMemory,
+} from './03A_GetPlayerMem.js'
 
 // Import directories; Order matters!
 import {
@@ -243,6 +248,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   Step 3: Make dataObject & Start Core Functions
   --------------------------------------------------
   */
+  let tempJS = `${DIR_EXPORT_TO_AE}${csvSoloNameArr[csvFilesIDX]}.js`;
 
   let dataObject = {};
   for (let i = 0; i < headersArray.length; i++) {
@@ -293,21 +299,20 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     }
 
     // Round off floating point addresses using FLOATING_POINT_ADDRESSES
-    var preFixes = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_']
     var postFixes = ['', '_Min', '_Max']
     var toFixedDigits = [0]; // 7 is the default
-    for (let playerPrefix in preFixes) {
+    for (let playerPrefix in PMEM_PREFIXES) {
       for (let floatAdr in FLOATING_POINT_ADDRESSES) {
         for (let postFix in postFixes) {
           let fullAdr = FLOATING_POINT_ADDRESSES[floatAdr] + postFixes[postFix];
           for (let digit in toFixedDigits) {
-            let tempArray = dataObject[preFixes[playerPrefix] + fullAdr].split(',');
+            let tempArray = dataObject[PMEM_PREFIXES[playerPrefix] + fullAdr].split(',');
             for (let i = 0; i < tempArray.length; i++) {
               tempArray[i] = parseFloat(tempArray[i]).toFixed(toFixedDigits[digit]);
             }
             // Merge tempArray into the dataObject so that it is written later.
             // Includes combo_meter min and maxes
-            dataObject[preFixes[playerPrefix]
+            dataObject[PMEM_PREFIXES[playerPrefix]
               + fullAdr + '_'
               + toFixedDigits[digit]] = tempArray.join(',');
           }
@@ -315,6 +320,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       }
     }
   }
+
   /**
    * @description Finds the player memory addresses inside of the dataObject
    * and returns an array of the unique items. The other core functions will
@@ -343,25 +349,23 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     return playerMemoryEntries;
   }
 
-  let tempJS = `${DIR_EXPORT_TO_AE}${csvSoloNameArr[csvFilesIDX]}.js`;
+
 
   async function exportDataObject() {
     let dataObjectExport = '';
     for (let key in dataObject) {
-      // if key is not undefined
       if (dataObject[key]) {
         dataObjectExport += `export const ${key} = '${dataObject[key]}';\n`;
       }
     }
-    fs.writeFileSync(`${DIR_EXPORT_TO_AE}${csvSoloNameArr[csvFilesIDX]}.js`, dataObjectExport);
+    fs.writeFileSync(tempJS, dataObjectExport);
   }
   // console.log(`Step 3: Updated object with MIN&MAX and wrote tempJS file.`);
 
-  // Main function to write data to files OR return finalValues array
+  // Main function to write data to files
   /**
    * @param {number|string} p1OrP2 ex: 1 or "P1"
    * @param {string} pMemAdr ex: "Health_Big"
-   * @returns {void} Writes files to disk.
    * @description Finds the point character for each frame and writes
    * their PlayerMemory address to a file.
    */
@@ -461,83 +465,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     });
   }
 
-  /**
-   * @param {number|string} p1OrP2 number or string, ex: 1 or "P1"
-   * @param {string} pMemAdr ex: "Health_Big"
-  //  * @param {number|boolean} write is always 0
-   * @returns {Number[]} Returns an array of numbers
-   * @description Finds the point character, and returns an array of numbers for the playerMemoryAddress in the clip.
-   */
-  async function getPlayerMemory(p1OrP2, pMemAdr) {
-    let valArr = [[], [], []];
-    let pObjSwitch;// Switches between the Player1 and Player2 objects
-    let playerSwitcher; // Switches between "P1" and "P2"
 
-    if ((p1OrP2 == 1) || (p1OrP2 == "P1") || (p1OrP2 == "1")) {
-      pObjSwitch = POINT_OBJ_P1;
-      playerSwitcher = "P1";
-    }
-    else if ((p1OrP2 == 2) || (p1OrP2 == "P2") || (p1OrP2 == "2")) {
-      pObjSwitch = POINT_OBJ_P2;
-      playerSwitcher = "P2";
-    }
-
-    await import(`file://${tempJS}`).then((pMemFile) => {
-      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
-        // 3-Character Bug
-        if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-          && (Object.values(pObjSwitch)[1][clipLen] == 0)
-          && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-          // console.log(`${playerSwitcher}: 3 - Character Bug: A == 0 && B == 0 && C == 0    P1: ABC`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[2].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
-        }
-        // 2-Character Bug
-        else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-          && (Object.values(pObjSwitch)[1][clipLen] == 0)
-          && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
-          // console.log(`${playerSwitcher}: 2 - Character Bug: A == 0 && B == 0 && C != 0    P1: AB`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-        }
-        else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-          && (Object.values(pObjSwitch)[1][clipLen] != 0)
-          && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-          // console.log(`${playerSwitcher}: 2 - Character Bug: A == 0 && B != 0 && C == 0    P1: AC`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
-        }
-        else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
-          && (Object.values(pObjSwitch)[1][clipLen] == 0)
-          && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-          // console.log(`${playerSwitcher}: 2 - Character Bug: A != 0 && B == 0 && C == 0    P1: BC`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
-        }
-        // 1-Character
-        else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-          && (Object.values(pObjSwitch)[1][clipLen] != 0)
-          && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
-          // console.log(`${playerSwitcher}: 1 - Character: A == 0 && B != 0 && C != 0        P1: A`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-        }//          replayObject[               P1_A_            Health_Big.split(',')[i]
-        else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
-          && (Object.values(pObjSwitch)[1][clipLen] == 0)
-          && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
-          // console.log(`${playerSwitcher}: 1 - Character: A != 0 && B == 0 && C != 0        P1: B`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-        }//          replayObject[               P1_B_            Health_Big.split(',')[i]
-        else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
-          && (Object.values(pObjSwitch)[1][clipLen] != 0)
-          && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
-          // console.log(`${playerSwitcher}: 1 - Character: A != 0 && B != 0 && C == 0       P1: C`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
-        }//          replayObject[               P1_C_            Health_Big.split(',')[i]
-      }
-    });
-    return valArr;
-  }
 
   /**
    * @description outputs arrays containing Total_Frames in ascending and 
@@ -643,6 +571,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     stageDataCNV = [];
     stageNamesCNV = [];
   };
+
   /**
    * @description Used for writeNewStates()
    * to check P1 and P2 inputs for state tracking.
@@ -654,7 +583,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
  */
   let playerTwoInputs = [];
   /**
-  * @description Converts and writes inputs to one file that 
+  * @description Converts and writes inputs to one file that
   * contains formatting for a custom-font and US FGC notation
   **/
   function writeInputCNV() {
@@ -668,9 +597,9 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       playersLen == 1 ? tempP1OrP2 = P1_InputsDECSplit : tempP1OrP2 = P2_InputsDECSplit;
       // Input Conversion Type 1
       for (const input in tempP1OrP2) {
-        for (const button in Object.entries(buttonConversionVersion1)) {
-          if ((tempP1OrP2[input] & Object.values(buttonConversionVersion1)[button]) != 0) {
-            playerInputResults += `${Object.keys(buttonConversionVersion1)[button]}`;
+        for (const button in Object.entries(INPUT_CONVERSION_1)) {
+          if ((tempP1OrP2[input] & Object.values(INPUT_CONVERSION_1)[button]) != 0) {
+            playerInputResults += `${Object.keys(INPUT_CONVERSION_1)[button]}`;
           }
         }
         playerInputsCNVArray.push(playerInputResults);
@@ -699,9 +628,9 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
       // Input Conversion Type 2
       for (const input in tempP1OrP2) {
-        for (const button in Object.entries(buttonConversionVersion2)) {
-          if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) {
-            playerInputResults += Object.keys(buttonConversionVersion2)[button];
+        for (const button in Object.entries(INPUT_CONVERSION_2)) {
+          if ((tempP1OrP2[input] & Object.values(INPUT_CONVERSION_2)[button]) != 0) {
+            playerInputResults += Object.keys(INPUT_CONVERSION_2)[button];
           }
         }
         playerInputsCNVArray.push(playerInputResults);
@@ -752,9 +681,9 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
       // Input Conversion Type 3
       for (const input in tempP1OrP2) {
-        for (const button in Object.entries(buttonConversionVersion2)) {
-          if ((tempP1OrP2[input] & Object.values(buttonConversionVersion2)[button]) != 0) {
-            playerInputResults += Object.keys(buttonConversionVersion2)[button];
+        for (const button in Object.entries(INPUT_CONVERSION_2)) {
+          if ((tempP1OrP2[input] & Object.values(INPUT_CONVERSION_2)[button]) != 0) {
+            playerInputResults += Object.keys(INPUT_CONVERSION_2)[button];
           }
         }
         playerInputsCNVArray.push(playerInputResults);
@@ -2438,10 +2367,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   await writeNewStates()  // 📞
   // console.log(`Step 4: Wrote NewStates() for ${csvFilesArr[csvFilesIDX]}`);
   // ⭐
-  // writeDataObject();
+  writeDataObject();
   // console.log(`Wrote DataObject() for ${csvFilesArr[csvFilesIDX]}`);
 
-  getPlayerMemoryEntries();
+  // getPlayerMemoryEntries();
 }
 
 // delete temp JS file

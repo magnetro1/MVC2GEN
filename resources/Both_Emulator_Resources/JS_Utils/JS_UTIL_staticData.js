@@ -1185,7 +1185,7 @@ export const UNUSED_CT_ADDRESSES = [
   
   ")": 2,     // SELECT = )
 **/
-export const buttonConversionVersion1 =
+export const INPUT_CONVERSION_1 =
 {
   "6": 1024,  // 6 = right
   "4": 2048,  // 4 = left
@@ -1227,7 +1227,7 @@ export const buttonConversionVersion1 =
   
   "SELECT": 2,
 **/
-export const buttonConversionVersion2 =
+export const INPUT_CONVERSION_2 =
 {
   "6": 1024,
   "4": 2048,
@@ -1242,6 +1242,8 @@ export const buttonConversionVersion2 =
   "START": 32768,
   "SELECT": 2,
 };
+
+export const PMEM_PREFIXES = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_']
 
 // Names by Shortest to Longest
 /*
