@@ -1,15 +1,14 @@
+import * as fs from 'fs';
 import {
   DIR_OUTPATH,
   dataObject,
 } from './00_DataObject.js';
-
-import * as fs from 'fs';
-
 /**
  * @description outputs arrays containing Total_Frames in ascending and 
  * descending order, and Max number in clip. The first three arrays are
  * arrays of numbers, the remaining are arrays of strings
  */
+
 export function writeTotalFramesCNV() {
   let totalFrameArrT1 = [];
   let totalFrameArrT2 = [];
