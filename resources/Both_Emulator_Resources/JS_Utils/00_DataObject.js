@@ -26,12 +26,12 @@ if (!fs.existsSync(DIR_EXPORT_TO_AE)) {
 Step 1: Get the CSV file names from a directory
 --------------------------------------------------
 */
+const clipDataAE = '_clipDataAE'
 let csvFilesArr = [];
 let csvSoloNameArr = [];
 let dataObject = {};
 let tempJS = '';
 let DIR_OUTPATH = '';
-const clipDataAE = '_clipDataAE'
 
 fs.readdirSync(DIR_CSVS).forEach(function (file) {
   if (file.endsWith('.csv') || file.endsWith('.CSV')) {
@@ -291,4 +291,4 @@ function appendMinMaxRound() {
 }
 appendMinMaxRound();
 
-export { tempJS, dataObject, CLIP_LENGTH, POINT_OBJ_P1, POINT_OBJ_P2, DIR_OUTPATH, clipDataAE }
+export { tempJS, dataObject, CLIP_LENGTH, POINT_OBJ_P1, POINT_OBJ_P2, DIR_OUTPATH, clipDataAE, }
