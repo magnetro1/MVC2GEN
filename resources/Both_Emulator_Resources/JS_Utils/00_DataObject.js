@@ -31,6 +31,8 @@ let csvSoloNameArr = [];
 let dataObject = {};
 let tempJS = '';
 let DIR_OUTPATH = '';
+const clipDataAE = '_clipDataAE'
+
 fs.readdirSync(DIR_CSVS).forEach(function (file) {
   if (file.endsWith('.csv') || file.endsWith('.CSV')) {
     csvFilesArr.push(file);
@@ -200,7 +202,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     }
   }
   // If MissingEntries is empty:
-  const clipDataAE = '_clipDataAE'
+
   if (missingEntries.length == 0) {
     missingEntries.push('/*\nNo missing entries\n');
   }
@@ -289,4 +291,4 @@ function appendMinMaxRound() {
 }
 appendMinMaxRound();
 
-export { tempJS, dataObject, CLIP_LENGTH, POINT_OBJ_P1, POINT_OBJ_P2, DIR_OUTPATH }
+export { tempJS, dataObject, CLIP_LENGTH, POINT_OBJ_P1, POINT_OBJ_P2, DIR_OUTPATH, clipDataAE }

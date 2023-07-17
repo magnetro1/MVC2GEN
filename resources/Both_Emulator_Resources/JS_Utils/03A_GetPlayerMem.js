@@ -1,10 +1,8 @@
 import {
   tempJS,
-  // dataObject,
   CLIP_LENGTH,
   POINT_OBJ_P1,
   POINT_OBJ_P2,
-  DIR_OUTPATH
 } from './00_DataObject.js';
 
 import {

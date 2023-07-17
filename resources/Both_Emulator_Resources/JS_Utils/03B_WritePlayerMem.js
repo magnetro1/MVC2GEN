@@ -118,10 +118,10 @@ async function writePlayerMemory(p1OrP2, pMemAdr) {
     }
   });
 }
-console.time('writePlayerMemory');
+// console.time('writePlayerMemory');
 getPlayerMemoryEntries().forEach((label) => {
   writePlayerMemory(1, label.toString());
   writePlayerMemory(2, label.toString());
 }); // 📞
 
-console.timeEnd('writePlayerMemory');
+// console.timeEnd('writePlayerMemory');
