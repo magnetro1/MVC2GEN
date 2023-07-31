@@ -218,9 +218,11 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       missingEntries.toString().replace(/,/g, ''));
   }
 
-  for (let i = 0; i < headersArray.length; i++) {
-    // the key is the header name[i], the value = numbers joined by a comma
-    dataObject[headersArray[i]] = allArrayStructure[i].join(',');
+  if (dataObject[headersArray[0]] == undefined) {
+    for (let i = 0; i < headersArray.length; i++) {
+      // the key is the header name[i], the value = numbers joined by a comma
+      dataObject[headersArray[i]] = allArrayStructure[i].join(',');
+    }
   }
 }
 
@@ -240,7 +242,6 @@ const POINT_OBJ_P2 =
 };
 
 
-//Append MIN&MAX value to dataObject
 function appendMinMaxRound() {
   let tempMinMaxBuffer = '';
 

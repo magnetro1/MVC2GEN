@@ -11,7 +11,7 @@ import {
  * @returns {String[]} returns an array of strings to be processed by the
  * main player-memory-function.
 */
-function getPlayerMemoryEntries() {
+function fetchPMemEntries() {
   let playerMemoryEntries = [];
   let playerMemoryRegex = /(P[1-2]_[A-C]_)/g; //[1] = P1_A
   for (let key in dataObject) {
@@ -27,7 +27,4 @@ function getPlayerMemoryEntries() {
   // clipboardy.writeSync(playerMemoryEntries.join('\n'));
   return playerMemoryEntries;
 }
-
-getPlayerMemoryEntries();
-
-export { getPlayerMemoryEntries }
+export { fetchPMemEntries }
