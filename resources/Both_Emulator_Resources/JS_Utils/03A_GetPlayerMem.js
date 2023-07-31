@@ -102,20 +102,20 @@ fetchPMemEntries().forEach((label) => {
   pMemList.push('P1_' + label);
   pMemList.push('P2_' + label);
 });
+
 async function fillPMemObject() {
-  for (let i = 0; i < pMemList.length; i += 2) {
+  for (let i = 0; i < pMemList.length; i += 2) { // list has P1 and P2 entries // skip every other entry
     let pMemEntry = pMemList[i]
       .toString()
       .replace('P1_', '')
       .replace('P2_', '');
-    pMemObject[pMemList[i]] = await new Promise((res, rej) => {
+    pMemObject[pMemList[i + 0]] = await new Promise((res, rej) => { // i is P1
       res(getPlayerMemory(1, pMemEntry))
     });
-    pMemObject[pMemList[i + 1]] = await new Promise((res, rej) => {
+    pMemObject[pMemList[i + 1]] = await new Promise((res, rej) => { // i is P2
       res(getPlayerMemory(2, pMemEntry))
     });
   }
-
 }
 await fillPMemObject();
 fs.unlinkSync(tempJS);
@@ -124,10 +124,6 @@ fs.unlinkSync(tempJS);
 // console.log(pMemObject.P2_ID_2);
 
 export { pMemObject, getPlayerMemory };
-
-
-
-
 
 
 
