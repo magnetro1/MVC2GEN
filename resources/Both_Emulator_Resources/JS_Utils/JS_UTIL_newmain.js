@@ -27,23 +27,22 @@ import {
   INPUT_CONVERSION_2,
   PMEM_PREFIXES,
 } from './JS_UTIL_staticData.js';
-
-import {
-  getPlayerMemory,
-  pMemObject,
-} from './03A_GetPlayerMem.js'
-
-// Import directories; Order matters!
 import {
   DIR_EXPORT_TO_AE,
   DIR_CSVS,
   DIR_SORTED_JS
 } from './JS_UTIL_paths.js';
 
+import {
+  getPlayerMemory,
+  pMemObject,
+} from './03A_GetPlayerMem.js'
+
+
 // Write Sorted_JS folder if it doesn't exist
-if (!fs.existsSync(DIR_SORTED_JS)) {
-  fs.mkdirSync(DIR_SORTED_JS);
-}
+// if (!fs.existsSync(DIR_SORTED_JS)) {
+//   fs.mkdirSync(DIR_SORTED_JS);
+// }
 // Write exportToAE folder if it doesn't exist
 if (!fs.existsSync(DIR_EXPORT_TO_AE)) {
   fs.mkdirSync(DIR_EXPORT_TO_AE);
@@ -352,7 +351,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
 
 
-  async function exportDataObject() {
+  async function writeSortedJS() {
     let dataObjectExport = '';
     for (let key in dataObject) {
       if (dataObject[key]) {
@@ -821,6 +820,156 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     );
   }
 
+  function writeDataObject() {
+    for (let key in dataObject) {
+      if ((key == undefined) || (key == null) || (key == '')) {
+        continue;
+      }
+      // Don't write PMem or Camera data
+      const playerMemoryRegex = /(P[1-2]_[A-C]_)|Camera\w+/g;
+      if (playerMemoryRegex.test(key)) {
+        continue;
+      }
+      fs.writeFile(`${DIR_OUTPATH}/${key}.js`,
+        `var result = [];\nresult[0] = [${dataObject[key]}];`,
+        'utf8', (err) => { if (err) throw err; }
+      );
+    }
+  }
+
+  function writeComboCallouts() {
+    for (let p1OrP2 = 1; p1OrP2 <= 2; p1OrP2++) {
+      let tempP1OrP2Str = dataObject[`P${p1OrP2}_Combo_Meter_Value`].split(',');
+      let resultsArr = [];
+      tempP1OrP2Str.forEach((element, index) => {
+        if (parseInt(element) <= 2) {
+          resultsArr.push(''); // ''
+        } else if (parseInt(element) == 3) {
+          resultsArr.push(`${COMBO_CALLOUTS[0]}`); // Yes
+        } else if ((parseInt(element) == 4) || (parseInt(element) == 5)) {
+          resultsArr.push(`${COMBO_CALLOUTS[1]}`); // Good
+        } else if ((parseInt(element) == 6) || (parseInt(element) == 7)) {
+          resultsArr.push(`${COMBO_CALLOUTS[2]}`); // Great
+        } else if ((parseInt(element) == 8) || (parseInt(element) == 9)) {
+          resultsArr.push(`${COMBO_CALLOUTS[3]}`); // Very Good
+        } else if ((parseInt(element) >= 10) && (parseInt(element) <= 29)) {
+          resultsArr.push(`${COMBO_CALLOUTS[4]}`); // Wonderful
+        } else if ((parseInt(element) >= 30) && (parseInt(element) <= 49)) {
+          resultsArr.push(`${COMBO_CALLOUTS[5]}`); // Fantastic
+        } else if ((parseInt(element) >= 50) && (parseInt(element) <= 99)) {
+          resultsArr.push(`${COMBO_CALLOUTS[6]}`); // Monster
+        } else if ((parseInt(element) >= 100)) {
+          resultsArr.push(`${COMBO_CALLOUTS[7]}`); // Marvelous
+        } else {
+          resultsArr.push('');
+        }
+      });
+      //Write results array to a file and put qutoes around each element if it's not empty.
+      fs.writeFile(`${DIR_OUTPATH}/P${p1OrP2}_Combo_Callouts.js`,
+        `var result = [];\nresult[0] = [${resultsArr.map((element) => {
+          // return (element == '') ? ' ' : `'${element}'`
+          return `'${element}'`
+        })}];`,
+        'utf8', (err) => { if (err) throw err; }
+      );
+    }
+  }
+
+  // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
+  /**
+   * @returns {Number[]} returns an array of numbers and writes a file with _CNV appended to its name
+   * @description Writes and converts the point character's values for Knockdown State, Is_Prox_Block, ID_2 and _PortraitsToTime
+   * Files are written and then appended as the function loops over each player-memory-address & player.
+  */
+  async function writeStaticDataCNV() {
+    const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, IS_PROX_BLOCK_OBJ, DEC_NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
+    const STATIC_DATA_ADRS = ["Knockdown_State", "Is_Prox_Block", "ID_2", "ID_2"]
+    let lookUpArr = [[], [], []];
+    for (let p1OrP2 = 1; p1OrP2 < 3; p1OrP2++) {
+      for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++) {
+
+        // Write base file
+        if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
+        {
+          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitsToTime.js`,
+            `var result = [];` + '\n',
+            'utf8'
+          );
+          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitPosition.js`,
+            `var result = [];` + '\n',
+            'utf8'
+          );
+          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_CVS2PortraitPosition.js`,
+            `var result = [];` + '\n',
+            'utf8'
+          );
+        }
+        else {
+          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[staticDataLen]}_CNV.js`,
+            `var result = [];` + '\n',
+            'utf8'
+          );
+        }
+      }
+      for (let statAdr = 0; statAdr < STATIC_DATA_ADRS.length; statAdr++) {
+        const staticDataPromise = new Promise((resolve, reject) => {
+          resolve(getPlayerMemory(`${p1OrP2}`, STATIC_DATA_ADRS[statAdr].toString(), 0));
+          reject("Error");
+        });
+        const callPlayerMemoryFN = await staticDataPromise;
+        for (let pABC = 0; pABC < callPlayerMemoryFN.length; pABC++) // [0][1][2]
+        {
+          for (let clipLen = 0; clipLen < callPlayerMemoryFN[pABC].length; clipLen++) {
+            lookUpArr[pABC].push(`'${Object.values(STATIC_DATA_OBJS[statAdr])[callPlayerMemoryFN[pABC][clipLen]]}'`);
+          }
+          if (STATIC_DATA_OBJS[statAdr] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition && Portraits to Position
+          {
+            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitsToTime.js`,
+              `result[${pABC}] = [${lookUpArr[pABC]}];\n`,
+              'utf8'
+            );
+
+            // AE_TO_NormalComposition_POS
+            let posArray = lookUpArr[pABC].map((portrait) => {
+              portrait = portrait.toString();
+              portrait = portrait.replace(/"/g, '');
+              portrait = AE_TO_POSITION_OBJ[portrait];
+              portrait = [`[${portrait}]`]; /// wrap in brackets
+              return portrait;
+            });
+
+            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitPosition.js`,
+              `result[${pABC}] = [${posArray}];\n`,
+              'utf8'
+            );
+
+            // AE_TO_CVS2Composition_POS
+            let posArray2 = lookUpArr[pABC].map((portrait) => {
+              portrait = portrait.toString();
+              portrait = portrait.replace(/"/g, '');
+              portrait = AE_TO_CVS2_POSITION_OBJ[portrait];
+              portrait = [`[${portrait}]`]; /// wrap in brackets
+              return portrait;
+            });
+
+            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_CVS2PortraitPosition.js`,
+              `result[${pABC}] = [${posArray2}];\n`,
+              'utf8'
+            );
+
+
+            lookUpArr = [[], [], []];
+          } else {
+            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[statAdr]}_CNV.js`,
+              `result[${pABC}] = [${lookUpArr[pABC]}];\n`,
+              'utf8'
+            );
+            lookUpArr = [[], [], []];
+          }
+        }
+      }
+    }
+  };
 
   /*
   --------------------------------------------------
@@ -845,7 +994,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       pI == 1 ? p1P2_ = 'P1_' : p1P2_ = 'P2_';
 
       // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here if you need something that isn't on the list.
-      // List of files to be written:
       var nStateObj =
       {
         State_Being_Hit: [[], [], []],
@@ -2150,158 +2298,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     }
   }
 
-  function writeDataObject() {
-    for (let key in dataObject) {
-      if ((key == undefined) || (key == null) || (key == '')) {
-        continue;
-      }
-      // Don't write PMem or Camera data
-      const playerMemoryRegex = /(P[1-2]_[A-C]_)|Camera\w+/g;
-      if (playerMemoryRegex.test(key)) {
-        continue;
-      }
-      fs.writeFile(`${DIR_OUTPATH}/${key}.js`,
-        `var result = [];\nresult[0] = [${dataObject[key]}];`,
-        'utf8', (err) => { if (err) throw err; }
-      );
-    }
-  }
-
-  function writeComboCallouts() {
-    for (let p1OrP2 = 1; p1OrP2 <= 2; p1OrP2++) {
-      let tempP1OrP2Str = dataObject[`P${p1OrP2}_Combo_Meter_Value`].split(',');
-      let resultsArr = [];
-      // console.log(...tempP1OrP2Str);
-      tempP1OrP2Str.forEach((element, index) => {
-        if (parseInt(element) <= 2) {
-          resultsArr.push(''); // ''
-        } else if (parseInt(element) == 3) {
-          resultsArr.push(`${COMBO_CALLOUTS[0]}`); // Yes
-        } else if ((parseInt(element) == 4) || (parseInt(element) == 5)) {
-          resultsArr.push(`${COMBO_CALLOUTS[1]}`); // Good
-        } else if ((parseInt(element) == 6) || (parseInt(element) == 7)) {
-          resultsArr.push(`${COMBO_CALLOUTS[2]}`); // Great
-        } else if ((parseInt(element) == 8) || (parseInt(element) == 9)) {
-          resultsArr.push(`${COMBO_CALLOUTS[3]}`); // Very Good
-        } else if ((parseInt(element) >= 10) && (parseInt(element) <= 29)) {
-          resultsArr.push(`${COMBO_CALLOUTS[4]}`); // Wonderful
-        } else if ((parseInt(element) >= 30) && (parseInt(element) <= 49)) {
-          resultsArr.push(`${COMBO_CALLOUTS[5]}`); // Fantastic
-        } else if ((parseInt(element) >= 50) && (parseInt(element) <= 99)) {
-          resultsArr.push(`${COMBO_CALLOUTS[6]}`); // Monster
-        } else if ((parseInt(element) >= 100)) {
-          resultsArr.push(`${COMBO_CALLOUTS[7]}`); // Marvelous
-        } else {
-          resultsArr.push('');
-        }
-      });
-      //Write results array to a file and put qutoes around each element if it's not empty.
-      fs.writeFile(`${DIR_OUTPATH}/P${p1OrP2}_Combo_Callouts.js`,
-        `var result = [];\nresult[0] = [${resultsArr.map((element) => {
-          // return (element == '') ? ' ' : `'${element}'`
-          return `"${element}"`
-        })}];`,
-        'utf8', (err) => { if (err) throw err; }
-      );
-    }
-  }
-
-  // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
-  /**
-   * @returns {Number[]} returns an array of numbers and writes a file with _CNV appended to its name
-   * @description Writes and converts the point character's values for Knockdown State, Is_Prox_Block, ID_2 and _PortraitsToTime
-   * Files are written and then appended as the function loops over each player-memory-address & player.
-  */
-  async function writeStaticDataCNV() {
-    const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, IS_PROX_BLOCK_OBJ, DEC_NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
-    const STATIC_DATA_ADRS = ["Knockdown_State", "Is_Prox_Block", "ID_2", "ID_2"]
-    let lookUpArr = [[], [], []];
-    for (let p1OrP2 = 1; p1OrP2 < 3; p1OrP2++) {
-      for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++) {
-
-        // Write base file
-        if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
-        {
-          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitsToTime.js`,
-            `var result = [];` + '\n',
-            'utf8'
-          );
-          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitPosition.js`,
-            `var result = [];` + '\n',
-            'utf8'
-          );
-          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_CVS2PortraitPosition.js`,
-            `var result = [];` + '\n',
-            'utf8'
-          );
-        }
-        else {
-          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[staticDataLen]}_CNV.js`,
-            `var result = [];` + '\n',
-            'utf8'
-          );
-        }
-      }
-      for (let statAdr = 0; statAdr < STATIC_DATA_ADRS.length; statAdr++) {
-        const staticDataPromise = new Promise((resolve, reject) => {
-          resolve(getPlayerMemory(`${p1OrP2}`, STATIC_DATA_ADRS[statAdr].toString(), 0));
-          reject("Error");
-        });
-        const callPlayerMemoryFN = await staticDataPromise;
-        for (let pABC = 0; pABC < callPlayerMemoryFN.length; pABC++) // [0][1][2]
-        {
-          for (let clipLen = 0; clipLen < callPlayerMemoryFN[pABC].length; clipLen++) {
-            lookUpArr[pABC].push(`'${Object.values(STATIC_DATA_OBJS[statAdr])[callPlayerMemoryFN[pABC][clipLen]]}'`);
-          }
-          if (STATIC_DATA_OBJS[statAdr] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition && Portraits to Position
-          {
-            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitsToTime.js`,
-              `result[${pABC}] = [${lookUpArr[pABC]}];\n`,
-              'utf8'
-            );
-
-            // AE_TO_NormalComposition_POS
-            let posArray = lookUpArr[pABC].map((portrait) => {
-              portrait = portrait.toString();
-              portrait = portrait.replace(/"/g, '');
-              portrait = AE_TO_POSITION_OBJ[portrait];
-              portrait = [`[${portrait}]`]; /// wrap in brackets
-              return portrait;
-            });
-
-            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitPosition.js`,
-              `result[${pABC}] = [${posArray}];\n`,
-              'utf8'
-            );
-
-            // AE_TO_CVS2Composition_POS
-            let posArray2 = lookUpArr[pABC].map((portrait) => {
-              portrait = portrait.toString();
-              portrait = portrait.replace(/"/g, '');
-              portrait = AE_TO_CVS2_POSITION_OBJ[portrait];
-              portrait = [`[${portrait}]`]; /// wrap in brackets
-              return portrait;
-            });
-
-            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_CVS2PortraitPosition.js`,
-              `result[${pABC}] = [${posArray2}];\n`,
-              'utf8'
-            );
-
-
-            lookUpArr = [[], [], []];
-          } else {
-            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[statAdr]}_CNV.js`,
-              `result[${pABC}] = [${lookUpArr[pABC]}];\n`,
-              'utf8'
-            );
-            lookUpArr = [[], [], []];
-          }
-        }
-      }
-    }
-  };
-
 
   /*
   --------------------------------------------------
@@ -2312,42 +2308,24 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   // --------------Base Functions---------------------
   writeTeamNames(); // _clipDataAE.js stuff
   appendMinMaxRound();
-  await exportDataObject();
+  await writeSortedJS();
 
 
   // --------------Main Functions---------------------
-  // ⭐
-  fetchPMemEntries().forEach(async function (label) {
+  fetchPMemEntries().forEach(function (label) {
     writePlayerMemory(1, label.toString());
     writePlayerMemory(2, label.toString());
-  }); // 📞
+  });
 
-  writeInputCNV();  // 📞
-  // console.log(`Wrote InputCNV() for ${csvFilesArr[csvFilesIDX]}`);
-  // ⭐
-  writeStageDataCNV();  // 📞
-  // console.log(`Wrote StageDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
-  // ⭐
-  writeP1P2Addresses();  // 📞
-  // console.log(`Wrote P1P2Addresses() for ${csvFilesArr[csvFilesIDX]}`);
-  // ⭐
-  writeComboCallouts();  // 📞
-  // console.log(`Wrote ComboCallouts() for ${csvFilesArr[csvFilesIDX]}`);
-  // ⭐
-  countIsPausedCNV();  // 📞
-  // console.log(`Wrote CountIsPausedCNV() for ${csvFilesArr[csvFilesIDX]}`);
-  // ⭐
-  writeTotalFramesCNV();  // 📞
-  // console.log(`Wrote TotalFramesCNV() for ${csvFilesArr[csvFilesIDX]}`);
-  // ⭐
-  writeStaticDataCNV();  // 📞
-  // console.log(`Wrote StaticDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
-  // ⭐
-  await writeNewStates()  // 📞
-  // console.log(`Step 4: Wrote NewStates() for ${csvFilesArr[csvFilesIDX]}`);
-  // ⭐
-  // writeDataObject();
-  // console.log(`Wrote DataObject() for ${csvFilesArr[csvFilesIDX]}`);
+  writeInputCNV();
+  writeStageDataCNV();
+  writeP1P2Addresses();
+  writeComboCallouts();
+  countIsPausedCNV();
+  writeTotalFramesCNV();
+  writeStaticDataCNV();
+  await writeNewStates()
+  writeDataObject();
 
 }
 

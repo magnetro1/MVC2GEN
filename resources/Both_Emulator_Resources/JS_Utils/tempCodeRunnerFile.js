@@ -1,2 +1,3 @@
-console.log(pMemObject.P1_ID_2);
-console.log(pMemObject.P2_ID_2);
+
+import { pMemObject, getPlayerMemory } from './03A_GetPlayerMem.js';
+import { writePlayerMemory } from './03B_WritePlayerMem.js';

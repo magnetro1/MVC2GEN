@@ -55,5 +55,5 @@ function writeTeamNames() {
     + `result[2] = '${playerTwo}';\n`,
   );
 }
-
-writeTeamNames();
+// writeTeamNames();
+export { writeTeamNames };

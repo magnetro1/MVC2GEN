@@ -11,10 +11,9 @@ async function writeSortedJS() {
       dataObjectExport += `export const ${key} = '${dataObject[key]}';\n`;
     }
   }
-  // if the file doesn't exist, create it
   if (!fs.existsSync(tempJS)) {
     fs.writeFileSync(tempJS, dataObjectExport);
   }
 }
-
+// writeSortedJS();
 export { writeSortedJS }

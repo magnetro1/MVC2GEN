@@ -47,4 +47,5 @@ function writeComboCallouts() {
     }
   }
 }
-writeComboCallouts();
+// writeComboCallouts();
+export { writeComboCallouts }

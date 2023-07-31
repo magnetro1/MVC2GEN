@@ -4,6 +4,7 @@ import {
   POINT_OBJ_P1,
   POINT_OBJ_P2,
   DIR_OUTPATH,
+  dataObject,
 } from './00_DataObject.js';
 
 import {
@@ -11,7 +12,7 @@ import {
 } from './01_writeSortedJS.js';
 
 import {
-  getPlayerMemoryEntries,
+  fetchPMemEntries,
 } from './02_FetchPlayerMemEntries.js';
 
 import * as fs from 'fs';
@@ -118,10 +119,9 @@ async function writePlayerMemory(p1OrP2, pMemAdr) {
     }
   });
 }
-// console.time('writePlayerMemory');
-getPlayerMemoryEntries().forEach((label) => {
+fetchPMemEntries().forEach(function (label) {
   writePlayerMemory(1, label.toString());
   writePlayerMemory(2, label.toString());
-}); // 📞
+});
 
-// console.timeEnd('writePlayerMemory');
+export { writePlayerMemory }

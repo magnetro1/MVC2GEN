@@ -28,4 +28,5 @@ function writeP1P2Addresses() {
   }
 };
 
-writeP1P2Addresses();
+// writeP1P2Addresses();
+export { writeP1P2Addresses }

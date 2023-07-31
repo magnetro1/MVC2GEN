@@ -26,4 +26,5 @@ function countIsPausedCNV() {
   }
 }
 
-countIsPausedCNV()
+// countIsPausedCNV()
+export { countIsPausedCNV };

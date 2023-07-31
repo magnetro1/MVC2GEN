@@ -1,5 +1,11 @@
 import * as fs from 'fs';
 import {
+  DIR_EXPORT_TO_AE,
+  DIR_CSVS,
+  DIR_SORTED_JS
+} from './JS_UTIL_paths.js';
+
+import {
   dataObject,
   tempJS,
   CLIP_LENGTH,
@@ -118,13 +124,16 @@ async function fillPMemObject() {
   }
 }
 await fillPMemObject();
-fs.unlinkSync(tempJS);
+fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
+  if (file.endsWith('.js')) {
+    fs.unlinkSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
+  }
+});
 
 // console.log(pMemObject.P1_ID_2);
 // console.log(pMemObject.P2_ID_2);
 
 export { pMemObject, getPlayerMemory };
-
 
 
 

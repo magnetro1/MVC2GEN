@@ -11,7 +11,7 @@ import {
 
 import * as fs from 'fs';
 
-export function writeStageDataCNV() {
+function writeStageDataCNV() {
   let stageData = [];
   let stageDataCNV = [];
   let stageNamesCNV = [];
@@ -40,4 +40,5 @@ export function writeStageDataCNV() {
   stageNamesCNV = [];
 };
 
-writeStageDataCNV()
+// writeStageDataCNV()
+export { writeStageDataCNV };

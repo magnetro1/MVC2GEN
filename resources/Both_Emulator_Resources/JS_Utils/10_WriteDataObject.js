@@ -15,13 +15,14 @@ function writeDataObject() {
       continue;
     }
     // if the file doesn't exist, create it
-    if (!fs.existsSync(`${DIR_OUTPATH}/${key}.js`)) {
-      fs.writeFile(`${DIR_OUTPATH}/${key}.js`,
-        `var result = [];\nresult[0] = [${dataObject[key]}];`,
-        'utf8', (err) => { if (err) throw err; }
-      );
-    }
+    // if (!fs.existsSync(`${DIR_OUTPATH}/${key}.js`)) {
+    fs.writeFile(`${DIR_OUTPATH}/${key}.js`,
+      `var result = [];\nresult[0] = [${dataObject[key]}];`,
+      'utf8', (err) => { if (err) throw err; }
+    );
+    // }
   }
 }
 
-writeDataObject();
+// writeDataObject();
+export { writeDataObject }

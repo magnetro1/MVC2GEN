@@ -9,7 +9,7 @@ import {
  * arrays of numbers, the remaining are arrays of strings
  */
 
-export function writeTotalFramesCNV() {
+function writeTotalFramesCNV() {
   let totalFrameArrT1 = [];
   let totalFrameArrT2 = [];
 
@@ -81,3 +81,5 @@ export function writeTotalFramesCNV() {
     );
   }
 }
+// writeTotalFramesCNV();
+export { writeTotalFramesCNV }

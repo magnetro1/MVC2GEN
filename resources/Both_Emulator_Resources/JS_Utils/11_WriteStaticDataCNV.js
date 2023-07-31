@@ -27,7 +27,6 @@ async function writeStaticDataCNV() {
   let lookUpArr = [[], [], []];
   for (let p1OrP2 = 1; p1OrP2 < 3; p1OrP2++) {
     for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++) {
-
       // Write base file
       if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
       {
@@ -97,7 +96,6 @@ async function writeStaticDataCNV() {
             'utf8'
           );
 
-
           lookUpArr = [[], [], []];
         } else {
           fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[statAdr]}_CNV.js`,
@@ -111,4 +109,6 @@ async function writeStaticDataCNV() {
   }
 };
 
-// writeStaticDataCNV() 
+// writeStaticDataCNV()
+
+export { writeStaticDataCNV };

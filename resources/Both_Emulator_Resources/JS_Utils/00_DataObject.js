@@ -9,8 +9,8 @@ import {
   DIR_CSVS,
   DIR_SORTED_JS
 } from './JS_UTIL_paths.js';
-
 import * as fs from 'fs';
+
 
 // Write Sorted_JS folder if it doesn't exist
 if (!fs.existsSync(DIR_SORTED_JS)) {
@@ -292,4 +292,7 @@ function appendMinMaxRound() {
 }
 appendMinMaxRound();
 
-export { tempJS, dataObject, CLIP_LENGTH, POINT_OBJ_P1, POINT_OBJ_P2, DIR_OUTPATH, clipDataAE, }
+export {
+  csvFilesArr, csvSoloNameArr, dataObject, DIR_OUTPATH, tempJS,
+  CLIP_LENGTH, POINT_OBJ_P1, POINT_OBJ_P2, clipDataAE,
+}

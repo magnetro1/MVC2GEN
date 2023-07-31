@@ -166,8 +166,6 @@ function writeInputCNV() {
   }
 }
 
-writeInputCNV();
+// writeInputCNV();
 
-export { playerOneInputs, playerTwoInputs, }
-
-// console.log(playerOneInputs, '\n\n' + playerTwoInputs);
+export { playerOneInputs, playerTwoInputs, writeInputCNV }
