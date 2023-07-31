@@ -773,7 +773,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     );
   }
 
-
   function writeTeamNames() {
     const id = [];
     const name = [];
@@ -1393,33 +1392,34 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           else {
             // "Storm_ModifiedAirDashNJ"
             (
-              ((pMemObject[`${p1P2_}ID_2`])[pABC][cLen] == 42)
-              && ((pMemObject[`${p1P2_}HitStop2`])[pABC][cLen] == 0)
-              && ((pMemObject[`${p1P2_}Unfly`])[pABC][cLen] == 16) || ((pMemObject[`${p1P2_}Unfly`])[pABC][cLen] == 1))
+              ((pMemObject[`${p1P2_}ID_2`])[pABC][cLen] == 42) // Storm
+              && ((pMemObject[`${p1P2_}Hitstop2`])[pABC][cLen] == 0) // No Hitstop
+              && ((pMemObject[`${p1P2_}Unfly`])[pABC][cLen] == 16)
+              || ((pMemObject[`${p1P2_}Unfly`])[pABC][cLen] == 1)
               && ((pMemObject[`${p1P2_}Normal_Location`])[pABC][cLen] == 1)
               && ((pMemObject[`${p1P2_}Air_Dash_Count`])[pABC][cLen] == 1)
               && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] == 20)
-              && (playerTwoInputs[cLen].match(/7|8|9/g)
-              )
+              && (playerTwoInputs[cLen].match(/7|8|9/g))
+            )
               ? nStateObj.State_Storm_ModifiedAirDashNJ[pABC].push(1)
               : nStateObj.State_Storm_ModifiedAirDashNJ[pABC].push(0);
             // "Storm_ModifiedAirDashSJ"
             (
-              ((pMemObject[`${p1P2_}ID_2`])[pABC][cLen] == 42))
-              && ((pMemObject[`${p1P2_}HitStop2`])[pABC][cLen] == 0)
+              ((pMemObject[`${p1P2_}ID_2`])[pABC][cLen] == 42) // Storm
+              && ((pMemObject[`${p1P2_}Hitstop2`])[pABC][cLen] == 0) // No Hitstop
               && ((pMemObject[`${p1P2_}SJ_Counter`])[pABC][cLen] > 0)
               && ((pMemObject[`${p1P2_}Normal_Location`])[pABC][cLen] == 2)
               && ((pMemObject[`${p1P2_}Air_Dash_Count`])[pABC][cLen] == 1)
               && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] == 20)
-              && ((playerTwoInputs[cLen].match(/7|8|9/g))
-              )
+              && (playerTwoInputs[cLen].match(/7|8|9/g))
+            )
               ? nStateObj.State_Storm_ModifiedAirDashSJ[pABC].push(1)
               : nStateObj.State_Storm_ModifiedAirDashSJ[pABC].push(0);
             // "Storm_DI"
             (
-              ((pMemObject[`${p1P2_}ID_2`])[pABC][cLen] == 42)
-              && ((pMemObject[`${p1P2_}HitStop2`])[pABC][cLen] == 0)
-              && ((pMemObject[`${p1P2_}Airborne`])[pABC][cLen] == 2)
+              ((pMemObject[`${p1P2_}ID_2`])[pABC][cLen] == 42) // Storm
+              && ((pMemObject[`${p1P2_}Hitstop2`])[pABC][cLen] == 0) // No Hitstop
+              && ((pMemObject[`${p1P2_}Airborne`])[pABC][cLen] == 2) // actually in the air
               && ((pMemObject[`${p1P2_}Knockdown_State`][pABC][cLen] != 32)) // "Stunned"
               && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] != 26) // "Air Dash"
               && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] != 19) // "Air Blocking"
@@ -1431,9 +1431,9 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
               : nStateObj.State_Storm_DI[pABC].push(0);
             // "Storm_Float"
             (
-              ((pMemObject[`${p1P2_}ID_2`])[pABC][cLen] == 42)
-              && ((pMemObject[`${p1P2_}HitStop2`])[pABC][cLen] == 0)
-              && ((pMemObject[`${p1P2_}Airborne`])[pABC][cLen] == 2)
+              ((pMemObject[`${p1P2_}ID_2`])[pABC][cLen] == 42) // Storm
+              && ((pMemObject[`${p1P2_}Hitstop2`])[pABC][cLen] == 0) // No Hitstop
+              && ((pMemObject[`${p1P2_}Airborne`])[pABC][cLen] == 2) // actually in the air
               && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] != 32) // "Stunned"
               && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] != 26) // "Air Dash"
               && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] != 19) // "Air Blocking"
@@ -2314,41 +2314,40 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   appendMinMaxRound();
   await exportDataObject();
 
-  // console.log(pMemObject[`P1_Knockdown_State`][0]);
 
   // --------------Main Functions---------------------
   // ⭐
-  // fetchPMemEntries().forEach(async function (label) {
-  //   writePlayerMemory(1, label.toString());
-  //   writePlayerMemory(2, label.toString());
-  // }); // 📞
+  fetchPMemEntries().forEach(async function (label) {
+    writePlayerMemory(1, label.toString());
+    writePlayerMemory(2, label.toString());
+  }); // 📞
 
   writeInputCNV();  // 📞
-  // // console.log(`Wrote InputCNV() for ${csvFilesArr[csvFilesIDX]}`);
-  // // ⭐
-  // writeStageDataCNV();  // 📞
-  // // console.log(`Wrote StageDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
-  // // ⭐
-  // writeP1P2Addresses();  // 📞
-  // // console.log(`Wrote P1P2Addresses() for ${csvFilesArr[csvFilesIDX]}`);
-  // // ⭐
-  // writeComboCallouts();  // 📞
-  // // console.log(`Wrote ComboCallouts() for ${csvFilesArr[csvFilesIDX]}`);
-  // // ⭐
-  // countIsPausedCNV();  // 📞
-  // // console.log(`Wrote CountIsPausedCNV() for ${csvFilesArr[csvFilesIDX]}`);
-  // // ⭐
-  // writeTotalFramesCNV();  // 📞
-  // // console.log(`Wrote TotalFramesCNV() for ${csvFilesArr[csvFilesIDX]}`);
-  // // ⭐
-  // writeStaticDataCNV();  // 📞
-  // // console.log(`Wrote StaticDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
-  // // ⭐
+  // console.log(`Wrote InputCNV() for ${csvFilesArr[csvFilesIDX]}`);
+  // ⭐
+  writeStageDataCNV();  // 📞
+  // console.log(`Wrote StageDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
+  // ⭐
+  writeP1P2Addresses();  // 📞
+  // console.log(`Wrote P1P2Addresses() for ${csvFilesArr[csvFilesIDX]}`);
+  // ⭐
+  writeComboCallouts();  // 📞
+  // console.log(`Wrote ComboCallouts() for ${csvFilesArr[csvFilesIDX]}`);
+  // ⭐
+  countIsPausedCNV();  // 📞
+  // console.log(`Wrote CountIsPausedCNV() for ${csvFilesArr[csvFilesIDX]}`);
+  // ⭐
+  writeTotalFramesCNV();  // 📞
+  // console.log(`Wrote TotalFramesCNV() for ${csvFilesArr[csvFilesIDX]}`);
+  // ⭐
+  writeStaticDataCNV();  // 📞
+  // console.log(`Wrote StaticDataCNV() for ${csvFilesArr[csvFilesIDX]}`);
+  // ⭐
   await writeNewStates()  // 📞
-  // // console.log(`Step 4: Wrote NewStates() for ${csvFilesArr[csvFilesIDX]}`);
-  // // ⭐
+  // console.log(`Step 4: Wrote NewStates() for ${csvFilesArr[csvFilesIDX]}`);
+  // ⭐
   // writeDataObject();
-  // // console.log(`Wrote DataObject() for ${csvFilesArr[csvFilesIDX]}`);
+  // console.log(`Wrote DataObject() for ${csvFilesArr[csvFilesIDX]}`);
 
 }
 
