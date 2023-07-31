@@ -88,5 +88,4 @@ async function getPlayerMemory(p1OrP2, pMemAdr) {
   return valArr;
 }
 
-getPlayerMemory(1, "Health_Big");
 export { getPlayerMemory };
