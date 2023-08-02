@@ -20,7 +20,9 @@ import {
 import {
   fetchPMemEntries
 } from './02_FetchPlayerMemEntries.js';
+
 let pMemObject = {};
+let pMemList = [];
 
 /**
  * @param {number|string} p1OrP2 number or string, ex: 1 or "P1"
@@ -101,11 +103,6 @@ async function getPlayerMemory(p1OrP2, pMemAdr) {
   return valArr;
 }
 
-// console.time('getPlayerMemory');
-getPlayerMemory(1, 'Health_Big');
-// console.timeEnd('getPlayerMemory');
-
-let pMemList = [];
 fetchPMemEntries().forEach((label) => {
   pMemList.push('P1_' + label);
   pMemList.push('P2_' + label);
@@ -126,14 +123,6 @@ async function fillPMemObject() {
   }
 }
 await fillPMemObject();
-// fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
-//   if (file.endsWith('.js')) {
-//     fs.unlinkSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
-//   }
-// });
-
-// console.log(pMemObject.P1_ID_2);
-// console.log(pMemObject.P2_ID_2);
 
 export { pMemObject, getPlayerMemory };
 
