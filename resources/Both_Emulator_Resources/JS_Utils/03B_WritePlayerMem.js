@@ -119,9 +119,9 @@ async function writePlayerMemory(p1OrP2, pMemAdr) {
     }
   });
 }
-fetchPMemEntries().forEach(function (label) {
-  writePlayerMemory(1, label.toString());
-  writePlayerMemory(2, label.toString());
-});
+// fetchPMemEntries().forEach(function (label) {
+//   writePlayerMemory(1, label.toString());
+//   writePlayerMemory(2, label.toString());
+// });
 
 export { writePlayerMemory }

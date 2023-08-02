@@ -25,15 +25,15 @@ import { writeP1P2Addresses } from './12_WriteP1P2Addresses.js';
 
 async function main() {
   await writeSortedJS();
-  writeTeamNames(); // ✅
-  writeInputCNV(); // ✅
-  writeStageDataCNV(); // ✅
-  writeP1P2Addresses(); // ✅
-  writeComboCallouts(); // ✅
-  countIsPausedCNV(); // ✅
-  writeTotalFramesCNV(); // ✅
-  writeStaticDataCNV(); // ✅
-  writeDataObject(); // ✅
+  writeTeamNames();
+  writeInputCNV();
+  writeStageDataCNV();
+  writeP1P2Addresses();
+  writeComboCallouts();
+  countIsPausedCNV();
+  writeTotalFramesCNV();
+  writeStaticDataCNV();
+  writeDataObject();
   fetchPMemEntries().forEach(async function (label) {
     await writePlayerMemory(1, label.toString());
     await writePlayerMemory(2, label.toString());
@@ -56,3 +56,8 @@ main();
 // for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 //   main();
 // }
+
+/*
+The only function that works on-each CSV is 00_DataObject.js.
+Everything else assumes that they are existing inside of a for-loop.
+*/

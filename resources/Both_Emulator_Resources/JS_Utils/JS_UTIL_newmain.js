@@ -33,10 +33,17 @@ import {
   DIR_SORTED_JS
 } from './JS_UTIL_paths.js';
 
-import {
-  getPlayerMemory,
-  pMemObject,
-} from './03A_GetPlayerMem.js'
+import { getPlayerMemory, pMemObject, } from './03A_GetPlayerMem.js'
+// import { writePlayerMemory, } from './03B_WritePlayerMem.js'
+// import { writeTotalFramesCNV } from './04_WriteTotalFramesCNV.js';
+
+// import { playerOneInputs, playerTwoInputs, writeInputCNV } from './06_WriteInputCNV.js';
+// import { countIsPausedCNV } from './07_CountIsPausedCNV.js';
+// import { writeStageDataCNV } from './08_WriteStageDataCNV.js';
+// import { writeComboCallouts } from './09_WriteComboCallouts.js';
+// import { writeDataObject } from './10_WriteDataObject.js';
+// import { writeStaticDataCNV } from './11_WriteStaticDataCNV.js';
+// import { writeP1P2Addresses } from './12_WriteP1P2Addresses.js';
 
 
 // Write Sorted_JS folder if it doesn't exist
@@ -733,6 +740,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       playerInputsCNVArray = [];
     }
   } // end of InputCNV
+
   /**
    * @description Writes individual JS files for each address in MISC_ADDRESSES.
    */
@@ -2304,35 +2312,28 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   Step 5: 📞 Call Functions that Write Data to Files
   --------------------------------------------------
   */
-
-  // --------------Base Functions---------------------
-  writeTeamNames(); // _clipDataAE.js stuff
+  writeTeamNames();
   appendMinMaxRound();
   await writeSortedJS();
-
-
-  // --------------Main Functions---------------------
-  fetchPMemEntries().forEach(function (label) {
+  fetchPMemEntries().forEach(async function (label) {
     writePlayerMemory(1, label.toString());
     writePlayerMemory(2, label.toString());
   });
-
   writeInputCNV();
   writeStageDataCNV();
   writeP1P2Addresses();
-  writeComboCallouts();
   countIsPausedCNV();
+  writeComboCallouts();
   writeTotalFramesCNV();
   writeStaticDataCNV();
   await writeNewStates()
   writeDataObject();
-
 }
 
 // delete temp JS file
 fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
   if (file.endsWith('.js')) {
-    fs.unlinkSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
+    fs.unlinkSync(`${DIR_EXPORT_TO_AE}${file}`);
   }
 });
 console.timeEnd('⏱');

@@ -101,7 +101,9 @@ async function getPlayerMemory(p1OrP2, pMemAdr) {
   return valArr;
 }
 
-
+// console.time('getPlayerMemory');
+getPlayerMemory(1, 'Health_Big');
+// console.timeEnd('getPlayerMemory');
 
 let pMemList = [];
 fetchPMemEntries().forEach((label) => {
@@ -124,11 +126,11 @@ async function fillPMemObject() {
   }
 }
 await fillPMemObject();
-fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
-  if (file.endsWith('.js')) {
-    fs.unlinkSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
-  }
-});
+// fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
+//   if (file.endsWith('.js')) {
+//     fs.unlinkSync(`${DIR_EXPORT_TO_AE}${file}`, `${DIR_SORTED_JS}${file}`);
+//   }
+// });
 
 // console.log(pMemObject.P1_ID_2);
 // console.log(pMemObject.P2_ID_2);
@@ -217,11 +219,12 @@ export { pMemObject, getPlayerMemory };
 // let pMemObject = {};
 
 // console.time('getPlayerMemory');
+// getPlayerMemory(1, 'Health_Big');
 // fetchPMemEntries().forEach((label) => {
 //   pMemObject['P1_' + label] = getPlayerMemory(1, label);
 //   pMemObject['P2_' + label] = getPlayerMemory(2, label);
 // });
-// // console.log(pMemObject);
+// console.log(pMemObject);
 // console.timeEnd('getPlayerMemory');
 
 // export { pMemObject };
