@@ -1,31 +1,24 @@
 /* eslint-disable */
-
-/*
---------------------------------------------------
-Step 0: Import the necessary modules
---------------------------------------------------
-*/
-
 import * as fs from 'fs';
 import clipboardy from "clipboardy";
 
 // Import the static data
 import {
+  AE_TO_CVS2_POSITION_OBJ,
+  AE_TO_POSITION_OBJ,
+  COMBO_CALLOUTS,
+  DEC_NAME_TABLE_OBJ,
   FLOATING_POINT_ADDRESSES,
+  INPUT_CONVERSION_1,
+  INPUT_CONVERSION_2,
+  IS_PROX_BLOCK_OBJ,
   KNOCKDOWN_STATE_OBJ,
   MIN_MAX_ADDRESSES,
   P1P2_ADDRESSES,
-  DEC_NAME_TABLE_OBJ,
-  PORTRAITS_TO_TIME_OBJ,
-  IS_PROX_BLOCK_OBJ,
-  STAGES_OBJ,
-  STAGES_NAMES,
-  COMBO_CALLOUTS,
-  AE_TO_POSITION_OBJ,
-  AE_TO_CVS2_POSITION_OBJ,
-  INPUT_CONVERSION_1,
-  INPUT_CONVERSION_2,
   PMEM_PREFIXES,
+  PORTRAITS_TO_TIME_OBJ,
+  STAGES_NAMES,
+  STAGES_OBJ,
 } from './JS_UTIL_staticData.js';
 import {
   DIR_EXPORT_TO_AE,
@@ -676,7 +669,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
       stageNamesCNV.push(`'${Object.values(STAGES_NAMES)[frame]}'`)
     });
     fs.writeFileSync(`${DIR_OUTPATH}Stage_Selector_CNV.js`,
-      `var result = [];\nresult[0] = [${stageData}];\nresult[1] = [${stageDataCNV}];\nresult[2] = [${stageNamesCNV}];\n`,
+      `var result = [];\n`
+      + `result[0] = [${stageData}];\n`
+      + `result[1] = [${stageDataCNV}];\n`
+      + `result[2] = [${stageNamesCNV}];\n`,
       'utf8'
     );
     fs.appendFileSync(`${DIR_OUTPATH}${clipDataAE}.js`,
@@ -706,11 +702,11 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     const P1_InputsDECSplit = dataObject['P1_Input_DEC'].split(',')
     const P2_InputsDECSplit = dataObject['P2_Input_DEC'].split(',')
     let playerInputResults = ''; // holds each result for P1 and P2
-    let playerInputsCNVArray = []; // contains transformed results for P1 and P2
+    let InputsCNVArr = []; // contains transformed results for P1 and P2
     let tempP1OrP2 = ''; // Changes to 'P1' or 'P2'
 
-    for (let playersLen = 1; playersLen < 3; playersLen++) {
-      playersLen == 1 ? tempP1OrP2 = P1_InputsDECSplit : tempP1OrP2 = P2_InputsDECSplit;
+    for (let pLen = 1; pLen < 3; pLen++) {
+      pLen == 1 ? tempP1OrP2 = P1_InputsDECSplit : tempP1OrP2 = P2_InputsDECSplit;
       // Input Conversion Type 1
       for (const input in tempP1OrP2) {
         for (const button in Object.entries(INPUT_CONVERSION_1)) {
@@ -718,12 +714,12 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
             playerInputResults += `${Object.keys(INPUT_CONVERSION_1)[button]}`;
           }
         }
-        playerInputsCNVArray.push(playerInputResults);
+        InputsCNVArr.push(playerInputResults);
         playerInputResults = '';
       }
-      fs.writeFileSync(`${DIR_OUTPATH}P${playersLen}_Inputs_CNV.js`,
+      fs.writeFileSync(`${DIR_OUTPATH}P${pLen}_Inputs_CNV.js`,
         `var result = [];\nresult[0] = ["` +
-        `${playerInputsCNVArray.toString()
+        `${InputsCNVArr.toString()
           .replace(/24/gi, "1")
           .replace(/42/gi, "1")
           .replace(/26/gi, "3")
@@ -736,11 +732,11 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         'utf8'
       );
       // console.log(playersLen)
-      playersLen == 1 ? playerOneInputs = playerInputsCNVArray : playerTwoInputs = playerInputsCNVArray;
+      pLen == 1 ? playerOneInputs = InputsCNVArr : playerTwoInputs = InputsCNVArr;
 
       // console.log(playerOneInputs)
       // console.log(playerTwoInputs)
-      playerInputsCNVArray = [];
+      InputsCNVArr = [];
 
       // Input Conversion Type 2
       for (const input in tempP1OrP2) {
@@ -749,11 +745,11 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
             playerInputResults += Object.keys(INPUT_CONVERSION_2)[button];
           }
         }
-        playerInputsCNVArray.push(playerInputResults);
+        InputsCNVArr.push(playerInputResults);
         playerInputResults = '';
       }
-      fs.appendFileSync(`${DIR_OUTPATH}P${playersLen}_Inputs_CNV.js`,
-        `result[1] = ["${playerInputsCNVArray.toString()
+      fs.appendFileSync(`${DIR_OUTPATH}P${pLen}_Inputs_CNV.js`,
+        `result[1] = ["${InputsCNVArr.toString()
           // Fix diagonals
           .replace(/24/gi, "1")
           .replace(/42/gi, "1")
@@ -793,7 +789,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         }"];`,
         'utf8'
       );
-      playerInputsCNVArray = [];
+      InputsCNVArr = [];
 
       // Input Conversion Type 3
       for (const input in tempP1OrP2) {
@@ -802,11 +798,11 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
             playerInputResults += Object.keys(INPUT_CONVERSION_2)[button];
           }
         }
-        playerInputsCNVArray.push(playerInputResults);
+        InputsCNVArr.push(playerInputResults);
         playerInputResults = "";
       }
-      fs.appendFileSync(`${DIR_OUTPATH}P${playersLen}_Inputs_CNV.js`,
-        `\nresult[2] = ["${playerInputsCNVArray.toString()
+      fs.appendFileSync(`${DIR_OUTPATH}P${pLen}_Inputs_CNV.js`,
+        `\nresult[2] = ["${InputsCNVArr.toString()
           // Fix diagonals
           .replace(/24/gi, "1")
           .replace(/42/gi, "1")
@@ -826,7 +822,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           .replace(/START/gi, "START+")
           .replace(/SELECT/gi, "SELECT+")
           // Add "+" to multiple button inputs
-          .replace(/([1-9](?=\w+))/gm, "$1+") // Looking ahead for a button+ input
+          // Looking ahead for a button+ input
+          .replace(/([1-9](?=\w+))/gm, "$1+")
           // Replace numbers with Letter-notation
           .replace(/2|2\+/gm, "Down+")
           .replace(/6|6\+/gm, "Right+")
@@ -846,7 +843,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         }"];`,
         'utf8'
       );
-      playerInputsCNVArray = [];
+      InputsCNVArr = [];
     }
   } // end of InputCNV
 
@@ -994,9 +991,12 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
   // Write Static Data Conversion. Example ID_2: 01 turns into "Ryu"
   /**
-   * @returns {Number[]} returns an array of numbers and writes a file with _CNV appended to its name
-   * @description Writes and converts the point character's values for Knockdown State, Is_Prox_Block, ID_2 and _PortraitsToTime
-   * Files are written and then appended as the function loops over each player-memory-address & player.
+   * @returns {Number[]} returns an array of numbers and 
+   * writes a file with _CNV appended to its name
+   * @description Writes and converts the point character's values for
+   * Knockdown State, Is_Prox_Block, ID_2 and _PortraitsToTime
+   * Files are written and then appended as the function loops 
+   * over each player-memory-address & player.
   */
   async function writeStaticDataCNV() {
     const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, IS_PROX_BLOCK_OBJ, DEC_NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
@@ -1098,8 +1098,10 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   --------------------------------------------------
   */
   /**
-   * @description Writes State-Files that count and increment consecutive true values. 
-   * Search for "NEW_STATE_ADD_HERE" across the function to append address fetches and new states.
+   * @description Writes State-Files that count and
+   * increment consecutive true values. 
+   * Search for "NEW_STATE_ADD_HERE" across the function 
+   * to append address fetches and new states.
    */
   async function writeNewStates() {
     let pI;
@@ -1110,7 +1112,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     for (pI = 1; pI < 3; pI++) {
       pI == 1 ? p1P2_ = 'P1_' : p1P2_ = 'P2_';
 
-      // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here if you need something that isn't on the list.
+      // NEW_STATE_ADD_HERE : Define your SINGLE get-Address here 
+      // if you need something that isn't on the list.
       var nStateObj =
       {
         State_Being_Hit: [[], [], []],
@@ -1161,7 +1164,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
       for (let pABC = 0; pABC < 3; pABC++) {
         for (let cLen = 0; cLen < CLIP_LENGTH; cLen++) {
-
           // Magneto ROM
           if ((pMemObject[`${p1P2_}ID_2`][pABC][cLen] == 44)) {
             (pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] == 4 // Magneto is landing from the air.
