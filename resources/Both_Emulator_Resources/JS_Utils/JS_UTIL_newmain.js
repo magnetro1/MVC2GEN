@@ -1087,49 +1087,49 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
     let nStateObj =
     {
       State_Being_Hit: [[], [], []],
-      // State_Flying_Screen_Air: [[], [], []],
-      // State_Flying_Screen_OTG: [[], [], []],
-      // State_FS_Install_1: [[], [], []],
-      // State_FS_Install_2: [[], [], []],
-      // State_NJ_Air: [[], [], []],
-      // State_NJ_Rising: [[], [], []],
-      // State_OTG_Extra_Stun: [[], [], []],
-      // State_OTG_Forced_Stun: [[], [], []],
-      // State_OTG_Hit: [[], [], []],
-      // State_OTG_Roll_Invincible: [[], [], []],
-      // State_OTG_Roll_Stunned: [[], [], []],
-      // State_ProxBlock_Air: [[], [], []],
-      // State_ProxBlock_Ground: [[], [], []],
-      // State_Pushblock_Air: [[], [], []],
-      // State_Pushblock_Ground: [[], [], []],
-      // State_Rising_Invincibility: [[], [], []],
-      // State_SJ_Air: [[], [], []],
-      // State_SJ_Counter: [[], [], []],
-      // State_Stun: [[], [], []],
-      // State_Tech_Hit: [[], [], []],
-      // State_Thrown_Air: [[], [], []],
-      // State_Thrown_Ground: [[], [], []],
-      // State_UnDizzy: [[], [], []],
-      // // NEW_STATE_ADD_HERE ⏫
-      // // Magneto-Only
-      // State_Magneto_Moves: [[], [], []],
-      // State_Magneto_ROM_01_OpponentStateA: [[], [], []],
-      // State_Magneto_ROM_02_ChoiceA: [[], [], []],
-      // State_Magneto_ROM_03_InputA_LK: [[], [], []],
-      // State_Magneto_ROM_03_InputA_MK: [[], [], []],
-      // State_Magneto_ROM_04_ChoiceB: [[], [], []],
-      // State_Magneto_ROM_05_ChoiceC: [[], [], []],
-      // State_Magneto_ROM_05_ChoiceD: [[], [], []],
-      // State_Magneto_ROM_06_InputB_AirDash: [[], [], []],
-      // State_Magneto_ROM_07_ChoiceE: [[], [], []],
-      // State_Magneto_ROM_08_InputC_DLK: [[], [], []],
-      // State_Magneto_ROM_08_InputC_MK: [[], [], []],
-      // State_Magneto_ROM_09_ChoiceF: [[], [], []],
-      // // Storm-Only
-      // State_Storm_ModifiedAirDashNJ: [[], [], []],
-      // State_Storm_ModifiedAirDashSJ: [[], [], []],
-      // State_Storm_DI: [[], [], []],
-      // State_Storm_Float: [[], [], []],
+      State_Flying_Screen_Air: [[], [], []],
+      State_Flying_Screen_OTG: [[], [], []],
+      State_FS_Install_1: [[], [], []],
+      State_FS_Install_2: [[], [], []],
+      State_NJ_Air: [[], [], []],
+      State_NJ_Rising: [[], [], []],
+      State_OTG_Extra_Stun: [[], [], []],
+      State_OTG_Forced_Stun: [[], [], []],
+      State_OTG_Hit: [[], [], []],
+      State_OTG_Roll_Invincible: [[], [], []],
+      State_OTG_Roll_Stunned: [[], [], []],
+      State_ProxBlock_Air: [[], [], []],
+      State_ProxBlock_Ground: [[], [], []],
+      State_Pushblock_Air: [[], [], []],
+      State_Pushblock_Ground: [[], [], []],
+      State_Rising_Invincibility: [[], [], []],
+      State_SJ_Air: [[], [], []],
+      State_SJ_Counter: [[], [], []],
+      State_Stun: [[], [], []],
+      State_Tech_Hit: [[], [], []],
+      State_Thrown_Air: [[], [], []],
+      State_Thrown_Ground: [[], [], []],
+      State_UnDizzy: [[], [], []],
+      // NEW_STATE_ADD_HERE ⏫
+      // Magneto-Only
+      State_Magneto_Moves: [[], [], []],
+      State_Magneto_ROM_01_OpponentStateA: [[], [], []],
+      State_Magneto_ROM_02_ChoiceA: [[], [], []],
+      State_Magneto_ROM_03_InputA_LK: [[], [], []],
+      State_Magneto_ROM_03_InputA_MK: [[], [], []],
+      State_Magneto_ROM_04_ChoiceB: [[], [], []],
+      State_Magneto_ROM_05_ChoiceC: [[], [], []],
+      State_Magneto_ROM_05_ChoiceD: [[], [], []],
+      State_Magneto_ROM_06_InputB_AirDash: [[], [], []],
+      State_Magneto_ROM_07_ChoiceE: [[], [], []],
+      State_Magneto_ROM_08_InputC_DLK: [[], [], []],
+      State_Magneto_ROM_08_InputC_MK: [[], [], []],
+      State_Magneto_ROM_09_ChoiceF: [[], [], []],
+      // Storm-Only
+      State_Storm_ModifiedAirDashNJ: [[], [], []],
+      State_Storm_ModifiedAirDashSJ: [[], [], []],
+      State_Storm_DI: [[], [], []],
+      State_Storm_Float: [[], [], []],
     }
     for (pI = 1; pI < 3; pI++) {
       pI == 1 ? p1P2_ = 'P1_' : p1P2_ = 'P2_';
@@ -1537,8 +1537,9 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
                   : nStateObj.State_Storm_Float[pABC].push(0);
               }
             }
-          }   // end of Storm stuff.
+          }
 
+          // UNIVERSAL STATES:
           // Being Hit
           if (nStateObj.State_Being_Hit != undefined) {
             (
@@ -1782,7 +1783,7 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
 
         for (let newState in Object.entries(nStateObj)) {
           if (Object.keys(nStateObj)[newState] == "State_Magneto_Moves") {
-            console.log("Skipping State_Magneto_Moves");
+            // console.log("Skipping State_Magneto_Moves");
             continue;
           }
           Object.values(nStateObj)[newState][pABC].forEach((element, index) => {
@@ -1799,16 +1800,6 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         }
 
         // StartROMStuff
-
-        /*AttackNumber
-          12: j.LP
-          13: j.MP
-          14: j.HP
-          15: j.LK
-          16: j.MK
-          17: j.HK
-          18: J.DLK
-        */
         // 01_Opponent State A Setup. Set Loop point for 01_OpponentStateA (Magneto lands from his Super Jump)
         if (nStateObj.State_Magneto_ROM_01_OpponentStateA != undefined) {
           const ROM_OPPONENTSTATES =
@@ -2453,15 +2444,15 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
         } // End ROMStuff End ROM Stuff
 
         // Write the files
-        for (let stateFileIndex = 0; stateFileIndex < Object.entries(nStateObj).length; stateFileIndex++) {
-          fs.writeFileSync(`${DIR_OUTPATH}P${pI}_${Object.keys(nStateObj)[stateFileIndex]}.js`,
+        for (let state = 0; state < Object.entries(nStateObj).length; state++) {
+          fs.writeFileSync(`${DIR_OUTPATH}P${pI}_${Object.keys(nStateObj)[state]}.js`,
             `var result = []; ` + '\n', 'utf8');
         }
 
         // Append data arrays into files
-        for (let stateFileDataIndex = 0; stateFileDataIndex < Object.entries(nStateObj).length; stateFileDataIndex++) {
-          fs.appendFileSync(`${DIR_OUTPATH}P${pI}_${Object.keys(nStateObj)[stateFileDataIndex]}.js`,
-            JSON.stringify(Object.values(nStateObj)[stateFileDataIndex])
+        for (let state = 0; state < Object.entries(nStateObj).length; state++) {
+          fs.appendFileSync(`${DIR_OUTPATH}P${pI}_${Object.keys(nStateObj)[state]}.js`,
+            JSON.stringify(Object.values(nStateObj)[state])
               .replace('[[', `result[0] = [`)
               .replace(',[', '\nresult[1] = [')
               .replace(',[', '\nresult[2] = [')
@@ -2471,10 +2462,8 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
           );
         }
       }
-      // console.log(nStateObj.State_Magneto_Moves);
     }
   }
-
 
   /*
   --------------------------------------------------
@@ -2485,19 +2474,19 @@ for (let csvFilesIDX = 0; csvFilesIDX < csvFilesArr.length; csvFilesIDX++) {
   appendMinMaxRound();
   await writeSortedJS();
   await fillPMemObject();
-  // fetchPMemEntries().forEach(async function (label) {
-  //   await writePlayerMemory(1, label.toString());
-  //   await writePlayerMemory(2, label.toString());
-  // });
+  fetchPMemEntries().forEach(async function (label) {
+    await writePlayerMemory(1, label.toString());
+    await writePlayerMemory(2, label.toString());
+  });
   writeInputCNV();
-  // writeStageDataCNV();
-  // writeP1P2Addresses();
-  // countIsPausedCNV();
-  // writeComboCallouts();
-  // writeTotalFramesCNV();
-  // writeStaticDataCNV();
+  writeStageDataCNV();
+  writeP1P2Addresses();
+  countIsPausedCNV();
+  writeComboCallouts();
+  writeTotalFramesCNV();
+  writeStaticDataCNV();
   await writeNewStates()
-  // writeDataObject();
+  writeDataObject();
 }
 
 // delete temp JS file
@@ -2507,5 +2496,3 @@ fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
   }
 });
 console.timeEnd('⏱');
-//TODO Fix CSV 'real-data' finder function.
-//TODO Make Tests for each of the functions!
