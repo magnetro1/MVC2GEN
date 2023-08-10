@@ -1243,7 +1243,7 @@ export const INPUT_CONVERSION_2 =
   "SELECT": 2,
 };
 /**
- * @description Contains the addresses for the P1 and P2 inputs
+ * @description Letter prefixes for each character's memory addresses
  * @example P1_A_, P1_B_, P1_C_, P2_A_, P2_B_, P2_C_
  */
 export const PMEM_PREFIXES = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_']
