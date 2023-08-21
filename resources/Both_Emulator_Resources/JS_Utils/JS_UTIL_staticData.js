@@ -1,60 +1,33 @@
 /* eslint-disable no-multi-spaces */
 
 /**
-  *@description State Tracker
-
+  *@example
   0: 'Neutral',
-  
   1: 'Air',
-  
   2: 'Dashing',
-  
   3: 'Crouching',
-  
   4: 'Turning Around',
-  
   5: 'Ground Block',
-  
   6: 'Air Block',
-  
   7: 'Stand Punches',
-  
   8: 'Stand Kicks',
-  
   9: 'Crouch Punches',
-  
   10: 'Crouch Kicks',
-  
   11: 'Air Punches',
-  
   12: 'Air Kicks',
-  
   13: 'Stunned',
-  
   14: '???',
-  
   15: 'Throwing',
-  
   16: 'Being Thrown',
-  
   17: 'OTG Rise',
-  
   18: 'Match Start',
-  
   19: 'Win Pose',
-  
   20: 'Tag-in & OC Launcher',
-  
   21: 'Specials & Snapbacks',
-  
   22: 'Supers',
-  
   23: '???',
-  
   24: 'Assist Related',
-  
   25: '???',
-  
   26: 'Air Dash',
   */
 export const IS_PROX_BLOCK_OBJ = {
@@ -88,76 +61,41 @@ export const IS_PROX_BLOCK_OBJ = {
 };
 
 /**
- * @description State Tracker
-  
-0: 'Neutral',
-  
+ * @example
+  0: 'Neutral',
   1: 'Walking',
-  
   2: 'Normal Jump Rise',
-  
   3: 'Normal Jump',
-  
   4: 'Landing',
-  
   5: 'Crouching',
-  
   6: 'Crouched',
-  
   7: 'Stand Rise',
-  
   8: 'Stand Turn',
-  
   9: 'Crouch Turning',
-  
   10: 'Forward Dashing',
-  
   11: 'Back Dashing',
-  
   12: 'Double Dizzy', // ⭐ DC-only
-  
   13: 'Super Jump Rise',
-  
   14: 'Super Jumping',
-  
   15: 'Air Recovery',
-  
   16: '???', // ⭐
-  
   17: 'Knockdown Rise',
-  
   18: 'Ground Block',
-  
   19: 'Air Blocking',
-  
   20: 'Normal Attacks',
-  
   21: 'Special Attacks',
-  
   22: 'Post-Match Pose',
-  
   23: 'Extra OTG Stun',
-  
   24: 'Neutral Flight',
-  
   25: 'Corner Jump',
-  
   26: 'Air Dash',
-  
   27: 'Tech Hit',
-  
   28: 'Switching & Assists',
-  
   29: 'Supers & Flashes',
-  
   30: 'Throwing',
-  
   31: 'Being Thrown',
-  
   32: 'Stunned',
-  
   33: '???', // ⭐
-  
   34: 'Command Launcher',
  */
 export const KNOCKDOWN_STATE_OBJ = {
@@ -198,124 +136,65 @@ export const KNOCKDOWN_STATE_OBJ = {
   34: 'Command Launcher',
 };
 /**
- * @description Character Hex ID to string.
-  
+ * @example
 '0x00': 'Ryu',
-  
   '0x01': 'Zangief',
-  
   '0x02': 'Guile',
-  
   '0x03': 'Morrigan',
-  
   '0x04': 'Anakaris',
-  
   '0x05': 'Strider Hiryu',
-  
   '0x06': 'Cyclops',
-  
   '0x07': 'Wolverine',
-  
   '0x08': 'Psylocke',
-  
   '0x09': 'Iceman',
-  
   '0x0a': 'Rogue',
-  
   '0x0b': 'Captain America',
-  
   '0x0c': 'Spider-Man',
-  
   '0x0d': 'Hulk',
-  
   '0x0e': 'Venom',
-  
   '0x0f': 'Doctor Doom',
-  
   '0x10': 'Tron Bonne',
-  
   '0x11': 'Jill',
-  
   '0x12': 'Hayato',
-  
   '0x13': 'Ruby Heart',
-  
   '0x14': 'Sonson',
-  
   '0x15': 'Amingo',
-  
   '0x16': 'Marrow',
-  
   '0x17': 'Cable',
-  
   '0x18': 'Abyss-A',
-  
   '0x19': 'Abyss-B',
-  
   '0x1a': 'Abyss-C',
-  
   '0x1b': 'Chun-Li',
-  
   '0x1c': 'Megaman',
-  
   '0x1d': 'Roll',
-  
   '0x1e': 'Akuma',
-  
   '0x1f': 'B.B. Hood',
-  
   '0x20': 'Felicia',
-  
   '0x21': 'Charlie',
-  
   '0x22': 'Sakura',
-  
   '0x23': 'Dan',
-  
   '0x24': 'Cammy',
-  
   '0x25': 'Dhalsim',
-  
   '0x26': 'M.Bison',
-  
   '0x27': 'Ken',
-  
   '0x28': 'Gambit',
-  
   '0x29': 'Juggernaut',
-  
   '0x2a': 'Storm',
-  
   '0x2b': 'Sabretooth',
-  
   '0x2c': 'Magneto',
-  
   '0x2d': 'Shuma-Gorath',
-  
   '0x2e': 'War Machine',
-  
   '0x2f': 'Silver Samurai',
-  
   '0x30': 'Omega Red',
-  
   '0x31': 'Spiral',
-  
   '0x32': 'Colossus',
-  
   '0x33': 'Iron Man',
-  
   '0x34': 'Sentinel',
-  
   '0x35': 'Blackheart',
-  
   '0x36': 'Thanos',
-  
   '0x37': 'Jin',
-  
   '0x38': 'Captain Commando',
-  
   '0x39': 'Wolverine-B',
-  
   '0x3a': 'Servbot'
  */
 export const HEX_NAME_TABLE_OBJ = {
@@ -381,123 +260,65 @@ export const HEX_NAME_TABLE_OBJ = {
 };
 /**
  * @description Character Decimal ID to string.
-  
-0: 'Ryu',
-  
+ * @example
+  0: 'Ryu',
   1: 'Zangief',
-  
   2: 'Guile',
-  
   3: 'Morrigan',
-  
   4: 'Anakaris',
-  
   5: 'Strider Hiryu',
-  
   6: 'Cyclops',
-  
   7: 'Wolverine',
-  
   8: 'Psylocke',
-  
   9: 'Iceman',
-  
   10: 'Rogue',
-  
   11: 'Captain America',
-  
   12: 'Spider-Man',
-  
   13: 'Hulk',
-  
   14: 'Venom',
-  
   15: 'Doctor Doom',
-  
   16: 'Tron Bonne',
-  
   17: 'Jill',
-  
   18: 'Hayato',
-  
   19: 'Ruby Heart',
-  
   20: 'Sonson',
-  
   21: 'Amingo',
-  
   22: 'Marrow',
-  
   23: 'Cable',
-  
   24: 'Abyss-A',
-  
   25: 'Abyss-B',
-  
   26: 'Abyss-C',
-  
   27: 'Chun-Li',
-  
   28: 'Megaman',
-  
   29: 'Roll',
-  
   30: 'Akuma',
-  
   31: 'B.B. Hood',
-  
   32: 'Felicia',
-  
   33: 'Charlie',
-  
   34: 'Sakura',
-  
   35: 'Dan',
-  
   36: 'Cammy',
-  
   37: 'Dhalsim',
-  
   38: 'M.Bison',
-  
   39: 'Ken',
-  
   40: 'Gambit',
-  
   41: 'Juggernaut',
-  
   42: 'Storm',
-  
   43: 'Sabretooth',
-  
   44: 'Magneto',
-  
   45: 'Shuma-Gorath',
-  
   46: 'War Machine',
-  
   47: 'Silver Samurai',
-  
   48: 'Omega Red',
-  
   49: 'Spiral',
-  
   50: 'Colossus',
-  
   51: 'Iron Man',
-  
   52: 'Sentinel',
-  
   53: 'Blackheart',
-  
   54: 'Thanos',
-  
   55: 'Jin',
-  
   56: 'Captain Commando',
-  
   57: 'Wolverine-B',
-  
   58: 'Servbot',
  */
 export const DEC_NAME_TABLE_OBJ = {
@@ -752,141 +573,100 @@ export const P1P2_ADDRESSES = [
 ];
 
 /**
-* @description Contains the decimal value of each stage as a key, and the color hex code for
+@description Contains the decimal value of each stage as a key, and the color hex code for
 After Effects.
-
+@example
+*
 0 : Boat1
-
 1 : Desert1
-
 2 : Factory
-
 3 : Carnival1
-
 4 : Bridge1
-
 5 : Cave2
-
 6 : Clock2
-
 7 : Raft2
-
 8 : Abyss
-
 9 : Boat2
-
 10 : Desert2
-
 11 : Training
-
 12 : Carnival2
-
 13 : Bridge2
-
 14 : Cave1
-
 15 : Clock1
-
 16 : Raft1
 * */
 export const STAGES_OBJ = {
-  0: 'C09A71FF', // 'Boat1',
-  1: 'E1540CFF', // 'Desert1',
-  2: '6D574FFF', // 'Factory',
-  3: 'CF461BFF', // 'Carnival1',
-  4: 'ECE4B9FF', // 'Bridge1',
-  5: '257B8AFF', // 'Cave2',
-  6: 'D0C1ACFF', // 'Clock2',
-  7: 'B764AAFF', // 'Raft2',
-  8: '263548FF', // 'Abyss',
-  9: '788998FF', // 'Boat2', 
-  10: '3F5FFFFF', // 'Desert2',
-  11: '266D04FF', // 'Training',
-  12: '74566EFF', // 'Carnival2',
-  13: 'E9797FFF', // 'Bridge2',
-  14: 'A43812FF', // 'Cave1',
-  15: '888885FF', // 'Clock1',
-  16: '8CA7DFFF', // 'Raft1'
+  0: 'C09A71FF',   // 'Boat1',
+  1: 'E1540CFF',   // 'Desert1',
+  2: '6D574FFF',   // 'Factory',
+  3: 'CF461BFF',   // 'Carnival1',
+  4: 'ECE4B9FF',   // 'Bridge1',
+  5: '257B8AFF',   // 'Cave2',
+  6: 'D0C1ACFF',   // 'Clock2',
+  7: 'B764AAFF',   // 'Raft2',
+  8: '263548FF',   // 'Abyss',
+  9: '788998FF',   // 'Boat2', 
+  10: '3F5FFFFF',   // 'Desert2',
+  11: '266D04FF',   // 'Training',
+  12: '74566EFF',   // 'Carnival2',
+  13: 'E9797FFF',   // 'Bridge2',
+  14: 'A43812FF',   // 'Cave1',
+  15: '888885FF',   // 'Clock1',
+  16: '8CA7DFFF',   // 'Raft1'
 };
 
 /**
- * @description Decimal to Names
-
+ * @example Decimal to Names
 0 : Boat1
-
 1 : Desert1
-
 2 : Factory
-
 3 : Carnival1
-
 4 : Bridge1
-
 5 : Cave2
-
 6 : Clock2
-
 7 : Raft2
-
 8 : Abyss
-
 9 : Boat2
-
 10 : Desert2
-
 11 : Training
-
 12 : Carnival2
-
 13 : Bridge2
-
 14 : Cave1
-
 15 : Clock1
-
 16 : Raft1
 
  * */
 export const STAGES_NAMES = {
-  0: 'Boat1', // 'Boat1',
-  1: 'Desert1', // 'Desert1',
-  2: 'Factory', // 'Factory',
-  3: 'Carnival1', // 'Carnival1',
-  4: 'Bridge1', // 'Bridge1',
-  5: 'Cave2', // 'Cave2',
-  6: 'Clock2', // 'Clock2',
-  7: 'Raft2', // 'Raft2',
-  8: 'Abyss', // 'Abyss',
-  9: 'Boat2', // 'Boat2', 
-  10: 'Desert2', // 'Desert2',
-  11: 'Training', // 'Training',
-  12: 'Carnival2', // 'Carnival2',
-  13: 'Bridge2', // 'Bridge2',
-  14: 'Cave1', // 'Cave1',
-  15: 'Clock1', // 'Clock1',
-  16: 'Raft1', // 'Raft1'
+  0: 'Boat1',       // 'Boat1',
+  1: 'Desert1',     // 'Desert1',
+  2: 'Factory',     // 'Factory',
+  3: 'Carnival1',   // 'Carnival1',
+  4: 'Bridge1',     // 'Bridge1',
+  5: 'Cave2',       // 'Cave2',
+  6: 'Clock2',      // 'Clock2',
+  7: 'Raft2',       // 'Raft2',
+  8: 'Abyss',       // 'Abyss',
+  9: 'Boat2',       // 'Boat2', 
+  10: 'Desert2',     // 'Desert2',
+  11: 'Training',    // 'Training',
+  12: 'Carnival2',   // 'Carnival2',
+  13: 'Bridge2',     // 'Bridge2',
+  14: 'Cave1',       // 'Cave1',
+  15: 'Clock1',      // 'Clock1',
+  16: 'Raft1',       // 'Raft1'
 };
 
 /**
 * @description Contains text call-outs based on the Combo Meter value
-* @description
-
+* @example
 03:     Yes
-
 04-05:  Good
-
 06-07:  Great
-
 08-09:  Very Good
-
 10-29:  Wonderful
-
 30-49:  Fantastic
-
 50-99:  Monster
-
 100+:   Marvelous
-
 */
 export const COMBO_CALLOUTS = [
   'Yes',
@@ -1160,74 +940,51 @@ export const UNUSED_CT_ADDRESSES = [
 
 /**
 * @description Uses custom font in After Effects to display the inputs.
-  
-"6": 1024,  // 6 = right
-  
-  "4": 2048,  // 4 = left
-  
-  "2": 4096,  // 2 = down
-  
-  "8": 8192,  // 8 = up
-  
-  "u": 512,   // LP = u
-  
-  "j": 64,    // LK = j
-  
-  "i": 256,   // HP = i
-  
-  "k": 32,    // HK = k
-  
-  "o": 128,   // A1 = o
-  
-  "l": 16,    // A2 = l
-  
-  "(": 32768, // START = (
-  
-  ")": 2,     // SELECT = )
+"6": 1024,    // 6 = right
+"4": 2048,    // 4 = left
+"2": 4096,    // 2 = down
+"8": 8192,    // 8 = up
+"u": 512,     // LP = u
+"j": 64,      // LK = j
+"i": 256,     // HP = i
+"k": 32,      // HK = k
+"o": 128,     // A1 = o
+"l": 16,      // A2 = l
+"(": 32768,   // START = (
+")": 2,       // SELECT = )
 **/
-export const INPUT_CONVERSION_1 =
+
+export const INPUT_T1 =
 {
-  "6": 1024,  // 6 = right
-  "4": 2048,  // 4 = left
-  "2": 4096,  // 2 = down
-  "8": 8192,  // 8 = up
-  "u": 512,   // LP = u
-  "j": 64,    // LK = j
-  "i": 256,   // HP = i
-  "k": 32,    // HK = k
-  "o": 128,   // A1 = o
-  "l": 16,    // A2 = l
-  "(": 32768, // START = (
-  ")": 2,     // SELECT = )
+  "6": 1024,    // 6 = right
+  "4": 2048,    // 4 = left
+  "2": 4096,    // 2 = down
+  "8": 8192,    // 8 = up
+  "u": 512,     // LP = u
+  "j": 64,      // LK = j
+  "i": 256,     // HP = i
+  "k": 32,      // HK = k
+  "o": 128,     // A1 = o
+  "l": 16,      // A2 = l
+  "(": 32768,   // START = (
+  ")": 2,       // SELECT = )
 };
 /**
 * @description Readable FGC Notation.
-  
-"6": 1024,
-  
-  "4": 2048,
-  
-  "2": 4096,
-  
-  "8": 8192,
-  
-  "LP": 512,
-  
-  "LK": 64,
-  
-  "HP": 256,
-  
-  "HK": 32,
-  
-  "AA": 128,
-  
-  "AB": 16,
-  
-  "START": 32768,
-  
+  "6"     : 1024,
+  "4"     : 2048,
+  "2"     : 4096,
+  "8"     : 8192,
+  "LP"    : 512,
+  "LK"    : 64,
+  "HP"    : 256,
+  "HK"    : 32,
+  "AA"    : 128,
+  "AB"    : 16,
+  "START" : 32768,
   "SELECT": 2,
 **/
-export const INPUT_CONVERSION_2 =
+export const INPUT_T2 =
 {
   "6": 1024,
   "4": 2048,
