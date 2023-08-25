@@ -940,6 +940,7 @@ export const UNUSED_CT_ADDRESSES = [
 
 /**
 * @description Uses custom font in After Effects to display the inputs.
+* @example
 "6": 1024,    // 6 = right
 "4": 2048,    // 4 = left
 "2": 4096,    // 2 = down
@@ -971,6 +972,7 @@ export const INPUT_T1 =
 };
 /**
 * @description Readable FGC Notation.
+* @example
   "6"     : 1024,
   "4"     : 2048,
   "2"     : 4096,

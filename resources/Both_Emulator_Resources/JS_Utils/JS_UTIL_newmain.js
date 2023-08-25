@@ -25,6 +25,7 @@ import {
   DIR_EXPORT_TO_AE,
   DIR_CSVS,
 } from './JS_UTIL_paths.js';
+import { parse } from 'path';
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -92,7 +93,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
    * and returns the value that appears the most
    * @param {Number[]} arrayOfNumbers dynamic amount of numbers,
    * depending on the csv file
-   * @returns single number value as a string
+   * @returns single number value
    */
   function countReplayData(arrayOfNumbers) {
     // Count the values in the arrays and store them in an object
@@ -360,67 +361,71 @@ for (let csv = 0; csv < csvArr.length; csv++) {
     let pObjSwitch;// Switches between the Player1 and Player2 objects
     let p1P2; // Switches between "P1" and "P2"
 
-    if ((p1OrP2 == 1) || (p1OrP2 == "P1") || (p1OrP2 == "1")) {
+    if ((p1OrP2 == 1)
+      || (p1OrP2 == "P1")
+      || (p1OrP2 == "1")) {
       pObjSwitch = POINT_OBJ_P1;
       p1P2 = "P1";
     }
-    else if ((p1OrP2 == 2) || (p1OrP2 == "P2") || (p1OrP2 == "2")) {
+    else if ((p1OrP2 == 2)
+      || (p1OrP2 == "P2")
+      || (p1OrP2 == "2")) {
       pObjSwitch = POINT_OBJ_P2;
       p1P2 = "P2";
     }
 
     await writeSortedJS();
     await import(`file://${tempJS}`).then((pMemFile) => { // pMemFile is the JS object inside of tempJS
-      for (let clipLen = 0; clipLen < CLIP_LENGTH; clipLen++) {
+      for (let cLen = 0; cLen < CLIP_LENGTH; cLen++) {
         // 3-Character Bug
-        if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-          && (Object.values(pObjSwitch)[1][clipLen] == 0)
-          && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+        if ((Object.values(pObjSwitch)[0][cLen] == 0)
+          && (Object.values(pObjSwitch)[1][cLen] == 0)
+          && (Object.values(pObjSwitch)[2][cLen] == 0)) {
           // console.log(`${p1P2}: 3 - Character Bug: A == 0 && B == 0 && C == 0    P1: ABC`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[2].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[cLen]);
+          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[cLen]);
+          valArr[2].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[cLen]);
         }
         // 2-Character Bug
-        else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-          && (Object.values(pObjSwitch)[1][clipLen] == 0)
-          && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
+        else if ((Object.values(pObjSwitch)[0][cLen] == 0)
+          && (Object.values(pObjSwitch)[1][cLen] == 0)
+          && (Object.values(pObjSwitch)[2][cLen] != 0)) {
           // console.log(`${p1P2}: 2 - Character Bug: A == 0 && B == 0 && C != 0    P1: AB`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[cLen]);
+          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[cLen]);
         }
-        else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-          && (Object.values(pObjSwitch)[1][clipLen] != 0)
-          && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+        else if ((Object.values(pObjSwitch)[0][cLen] == 0)
+          && (Object.values(pObjSwitch)[1][cLen] != 0)
+          && (Object.values(pObjSwitch)[2][cLen] == 0)) {
           // console.log(`${p1P2}: 2 - Character Bug: A == 0 && B != 0 && C == 0    P1: AC`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[cLen]);
+          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[cLen]);
         }
-        else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
-          && (Object.values(pObjSwitch)[1][clipLen] == 0)
-          && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+        else if ((Object.values(pObjSwitch)[0][cLen] != 0)
+          && (Object.values(pObjSwitch)[1][cLen] == 0)
+          && (Object.values(pObjSwitch)[2][cLen] == 0)) {
           // console.log(`${p1P2}: 2 - Character Bug: A != 0 && B == 0 && C == 0    P1: BC`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
-          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[cLen]);
+          valArr[1].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[cLen]);
         }
         // 1-Character
-        else if ((Object.values(pObjSwitch)[0][clipLen] == 0)
-          && (Object.values(pObjSwitch)[1][clipLen] != 0)
-          && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
+        else if ((Object.values(pObjSwitch)[0][cLen] == 0)
+          && (Object.values(pObjSwitch)[1][cLen] != 0)
+          && (Object.values(pObjSwitch)[2][cLen] != 0)) {
           // console.log(`${p1P2}: 1 - Character: A == 0 && B != 0 && C != 0        P1: A`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[0]}${pMemAdr}`].split(',')[cLen]);
         }//          replayObject[               P1_A_            Health_Big.split(',')[i]
-        else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
-          && (Object.values(pObjSwitch)[1][clipLen] == 0)
-          && (Object.values(pObjSwitch)[2][clipLen] != 0)) {
+        else if ((Object.values(pObjSwitch)[0][cLen] != 0)
+          && (Object.values(pObjSwitch)[1][cLen] == 0)
+          && (Object.values(pObjSwitch)[2][cLen] != 0)) {
           // console.log(`${p1P2}: 1 - Character: A != 0 && B == 0 && C != 0        P1: B`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[1]}${pMemAdr}`].split(',')[cLen]);
         }//          replayObject[               P1_B_            Health_Big.split(',')[i]
-        else if ((Object.values(pObjSwitch)[0][clipLen] != 0)
-          && (Object.values(pObjSwitch)[1][clipLen] != 0)
-          && (Object.values(pObjSwitch)[2][clipLen] == 0)) {
+        else if ((Object.values(pObjSwitch)[0][cLen] != 0)
+          && (Object.values(pObjSwitch)[1][cLen] != 0)
+          && (Object.values(pObjSwitch)[2][cLen] == 0)) {
           // console.log(`${p1P2}: 1 - Character: A != 0 && B != 0 && C == 0       P1: C`);
-          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[clipLen]);
+          valArr[0].push(pMemFile[`${Object.keys(pObjSwitch)[2]}${pMemAdr}`].split(',')[cLen]);
         }//          replayObject[               P1_C_            Health_Big.split(',')[i]
       }
     });
@@ -921,7 +926,9 @@ for (let csv = 0; csv < csvArr.length; csv++) {
 
   function writeDataObject() {
     for (let key in dataObject) {
-      if ((key == undefined) || (key == null) || (key == '')) {
+      if ((key == undefined)
+        || (key == null)
+        || (key == '')) {
         continue;
       }
       // Don't write PMem or Camera data
@@ -984,8 +991,20 @@ for (let csv = 0; csv < csvArr.length; csv++) {
    * over each player-memory-address & player.
   */
   async function writeStaticDataCNV() {
-    const STATIC_DATA_OBJS = [KNOCKDOWN_STATE_OBJ, IS_PROX_BLOCK_OBJ, DEC_NAME_TABLE_OBJ, PORTRAITS_TO_TIME_OBJ]
-    const STATIC_DATA_ADRS = ["Knockdown_State", "Is_Prox_Block", "ID_2", "ID_2"]
+    const STATIC_DATA_OBJS = [
+      KNOCKDOWN_STATE_OBJ,
+      IS_PROX_BLOCK_OBJ,
+      DEC_NAME_TABLE_OBJ,
+      PORTRAITS_TO_TIME_OBJ,
+      AE_TO_POSITION_OBJ,
+      AE_TO_CVS2_POSITION_OBJ
+    ]
+    const STATIC_DATA_ADRS = [
+      "Knockdown_State",
+      "Is_Prox_Block",
+      "ID_2",
+      "ID_2"
+    ]
     let lookUpArr = [[], [], []];
     for (let p1OrP2 = 1; p1OrP2 < 3; p1OrP2++) {
       for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++) {
@@ -1030,11 +1049,14 @@ for (let csv = 0; csv < csvArr.length; csv++) {
               `result[${pABC}] = [${lookUpArr[pABC]}];\n`,
               'utf8'
             );
+            // lookUpArr = [[], [], []];
 
             // AE_TO_NormalComposition_POS
             let posArray = lookUpArr[pABC].map((portrait) => {
-              portrait = portrait.toString();
-              portrait = portrait.replace(/"/g, '');
+              // portrait = portrait.toString();
+              portrait = portrait.replace(/'/g, '');
+              portrait = parseInt(portrait);
+              // console.log(typeof portrait)
               portrait = AE_TO_POSITION_OBJ[portrait];
               portrait = [`[${portrait}]`]; /// wrap in brackets
               return portrait;
@@ -1048,7 +1070,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
             // AE_TO_CVS2Composition_POS
             let posArray2 = lookUpArr[pABC].map((portrait) => {
               portrait = portrait.toString();
-              portrait = portrait.replace(/"/g, '');
+              portrait = portrait.replace(/'/g, '');
               portrait = AE_TO_CVS2_POSITION_OBJ[portrait];
               portrait = [`[${portrait}]`]; /// wrap in brackets
               return portrait;
@@ -1058,8 +1080,6 @@ for (let csv = 0; csv < csvArr.length; csv++) {
               `result[${pABC}] = [${posArray2}];\n`,
               'utf8'
             );
-
-
             lookUpArr = [[], [], []];
           } else {
             fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[statAdr]}_CNV.js`,

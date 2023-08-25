@@ -17,12 +17,12 @@ const ENTRIES = [
   'P2_Input_DEC', //reserved
   'P1_Combo_Meter_Value',
   'P2_Combo_Meter_Value',
-  'P1_A_Hitstop2',
-  'P1_B_Hitstop2',
-  'P1_C_Hitstop2',
-  'P2_A_Hitstop2',
-  'P2_B_Hitstop2',
-  'P2_C_Hitstop2',
+  'P1_A_X_Velocity',
+  'P1_B_X_Velocity',
+  'P1_C_X_Velocity',
+  'P2_A_X_Velocity',
+  'P2_B_X_Velocity',
+  'P2_C_X_Velocity',
 ];
 
 // Form Constants
