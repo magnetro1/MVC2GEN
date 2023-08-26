@@ -437,7 +437,8 @@ for (let csv = 0; csv < csvArr.length; csv++) {
     pMemList.push('P1_' + label);
     pMemList.push('P2_' + label);
   });
-
+  // fetchPMemEntries()
+  // console.log(pMemList)
   async function fillPMemObject() {
     for (let i = 0; i < pMemList.length; i += 2) { // has P1 and P2 entries; skip every other entry
       let pMemEntry = pMemList[i]
@@ -452,8 +453,9 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       });
     }
   }
-
+  // await fillPMemObject();
   // console.log(pMemObject);
+
 
   // Main function to write data to files
   /**
@@ -1053,12 +1055,11 @@ for (let csv = 0; csv < csvArr.length; csv++) {
 
             // AE_TO_NormalComposition_POS
             let posArray = lookUpArr[pABC].map((portrait) => {
-              // portrait = portrait.toString();
               portrait = portrait.replace(/'/g, '');
               portrait = parseInt(portrait);
-              // console.log(typeof portrait)
               portrait = AE_TO_POSITION_OBJ[portrait];
               portrait = [`[${portrait}]`]; /// wrap in brackets
+              // console.log(portrait)
               return portrait;
             });
 
@@ -1069,7 +1070,6 @@ for (let csv = 0; csv < csvArr.length; csv++) {
 
             // AE_TO_CVS2Composition_POS
             let posArray2 = lookUpArr[pABC].map((portrait) => {
-              portrait = portrait.toString();
               portrait = portrait.replace(/'/g, '');
               portrait = AE_TO_CVS2_POSITION_OBJ[portrait];
               portrait = [`[${portrait}]`]; /// wrap in brackets

@@ -6,23 +6,26 @@
 // ============================================================================
 //
 
-//#target photoshop
+// #target photoshop
 var maintainAspectRatio;// set to true to keep aspect ratio
 maintainAspectRatio = false;
-if (app.documents.length > 0)
-{
+if (app.documents.length > 0) {
   app.activeDocument.suspendHistory('Encajar Capa en Lienzo', 'FitLayerToCanvas(' + maintainAspectRatio + ')');
 }
-function FitLayerToCanvas(keepAspect)
-{// keepAspect:Boolean - optional. Default to false  
+function FitLayerToCanvas(keepAspect) {// keepAspect:Boolean - optional. Default to false
   var doc = app.activeDocument;
   var layer = doc.activeLayer;
-  // do nothing if layer is background or locked  
-  if (layer.isBackgroundLayer || layer.allLocked || layer.pixelsLocked
-    || layer.positionLocked || layer.transparentPixelsLocked) return;
-  // do nothing if layer is not normal artLayer or Smart Object  
-  if (layer.kind != LayerKind.NORMAL && layer.kind != LayerKind.SMARTOBJECT) return;
-  // store the ruler  
+  // do nothing if layer is background or locked
+  if (layer.isBackgroundLayer
+    || layer.allLocked
+    || layer.pixelsLocked
+    || layer.positionLocked || layer.transparentPixelsLocked)
+    return;
+  // do nothing if layer is not normal artLayer or Smart Object
+  if (layer.kind != LayerKind.NORMAL
+    && layer.kind != LayerKind.SMARTOBJECT)
+    return;
+  // store the ruler
   var defaultRulerUnits = app.preferences.rulerUnits;
   app.preferences.rulerUnits = Units.PIXELS;
 
@@ -32,25 +35,22 @@ function FitLayerToCanvas(keepAspect)
   var layerWidth = bounds[2].as('px') - bounds[0].as('px');
   var layerHeight = bounds[3].as('px') - bounds[1].as('px');
 
-  // move the layer so top left corner matches canvas top left corner  
+  // move the layer so top left corner matches canvas top left corner
   layer.translate(new UnitValue(0 - layer.bounds[0].as('px'), 'px'), new UnitValue(0 - layer.bounds[1].as('px'), 'px'));
-  if (!keepAspect)
-  {
-    // scale the layer to match canvas  
+  if (!keepAspect) {
+    // scale the layer to match canvas
     layer.resize((width / layerWidth) * 100, (height / layerHeight) * 100, AnchorPosition.TOPLEFT);
-  } else
-  {
+  } else {
     var layerRatio = layerWidth / layerHeight;
     var newWidth = width;
     var newHeight = ((1.0 * width) / layerRatio);
-    if (newHeight >= height)
-    {
+    if (newHeight >= height) {
       newWidth = layerRatio * height;
       newHeight = height;
     }
     var resizePercent = newWidth / layerWidth * 100;
     app.activeDocument.activeLayer.resize(resizePercent, resizePercent, AnchorPosition.TOPLEFT);
   }
-  // restore the ruler  
+  // restore the ruler
   app.preferences.rulerUnits = defaultRulerUnits;
-}  
+}
