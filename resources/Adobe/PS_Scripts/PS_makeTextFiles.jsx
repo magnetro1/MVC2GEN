@@ -123,6 +123,8 @@ var fontsSubOneObj = {
 var GLOBAL_OUTPUT_FOLDER = 'I:/';
 var GLOBAL_PARAGRAPH_TEXT = '';
 var GLOBAL_POINT_TEXT = '';
+var GLOBAL_POINT_ARRAY = '';
+var GLOBAL_PARAGRAPH_ARRAY = '';
 
 // Get the date for names
 function getDateStamp() {
@@ -133,7 +135,13 @@ function getDateStamp() {
   var hours = date.getHours();
   var minutes = date.getMinutes();
   var seconds = date.getSeconds();
-  var dateStamp = year.toString() + month.toString() + day.toString() + hours.toString() + minutes.toString() + seconds.toString();
+
+  var dateStamp = year.toString() + '-'
+    + month.toString() + '-'
+    + day.toString() + '-'
+    + hours.toString() + '-'
+    + minutes.toString() + '-'
+    + seconds.toString();
   return dateStamp;
 }
 /**
@@ -186,7 +194,6 @@ function createFontReferencePNGs() {
 }
 
 /**
- * 
  * @param {string} fnFont get font name from font objects
  * @param {string} fnExt set PNG || PSD
  * @description Creates a PNG for each character name, using the 'main' font of the game
@@ -268,12 +275,11 @@ function writePointText(fnFont, fnSize, fnExt, promptOrNot) {
   app.activeDocument.trim(TrimType.TRANSPARENT, true, true, true, true);
   // delete bottom layer (Layer 1)
   layers[1].remove();
-  saveLogic(funcExtension, fnFont)
+  saveLogic(fnExt, fnFont)
 }
 
 
 /**
- * 
  * @param {string} fnFont get font name from fontsAllObj
  * @param {number} fnSize set font size of point text
  * @param {string} fnExt set PNG || PSD
@@ -345,32 +351,59 @@ function SavePNG(saveFilePNG) {
   app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
 }
 
+// Write point-style text files for a list in ALL fonts
+function writeTextLoop() {
+  for (var i = 0; i < GLOBAL_POINT_ARRAY.length; i++) {
+    GLOBAL_POINT_TEXT = GLOBAL_POINT_ARRAY[i]
+    for (var subFont in fontsMainObj) {
+      writePointText(fontsMainObj[subFont], 72, 'png', false);
+    }
+  }
+}
+
+// Write paragraph text for ALL fonts
+function writeParagraphTextLoop() {
+  for (var text in GLOBAL_PARAGRAPH_ARRAY) {
+    GLOBAL_PARAGRAPH_TEXT = GLOBAL_PARAGRAPH_ARRAY[text]
+    for (var subFont in fontsSubOneObj) {
+      writeParagraphText(fontsSubOneObj[subFont], 100, 'png', false);
+    }
+  }
+}
+// CreateAllCharacterTitles for all fonts
+function createAllCharacterTitlesPNGsLoop() {
+  for (var subFont in fontsMainObj) {
+    createAllCharacterTitlesPNGs(fontsMainObj[subFont]);
+  }
+}
+
+
+GLOBAL_POINT_ARRAY = [
+  'Magnetro vs MikeZ',
+  'Mario vs Sonic',
+];
+
+GLOBAL_PARAGRAPH_ARRAY = [
+  'make loren ipsum text for paragraph text',
+  'Lorem Ipsum psum.'
+];
+
+// Font Objects Available
+/*
+  fontsAllObj
+  fontsMainObj
+  fontsSubOneObj
+*/
 
 //Call Stuff 📞
 
-createFontReferencePNGs()
+// Dynamic Stuff
+// writeParagraphTextLoop()
+writeTextLoop()
 
-// CreateAllCharacterTitles for all fonts
-// for (var tempFont in fontsMainObj)
-// {
-//   createAllCharacterTitlesPNGs(fontsMainObj[tempFont]);
-// }
-
-
-GLOBAL_PARAGRAPH_TEXT = "Directional Influence (DI) refers to moving left or right while in hitstun."
-GLOBAL_POINT_TEXT = "Marvel vs. Capcom 2"
-
-// Write paragraph text for ALL fonts
-for (var subFont in fontsSubOneObj) {
-  writeParagraphText(fontsSubOneObj[subFont], 100, 'png', false);
-}
-
-// Write point-text for each string in array
-// var texts = ['Magnetro vs Rob2D'];
-// for (var i = 0; i < texts.length; i++) {
-//   GLOBAL_POINT_TEXT = texts[i]
-//   writePointText(fontsMainObj.XVSF, 72, 'png', false)
-// }
+// Static-Reference Stuff
+// createFontReferencePNGs()
+// createAllCharacterTitlesPNGsLoop()
 
 
 // writePointText(fontsSubOneObj.COTA, 72, 'png', false);
