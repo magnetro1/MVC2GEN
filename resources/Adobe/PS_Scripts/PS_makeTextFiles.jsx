@@ -8,8 +8,8 @@ All functions are called at the bottom.
 
 There are three Font-Objects:
 - FONTS_ALL: contains all game-fonts
-- FONTS_MAIN: contains 1 chosen main font for each game
-- FONTS_SUB: contains 1 chosen sub font for each game
+- FONTS_MAIN: contains one chosen main font for each game
+- FONTS_SUB: contains one chosen sub font for each game
 
 There are two types of dynamic text functions
 that write text from a string variable:
@@ -28,8 +28,8 @@ a preset list of PNGs with prefilled text:
   using a preset string of letters, numbers and symbols
 - createAllCharacterTitlesPNGsLoop():
   creates a PNG title for each character name
-  using 1 font from the FONTS_MAIN object,
-  which corresponds to 1 game.
+  using one font from the FONTS_MAIN object,
+  which corresponds to one game.
 
 */
 
@@ -153,16 +153,20 @@ var FONTS_SUB = {
   'XVSF': 'XvSFType5',
 };
 
-// Global Variables. Re-assigned later
+// Global Variables. Re-assign at bottom
 var GLOBAL_OUTPUT_FOLDER = '';
 var GLOBAL_PARAGRAPH_TEXT = '';
 var GLOBAL_POINT_TEXT = '';
 var GLOBAL_POINT_ARRAY = '';
 var GLOBAL_PARAGRAPH_ARRAY = '';
 
-// Functions
-
-// Timestamp
+// Helper Functions
+function existsOutputFolder() {
+  var myFolder = new Folder(GLOBAL_OUTPUT_FOLDER);
+  if (!myFolder.exists) {
+    myFolder.create();
+  }
+}
 function getDateStamp() {
   var date = new Date();
   var year = date.getFullYear();
@@ -186,12 +190,60 @@ function getDateStamp() {
     + seconds.toString();
   return dateStamp;
 }
+
+function savePointOrParagraphFile(fnPntOrPar, fnExt, fnFont) {
+  if (fnExt == 'PNG' || fnExt == 'png') {
+    var saveFilePNG = new File(new File(
+      GLOBAL_OUTPUT_FOLDER
+      + '/'
+      + fnPntOrPar
+      // + '/'
+      + fnFont
+      + '_'
+      + getDateStamp().toString()
+      + '.png'));
+    SavePNG(saveFilePNG);
+  }
+  else if (fnExt == 'PSD' || fnExt == 'psd') {
+    var saveFilePSD = new File(new File(
+      GLOBAL_OUTPUT_FOLDER
+      + '/'
+      + fnPntOrPar
+      // + '/'
+      + fnFont
+      + '_'
+      + getDateStamp().toString()
+      + '.psd'));
+    SavePSD(saveFilePSD);
+  }
+}
+
+function SavePSD(saveFilePSD) {
+  psdSaveOptions = new PhotoshopSaveOptions();
+  psdSaveOptions.embedColorProfile = true;
+  psdSaveOptions.alphaChannels = true;
+  psdSaveOptions.layers = true;
+  psdSaveOptions.annotations = true;
+  psdSaveOptions.spotColors = true;
+  app.activeDocument.saveAs(saveFilePSD, psdSaveOptions, false, Extension.LOWERCASE);
+  app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+}
+
+function SavePNG(saveFilePNG) {
+  pngSaveOptions = new PNGSaveOptions();
+  pngSaveOptions.interlaced = false;
+  pngSaveOptions.compression = 0;;
+  // Save As Copy (true)
+  app.activeDocument.saveAs(saveFilePNG, pngSaveOptions, true, Extension.LOWERCASE);
+  app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+}
+
 /**
  * @description Creates a PNG for each font, 
  * filled with letters, numbers and symbols.
  */
 function createFontReferencePNGs() {
-  checkOutputFolder()
+  existsOutputFolder()
   var loremIpsum = '0123456789-' + '\r'
     + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + '\r'
     + 'abcdefghijklmnopqrstuvwxyz' + '\r'
@@ -258,7 +310,7 @@ function createFontReferencePNGs() {
  * using the 'main' font of the game
  */
 function createAllCharacterTitles(fnFont, fnExt) {
-  checkOutputFolder()
+  existsOutputFolder()
   for (var charIDX = 0; charIDX < CHARS_ALL.length; charIDX++) {
     var characterName = CHARS_ALL[charIDX];
     var newDocument = app.documents.add(
@@ -333,7 +385,7 @@ function createAllCharacterTitles(fnFont, fnExt) {
  * || false for GLOBAL_POINT_TEXT
  */
 function writePointText(fnFont, fnSize, fnExt, promptOrNot) {
-  checkOutputFolder()
+  existsOutputFolder()
   var newDocument = app.documents.add(
     4000,
     4000,
@@ -373,7 +425,7 @@ function writePointText(fnFont, fnSize, fnExt, promptOrNot) {
  * || set false to use GLOBAL_PARAGRAPH_TEXT contents
  */
 function writeParagraphText(fnFont, fnSize, fnExt, promptOrNot) {
-  checkOutputFolder()
+  existsOutputFolder()
   var addDocument = app.documents.add(
     1920,
     1080,
@@ -411,53 +463,6 @@ function writeParagraphText(fnFont, fnSize, fnExt, promptOrNot) {
   savePointOrParagraphFile('PAR_', fnExt, fnFont)
 }
 
-function savePointOrParagraphFile(fnPntOrPar, fnExt, fnFont) {
-  if (fnExt == 'PNG' || fnExt == 'png') {
-    var saveFilePNG = new File(new File(
-      GLOBAL_OUTPUT_FOLDER
-      + '/'
-      + fnPntOrPar
-      // + '/'
-      + fnFont
-      + '_'
-      + getDateStamp().toString()
-      + '.png'));
-    SavePNG(saveFilePNG);
-  }
-  else if (fnExt == 'PSD' || fnExt == 'psd') {
-    var saveFilePSD = new File(new File(
-      GLOBAL_OUTPUT_FOLDER
-      + '/'
-      + fnPntOrPar
-      // + '/'
-      + fnFont
-      + '_'
-      + getDateStamp().toString()
-      + '.psd'));
-    SavePSD(saveFilePSD);
-  }
-}
-
-function SavePSD(saveFilePSD) {
-  psdSaveOptions = new PhotoshopSaveOptions();
-  psdSaveOptions.embedColorProfile = true;
-  psdSaveOptions.alphaChannels = true;
-  psdSaveOptions.layers = true;
-  psdSaveOptions.annotations = true;
-  psdSaveOptions.spotColors = true;
-  app.activeDocument.saveAs(saveFilePSD, psdSaveOptions, false, Extension.LOWERCASE);
-  app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
-}
-
-function SavePNG(saveFilePNG) {
-  pngSaveOptions = new PNGSaveOptions();
-  pngSaveOptions.interlaced = false;
-  pngSaveOptions.compression = 0;;
-  // Save As Copy (true)
-  app.activeDocument.saveAs(saveFilePNG, pngSaveOptions, true, Extension.LOWERCASE);
-  app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
-}
-
 // Write point-style text files for a list in ALL fonts
 function writePointTextLoop() {
   for (var i = 0; i < GLOBAL_POINT_ARRAY.length; i++) {
@@ -468,12 +473,11 @@ function writePointTextLoop() {
   }
 }
 
-// Write paragraph text for ALL fonts
 function writeParagraphTextLoop() {
   for (var text in GLOBAL_PARAGRAPH_ARRAY) {
     GLOBAL_PARAGRAPH_TEXT = GLOBAL_PARAGRAPH_ARRAY[text]
     for (var subFont in FONTS_SUB) {
-      writeParagraphText(FONTS_SUB[subFont], 100, 'png', false);
+      writeParagraphText(FONTS_SUB[subFont], 72, 'png', false);
     }
   }
 }
@@ -481,15 +485,6 @@ function writeParagraphTextLoop() {
 function createAllCharacterTitlesPNGsLoop() {
   for (var mainFont in FONTS_MAIN) {
     createAllCharacterTitles(FONTS_MAIN[mainFont], 'png');
-  }
-}
-
-// Check if GLOBAL_OUTPUT_FOLDER exists
-// is called within functions
-function checkOutputFolder() {
-  var myFolder = new Folder(GLOBAL_OUTPUT_FOLDER);
-  if (!myFolder.exists) {
-    myFolder.create();
   }
 }
 
