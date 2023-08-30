@@ -26,12 +26,17 @@ As well as functions that write array contents for ONLY ONE font:
 
 There are two reference functions that create
 a preset list of PNGs with prefilled text:
-- createAllFontsReference():
-  creates a PNG for each font in FONTS_ALL
-  using a preset string of letters, numbers and symbols
-- createAllCharacterTitlesForEachGame():
-  creates a PNG title for each character name
-  for each game using mainFont from the FONTS_MAIN object,
+- FONTS:
+  - createAllFontsReference():
+    creates a PNG for each font in FONTS_ALL
+    using a preset string of letters, numbers and symbols
+  CHARACTERS:
+  - createAllCharacterTitles
+    creates a PNG title for each character name
+    using the 'main' font of one game
+  - createAllCharacterTitlesForEachGame():
+    creates a PNG title for each character name
+    for each game using mainFont from the FONTS_MAIN object,
 
 */
 
@@ -130,29 +135,29 @@ var FONTS_ALL = {
   'XVSF_02': 'XvSFType2',
   'XVSF_03': 'XvSFType3',
   'XVSF_04': 'XvSFType4',
+  'XVSF_05': 'XvSFType5',
 };
-// "Main" fonts for point-text/titles
+// 'Main' fonts for point-text/titles
 var FONTS_MAIN = {
-  'COTA': 'COTAWINType4',
-  'CVS2': 'CVS2500Regular',
-  'MSH': 'MSHRegular',
-  'MVC1': 'MvC1Type1Regular',
-  // 'MVC2': 'MvC2FontType1',
-  'MVC2': 'MvC2FontType2',
-  'MVSF': 'MVCMVSFType1',
-  'SFA3': 'SFA3Name1Regular',
-  'XVSF': 'XvSFRegular',
+  'COTA': FONTS_ALL['COTA_04'],
+  'CVS2': FONTS_ALL['CVS2_01'],
+  'MSH': FONTS_ALL['MSH_01'],
+  'MVC1': FONTS_ALL['MVC1_04'],
+  'MVC2': FONTS_ALL['MVC2_01'],
+  'MVSF': FONTS_ALL['MVSF_03'],
+  'SFA3': FONTS_ALL['SFA3_01'],
+  'XVSF': FONTS_ALL['XVSF_01'],
 };
-// "Sub" fonts for paragraph-text
+// 'Sub' fonts for paragraph-text
 var FONTS_SUB = {
-  'COTA': 'COTAWINType2',
-  'CVS2': 'CVS2500Regular',
-  'MSH': 'MSHType3',
-  'MVSF': 'MVCMVSFRegular',
-  'MVC1': 'MvC1Font1MvC1Type2',
-  'MVC2': 'MvC2Type4',
-  'SFA3': 'SFA3Name2Regular',
-  'XVSF': 'XvSFType5',
+  'COTA': FONTS_ALL['COTA_02'],
+  'CVS2': FONTS_ALL['CVS2_01'],
+  'MSH': FONTS_ALL['MSH_03'],
+  'MVSF': FONTS_ALL['MVSF_01'],
+  'MVC1': FONTS_ALL['MVC1_01'],
+  'MVC2': FONTS_ALL['MVC2_04'],
+  'SFA3': FONTS_ALL['SFA3_02'],
+  'XVSF': FONTS_ALL['XVSF_05'],
 };
 
 // Global Variables. Re-assign at bottom
@@ -163,12 +168,20 @@ var GLOBAL_POINT_ARRAY = '';
 var GLOBAL_PARAGRAPH_ARRAY = '';
 
 // Helper Functions
+/**
+ * @description Creates a the main GLOBAL_OUTPUT_FOLDER
+ * directory if it doesn't exist
+*/
 function existsOutputFolder() {
   var myFolder = new Folder(GLOBAL_OUTPUT_FOLDER);
   if (!myFolder.exists) {
     myFolder.create();
   }
 }
+/**
+ * @description Returns a string of the current date
+ * @returns {string} dateStamp
+*/
 function getDateStamp() {
   var date = new Date();
   var year = date.getFullYear();
@@ -177,69 +190,107 @@ function getDateStamp() {
   var hours = date.getHours();
   var minutes = date.getMinutes();
   var seconds = date.getSeconds();
+  var milliseconds = date.getMilliseconds();
+
+  function padNumber(number) {
+    if (number < 10) {
+      return '0' + number.toString();
+    }
+    else {
+      return number.toString();
+    }
+  }
 
   var dateStamp =
     year.toString()
     + '_'
-    + month.toString()
+    + padNumber(month)
     + '_'
-    + day.toString()
+    + padNumber(day)
     + '_'
-    + hours.toString()
+    + padNumber(hours)
     + '_'
-    + minutes.toString()
+    + padNumber(minutes)
     + '_'
-    + seconds.toString();
+    + padNumber(seconds)
+    + '_'
+    + padNumber(milliseconds);
   return dateStamp;
 }
 
-function savePointOrParagraphFile(fnPntOrPar, fnExt, fnFont) {
-  if (fnExt == 'PNG' || fnExt == 'png') {
-    var saveFilePNG = new File(new File(
-      GLOBAL_OUTPUT_FOLDER
-      + '/'
-      + fnPntOrPar
-      // + '/'
-      + fnFont
-      + '_'
-      + getDateStamp().toString()
-      + '.png'));
-    SavePNG(saveFilePNG);
+/**
+ * @description Returns the game name from the font name
+ * @param {string} fnFont active font name value from a font object
+ * @returns {string} currentGameName
+ * @example 'COTA_01' returns 'COTA'
+ */
+function getGameNameFromFont(fnFont) {
+  var currentGameName = '';
+  for (var key in FONTS_MAIN) {
+    if (FONTS_MAIN[key] == fnFont) {
+      currentGameName = key;
+    }
   }
-  else if (fnExt == 'PSD' || fnExt == 'psd') {
-    var saveFilePSD = new File(new File(
-      GLOBAL_OUTPUT_FOLDER
-      + '/'
-      + fnPntOrPar
-      // + '/'
-      + fnFont
-      + '_'
-      + getDateStamp().toString()
-      + '.psd'));
-    SavePSD(saveFilePSD);
-  }
+  return currentGameName;
 }
 
-function SavePSD(saveFilePSD) {
+// Save Functions
+/**
+ * @param {string} fnPntOrPar 'PNT' || 'PAR'
+ * @param {string} fnExt 'PNG' || 'PSD'
+ * @param {string} fnFont font name from font objects
+ * @description Saves the current document as a PNG or PSD
+*/
+function savePointOrParagraphFile(fnPntOrPar, fnExt, fnFont) {
+  var currentFont = '';
+  for (var key in FONTS_ALL) {
+    if (FONTS_ALL[key] == fnFont) {
+      currentFont = key;
+    }
+  }
+  var targetFolderAndFile = new File(
+    new File(
+      GLOBAL_OUTPUT_FOLDER
+      + '/'
+      + fnPntOrPar
+      + '_'
+      + currentFont
+      + '_'
+      + fnFont
+      + '_'
+      + getDateStamp()
+      + '.'
+      + fnExt));
+  if (fnExt == 'PNG' || fnExt == 'png') {
+    SavePNG(targetFolderAndFile);
+  }
+  else if (fnExt == 'PSD' || fnExt == 'psd') {
+    SavePSD(targetFolderAndFile);
+  }
+}
+/**
+ * @param {string} PSDFileName contains pre-made folder and document info
+ */
+function SavePSD(PSDFileName) {
   psdSaveOptions = new PhotoshopSaveOptions();
   psdSaveOptions.embedColorProfile = true;
   psdSaveOptions.alphaChannels = true;
   psdSaveOptions.layers = true;
   psdSaveOptions.annotations = true;
   psdSaveOptions.spotColors = true;
-  app.activeDocument.saveAs(saveFilePSD, psdSaveOptions, false, Extension.LOWERCASE);
+  app.activeDocument.saveAs(PSDFileName, psdSaveOptions, false, Extension.LOWERCASE);
   app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
 }
-
-function SavePNG(saveFilePNG) {
+/**
+ * @param {string} PNGFileName contains pre-made folder and document info
+ */
+function SavePNG(PNGFileName) {
   pngSaveOptions = new PNGSaveOptions();
   pngSaveOptions.interlaced = false;
   pngSaveOptions.compression = 0;;
-  // Save As Copy (true)
-  app.activeDocument.saveAs(saveFilePNG, pngSaveOptions, true, Extension.LOWERCASE);
+  app.activeDocument.saveAs(PNGFileName, pngSaveOptions, true, Extension.LOWERCASE);
   app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
 }
-
 /**
  * @description Creates a PNG for each font, 
  * filled with letters, numbers and symbols.
@@ -274,44 +325,39 @@ function createAllFontsReference() {
     textItem.position = [0, (newDocument.height * .5)];
     app.activeDocument.trim(TrimType.TRANSPARENT, true, true, true, true);
     layers[1].remove();
-
-    try {
-      // Check if directory exists
-      var fontReferenceFolder =
-        GLOBAL_OUTPUT_FOLDER
+    // Get game title instead of font for our folder name
+    var gameName = getGameNameFromFont(fontIDX);
+    // Write PNG
+    var AllFontsReferenceFolder =
+      GLOBAL_OUTPUT_FOLDER
+      + '/'
+      + '_createAllFontsReference'
+      + '/';
+    var myFolder = new Folder(AllFontsReferenceFolder);
+    if (!myFolder.exists) {
+      myFolder.create();
+    }
+    var myPNGFile = new File(
+      new File(
+        AllFontsReferenceFolder
         + '/'
-        + '_createAllFontsReference'
-        + '/';
-      var myFolder = new Folder(fontReferenceFolder);
-      if (!myFolder.exists) {
-        myFolder.create();
-      }
-      var saveFilePNG = new File(new File(
-        fontReferenceFolder +
-        '/' +
-        fontIDX +
-        '.png'));
-      if (saveFilePNG.exists) {
-        app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
-        continue;
-      }
-      else {
-        SavePNG(saveFilePNG);
-      }
-    }
-    catch (error) {
-      alert("The source document is unsaved!");
-    }
+        + 'REF'
+        + '_'
+        + allFont
+        + '_'
+        + fontIDX
+        + '.'
+        + 'png'));
+    SavePNG(myPNGFile);
   }
 }
 
 /**
  * @param {string} fnFont get font name from font objects
- * @param {string} fnExt set PNG || PSD
  * @description Creates a PNG for each character name
  * using the 'main' font of the game
  */
-function createAllCharacterTitles(fnFont, fnExt) {
+function createAllCharacterTitles(fnFont) {
   existsOutputFolder()
   for (var charIDX = 0; charIDX < CHARS_ALL.length; charIDX++) {
     var characterName = CHARS_ALL[charIDX];
@@ -337,45 +383,32 @@ function createAllCharacterTitles(fnFont, fnExt) {
     app.activeDocument.trim(TrimType.TRANSPARENT, true, true, true, true);
     layers[1].remove();
 
-    // Switch the value of fnFont to the key of the object
-    var mainFont = '';
-    for (var key in FONTS_MAIN) {
-      if (FONTS_MAIN[key] == fnFont) {
-        mainFont = key;
-      }
-    }
-    // Check if directory exists
+    // Get game title instead of font for our folder name
+    var gameName = getGameNameFromFont(fnFont);
+    // Write Folder
     var AllCharacterTitlesFolder =
       GLOBAL_OUTPUT_FOLDER
       + '/'
       + '_createAllCharacterTitles'
       + '/'
-      + mainFont
+      + gameName
       + '/';
     var myFolder = new Folder(AllCharacterTitlesFolder);
     if (!myFolder.exists) {
       myFolder.create();
     }
     // Save the file
-    if (fnExt == 'PNG' || fnExt == 'png') {
-      var saveFilePNG = new File(new File(
+    var myPNGFile = new File(
+      new File(
         AllCharacterTitlesFolder
-        + 'Title_'
-        + characterName
-        + '_' + mainFont
-        + '.png'));
-      SavePNG(saveFilePNG);
-    }
-    else if (fnExt == 'PSD' || fnExt == 'psd') {
-      var saveFilePSD = new File(new File(
-        AllCharacterTitlesFolder
-        + 'Title_'
-        + characterName
+        + 'REF'
         + '_'
-        + mainFont
-        + '.psd'));
-      SavePSD(saveFilePSD);
-    }
+        + gameName
+        + '_'
+        + characterName
+        + '.'
+        + 'png'));
+    SavePNG(myPNGFile);
   }
 }
 
@@ -403,7 +436,7 @@ function writePointText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
   var pointTextItem = newLayer.textItem;
   if (promptOrNot == true) {
     var promptAnswer = prompt(
-      "Enter text", "Used as content and file name");
+      'Enter text', 'Used as content and file name');
     pointTextItem.contents = promptAnswer
   }
   else if (promptOrNot == false) {
@@ -418,7 +451,8 @@ function writePointText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
   app.activeDocument.trim(TrimType.TRANSPARENT, true, true, true, true);
   // delete bottom layer (Layer 1)
   layers[1].remove();
-  savePointOrParagraphFile('PNT_', fnExt, fnFont)
+
+  savePointOrParagraphFile('PNT', fnExt, fnFont)
 }
 
 /**
@@ -447,7 +481,7 @@ function writeParagraphText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
 
   if (promptOrNot == true) {
     var promptAnswer = prompt(
-      "Enter text", "Used as content and file name");
+      'Enter text', 'Used as content and file name');
     paragraphTextItem.contents = promptAnswer
   }
   else if (promptOrNot == false) {
@@ -465,7 +499,7 @@ function writeParagraphText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
   paragraphTextItem.useAutoLeading = true;
   paragraphTextItem.baselineShift = -30; // shift the whole text up or down
 
-  savePointOrParagraphFile('PAR_', fnExt, fnFont)
+  savePointOrParagraphFile('PAR', fnExt, fnFont)
 }
 
 /**
@@ -523,26 +557,27 @@ GLOBAL_OUTPUT_FOLDER = 'I:/fontTests';
 GLOBAL_POINT_TEXT = 'Magnetro Presents';
 GLOBAL_PARAGRAPH_TEXT = 'There are two observable RAM values for the Dizzy mechanic. The main dizzy counter and the timer before the dizzy counter resets.';
 GLOBAL_POINT_ARRAY = [
-  'test-point',
+  'Magnetro Presents',
 ];
 GLOBAL_PARAGRAPH_ARRAY = [
-  'test-paragraph',
+  'There are two observable RAM values for the Dizzy mechanic. The main dizzy counter and the timer before the dizzy counter resets.',
 ];
 
 // Call Stuff 📞
 
 // Reference
-createAllFontsReference()
-createAllCharacterTitlesForEachGame()
+// createAllFontsReference()
+// createAllCharacterTitles(FONTS_MAIN['COTA'])
+// createAllCharacterTitlesForEachGame()
 
 // Dynamic Single
-// writePointText(FONTS_MAIN['CVS2'], 72, 0, 'png', false)
-// writeParagraphText(FONTS_SUB['SFA3'], 72, 0, 'png', false)
+// writePointText(FONTS_MAIN['COTA'], 72, 0, 'png', false)
+// writeParagraphText(FONTS_SUB['COTA'], 72, 0, 'png', false)
 
 // Dynamic Arrays FOR ONE font
 // writePointTextForArray(FONTS_MAIN['CVS2'], 72, 0, 'png', false)
 // writeParagraphTextForArray(FONTS_SUB['SFA3'], 72, 0, 'png', false)
 
 // Dynamic Arrays FOR EACH font
-// writePointTextForArrayAndGame()
-// writeParagraphTextForArrayAndGame()
+writePointTextForArrayAndGame()
+writeParagraphTextForArrayAndGame()
