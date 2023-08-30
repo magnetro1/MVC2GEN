@@ -26,17 +26,17 @@ As well as functions that write array contents for ONLY ONE font:
 
 There are two reference functions that create
 a preset list of PNGs with prefilled text:
-- FONTS:
-  createAllFontsReference():
-    creates a PNG for each font in FONTS_ALL
-    using a preset string of letters, numbers and symbols
+  FONTS:
+    createAllFontsReference():
+      creates a PNG for each font in FONTS_ALL
+      using a preset string of letters, numbers and symbols
   CHARACTERS:
-  createAllCharacterTitles
-    creates a PNG title for each character name
-    using the 'main' font of one game
-  createAllCharacterTitlesForEachGame():
-    creates a PNG title for each character name
-    for each game using mainFont from the FONTS_MAIN object,
+    createAllCharacterTitles
+      creates a PNG title for each character name
+      using the 'main' font of one game
+    createAllCharacterTitlesForEachGame():
+      creates a PNG title for each character name
+      for each game using mainFont from the FONTS_MAIN object,
 
 */
 
@@ -159,13 +159,6 @@ var FONTS_SUB = {
   'SFA3': FONTS_ALL['SFA3_02'],
   'XVSF': FONTS_ALL['XVSF_05'],
 };
-
-// Global Variables. Re-assign at bottom
-var GLOBAL_OUTPUT_FOLDER = '';
-var GLOBAL_PARAGRAPH_TEXT = '';
-var GLOBAL_POINT_TEXT = '';
-var GLOBAL_POINT_ARRAY = '';
-var GLOBAL_PARAGRAPH_ARRAY = '';
 
 // Helper Functions
 /**
@@ -292,6 +285,7 @@ function SavePNG(PNGFileName) {
   app.activeDocument.saveAs(PNGFileName, pngSaveOptions, true, Extension.LOWERCASE);
   app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
 }
+// Main Functions - Reference
 /**
  * @description Creates a PNG for each font, 
  * filled with letters, numbers and symbols.
@@ -413,6 +407,7 @@ function createAllCharacterTitles(fnFont) {
   }
 }
 
+// Main Functions - Dynamic - Single
 /**
  * @param {string} fnFont font name from FONTS_MAIN, etc.
  * @param {number} fnSize font size of point text
@@ -503,6 +498,29 @@ function writeParagraphText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
   savePointOrParagraphFile('PAR', fnExt, fnFont)
 }
 
+// Main Functions - Dynamic - Arrays For ONE Font
+/**
+* @description Write point-style text files
+* for each array entry for one font
+*/
+function writePointTextForArray(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
+  for (var i = 0; i < GLOBAL_POINT_ARRAY.length; i++) {
+    GLOBAL_POINT_TEXT = GLOBAL_POINT_ARRAY[i]
+    writePointText(fnFont, fnSize, fnTracking, fnExt, promptOrNot);
+  }
+}
+/**
+* @description Write paragraph-style text files
+* for each array entry for one subFont
+*/
+function writeParagraphTextForArray(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
+  for (var text in GLOBAL_PARAGRAPH_ARRAY) {
+    GLOBAL_PARAGRAPH_TEXT = GLOBAL_PARAGRAPH_ARRAY[text]
+    writeParagraphText(fnFont, fnSize, fnTracking, fnExt, promptOrNot)
+  }
+}
+
+// Main Functions - Dynamic - Arrays For EACH Font
 /**
 * @description Write point-style text files
 * for each array entry for each mainFont
@@ -524,26 +542,7 @@ function writeParagraphTextForArrayAndGame() {
     }
   }
 }
-/**
-* @description Write point-style text files
-* for each array entry for one font
-*/
-function writePointTextForArray(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
-  for (var i = 0; i < GLOBAL_POINT_ARRAY.length; i++) {
-    GLOBAL_POINT_TEXT = GLOBAL_POINT_ARRAY[i]
-    writePointText(fnFont, fnSize, fnTracking, fnExt, promptOrNot);
-  }
-}
-/**
-* @description Write paragraph-style text files
-* for each array entry for one subFont
-*/
-function writeParagraphTextForArray(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
-  for (var text in GLOBAL_PARAGRAPH_ARRAY) {
-    GLOBAL_PARAGRAPH_TEXT = GLOBAL_PARAGRAPH_ARRAY[text]
-    writeParagraphText(fnFont, fnSize, fnTracking, fnExt, promptOrNot)
-  }
-}
+
 /**
 * @description Write titles for each character for each mainFont
 */
@@ -552,17 +551,16 @@ function createAllCharacterTitlesForEachGame() {
     createAllCharacterTitles(FONTS_MAIN[mainFont], 'png');
   }
 }
+// Globals
+var GLOBAL_OUTPUT_FOLDER = 'I:/fontTests';
 
-// Re-assign Globals
-GLOBAL_OUTPUT_FOLDER = 'I:/fontTests';
+var GLOBAL_POINT_TEXT = 'Magnetro Presents';
+var GLOBAL_PARAGRAPH_TEXT = 'There are two observable RAM values for the Dizzy mechanic. The main dizzy counter and the timer before the dizzy counter resets.';
 
-GLOBAL_POINT_TEXT = 'Magnetro Presents';
-GLOBAL_PARAGRAPH_TEXT = 'There are two observable RAM values for the Dizzy mechanic. The main dizzy counter and the timer before the dizzy counter resets.';
-
-GLOBAL_POINT_ARRAY = [
+var GLOBAL_POINT_ARRAY = [
   'Magnetro Presents',
 ];
-GLOBAL_PARAGRAPH_ARRAY = [
+var GLOBAL_PARAGRAPH_ARRAY = [
   'There are two observable RAM values for the Dizzy mechanic. The main dizzy counter and the timer before the dizzy counter resets.',
 ];
 
