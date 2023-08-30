@@ -26,13 +26,12 @@ As well as functions that write array contents for ONLY ONE font:
 
 There are two reference functions that create
 a preset list of PNGs with prefilled text:
-- createFontReferencePNGs():
+- createAllFontsReference():
   creates a PNG for each font in FONTS_ALL
   using a preset string of letters, numbers and symbols
-- createAllCharacterTitlesPNGsLoop():
+- createAllCharacterTitlesForEachGame():
   creates a PNG title for each character name
-  using one font from the FONTS_MAIN object,
-  which corresponds to one game.
+  for each game using mainFont from the FONTS_MAIN object,
 
 */
 
@@ -181,15 +180,15 @@ function getDateStamp() {
 
   var dateStamp =
     year.toString()
-    + '-'
+    + '_'
     + month.toString()
-    + '-'
+    + '_'
     + day.toString()
-    + '-'
+    + '_'
     + hours.toString()
-    + '-'
+    + '_'
     + minutes.toString()
-    + '-'
+    + '_'
     + seconds.toString();
   return dateStamp;
 }
@@ -245,7 +244,7 @@ function SavePNG(saveFilePNG) {
  * @description Creates a PNG for each font, 
  * filled with letters, numbers and symbols.
  */
-function createFontReferencePNGs() {
+function createAllFontsReference() {
   existsOutputFolder()
   var loremIpsum = '0123456789-' + '\r'
     + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + '\r'
@@ -281,7 +280,7 @@ function createFontReferencePNGs() {
       var fontReferenceFolder =
         GLOBAL_OUTPUT_FOLDER
         + '/'
-        + '_createFontReference'
+        + '_createAllFontsReference'
         + '/';
       var myFolder = new Folder(fontReferenceFolder);
       if (!myFolder.exists) {
@@ -502,7 +501,7 @@ function writePointTextForArray(fnFont, fnSize, fnTracking, fnExt, promptOrNot) 
 }
 /**
 * @description Write paragraph-style text files
-* for each array entry for one font
+* for each array entry for one subFont
 */
 function writeParagraphTextForArray(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
   for (var text in GLOBAL_PARAGRAPH_ARRAY) {
@@ -510,8 +509,10 @@ function writeParagraphTextForArray(fnFont, fnSize, fnTracking, fnExt, promptOrN
     writeParagraphText(fnFont, fnSize, fnTracking, fnExt, promptOrNot)
   }
 }
-
-function createAllCharacterTitlesPNGsLoop() {
+/**
+* @description Write titles for each character for each mainFont
+*/
+function createAllCharacterTitlesForEachGame() {
   for (var mainFont in FONTS_MAIN) {
     createAllCharacterTitles(FONTS_MAIN[mainFont], 'png');
   }
@@ -531,16 +532,16 @@ GLOBAL_PARAGRAPH_ARRAY = [
 // Call Stuff 📞
 
 // Reference
-// createFontReferencePNGs()
-// createAllCharacterTitlesPNGsLoop()
+createAllFontsReference()
+createAllCharacterTitlesForEachGame()
 
 // Dynamic Single
 // writePointText(FONTS_MAIN['CVS2'], 72, 0, 'png', false)
 // writeParagraphText(FONTS_SUB['SFA3'], 72, 0, 'png', false)
 
 // Dynamic Arrays FOR ONE font
-writePointTextForArray(FONTS_MAIN['CVS2'], 72, 0, 'png', false)
-writeParagraphTextForArray(FONTS_SUB['SFA3'], 72, 0, 'png', false)
+// writePointTextForArray(FONTS_MAIN['CVS2'], 72, 0, 'png', false)
+// writeParagraphTextForArray(FONTS_SUB['SFA3'], 72, 0, 'png', false)
 
 // Dynamic Arrays FOR EACH font
 // writePointTextForArrayAndGame()
