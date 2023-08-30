@@ -1,5 +1,40 @@
+/*
+
+This script creates custom titles
+as PNG or PSD files using special
+fonts in Photoshop. 
+
+All functions are called at the bottom.
+
+There are three Font-Objects:
+- FONTS_ALL: contains all game-fonts
+- FONTS_MAIN: contains 1 chosen main font for each game
+- FONTS_SUB: contains 1 chosen sub font for each game
+
+There are two types of dynamic text functions
+that write text from a string variable:
+- writePointText() : GLOBAL_POINT_TEXT
+- writeParagraphText() : GLOBAL_PARAGRAPH_TEXT
+
+However, there are also duplicate functions
+that write the contents from respective arrays:
+- writePointTextLoop() : GLOBAL_POINT_ARRAY
+- writeParagraphTextLoop() : GLOBAL_PARAGRAPH_ARRAY
+
+There are two reference functions that create
+a preset list of PNGs with prefilled text:
+- createFontReferencePNGs():
+  creates a PNG for each font in FONTS_ALL
+  using a preset string of letters, numbers and symbols
+- createAllCharacterTitlesPNGsLoop():
+  creates a PNG title for each character name
+  using 1 font from the FONTS_MAIN object,
+  which corresponds to 1 game.
+
+*/
+
 // Static Stuff
-var allCharListArray = [
+var CHARS_ALL = [
   'Abyss-A',
   'Abyss-B',
   'Abyss-C',
@@ -60,7 +95,7 @@ var allCharListArray = [
   'Wolverine',
   'Zangief',
 ];
-var fontsAllObj = {
+var FONTS_ALL = {
   'COTA_01': 'COTAWINRegular',
   'COTA_02': 'COTAWINType2',
   'COTA_03': 'COTAWINType3',
@@ -95,7 +130,7 @@ var fontsAllObj = {
   'XVSF_04': 'XvSFType4',
 };
 // "Main" fonts for point-text/titles
-var fontsMainObj = {
+var FONTS_MAIN = {
   'COTA': 'COTAWINType4',
   'CVS2': 'CVS2500Regular',
   'MSH': 'MSHRegular',
@@ -107,7 +142,7 @@ var fontsMainObj = {
   'XVSF': 'XvSFRegular',
 };
 // "Sub" fonts for paragraph-text
-var fontsSubOneObj = {
+var FONTS_SUB = {
   'COTA': 'COTAWINType2',
   'CVS2': 'CVS2500Regular',
   'MSH': 'MSHType3',
@@ -118,15 +153,16 @@ var fontsSubOneObj = {
   'XVSF': 'XvSFType5',
 };
 
-// Global Variables
-// var GLOBAL_OUTPUT_FOLDER = 'H:/Git/MVC2GEN/resources/After Effects Projects+/Tutorial_3/AdobeScripts/Photoshop';
-var GLOBAL_OUTPUT_FOLDER = 'I:/';
+// Global Variables. Re-assigned later
+var GLOBAL_OUTPUT_FOLDER = '';
 var GLOBAL_PARAGRAPH_TEXT = '';
 var GLOBAL_POINT_TEXT = '';
 var GLOBAL_POINT_ARRAY = '';
 var GLOBAL_PARAGRAPH_ARRAY = '';
 
-// Get the date for names
+// Functions
+
+// Timestamp
 function getDateStamp() {
   var date = new Date();
   var year = date.getFullYear();
@@ -136,35 +172,49 @@ function getDateStamp() {
   var minutes = date.getMinutes();
   var seconds = date.getSeconds();
 
-  var dateStamp = year.toString() + '-'
-    + month.toString() + '-'
-    + day.toString() + '-'
-    + hours.toString() + '-'
-    + minutes.toString() + '-'
+  var dateStamp =
+    year.toString()
+    + '-'
+    + month.toString()
+    + '-'
+    + day.toString()
+    + '-'
+    + hours.toString()
+    + '-'
+    + minutes.toString()
+    + '-'
     + seconds.toString();
   return dateStamp;
 }
 /**
- * @description Creates a PNG for each font, filled with letters, numbers and symbols.
+ * @description Creates a PNG for each font, 
+ * filled with letters, numbers and symbols.
  */
 function createFontReferencePNGs() {
+  checkOutputFolder()
   var loremIpsum = '0123456789-' + '\r'
     + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + '\r'
     + 'abcdefghijklmnopqrstuvwxyz' + '\r'
-    + '`~!@#$%^&*()_=+[]{};:",<.>/?\'';
+    + '-`~!@#$%^&*()_=+[]{};:",<.>/?\'';
 
-  for (var font in fontsAllObj) {
-    var iterativeEntry = fontsAllObj[font]
-    var newDocument = app.documents.add(2020, 2050, 72, iterativeEntry, NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
+  for (var allFont in FONTS_ALL) {
+    var fontIDX = FONTS_ALL[allFont]
+    var newDocument = app.documents.add(
+      2020,
+      2050,
+      72,
+      fontIDX,
+      NewDocumentMode.RGB,
+      DocumentFill.TRANSPARENT);
     var layers = newDocument.artLayers;
     var newLayer = layers.add();
 
-    newLayer.name = iterativeEntry;
+    newLayer.name = fontIDX;
     newLayer.kind = LayerKind.TEXT;
 
     var textItem = newLayer.textItem;
     textItem.contents = loremIpsum;
-    textItem.font = iterativeEntry;
+    textItem.font = fontIDX;
     textItem.size = 50;
     textItem.justification = Justification.LEFT;
     textItem.position = [0, (newDocument.height * .5)];
@@ -173,12 +223,20 @@ function createFontReferencePNGs() {
 
     try {
       // Check if directory exists
-      var outputFolder = GLOBAL_OUTPUT_FOLDER + 'fontReference' + '/';
-      var folder = new Folder(outputFolder);
-      if (!folder.exists) {
-        folder.create();
+      var fontReferenceFolder =
+        GLOBAL_OUTPUT_FOLDER
+        + '/'
+        + '_createFontReference'
+        + '/';
+      var myFolder = new Folder(fontReferenceFolder);
+      if (!myFolder.exists) {
+        myFolder.create();
       }
-      var saveFilePNG = new File(new File(outputFolder + '/' + iterativeEntry + '.png'));
+      var saveFilePNG = new File(new File(
+        fontReferenceFolder +
+        '/' +
+        fontIDX +
+        '.png'));
       if (saveFilePNG.exists) {
         app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
         continue;
@@ -196,72 +254,101 @@ function createFontReferencePNGs() {
 /**
  * @param {string} fnFont get font name from font objects
  * @param {string} fnExt set PNG || PSD
- * @description Creates a PNG for each character name, using the 'main' font of the game
+ * @description Creates a PNG for each character name
+ * using the 'main' font of the game
  */
-function createAllCharacterTitlesPNGs(fnFont) {
-  for (var i = 0; i < allCharListArray.length; i++) {
-    var iterativeEntry = allCharListArray[i];
-    var newDocument = app.documents.add(4000, 4000, 72, iterativeEntry, NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
+function createAllCharacterTitles(fnFont, fnExt) {
+  checkOutputFolder()
+  for (var charIDX = 0; charIDX < CHARS_ALL.length; charIDX++) {
+    var characterName = CHARS_ALL[charIDX];
+    var newDocument = app.documents.add(
+      4000,
+      4000,
+      72,
+      characterName,
+      NewDocumentMode.RGB,
+      DocumentFill.TRANSPARENT);
     var layers = newDocument.artLayers;
     var newLayer = layers.add();
-    newLayer.name = iterativeEntry;
+    newLayer.name = characterName;
     newLayer.kind = LayerKind.TEXT;
     var textItem = newLayer.textItem;
     // adjust text appearance
-    textItem.contents = allCharListArray[i];
+    textItem.contents = characterName;
     textItem.font = fnFont;
     textItem.size = 200;
     // set image on left side
     textItem.justification = Justification.LEFT;
-    textItem.position = [0, (newDocument.height * .5)];
+    textItem.position = [0, (newDocument.height * .5)]; // centered
     app.activeDocument.trim(TrimType.TRANSPARENT, true, true, true, true);
-    // delete bottom layer (Layer 1)
     layers[1].remove();
-    var fnExt = 'png';
 
-    // Switch the value of funcFont to the key of the object
-    var tempKeyStr = '';
-    for (var key in fontsMainObj) {
-      if (fontsMainObj[key] == fnFont) {
-        tempKeyStr = key;
+    // Switch the value of fnFont to the key of the object
+    var mainFont = '';
+    for (var key in FONTS_MAIN) {
+      if (FONTS_MAIN[key] == fnFont) {
+        mainFont = key;
       }
     }
     // Check if directory exists
-    var outputFolder = GLOBAL_OUTPUT_FOLDER + 'characterTitles' + '/' + tempKeyStr + '/';
-    var folder = new Folder(outputFolder);
-    if (!folder.exists) {
-      folder.create();
+    var AllCharacterTitlesFolder =
+      GLOBAL_OUTPUT_FOLDER
+      + '/'
+      + '_createAllCharacterTitles'
+      + '/'
+      + mainFont
+      + '/';
+    var myFolder = new Folder(AllCharacterTitlesFolder);
+    if (!myFolder.exists) {
+      myFolder.create();
     }
     // Save the file
-    if (fnExt == 'PNG'
-      || fnExt == 'png') {
-      var saveFilePNG = new File(new File(outputFolder + 'Title_' + iterativeEntry + '_' + tempKeyStr + '.png'));
+    if (fnExt == 'PNG' || fnExt == 'png') {
+      var saveFilePNG = new File(new File(
+        AllCharacterTitlesFolder
+        + 'Title_'
+        + characterName
+        + '_' + mainFont
+        + '.png'));
       SavePNG(saveFilePNG);
     }
-    else if (fnExt == 'PSD'
-      || fnExt == 'psd') {
-      var saveFilePSD = new File(new File(outputFolder + 'Title_' + iterativeEntry + '_' + tempKeyStr + '.psd'));
+    else if (fnExt == 'PSD' || fnExt == 'psd') {
+      var saveFilePSD = new File(new File(
+        AllCharacterTitlesFolder
+        + 'Title_'
+        + characterName
+        + '_'
+        + mainFont
+        + '.psd'));
       SavePSD(saveFilePSD);
     }
   }
 }
 
 /**
- *
  * @param {string} fnFont get font name from fontsAllObj
  * @param {number} fnSize set font size of point text
  * @param {string} fnExt set PNG || PSD
- * @param {boolean} promptOrNot set true for prompt || false for GLOBAL_POINT_TEXT
+ * @param {boolean} promptOrNot set true for prompt 
+ * || false for GLOBAL_POINT_TEXT
  */
 function writePointText(fnFont, fnSize, fnExt, promptOrNot) {
-  var newDocument = app.documents.add(4000, 4000, 72, 'name', NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
+  checkOutputFolder()
+  var newDocument = app.documents.add(
+    4000,
+    4000,
+    72,
+    'name',
+    NewDocumentMode.RGB,
+    DocumentFill.TRANSPARENT);
   var layers = newDocument.artLayers;
   var newLayer = layers.add();
   newLayer.name = 'name';
   newLayer.kind = LayerKind.TEXT;
   var pointTextItem = newLayer.textItem;
   if (promptOrNot == true) {
-    var promptAnswer = prompt("Enter text", "Will be used for Content and FileName");
+    var promptAnswer = prompt(
+      "Enter text", "Used as content and file name");
     pointTextItem.contents = promptAnswer
   }
   else if (promptOrNot == false) {
@@ -275,18 +362,25 @@ function writePointText(fnFont, fnSize, fnExt, promptOrNot) {
   app.activeDocument.trim(TrimType.TRANSPARENT, true, true, true, true);
   // delete bottom layer (Layer 1)
   layers[1].remove();
-  saveLogic(fnExt, fnFont)
+  savePointOrParagraphFile('PNT_', fnExt, fnFont)
 }
-
 
 /**
  * @param {string} fnFont get font name from fontsAllObj
  * @param {number} fnSize set font size of point text
  * @param {string} fnExt set PNG || PSD
- * @param {boolean} promptOrNot set true for prompt || set false to use GLOBAL_PARAGRAPH_TEXT contents
+ * @param {boolean} promptOrNot set true for prompt 
+ * || set false to use GLOBAL_PARAGRAPH_TEXT contents
  */
 function writeParagraphText(fnFont, fnSize, fnExt, promptOrNot) {
-  var addDocument = app.documents.add(1920, 1080, 72, 'Temp', NewDocumentMode.RGB, DocumentFill.TRANSPARENT); //app.documents.add();
+  checkOutputFolder()
+  var addDocument = app.documents.add(
+    1920,
+    1080,
+    72,
+    'Temp',
+    NewDocumentMode.RGB,
+    DocumentFill.TRANSPARENT);
   var addLayer = addDocument.artLayers.add();
   addLayer.kind = LayerKind.TEXT;
 
@@ -295,7 +389,8 @@ function writeParagraphText(fnFont, fnSize, fnExt, promptOrNot) {
   paragraphTextItem.kind = TextType.PARAGRAPHTEXT;
 
   if (promptOrNot == true) {
-    var promptAnswer = prompt("Enter text", "Will be used for Content and FileName");
+    var promptAnswer = prompt(
+      "Enter text", "Used as content and file name");
     paragraphTextItem.contents = promptAnswer
   }
   else if (promptOrNot == false) {
@@ -308,25 +403,37 @@ function writeParagraphText(fnFont, fnSize, fnExt, promptOrNot) {
   paragraphTextItem.width = addDocument.width;
   paragraphTextItem.height = addDocument.height;
   paragraphTextItem.justification = Justification.LEFT;
-  paragraphTextItem.tracking = -50; // space between letters
+  paragraphTextItem.tracking = -75; // space between letters
   paragraphTextItem.autoLeadingAmount = 150; // line spacing
   paragraphTextItem.useAutoLeading = true;
-  paragraphTextItem.baselineShift = -30; // shift the text up or down
+  paragraphTextItem.baselineShift = -30; // shift the whole text up or down
 
-  saveLogic(fnExt, fnFont)
+  savePointOrParagraphFile('PAR_', fnExt, fnFont)
 }
 
-
-// createAllCharacterTitlesPNGs(mainFontsObj.MVC1)
-function saveLogic(fnExt, fnFont) {
-  if (fnExt == 'PNG'
-    || fnExt == 'png') {
-    var saveFilePNG = new File(new File(GLOBAL_OUTPUT_FOLDER + '/' + fnFont + '_' + getDateStamp().toString() + '.png'));
+function savePointOrParagraphFile(fnPntOrPar, fnExt, fnFont) {
+  if (fnExt == 'PNG' || fnExt == 'png') {
+    var saveFilePNG = new File(new File(
+      GLOBAL_OUTPUT_FOLDER
+      + '/'
+      + fnPntOrPar
+      // + '/'
+      + fnFont
+      + '_'
+      + getDateStamp().toString()
+      + '.png'));
     SavePNG(saveFilePNG);
   }
-  else if (fnExt == 'PSD'
-    || fnExt == 'psd') {
-    var saveFilePSD = new File(new File(GLOBAL_OUTPUT_FOLDER + '/' + fnFont + '_' + getDateStamp().toString() + '.psd'));
+  else if (fnExt == 'PSD' || fnExt == 'psd') {
+    var saveFilePSD = new File(new File(
+      GLOBAL_OUTPUT_FOLDER
+      + '/'
+      + fnPntOrPar
+      // + '/'
+      + fnFont
+      + '_'
+      + getDateStamp().toString()
+      + '.psd'));
     SavePSD(saveFilePSD);
   }
 }
@@ -352,11 +459,11 @@ function SavePNG(saveFilePNG) {
 }
 
 // Write point-style text files for a list in ALL fonts
-function writeTextLoop() {
+function writePointTextLoop() {
   for (var i = 0; i < GLOBAL_POINT_ARRAY.length; i++) {
     GLOBAL_POINT_TEXT = GLOBAL_POINT_ARRAY[i]
-    for (var subFont in fontsMainObj) {
-      writePointText(fontsMainObj[subFont], 72, 'png', false);
+    for (var mainFont in FONTS_MAIN) {
+      writePointText(FONTS_MAIN[mainFont], 72, 'png', false);
     }
   }
 }
@@ -365,45 +472,48 @@ function writeTextLoop() {
 function writeParagraphTextLoop() {
   for (var text in GLOBAL_PARAGRAPH_ARRAY) {
     GLOBAL_PARAGRAPH_TEXT = GLOBAL_PARAGRAPH_ARRAY[text]
-    for (var subFont in fontsSubOneObj) {
-      writeParagraphText(fontsSubOneObj[subFont], 100, 'png', false);
+    for (var subFont in FONTS_SUB) {
+      writeParagraphText(FONTS_SUB[subFont], 100, 'png', false);
     }
   }
 }
-// CreateAllCharacterTitles for all fonts
+
 function createAllCharacterTitlesPNGsLoop() {
-  for (var subFont in fontsMainObj) {
-    createAllCharacterTitlesPNGs(fontsMainObj[subFont]);
+  for (var mainFont in FONTS_MAIN) {
+    createAllCharacterTitles(FONTS_MAIN[mainFont], 'png');
   }
 }
 
+// Check if GLOBAL_OUTPUT_FOLDER exists
+// is called within functions
+function checkOutputFolder() {
+  var myFolder = new Folder(GLOBAL_OUTPUT_FOLDER);
+  if (!myFolder.exists) {
+    myFolder.create();
+  }
+}
 
+// Re-assign Globals
+GLOBAL_OUTPUT_FOLDER = 'I:/fontTests';
+GLOBAL_POINT_TEXT = 'Dizzy';
+GLOBAL_PARAGRAPH_TEXT = 'There are two observable RAM values for the Dizzy mechanic. The main dizzy counter and the timer before the dizzy counter resets.';
 GLOBAL_POINT_ARRAY = [
-  'Magnetro vs MikeZ',
-  'Mario vs Sonic',
+  'test-point',
 ];
-
 GLOBAL_PARAGRAPH_ARRAY = [
-  'make loren ipsum text for paragraph text',
-  'Lorem Ipsum psum.'
+  'test-paragraph',
 ];
 
-// Font Objects Available
-/*
-  fontsAllObj
-  fontsMainObj
-  fontsSubOneObj
-*/
+// Call Stuff 📞
 
-//Call Stuff 📞
-
-// Dynamic Stuff
-// writeParagraphTextLoop()
-writeTextLoop()
-
-// Static-Reference Stuff
+// Reference
 // createFontReferencePNGs()
 // createAllCharacterTitlesPNGsLoop()
 
+// Dynamic Single
+// writeParagraphText(FONTS_MAIN['SFA3'], 100, 'png', false)
+// writePointText(FONTS_MAIN['SFA3'], 100, 'png', false)
 
-// writePointText(fontsSubOneObj.COTA, 72, 'png', false);
+// Dynamic Arrays
+// writeParagraphTextLoop()
+// writePointTextLoop()
