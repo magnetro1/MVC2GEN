@@ -17,9 +17,12 @@ that write text from a string variable:
 - writeParagraphText() : GLOBAL_PARAGRAPH_TEXT
 
 However, there are also duplicate functions
-that write the contents from respective arrays:
-- writePointTextLoop() : GLOBAL_POINT_ARRAY
-- writeParagraphTextLoop() : GLOBAL_PARAGRAPH_ARRAY
+that write contents from respective arrays FOR EACH font:
+- writePointTextForArrayAndGame() : GLOBAL_POINT_ARRAY
+- writeParagraphTextForArrayAndGame() : GLOBAL_PARAGRAPH_ARRAY
+As well as functions that write array contents for ONLY ONE font:
+- writePointTextForArray()
+- writeParagraphTextForArray()
 
 There are two reference functions that create
 a preset list of PNGs with prefilled text:
@@ -378,13 +381,14 @@ function createAllCharacterTitles(fnFont, fnExt) {
 }
 
 /**
- * @param {string} fnFont get font name from fontsAllObj
- * @param {number} fnSize set font size of point text
+ * @param {string} fnFont font name from FONTS_MAIN, etc.
+ * @param {number} fnSize font size of point text
+ * @param {number} fnTracking tracking between letters
  * @param {string} fnExt set PNG || PSD
  * @param {boolean} promptOrNot set true for prompt 
  * || false for GLOBAL_POINT_TEXT
  */
-function writePointText(fnFont, fnSize, fnExt, promptOrNot) {
+function writePointText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
   existsOutputFolder()
   var newDocument = app.documents.add(
     4000,
@@ -411,6 +415,7 @@ function writePointText(fnFont, fnSize, fnExt, promptOrNot) {
   // set image on left side
   pointTextItem.justification = Justification.LEFT;
   pointTextItem.position = [0, (newDocument.height * .5)];
+  pointTextItem.tracking = fnTracking; // space between letters
   app.activeDocument.trim(TrimType.TRANSPARENT, true, true, true, true);
   // delete bottom layer (Layer 1)
   layers[1].remove();
@@ -420,11 +425,12 @@ function writePointText(fnFont, fnSize, fnExt, promptOrNot) {
 /**
  * @param {string} fnFont get font name from fontsAllObj
  * @param {number} fnSize set font size of point text
+ * @param {number} fnTracking tracking between letters
  * @param {string} fnExt set PNG || PSD
  * @param {boolean} promptOrNot set true for prompt 
  * || set false to use GLOBAL_PARAGRAPH_TEXT contents
  */
-function writeParagraphText(fnFont, fnSize, fnExt, promptOrNot) {
+function writeParagraphText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
   existsOutputFolder()
   var addDocument = app.documents.add(
     1920,
@@ -455,7 +461,7 @@ function writeParagraphText(fnFont, fnSize, fnExt, promptOrNot) {
   paragraphTextItem.width = addDocument.width;
   paragraphTextItem.height = addDocument.height;
   paragraphTextItem.justification = Justification.LEFT;
-  paragraphTextItem.tracking = -75; // space between letters
+  paragraphTextItem.tracking = fnTracking; // space between letters
   paragraphTextItem.autoLeadingAmount = 150; // line spacing
   paragraphTextItem.useAutoLeading = true;
   paragraphTextItem.baselineShift = -30; // shift the whole text up or down
@@ -463,22 +469,45 @@ function writeParagraphText(fnFont, fnSize, fnExt, promptOrNot) {
   savePointOrParagraphFile('PAR_', fnExt, fnFont)
 }
 
-// Write point-style text files for a list in ALL fonts
-function writePointTextLoop() {
+/**
+* @description Write point-style text files
+* for each array entry for each mainFont
+*/
+function writePointTextForArrayAndGame() {
   for (var i = 0; i < GLOBAL_POINT_ARRAY.length; i++) {
     GLOBAL_POINT_TEXT = GLOBAL_POINT_ARRAY[i]
     for (var mainFont in FONTS_MAIN) {
-      writePointText(FONTS_MAIN[mainFont], 72, 'png', false);
+      writePointText(FONTS_MAIN[mainFont], 72, 0, 'png', false);
     }
   }
 }
 
-function writeParagraphTextLoop() {
+function writeParagraphTextForArrayAndGame() {
   for (var text in GLOBAL_PARAGRAPH_ARRAY) {
     GLOBAL_PARAGRAPH_TEXT = GLOBAL_PARAGRAPH_ARRAY[text]
     for (var subFont in FONTS_SUB) {
-      writeParagraphText(FONTS_SUB[subFont], 72, 'png', false);
+      writeParagraphText(FONTS_SUB[subFont], 72, 0, 'png', false);
     }
+  }
+}
+/**
+* @description Write point-style text files
+* for each array entry for one font
+*/
+function writePointTextForArray(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
+  for (var i = 0; i < GLOBAL_POINT_ARRAY.length; i++) {
+    GLOBAL_POINT_TEXT = GLOBAL_POINT_ARRAY[i]
+    writePointText(fnFont, fnSize, fnTracking, fnExt, promptOrNot);
+  }
+}
+/**
+* @description Write paragraph-style text files
+* for each array entry for one font
+*/
+function writeParagraphTextForArray(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
+  for (var text in GLOBAL_PARAGRAPH_ARRAY) {
+    GLOBAL_PARAGRAPH_TEXT = GLOBAL_PARAGRAPH_ARRAY[text]
+    writeParagraphText(fnFont, fnSize, fnTracking, fnExt, promptOrNot)
   }
 }
 
@@ -490,7 +519,7 @@ function createAllCharacterTitlesPNGsLoop() {
 
 // Re-assign Globals
 GLOBAL_OUTPUT_FOLDER = 'I:/fontTests';
-GLOBAL_POINT_TEXT = 'Dizzy';
+GLOBAL_POINT_TEXT = 'Magnetro Presents';
 GLOBAL_PARAGRAPH_TEXT = 'There are two observable RAM values for the Dizzy mechanic. The main dizzy counter and the timer before the dizzy counter resets.';
 GLOBAL_POINT_ARRAY = [
   'test-point',
@@ -506,9 +535,13 @@ GLOBAL_PARAGRAPH_ARRAY = [
 // createAllCharacterTitlesPNGsLoop()
 
 // Dynamic Single
-// writeParagraphText(FONTS_MAIN['SFA3'], 100, 'png', false)
-// writePointText(FONTS_MAIN['SFA3'], 100, 'png', false)
+// writePointText(FONTS_MAIN['CVS2'], 72, 0, 'png', false)
+// writeParagraphText(FONTS_SUB['SFA3'], 72, 0, 'png', false)
 
-// Dynamic Arrays
-// writeParagraphTextLoop()
-// writePointTextLoop()
+// Dynamic Arrays FOR ONE font
+writePointTextForArray(FONTS_MAIN['CVS2'], 72, 0, 'png', false)
+writeParagraphTextForArray(FONTS_SUB['SFA3'], 72, 0, 'png', false)
+
+// Dynamic Arrays FOR EACH font
+// writePointTextForArrayAndGame()
+// writeParagraphTextForArrayAndGame()
