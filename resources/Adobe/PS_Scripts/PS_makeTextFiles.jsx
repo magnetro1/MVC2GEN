@@ -2,39 +2,39 @@
 
 This script creates custom titles
 as PNG or PSD files using special
-fonts in Photoshop. 
+fonts in Photoshop.
 
 All functions are called at the bottom.
 
 There are three Font-Objects:
-- FONTS_ALL: contains all game-fonts
-- FONTS_MAIN: contains one chosen main font for each game
-- FONTS_SUB: contains one chosen sub font for each game
+  FONTS_ALL: contains all game-fonts
+  FONTS_MAIN: contains one chosen main font for each game
+  FONTS_SUB: contains one chosen sub font for each game
 
 There are two types of dynamic text functions
 that write text from a string variable:
-- writePointText() : GLOBAL_POINT_TEXT
-- writeParagraphText() : GLOBAL_PARAGRAPH_TEXT
+  writePointText() : GLOBAL_POINT_TEXT
+  writeParagraphText() : GLOBAL_PARAGRAPH_TEXT
 
 However, there are also duplicate functions
 that write contents from respective arrays FOR EACH font:
-- writePointTextForArrayAndGame() : GLOBAL_POINT_ARRAY
-- writeParagraphTextForArrayAndGame() : GLOBAL_PARAGRAPH_ARRAY
+  writePointTextForArrayAndGame() : GLOBAL_POINT_ARRAY
+  writeParagraphTextForArrayAndGame() : GLOBAL_PARAGRAPH_ARRAY
 As well as functions that write array contents for ONLY ONE font:
-- writePointTextForArray()
-- writeParagraphTextForArray()
+  writePointTextForArray()
+  writeParagraphTextForArray()
 
 There are two reference functions that create
 a preset list of PNGs with prefilled text:
 - FONTS:
-  - createAllFontsReference():
+  createAllFontsReference():
     creates a PNG for each font in FONTS_ALL
     using a preset string of letters, numbers and symbols
   CHARACTERS:
-  - createAllCharacterTitles
+  createAllCharacterTitles
     creates a PNG title for each character name
     using the 'main' font of one game
-  - createAllCharacterTitlesForEachGame():
+  createAllCharacterTitlesForEachGame():
     creates a PNG title for each character name
     for each game using mainFont from the FONTS_MAIN object,
 
@@ -191,6 +191,7 @@ function getDateStamp() {
   var minutes = date.getMinutes();
   var seconds = date.getSeconds();
   var milliseconds = date.getMilliseconds();
+
 
   function padNumber(number) {
     if (number < 10) {
@@ -554,8 +555,10 @@ function createAllCharacterTitlesForEachGame() {
 
 // Re-assign Globals
 GLOBAL_OUTPUT_FOLDER = 'I:/fontTests';
+
 GLOBAL_POINT_TEXT = 'Magnetro Presents';
 GLOBAL_PARAGRAPH_TEXT = 'There are two observable RAM values for the Dizzy mechanic. The main dizzy counter and the timer before the dizzy counter resets.';
+
 GLOBAL_POINT_ARRAY = [
   'Magnetro Presents',
 ];
@@ -568,7 +571,7 @@ GLOBAL_PARAGRAPH_ARRAY = [
 // Reference
 // createAllFontsReference()
 // createAllCharacterTitles(FONTS_MAIN['COTA'])
-// createAllCharacterTitlesForEachGame()
+// createAllCharacterTitlesForEachGame() // takes a while
 
 // Dynamic Single
 // writePointText(FONTS_MAIN['COTA'], 72, 0, 'png', false)
@@ -579,5 +582,5 @@ GLOBAL_PARAGRAPH_ARRAY = [
 // writeParagraphTextForArray(FONTS_SUB['SFA3'], 72, 0, 'png', false)
 
 // Dynamic Arrays FOR EACH font
-writePointTextForArrayAndGame()
-writeParagraphTextForArrayAndGame()
+// writePointTextForArrayAndGame()
+// writeParagraphTextForArrayAndGame()
