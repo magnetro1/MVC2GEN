@@ -503,6 +503,11 @@ export const MIN_MAX_ADDRESSES = [
   // 'P1_Combo_Meter_Value',
   // 'P2_Combo_Meter_Value',
 ];
+/**
+ * @description Letter prefixes for each character's memory addresses
+ * @example P1_A_, P1_B_, P1_C_, P2_A_, P2_B_, P2_C_
+ */
+export const PMEM_PREFIXES = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_']
 
 /**
  * @description Contains the addresses for rounding
@@ -1001,11 +1006,6 @@ export const INPUT_T2 =
   "START": 32768,
   "SELECT": 2,
 };
-/**
- * @description Letter prefixes for each character's memory addresses
- * @example P1_A_, P1_B_, P1_C_, P2_A_, P2_B_, P2_C_
- */
-export const PMEM_PREFIXES = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_']
 
 // Names by Shortest to Longest
 /*

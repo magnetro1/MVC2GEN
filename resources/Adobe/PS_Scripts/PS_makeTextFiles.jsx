@@ -1,5 +1,5 @@
+// Documenation:
 /*
-
 This script creates custom titles
 as PNG or PSD files using special
 fonts in Photoshop.
@@ -36,8 +36,7 @@ a preset list of PNGs with prefilled text:
       using the 'main' font of one game
     createAllCharacterTitlesForEachGame():
       creates a PNG title for each character name
-      for each game using mainFont from the FONTS_MAIN object,
-
+      for each game using mainFont from the FONTS_MAIN object
 */
 
 // Static Stuff
@@ -159,7 +158,19 @@ var FONTS_SUB = {
   'SFA3': FONTS_ALL['SFA3_02'],
   'XVSF': FONTS_ALL['XVSF_05'],
 };
+var GLOBAL_OUTPUT_FOLDER = '';
 
+var GLOBAL_POINT_TEXT =
+  '';
+
+var GLOBAL_PARAGRAPH_TEXT =
+  '';
+var GLOBAL_POINT_ARRAY = [
+  '',
+];
+var GLOBAL_PARAGRAPH_ARRAY = [
+  '',
+];
 // Helper Functions
 /**
  * @description Creates a the main GLOBAL_OUTPUT_FOLDER
@@ -254,7 +265,9 @@ function savePointOrParagraphFile(fnPntOrPar, fnExt, fnFont) {
       + '_'
       + getDateStamp()
       + '.'
-      + fnExt));
+      + fnExt
+    )
+  );
   if (fnExt == 'PNG' || fnExt == 'png') {
     SavePNG(targetFolderAndFile);
   }
@@ -272,7 +285,12 @@ function SavePSD(PSDFileName) {
   psdSaveOptions.layers = true;
   psdSaveOptions.annotations = true;
   psdSaveOptions.spotColors = true;
-  app.activeDocument.saveAs(PSDFileName, psdSaveOptions, false, Extension.LOWERCASE);
+  app.activeDocument.saveAs(
+    PSDFileName,
+    psdSaveOptions,
+    false,
+    Extension.LOWERCASE
+  );
   app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
 }
 /**
@@ -282,7 +300,12 @@ function SavePNG(PNGFileName) {
   pngSaveOptions = new PNGSaveOptions();
   pngSaveOptions.interlaced = false;
   pngSaveOptions.compression = 0;;
-  app.activeDocument.saveAs(PNGFileName, pngSaveOptions, true, Extension.LOWERCASE);
+  app.activeDocument.saveAs(
+    PNGFileName,
+    pngSaveOptions,
+    true,
+    Extension.LOWERCASE
+  );
   app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
 }
 // Main Functions - Reference
@@ -292,9 +315,13 @@ function SavePNG(PNGFileName) {
  */
 function createAllFontsReference() {
   existsOutputFolder()
-  var loremIpsum = '0123456789-' + '\r'
-    + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + '\r'
-    + 'abcdefghijklmnopqrstuvwxyz' + '\r'
+  var loremIpsum =
+    '0123456789-'
+    + '\r'
+    + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    + '\r'
+    + 'abcdefghijklmnopqrstuvwxyz'
+    + '\r'
     + '-`~!@#$%^&*()_=+[]{};:",<.>/?\'';
 
   for (var allFont in FONTS_ALL) {
@@ -305,7 +332,8 @@ function createAllFontsReference() {
       72,
       fontIDX,
       NewDocumentMode.RGB,
-      DocumentFill.TRANSPARENT);
+      DocumentFill.TRANSPARENT
+    );
     var layers = newDocument.artLayers;
     var newLayer = layers.add();
 
@@ -342,7 +370,9 @@ function createAllFontsReference() {
         + '_'
         + fontIDX
         + '.'
-        + 'png'));
+        + 'png'
+      )
+    );
     SavePNG(myPNGFile);
   }
 }
@@ -362,7 +392,8 @@ function createAllCharacterTitles(fnFont) {
       72,
       characterName,
       NewDocumentMode.RGB,
-      DocumentFill.TRANSPARENT);
+      DocumentFill.TRANSPARENT
+    );
     var layers = newDocument.artLayers;
     var newLayer = layers.add();
     newLayer.name = characterName;
@@ -402,7 +433,9 @@ function createAllCharacterTitles(fnFont) {
         + '_'
         + characterName
         + '.'
-        + 'png'));
+        + 'png'
+      )
+    );
     SavePNG(myPNGFile);
   }
 }
@@ -424,7 +457,8 @@ function writePointText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
     72,
     'name',
     NewDocumentMode.RGB,
-    DocumentFill.TRANSPARENT);
+    DocumentFill.TRANSPARENT
+  );
   var layers = newDocument.artLayers;
   var newLayer = layers.add();
   newLayer.name = 'name';
@@ -467,7 +501,8 @@ function writeParagraphText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
     72,
     'Temp',
     NewDocumentMode.RGB,
-    DocumentFill.TRANSPARENT);
+    DocumentFill.TRANSPARENT
+  );
   var addLayer = addDocument.artLayers.add();
   addLayer.kind = LayerKind.TEXT;
 
@@ -483,7 +518,6 @@ function writeParagraphText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
   else if (promptOrNot == false) {
     paragraphTextItem.contents = GLOBAL_PARAGRAPH_TEXT;
   }
-
   paragraphTextItem.font = fnFont;
   paragraphTextItem.size = fnSize;
   paragraphTextItem.position = [0, 0];
@@ -529,7 +563,7 @@ function writePointTextForArrayAndGame() {
   for (var i = 0; i < GLOBAL_POINT_ARRAY.length; i++) {
     GLOBAL_POINT_TEXT = GLOBAL_POINT_ARRAY[i]
     for (var mainFont in FONTS_MAIN) {
-      writePointText(FONTS_MAIN[mainFont], 72, 0, 'png', false);
+      writePointText(FONTS_MAIN[mainFont], 72, -75, 'png', false);
     }
   }
 }
@@ -538,7 +572,7 @@ function writeParagraphTextForArrayAndGame() {
   for (var text in GLOBAL_PARAGRAPH_ARRAY) {
     GLOBAL_PARAGRAPH_TEXT = GLOBAL_PARAGRAPH_ARRAY[text]
     for (var subFont in FONTS_SUB) {
-      writeParagraphText(FONTS_SUB[subFont], 72, 0, 'png', false);
+      writeParagraphText(FONTS_SUB[subFont], 80, -125, 'png', false);
     }
   }
 }
@@ -551,17 +585,22 @@ function createAllCharacterTitlesForEachGame() {
     createAllCharacterTitles(FONTS_MAIN[mainFont], 'png');
   }
 }
+
 // Globals
-var GLOBAL_OUTPUT_FOLDER = 'I:/fontTests';
+GLOBAL_OUTPUT_FOLDER = 'I:/fontTests';
 
-var GLOBAL_POINT_TEXT = 'Magnetro Presents';
-var GLOBAL_PARAGRAPH_TEXT = 'There are two observable RAM values for the Dizzy mechanic. The main dizzy counter and the timer before the dizzy counter resets.';
+GLOBAL_POINT_TEXT =
+  "";
 
-var GLOBAL_POINT_ARRAY = [
-  'Magnetro Presents',
+GLOBAL_PARAGRAPH_TEXT =
+  "";
+GLOBAL_POINT_ARRAY = [
+  "TVI vs Jed",
 ];
-var GLOBAL_PARAGRAPH_ARRAY = [
-  'There are two observable RAM values for the Dizzy mechanic. The main dizzy counter and the timer before the dizzy counter resets.',
+GLOBAL_PARAGRAPH_ARRAY = [
+  "1) 'Animation_Timer_Main' addresses track the pre-determined length in time of supers. The counter can be slowed down by mashing. For example, Hail Storm's timer is always 32, and if you don't mash, it will count down by 1 on every frame. However mashing can slow down the counter, extending the time that the super is active; allowing more Hail to be generated.",
+  "2) If Frame Skip is off and the mashing is perfect, the threshold for maximum-mash-possible can be reached on the first frame. For example, Hail Storm\'s value of 32 can be frozen at 32 for 15 frames. At which point, the maximum mash will have been reached and the super will count down every frame, and no extra time will be added.",
+
 ];
 
 // Call Stuff 📞
@@ -571,14 +610,14 @@ var GLOBAL_PARAGRAPH_ARRAY = [
 // createAllCharacterTitles(FONTS_MAIN['COTA'])
 // createAllCharacterTitlesForEachGame() // takes a while
 
-// Dynamic Single
-// writePointText(FONTS_MAIN['COTA'], 72, 0, 'png', false)
+// Dynamic Single String
+// writePointText(FONTS_MAIN['MVC2'], 72, -50, 'png', false)
 // writeParagraphText(FONTS_SUB['COTA'], 72, 0, 'png', false)
 
 // Dynamic Arrays FOR ONE font
-// writePointTextForArray(FONTS_MAIN['CVS2'], 72, 0, 'png', false)
+// writePointTextForArray(FONTS_MAIN['XVSF'], 72, 0, 'png', false)
 // writeParagraphTextForArray(FONTS_SUB['SFA3'], 72, 0, 'png', false)
 
 // Dynamic Arrays FOR EACH font
 // writePointTextForArrayAndGame()
-// writeParagraphTextForArrayAndGame()
+writeParagraphTextForArrayAndGame()
