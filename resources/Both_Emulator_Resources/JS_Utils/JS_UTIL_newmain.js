@@ -26,10 +26,6 @@ import {
   DIR_CSVS,
 } from './JS_UTIL_paths.js';
 
-// function sleep(ms) {
-//   return new Promise(resolve => setTimeout(resolve, ms));
-// }
-
 console.time('⏱');
 // Write exportToAE folder if it doesn't exist
 if (!fs.existsSync(DIR_EXPORT_TO_AE)) {
@@ -439,9 +435,8 @@ for (let csv = 0; csv < csvArr.length; csv++) {
     pMemList.push('P1_' + label);
     pMemList.push('P2_' + label);
   });
-  // fetchPMemEntries()
-  // console.log(pMemList)
-  async function fillPMemObject() {
+
+  async function allPromisePMemObject() {
     for (let i = 0; i < pMemList.length; i += 2) { // has P1 and P2 entries; skip every other entry
       let pMemEntry = pMemList[i]
         .toString()
@@ -455,9 +450,6 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       });
     }
   }
-  // await fillPMemObject();
-  // console.log(pMemObject);
-
 
   // Main function to write data to files
   /**
@@ -1036,11 +1028,11 @@ for (let csv = 0; csv < csvArr.length; csv++) {
         }
       }
       for (let statAdr = 0; statAdr < STATIC_DATA_ADRS.length; statAdr++) {
-        const staticDataPromise = new Promise((resolve, reject) => {
+        const getStaticData = new Promise((resolve, reject) => {
           resolve(getPlayerMemory(`${p1OrP2}`, STATIC_DATA_ADRS[statAdr].toString(), 0));
           reject("Error");
         });
-        const callPlayerMemoryFN = await staticDataPromise;
+        const callPlayerMemoryFN = await getStaticData;
         for (let pABC = 0; pABC < callPlayerMemoryFN.length; pABC++) // [0][1][2]
         {
           for (let clipLen = 0; clipLen < callPlayerMemoryFN[pABC].length; clipLen++) {
@@ -1434,7 +1426,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
               nStateObj.State_Magneto_Moves[pABC].push('Tempest')
               // ELSE NOTHING
             } else {
-              nStateObj.State_Magneto_Moves[pABC].push(',')
+              nStateObj.State_Magneto_Moves[pABC].push('')
             }
           }
 
@@ -2503,7 +2495,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   writeTeamNames();
   appendMinMaxRound();
   await writeSortedJS();
-  await fillPMemObject();
+  await allPromisePMemObject();
   fetchPMemEntries().forEach(async function (label) {
     await writePlayerMemory(1, label.toString());
     await writePlayerMemory(2, label.toString());
