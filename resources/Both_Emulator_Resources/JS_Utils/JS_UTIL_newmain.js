@@ -25,22 +25,23 @@ import {
   DIR_EXPORT_TO_AE,
   DIR_CSVS,
 } from './JS_UTIL_paths.js';
-import { parse } from 'path';
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+// function sleep(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
 console.time('⏱');
 // Write exportToAE folder if it doesn't exist
 if (!fs.existsSync(DIR_EXPORT_TO_AE)) {
   fs.mkdirSync(DIR_EXPORT_TO_AE);
 }
+
 /*
 --------------------------------------------------
 Step 1: Get the CSV file names from a directory
 --------------------------------------------------
 */
+
 let csvArr = [];
 let csvNameArr = [];
 
@@ -58,10 +59,12 @@ csvArr.forEach((name) => {
 });
 // console.log(`Step 1: Found ${csvFilesArr.length} CSV files.`);
 /*
+
 --------------------------------------------------
 Step 2: Process CSV
 --------------------------------------------------
 */
+
 // Main loop starts here
 for (let csv = 0; csv < csvArr.length; csv++) {
   let headersArray = [];
@@ -126,7 +129,6 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       if ((arrayOfNumbers[0] == 0) && (arrayOfNumbers[1] != 0)) {
         return arrayOfNumbers[1];
       }
-      // Opposite
       else if ((arrayOfNumbers[1] == 0) && (arrayOfNumbers[0] != 0)) {
         return arrayOfNumbers[0];
       }
@@ -881,29 +883,28 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   function writeTeamNames() {
     const id = [];
     const name = [];
-    // put the first entry of each ID into an array.
-    id.push(dataObject.P1_A_ID_2.split(',')[0]);
-    id.push(dataObject.P1_B_ID_2.split(',')[0]);
-    id.push(dataObject.P1_C_ID_2.split(',')[0]);
-    id.push(dataObject.P2_A_ID_2.split(',')[0]);
-    id.push(dataObject.P2_B_ID_2.split(',')[0]);
-    id.push(dataObject.P2_C_ID_2.split(',')[0]);
+    // put the LAST entry of each ID into an array.
+    id.push(dataObject.P1_A_ID_2.split(',')[dataObject.P1_A_ID_2.split(',').length - 1]);
+    id.push(dataObject.P1_B_ID_2.split(',')[dataObject.P1_B_ID_2.split(',').length - 1]);
+    id.push(dataObject.P1_C_ID_2.split(',')[dataObject.P1_C_ID_2.split(',').length - 1]);
+    id.push(dataObject.P2_A_ID_2.split(',')[dataObject.P2_A_ID_2.split(',').length - 1]);
+    id.push(dataObject.P2_B_ID_2.split(',')[dataObject.P2_B_ID_2.split(',').length - 1]);
+    id.push(dataObject.P2_C_ID_2.split(',')[dataObject.P2_C_ID_2.split(',').length - 1]);
     // look up ID name
     id.forEach((id) => {
       name.push(DEC_NAME_TABLE_OBJ[id]);
     });
-
     // Convert assist types to symbols.
     const assistType = [];
     const assistCNV = [];
     const assistSymbols = ['α', 'β', 'γ']
     // 0, 1, 2 = α, β, γ
-    assistType.push(dataObject.P1_A_Assist_Value.split(',')[0]);
-    assistType.push(dataObject.P1_B_Assist_Value.split(',')[0]);
-    assistType.push(dataObject.P1_C_Assist_Value.split(',')[0]);
-    assistType.push(dataObject.P2_A_Assist_Value.split(',')[0]);
-    assistType.push(dataObject.P2_B_Assist_Value.split(',')[0]);
-    assistType.push(dataObject.P2_C_Assist_Value.split(',')[0]);
+    assistType.push(dataObject.P1_A_Assist_Value.split(',')[dataObject.P1_A_Assist_Value.split(',').length - 1]);
+    assistType.push(dataObject.P1_B_Assist_Value.split(',')[dataObject.P1_B_Assist_Value.split(',').length - 1]);
+    assistType.push(dataObject.P1_C_Assist_Value.split(',')[dataObject.P1_C_Assist_Value.split(',').length - 1]);
+    assistType.push(dataObject.P2_A_Assist_Value.split(',')[dataObject.P2_A_Assist_Value.split(',').length - 1]);
+    assistType.push(dataObject.P2_B_Assist_Value.split(',')[dataObject.P2_B_Assist_Value.split(',').length - 1]);
+    assistType.push(dataObject.P2_C_Assist_Value.split(',')[dataObject.P2_C_Assist_Value.split(',').length - 1]);
 
     // Convert assist types to symbols.
     assistType.forEach((assist) => {
@@ -1828,7 +1829,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
           });
         }
 
-        // StartROMStuff
+        // Start ROM Stuff
         // 01_Opponent State A Setup. Set Loop point for 01_OpponentStateA (Magneto lands from his Super Jump)
         if (nStateObj.State_Magneto_ROM_01_OpponentStateA != undefined) {
           const ROM_OPPONENTSTATES =
