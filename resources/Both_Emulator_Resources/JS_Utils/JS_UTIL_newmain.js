@@ -435,8 +435,15 @@ for (let csv = 0; csv < csvArr.length; csv++) {
     pMemList.push('P1_' + label);
     pMemList.push('P2_' + label);
   });
+  // console.log(`${pMemList}`); // ex: P2_Air_Recovery_Timer
 
-  async function allPromisePMemObject() {
+  /**
+   * @description Pushes all the player memory addresses into the pMemObject
+   * @returns {Promise} Returns an object with the point-character memory results for PMemList
+   * @async
+   * @example await pushAllPMemPrommises();
+  */
+  async function pushAllPMemPrommises() {
     for (let i = 0; i < pMemList.length; i += 2) { // has P1 and P2 entries; skip every other entry
       let pMemEntry = pMemList[i]
         .toString()
@@ -448,6 +455,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       pMemObject[pMemList[i + 1]] = await new Promise((res, rej) => { // i is P2
         res(getPlayerMemory(2, pMemEntry))
       });
+      // console.log(`pMemObject: ${ Object.entries(pMemObject) }`);
     }
   }
 
@@ -493,7 +501,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
         if ((Object.values(pointObj)[0][clipLen] == 0)
           && (Object.values(pointObj)[1][clipLen] == 0)
           && (Object.values(pointObj)[2][clipLen] == 0)) {
-          // console.log( `${ p1P2 }: 3 - Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC` );
+          // console.log(`${p1P2}: 3-Character Bug Logic: A == 0 && B == 0 && C == 0    P1: ABC`);
           pMemArr[0].push(pMemFile[`${Object.keys(pointObj)[0]}${pMemAdr}`].split(',')[clipLen]);
           pMemArr[1].push(pMemFile[`${Object.keys(pointObj)[1]}${pMemAdr}`].split(',')[clipLen]);
           pMemArr[2].push(pMemFile[`${Object.keys(pointObj)[2]}${pMemAdr}`].split(',')[clipLen]);
@@ -502,21 +510,21 @@ for (let csv = 0; csv < csvArr.length; csv++) {
         else if ((Object.values(pointObj)[0][clipLen] == 0)
           && (Object.values(pointObj)[1][clipLen] == 0)
           && (Object.values(pointObj)[2][clipLen] != 0)) {
-          // console.log( `${ p1P2 }: 2 - Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB` );
+          // console.log(`${p1P2}: 2-Character Bug Logic: A == 0 && B == 0 && C != 0    P1: AB`);
           pMemArr[0].push(pMemFile[`${Object.keys(pointObj)[0]}${pMemAdr}`].split(',')[clipLen]);
           pMemArr[1].push(pMemFile[`${Object.keys(pointObj)[1]}${pMemAdr}`].split(',')[clipLen]);
         }
         else if ((Object.values(pointObj)[0][clipLen] == 0)
           && (Object.values(pointObj)[1][clipLen] != 0)
           && (Object.values(pointObj)[2][clipLen] == 0)) {
-          // console.log( `${ p1P2 }: 2 - Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC` );
+          // console.log(`${p1P2}: 2-Character Bug Logic: A == 0 && B != 0 && C == 0    P1: AC`);
           pMemArr[0].push(pMemFile[`${Object.keys(pointObj)[0]}${pMemAdr}`].split(',')[clipLen]);
           pMemArr[1].push(pMemFile[`${Object.keys(pointObj)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
         else if ((Object.values(pointObj)[0][clipLen] != 0)
           && (Object.values(pointObj)[1][clipLen] == 0)
           && (Object.values(pointObj)[2][clipLen] == 0)) {
-          // console.log( `${ p1P2 }: 2 - Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC` );
+          // console.log(`${p1P2}: 2-Character Bug Logic: A != 0 && B == 0 && C == 0    P1: BC`);
           pMemArr[0].push(pMemFile[`${Object.keys(pointObj)[1]}${pMemAdr}`].split(',')[clipLen]);
           pMemArr[1].push(pMemFile[`${Object.keys(pointObj)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
@@ -524,22 +532,22 @@ for (let csv = 0; csv < csvArr.length; csv++) {
         else if ((Object.values(pointObj)[0][clipLen] == 0)
           && (Object.values(pointObj)[1][clipLen] != 0)
           && (Object.values(pointObj)[2][clipLen] != 0)) {
-          // console.log(`${ p1P2 }: 1 - Character Logic: A == 0 && B != 0 && C != 0        P1: A`);
+          // console.log(`${p1P2}: 1-Character Logic: A == 0 && B != 0 && C != 0        P1: A`);
           pMemArr[0].push(pMemFile[`${Object.keys(pointObj)[0]}${pMemAdr}`].split(',')[clipLen]);
         }//                       P1|P2        P1_A        Health_Big                        i
         else if ((Object.values(pointObj)[0][clipLen] != 0)
           && (Object.values(pointObj)[1][clipLen] == 0)
           && (Object.values(pointObj)[2][clipLen] != 0)) {
-          // console.log(`${ p1P2 }: 1 - Character Logic: A != 0 && B == 0 && C != 0        P1: B`);
+          // console.log(`${p1P2}: 1-Character Logic: A != 0 && B == 0 && C != 0        P1: B`);
           pMemArr[0].push(pMemFile[`${Object.keys(pointObj)[1]}${pMemAdr}`].split(',')[clipLen]);
         }
         else if ((Object.values(pointObj)[0][clipLen] != 0)
           && (Object.values(pointObj)[1][clipLen] != 0)
           && (Object.values(pointObj)[2][clipLen] == 0)) {
-          // console.log(`${ p1P2 }: 1 - Character Logic: A != 0 && B != 0 && C == 0       P1: C`);
+          // console.log(`${p1P2}: 1-Character Logic: A != 0 && B != 0 && C == 0       P1: C`);
           pMemArr[0].push(pMemFile[`${Object.keys(pointObj)[2]}${pMemAdr}`].split(',')[clipLen]);
         }
-      } // loop end
+      }
 
       // Write the file if it doesn't exist yet.
       if (!fs.existsSync(`${DIR_OUTPATH}/${p1P2}_${pMemAdr.split(',')}.js`)) {
@@ -674,9 +682,9 @@ for (let csv = 0; csv < csvArr.length; csv++) {
    */
   let playerOneInputs = [];
   /**
- * @description Used for writeNewStates()
- * to check P1 and P2 inputs for state tracking.
- */
+  * @description Used for writeNewStates()
+  * to check P1 and P2 inputs for state tracking.
+  */
   let playerTwoInputs = [];
   /**
   * @description Converts and writes inputs to one file that
@@ -873,15 +881,42 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   }
 
   function writeTeamNames() {
+    let playerOne = '';
+    let playerTwo = '';
     const id = [];
     const name = [];
-    // put the LAST entry of each ID into an array.
-    id.push(dataObject.P1_A_ID_2.split(',')[dataObject.P1_A_ID_2.split(',').length - 1]);
-    id.push(dataObject.P1_B_ID_2.split(',')[dataObject.P1_B_ID_2.split(',').length - 1]);
-    id.push(dataObject.P1_C_ID_2.split(',')[dataObject.P1_C_ID_2.split(',').length - 1]);
-    id.push(dataObject.P2_A_ID_2.split(',')[dataObject.P2_A_ID_2.split(',').length - 1]);
-    id.push(dataObject.P2_B_ID_2.split(',')[dataObject.P2_B_ID_2.split(',').length - 1]);
-    id.push(dataObject.P2_C_ID_2.split(',')[dataObject.P2_C_ID_2.split(',').length - 1]);
+    const P1_A_ID_2 = dataObject.P1_A_ID_2.split(',');
+    const P1_B_ID_2 = dataObject.P1_B_ID_2.split(',');
+    const P1_C_ID_2 = dataObject.P1_C_ID_2.split(',');
+    const P2_A_ID_2 = dataObject.P2_A_ID_2.split(',');
+    const P2_B_ID_2 = dataObject.P2_B_ID_2.split(',');
+    const P2_C_ID_2 = dataObject.P2_C_ID_2.split(',');
+    const P1_A_Assist_Value = dataObject.P1_A_Assist_Value.split(',');
+    const P1_B_Assist_Value = dataObject.P1_B_Assist_Value.split(',');
+    const P1_C_Assist_Value = dataObject.P1_C_Assist_Value.split(',');
+    const P2_A_Assist_Value = dataObject.P2_A_Assist_Value.split(',');
+    const P2_B_Assist_Value = dataObject.P2_B_Assist_Value.split(',');
+    const P2_C_Assist_Value = dataObject.P2_C_Assist_Value.split(',');
+
+    // Find the first non-ryu-ryu-ryu ID
+    let firstValidFrame = 0;
+    for (let i = 0; i < dataObject.P1_A_ID_2.split(',').length; i++) {
+      if ((dataObject.P1_A_ID_2.split(',')[i] != 0)
+        && (dataObject.P1_B_ID_2.split(',')[i] != 0)
+        && (dataObject.P1_C_ID_2.split(',')[i] != 0)) {
+        firstValidFrame = i;
+        break;
+      } else {
+        continue;
+      }
+    }
+    id.push(P1_A_ID_2[firstValidFrame]);
+    id.push(P1_B_ID_2[firstValidFrame]);
+    id.push(P1_C_ID_2[firstValidFrame]);
+    id.push(P2_A_ID_2[firstValidFrame]);
+    id.push(P2_B_ID_2[firstValidFrame]);
+    id.push(P2_C_ID_2[firstValidFrame]);
+
     // look up ID name
     id.forEach((id) => {
       name.push(DEC_NAME_TABLE_OBJ[id]);
@@ -891,25 +926,25 @@ for (let csv = 0; csv < csvArr.length; csv++) {
     const assistCNV = [];
     const assistSymbols = ['α', 'β', 'γ']
     // 0, 1, 2 = α, β, γ
-    assistType.push(dataObject.P1_A_Assist_Value.split(',')[dataObject.P1_A_Assist_Value.split(',').length - 1]);
-    assistType.push(dataObject.P1_B_Assist_Value.split(',')[dataObject.P1_B_Assist_Value.split(',').length - 1]);
-    assistType.push(dataObject.P1_C_Assist_Value.split(',')[dataObject.P1_C_Assist_Value.split(',').length - 1]);
-    assistType.push(dataObject.P2_A_Assist_Value.split(',')[dataObject.P2_A_Assist_Value.split(',').length - 1]);
-    assistType.push(dataObject.P2_B_Assist_Value.split(',')[dataObject.P2_B_Assist_Value.split(',').length - 1]);
-    assistType.push(dataObject.P2_C_Assist_Value.split(',')[dataObject.P2_C_Assist_Value.split(',').length - 1]);
+    assistType.push(P1_A_Assist_Value[firstValidFrame]);
+    assistType.push(P1_B_Assist_Value[firstValidFrame]);
+    assistType.push(P1_C_Assist_Value[firstValidFrame]);
+    assistType.push(P2_A_Assist_Value[firstValidFrame]);
+    assistType.push(P2_B_Assist_Value[firstValidFrame]);
+    assistType.push(P2_C_Assist_Value[firstValidFrame]);
 
     // Convert assist types to symbols.
     assistType.forEach((assist) => {
       assistCNV.push(assistSymbols[assist]);
     });
 
-    let playerOne = '';
-    let playerTwo = '';
-    playerOne += `P1: ${name[0]}-${assistCNV[0]}, `
+    playerOne += `P1: `
+    playerOne += `${name[0]}-${assistCNV[0]}, `
     playerOne += `${name[1]}-${assistCNV[1]}, `
     playerOne += `${name[2]}-${assistCNV[2]}`
 
-    playerTwo += `P2: ${name[3]}-${assistCNV[3]}, `
+    playerTwo += `P2: `
+    playerTwo += `${name[3]}-${assistCNV[3]}, `
     playerTwo += `${name[4]}-${assistCNV[4]}, `
     playerTwo += `${name[5]}-${assistCNV[5]}`;
 
@@ -1090,7 +1125,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   --------------------------------------------------
   End of Core Functions
   --------------------------------------------------
-
+  
   --------------------------------------------------
   Step 4: Begin Write-State Functions
   --------------------------------------------------
@@ -2495,7 +2530,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   writeTeamNames();
   appendMinMaxRound();
   await writeSortedJS();
-  await allPromisePMemObject();
+  await pushAllPMemPrommises();
   fetchPMemEntries().forEach(async function (label) {
     await writePlayerMemory(1, label.toString());
     await writePlayerMemory(2, label.toString());
