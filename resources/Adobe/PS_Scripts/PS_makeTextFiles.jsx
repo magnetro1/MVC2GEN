@@ -595,12 +595,10 @@ GLOBAL_POINT_TEXT =
 GLOBAL_PARAGRAPH_TEXT =
   "";
 GLOBAL_POINT_ARRAY = [
-  "TVI vs Jed",
+  "",
 ];
 GLOBAL_PARAGRAPH_ARRAY = [
-  "1) 'Animation_Timer_Main' addresses track the pre-determined length in time of supers. The counter can be slowed down by mashing. For example, Hail Storm's timer is always 32, and if you don't mash, it will count down by 1 on every frame. However mashing can slow down the counter, extending the time that the super is active; allowing more Hail to be generated.",
-  "2) If Frame Skip is off and the mashing is perfect, the threshold for maximum-mash-possible can be reached on the first frame. For example, Hail Storm\'s value of 32 can be frozen at 32 for 15 frames. At which point, the maximum mash will have been reached and the super will count down every frame, and no extra time will be added.",
-
+  "",
 ];
 
 // Call Stuff 📞
@@ -611,13 +609,13 @@ GLOBAL_PARAGRAPH_ARRAY = [
 // createAllCharacterTitlesForEachGame() // takes a while
 
 // Dynamic Single String
-// writePointText(FONTS_MAIN['MVC2'], 72, -50, 'png', false)
+// writePointText(FONTS_MAIN['XVSF'], 72, -50, 'png', false)
 // writeParagraphText(FONTS_SUB['COTA'], 72, 0, 'png', false)
 
 // Dynamic Arrays FOR ONE font
 // writePointTextForArray(FONTS_MAIN['XVSF'], 72, 0, 'png', false)
-// writeParagraphTextForArray(FONTS_SUB['SFA3'], 72, 0, 'png', false)
+writeParagraphTextForArray(FONTS_SUB['XVSF'], 15, 0, 'png', false)
 
 // Dynamic Arrays FOR EACH font
 // writePointTextForArrayAndGame()
-writeParagraphTextForArrayAndGame()
+// writeParagraphTextForArrayAndGame()

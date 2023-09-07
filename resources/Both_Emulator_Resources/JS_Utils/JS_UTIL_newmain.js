@@ -900,10 +900,10 @@ for (let csv = 0; csv < csvArr.length; csv++) {
 
     // Find the first non-ryu-ryu-ryu ID
     let firstValidFrame = 0;
-    for (let i = 0; i < dataObject.P1_A_ID_2.split(',').length; i++) {
-      if ((dataObject.P1_A_ID_2.split(',')[i] != 0)
-        && (dataObject.P1_B_ID_2.split(',')[i] != 0)
-        && (dataObject.P1_C_ID_2.split(',')[i] != 0)) {
+    for (let i = 0; i < P1_A_ID_2.length; i++) {
+      if ((P1_A_ID_2[i] != 0)
+        && (P1_B_ID_2[i] != 0)
+        && (P1_C_ID_2[i] != 0)) {
         firstValidFrame = i;
         break;
       } else {
