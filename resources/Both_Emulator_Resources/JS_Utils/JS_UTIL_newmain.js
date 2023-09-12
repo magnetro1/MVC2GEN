@@ -32,17 +32,12 @@ if (!fs.existsSync(DIR_EXPORT_TO_AE)) {
   fs.mkdirSync(DIR_EXPORT_TO_AE);
 }
 
-/*
---------------------------------------------------
-Step 1: Get the CSV file names from a directory
---------------------------------------------------
-*/
-
 let csvArr = [];
 let csvNameArr = [];
 
 fs.readdirSync(DIR_CSVS).forEach(function (file) {
-  if (file.endsWith('.csv') || file.endsWith('.CSV')) {
+  if (file.endsWith('.csv')
+    || file.endsWith('.CSV')) {
     csvArr.push(file);
   }
 });
@@ -54,12 +49,6 @@ csvArr.forEach((name) => {
   csvNameArr.push(temp);
 });
 // console.log(`Step 1: Found ${csvFilesArr.length} CSV files.`);
-/*
-
---------------------------------------------------
-Step 2: Process CSV
---------------------------------------------------
-*/
 
 // Main loop starts here
 for (let csv = 0; csv < csvArr.length; csv++) {
@@ -200,39 +189,48 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       STRUCT[colIdx].push(allDataArray[rowIdx][colIdx]);
     }
   }
+  const clipDataAE = '_clipDataAE';
+
   // Check for missing entries. Two strings, write once.
-  let missingEntries = [`/*\n`];
-  for (let i = 0; i < STRUCT[0].length - 1; i++) // total frames
-  {
-    if (STRUCT[0][i + 1] - STRUCT[0][i] !== 1) {
-      missingEntries.push(`Missing data after Total_Frame #: ${STRUCT[0][i]}\n`);
+  function writeMissingEntries(csv, DIR_OUTPATH) {
+    let missingEntries = [`/*\n`];
+    for (let i = 0; i < STRUCT[0].length - 1; i++) // Total_Frames
+    {
+      if (STRUCT[0][i + 1] - STRUCT[0][i] !== 1) {
+        missingEntries.push(`Missing data after Total_Frame #: ${STRUCT[0][i]}\n`);
+      }
+      else {
+        continue;
+      }
     }
-    else {
-      continue
+    // If MissingEntries is empty:
+    if (missingEntries.length == 0) {
+      missingEntries.push('/*\nNo missing entries\n');
     }
-  }
-  // If MissingEntries is empty:
-  const clipDataAE = '_clipDataAE'
-  if (missingEntries.length == 0) {
-    missingEntries.push('/*\nNo missing entries\n');
-  }
-  missingEntries.push(
-    `\nFirst entry in Total_Frames: ${STRUCT[0][0]}\n`
-    + `Final entry in Total_Frames: ${STRUCT[0][STRUCT[0].length - 1]}\n\n`
-    + `Total_Frames in Clip: ${STRUCT[0].length}\n*/\n\n`
-    + `var result = [];\n`
-    + `result[0] = '${csvNameArr[csv]}';\n`
-  );
+    missingEntries.push(
+      `\nFirst entry in Total_Frames: ${STRUCT[0][0]}\n`
+      + `Final entry in Total_Frames: ${STRUCT[0][STRUCT[0].length - 1]}\n\n`
+      + `Total_Frames in Clip: ${STRUCT[0].length}\n*/\n\n`
+      + `var result = [];\n`
+      + `result[0] = '${csvNameArr[csv]}';\n`
+    );
 
-  fs.writeFileSync(`${DIR_OUTPATH}${clipDataAE}.js`,
-    missingEntries.toString().replace(/,/g, ''));
+    fs.writeFileSync(`${DIR_OUTPATH}${clipDataAE}.js`,
+      missingEntries.toString().replace(/,/g, ''));
+  }
 
-  // console.log(`Step 2: Wrote ${DIR_OUTPATH}_${csvSoloNameArr[csvFilesIDX]}.js`)
-  /*
-  --------------------------------------------------
-  Step 3: Make dataObject & Start Core Functions
-  --------------------------------------------------
-  */
+
+
+
+
+
+
+
+
+
+  writeMissingEntries(csv, DIR_OUTPATH);
+
+
   let tempJS = `${DIR_EXPORT_TO_AE}${csvNameArr[csv]}.js`;
 
   let dataObject = {};
@@ -455,7 +453,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       pMemObject[pMemList[i + 1]] = await new Promise((res, rej) => { // i is P2
         res(getPlayerMemory(2, pMemEntry))
       });
-      // console.log(`pMemObject: ${ Object.entries(pMemObject) }`);
+      // console.log(`pMemObject: ${Object.keys(pMemObject)}`);
     }
   }
 
@@ -643,7 +641,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       'utf8'
     );
   }
-
+  // TODO get logic from other function to fish out where the real first frame is
   function writeStageDataCNV() {
     let stageDataArr = [];
     let stageDataCNV = [];
@@ -667,10 +665,6 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       + `result[2] = [${stageNamesCNV}];\n`,
       'utf8'
     );
-    fs.appendFileSync(`${DIR_OUTPATH}${clipDataAE}.js`,
-      `result[3] = ${stageNamesCNV[0].toString()};`
-    );
-
     stageDataArr = [];
     stageDataCNV = [];
     stageNamesCNV = [];
@@ -883,6 +877,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   function writeTeamNames() {
     let playerOne = '';
     let playerTwo = '';
+    let stageName = '';
     const id = [];
     const name = [];
     const P1_A_ID_2 = dataObject.P1_A_ID_2.split(',');
@@ -897,7 +892,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
     const P2_A_Assist_Value = dataObject.P2_A_Assist_Value.split(',');
     const P2_B_Assist_Value = dataObject.P2_B_Assist_Value.split(',');
     const P2_C_Assist_Value = dataObject.P2_C_Assist_Value.split(',');
-
+    const STAGE_SELECTOR = dataObject.Stage_Selector.split(',');
     // Find the first non-ryu-ryu-ryu ID
     let firstValidFrame = 0;
     for (let i = 0; i < P1_A_ID_2.length; i++) {
@@ -948,9 +943,14 @@ for (let csv = 0; csv < csvArr.length; csv++) {
     playerTwo += `${name[4]}-${assistCNV[4]}, `
     playerTwo += `${name[5]}-${assistCNV[5]}`;
 
+    const stageSelection = STAGE_SELECTOR[firstValidFrame];
+    stageName = Object.values(STAGES_NAMES)[stageSelection];
+
     fs.appendFileSync(`${DIR_OUTPATH}${clipDataAE}.js`,
       `result[1] = '${playerOne}';\n`
-      + `result[2] = '${playerTwo}';\n`,
+      + `result[2] = '${playerTwo}';\n`
+      + `result[3] = '${stageName}';\n`,
+      'utf8'
     );
   }
 
@@ -1036,28 +1036,36 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       "ID_2"
     ]
     let lookUpArr = [[], [], []];
+    let player_ = '';
+    let fileText = `var result = [];` + '\n';
     for (let p1OrP2 = 1; p1OrP2 < 3; p1OrP2++) {
+      if (p1OrP2 == 1) {
+        player_ = 'P1_';
+      } else if (p1OrP2 == 2) {
+        player_ = 'P2_';
+      }
+      // console.log(player_);
       for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++) {
 
         // Write base file
         if (STATIC_DATA_OBJS[staticDataLen] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition
         {
-          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitsToTime.js`,
-            `var result = [];` + '\n',
+          fs.writeFileSync(`${DIR_OUTPATH}${player_}PortraitsToTime.js`,
+            fileText,
             'utf8'
           );
-          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitPosition.js`,
-            `var result = [];` + '\n',
+          fs.writeFileSync(`${DIR_OUTPATH}${player_}PortraitPosition.js`,
+            fileText,
             'utf8'
           );
-          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_CVS2PortraitPosition.js`,
-            `var result = [];` + '\n',
+          fs.writeFileSync(`${DIR_OUTPATH}${player_}CVS2PortraitPosition.js`,
+            fileText,
             'utf8'
           );
         }
         else {
-          fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[staticDataLen]}_CNV.js`,
-            `var result = [];` + '\n',
+          fs.writeFileSync(`${DIR_OUTPATH}${player_}${STATIC_DATA_ADRS[staticDataLen]}_CNV.js`,
+            fileText,
             'utf8'
           );
         }
@@ -1075,11 +1083,10 @@ for (let csv = 0; csv < csvArr.length; csv++) {
           }
           if (STATIC_DATA_OBJS[statAdr] == PORTRAITS_TO_TIME_OBJ) // PortraitsToTime Condition && Portraits to Position
           {
-            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitsToTime.js`,
+            fs.appendFileSync(`${DIR_OUTPATH}${player_}PortraitsToTime.js`,
               `result[${pABC}] = [${lookUpArr[pABC]}];\n`,
               'utf8'
             );
-            // lookUpArr = [[], [], []];
 
             // AE_TO_NormalComposition_POS
             let posArray = lookUpArr[pABC].map((portrait) => {
@@ -1091,26 +1098,26 @@ for (let csv = 0; csv < csvArr.length; csv++) {
               return portrait;
             });
 
-            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_PortraitPosition.js`,
+            fs.appendFileSync(`${DIR_OUTPATH}${player_}PortraitPosition.js`,
               `result[${pABC}] = [${posArray}];\n`,
               'utf8'
             );
 
             // AE_TO_CVS2Composition_POS
-            let posArray2 = lookUpArr[pABC].map((portrait) => {
+            let posArrayCVS2 = lookUpArr[pABC].map((portrait) => {
               portrait = portrait.replace(/'/g, '');
               portrait = AE_TO_CVS2_POSITION_OBJ[portrait];
               portrait = [`[${portrait}]`]; /// wrap in brackets
               return portrait;
             });
 
-            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_CVS2PortraitPosition.js`,
-              `result[${pABC}] = [${posArray2}];\n`,
+            fs.appendFileSync(`${DIR_OUTPATH}${player_}CVS2PortraitPosition.js`,
+              `result[${pABC}] = [${posArrayCVS2}];\n`,
               'utf8'
             );
             lookUpArr = [[], [], []];
           } else {
-            fs.appendFileSync(`${DIR_OUTPATH}P${p1OrP2}_${STATIC_DATA_ADRS[statAdr]}_CNV.js`,
+            fs.appendFileSync(`${DIR_OUTPATH}${player_}${STATIC_DATA_ADRS[statAdr]}_CNV.js`,
               `result[${pABC}] = [${lookUpArr[pABC]}];\n`,
               'utf8'
             );
@@ -1121,15 +1128,6 @@ for (let csv = 0; csv < csvArr.length; csv++) {
     }
   };
 
-  /*
-  --------------------------------------------------
-  End of Core Functions
-  --------------------------------------------------
-  
-  --------------------------------------------------
-  Step 4: Begin Write-State Functions
-  --------------------------------------------------
-  */
   /**
    * @description Writes State-Files that count and
    * increment consecutive true values.
@@ -2531,6 +2529,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   appendMinMaxRound();
   await writeSortedJS();
   await pushAllPMemPrommises();
+  // fetchPMemEntries()
   fetchPMemEntries().forEach(async function (label) {
     await writePlayerMemory(1, label.toString());
     await writePlayerMemory(2, label.toString());

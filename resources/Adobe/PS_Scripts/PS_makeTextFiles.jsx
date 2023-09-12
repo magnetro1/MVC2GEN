@@ -128,6 +128,7 @@ var FONTS_ALL = {
   'MVC2_02': 'MvC2FontType2',
   'MVC2_03': 'MvC2FontType3',
   'MVC2_04': 'MvC2Type4',
+  'MVC2_05': 'MvC2Font5Regular',
   'SFA3_01': 'SFA3Name1Regular',
   'SFA3_02': 'SFA3Name2Regular',
   'XVSF_01': 'XvSFRegular',
@@ -154,7 +155,7 @@ var FONTS_SUB = {
   'MSH': FONTS_ALL['MSH_03'],
   'MVSF': FONTS_ALL['MVSF_01'],
   'MVC1': FONTS_ALL['MVC1_01'],
-  'MVC2': FONTS_ALL['MVC2_04'],
+  'MVC2': FONTS_ALL['MVC2_05'],
   'SFA3': FONTS_ALL['SFA3_02'],
   'XVSF': FONTS_ALL['XVSF_05'],
 };
@@ -590,7 +591,7 @@ function createAllCharacterTitlesForEachGame() {
 GLOBAL_OUTPUT_FOLDER = 'I:/fontTests';
 
 GLOBAL_POINT_TEXT =
-  "";
+  "BANKBANK VS JED";
 
 GLOBAL_PARAGRAPH_TEXT =
   "";
@@ -609,12 +610,12 @@ GLOBAL_PARAGRAPH_ARRAY = [
 // createAllCharacterTitlesForEachGame() // takes a while
 
 // Dynamic Single String
-// writePointText(FONTS_MAIN['XVSF'], 72, -50, 'png', false)
+writePointText(FONTS_SUB['MVC2'], 172, -50, 'png', false)
 // writeParagraphText(FONTS_SUB['COTA'], 72, 0, 'png', false)
 
 // Dynamic Arrays FOR ONE font
 // writePointTextForArray(FONTS_MAIN['XVSF'], 72, 0, 'png', false)
-writeParagraphTextForArray(FONTS_SUB['XVSF'], 15, 0, 'png', false)
+// writeParagraphTextForArray(FONTS_SUB['MVC2'], 72, 0, 'png', false)
 
 // Dynamic Arrays FOR EACH font
 // writePointTextForArrayAndGame()
