@@ -343,7 +343,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   }
   // console.log(`Step 3: Updated object with MIN&MAX and wrote tempJS file.`);
 
-  let pMemObject = {};
+  let pMemObject = {}; // 
   let pMemList = [];
 
   /**
@@ -436,10 +436,9 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   // console.log(`${pMemList}`); // ex: P2_Air_Recovery_Timer
 
   /**
-   * @description Pushes all the player memory addresses into the pMemObject
+   * @description Pushes all the promises-results into the pMemObject
    * @returns {Promise} Returns an object with the point-character memory results for PMemList
    * @async
-   * @example await pushAllPMemPrommises();
   */
   async function pushAllPMemPrommises() {
     for (let i = 0; i < pMemList.length; i += 2) { // has P1 and P2 entries; skip every other entry
@@ -2519,18 +2518,14 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       }
     }
   }
+  // End of Player Memory
 
-  /*
-  --------------------------------------------------
-  Step 5: 📞 Call Functions
-  --------------------------------------------------
-  */
+  // Call all the functions
   writeTeamNames();
   appendMinMaxRound();
   await writeSortedJS();
   await pushAllPMemPrommises();
-  // fetchPMemEntries()
-  fetchPMemEntries().forEach(async function (label) {
+  fetchPMemEntries().forEach(async (label) => {
     await writePlayerMemory(1, label.toString());
     await writePlayerMemory(2, label.toString());
   });
