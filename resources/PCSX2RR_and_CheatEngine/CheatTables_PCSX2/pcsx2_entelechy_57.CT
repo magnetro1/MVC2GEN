@@ -9067,7 +9067,7 @@ end
           <AssemblerScript>[ENABLE]
 {$lua}
 -- Variables and Functions
-outPath = "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\CSV_FILES\\MvC2DataAll_Original.csv"
+outPath = "C:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\CSV_FILES\\MvC2DataAll_Original.csv"
 local _starting_new_write_flag = false
 local contScript = true
 local data_table = {}
@@ -9284,12 +9284,12 @@ v166 = address_list.getMemoryRecordByDescription("P1_C_Animation_Value")
 v167 = address_list.getMemoryRecordByDescription("P2_A_Animation_Value")
 v168 = address_list.getMemoryRecordByDescription("P2_B_Animation_Value")
 v169 = address_list.getMemoryRecordByDescription("P2_C_Animation_Value")
-v170 = address_list.getMemoryRecordByDescription("P1_A_Assist_Counter")
-v171 = address_list.getMemoryRecordByDescription("P1_B_Assist_Counter")
-v172 = address_list.getMemoryRecordByDescription("P1_C_Assist_Counter")
-v173 = address_list.getMemoryRecordByDescription("P2_A_Assist_Counter")
-v174 = address_list.getMemoryRecordByDescription("P2_B_Assist_Counter")
-v175 = address_list.getMemoryRecordByDescription("P2_C_Assist_Counter")
+v170 = address_list.getMemoryRecordByDescription("P1_A_Incoming_Timer")
+v171 = address_list.getMemoryRecordByDescription("P1_B_Incoming_Timer")
+v172 = address_list.getMemoryRecordByDescription("P1_C_Incoming_Timer")
+v173 = address_list.getMemoryRecordByDescription("P2_A_Incoming_Timer")
+v174 = address_list.getMemoryRecordByDescription("P2_B_Incoming_Timer")
+v175 = address_list.getMemoryRecordByDescription("P2_C_Incoming_Timer")
 v176 = address_list.getMemoryRecordByDescription("P1_A_Assist_Onscreen")
 v177 = address_list.getMemoryRecordByDescription("P1_B_Assist_Onscreen")
 v178 = address_list.getMemoryRecordByDescription("P1_C_Assist_Onscreen")
@@ -9685,6 +9685,12 @@ v567 = address_list.getMemoryRecordByDescription("P2_Pause_ID")
 v568 = address_list.getMemoryRecordByDescription("Pause_Count")
 v569 = address_list.getMemoryRecordByDescription("Stage_Selector")
 v570 = address_list.getMemoryRecordByDescription("Timer_Secondary")
+v571 = address_list.getMemoryRecordByDescription("THC_State")
+v572 = address_list.getMemoryRecordByDescription("THC_State")
+v573 = address_list.getMemoryRecordByDescription("THC_State")
+v574 = address_list.getMemoryRecordByDescription("THC_State")
+v575 = address_list.getMemoryRecordByDescription("THC_State")
+v576 = address_list.getMemoryRecordByDescription("THC_State")
 
 v0_prev = v0.Value
 
@@ -10268,6 +10274,13 @@ while (currentFrame ~= v0.Value) and contScript do
 	data_table[568] = { desc = v568.Description , val = v568.Value }
 	data_table[569] = { desc = v569.Description , val = v569.Value }
 	data_table[570] = { desc = v570.Description , val = v570.Value }
+    data_table[571] = { desc = v571.Description , val = v571.Value }
+	data_table[572] = { desc = v572.Description , val = v572.Value }
+	data_table[573] = { desc = v573.Description , val = v573.Value }
+	data_table[574] = { desc = v574.Description , val = v574.Value }
+	data_table[575] = { desc = v575.Description , val = v575.Value }
+	data_table[576] = { desc = v576.Description , val = v576.Value }
+
 --stopREGEX
   v0_prev = v0.Value
   csv_write(outPath, data_table)

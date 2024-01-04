@@ -4003,7 +4003,7 @@ writeBytes("demul.exe+D9B536",00)
           <AssemblerScript>[ENABLE]
 {$lua}
 -- Variables and Functions
-outPath = "G:\\Emulators\\Demul\\demul07_111117\\table_outputDC.csv"
+outPath = "C:\\Git\\MVC2GEN\\resources\\Demul_and_CheatEngine\\table_outputDC.csv"
 _starting_new_write_flag = true
 contScript = true
 data_table = {}
@@ -4054,7 +4054,7 @@ file_handle:close()
           <AssemblerScript>[ENABLE]
 {$lua}
 -- Variables and Functions
-outPath = "H:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\CSV_FILES\\MvC2DataAll_Original.csv"
+outPath = "C:\\Git\\MVC2GEN\\resources\\Both_Emulator_Resources\\JS_Utils\\CSV_FILES\\MvC2DataAll_Original.csv"
 _starting_new_write_flag = false
 contScript = true
 data_table = {}
@@ -4641,12 +4641,7 @@ v537 = address_list.getMemoryRecordByDescription("P1_C_Trip_Checker")
 v538 = address_list.getMemoryRecordByDescription("P2_A_Trip_Checker")
 v539 = address_list.getMemoryRecordByDescription("P2_B_Trip_Checker")
 v540 = address_list.getMemoryRecordByDescription("P2_C_Trip_Checker")
-v541 = address_list.getMemoryRecordByDescription("P1_A_Assist_Counter")
-v542 = address_list.getMemoryRecordByDescription("P1_B_Assist_Counter")
-v543 = address_list.getMemoryRecordByDescription("P1_C_Assist_Counter")
-v544 = address_list.getMemoryRecordByDescription("P2_A_Assist_Counter")
-v545 = address_list.getMemoryRecordByDescription("P2_B_Assist_Counter")
-v546 = address_list.getMemoryRecordByDescription("P2_C_Assist_Counter")
+
 v547 = address_list.getMemoryRecordByDescription("P1_A_Normal_Location")
 v548 = address_list.getMemoryRecordByDescription("P1_B_Normal_Location")
 v549 = address_list.getMemoryRecordByDescription("P1_C_Normal_Location")
@@ -4659,6 +4654,19 @@ v555 = address_list.getMemoryRecordByDescription("P1_C_Move_Disable")
 v556 = address_list.getMemoryRecordByDescription("P2_A_Move_Disable")
 v557 = address_list.getMemoryRecordByDescription("P2_B_Move_Disable")
 v558 = address_list.getMemoryRecordByDescription("P2_C_Move_Disable")
+v559 = address_list.getMemoryRecordByDescription("P1_A_THC_State")
+v560 = address_list.getMemoryRecordByDescription("P1_B_THC_State")
+v561 = address_list.getMemoryRecordByDescription("P1_C_THC_State")
+v562 = address_list.getMemoryRecordByDescription("P2_A_THC_State")
+v563 = address_list.getMemoryRecordByDescription("P2_B_THC_State")
+v564 = address_list.getMemoryRecordByDescription("P2_C_THC_State")
+
+v565 = address_list.getMemoryRecordByDescription("P1_A_Incoming_Timer")
+v566 = address_list.getMemoryRecordByDescription("P1_B_Incoming_Timer")
+v567 = address_list.getMemoryRecordByDescription("P1_C_Incoming_Timer")
+v568 = address_list.getMemoryRecordByDescription("P2_A_Incoming_Timer")
+v569 = address_list.getMemoryRecordByDescription("P2_B_Incoming_Timer")
+v570 = address_list.getMemoryRecordByDescription("P2_C_Incoming_Timer")
 
 v0_prev = v0.Value
 
@@ -5212,12 +5220,12 @@ data_table[537]= {desc = v537.Description,val = v537.Value}
 data_table[538]= {desc = v538.Description,val = v538.Value}
 data_table[539]= {desc = v539.Description,val = v539.Value}
 data_table[540]= {desc = v540.Description,val = v540.Value}
-data_table[541]= {desc = v541.Description,val = v541.Value}
-data_table[542]= {desc = v542.Description,val = v542.Value}
-data_table[543]= {desc = v543.Description,val = v543.Value}
-data_table[544]= {desc = v544.Description,val = v544.Value}
-data_table[545]= {desc = v545.Description,val = v545.Value}
-data_table[546]= {desc = v546.Description,val = v546.Value}
+--data_table[541]= {desc = v541.Description,val = v541.Value}
+--data_table[542]= {desc = v542.Description,val = v542.Value}
+--data_table[543]= {desc = v543.Description,val = v543.Value}
+--data_table[544]= {desc = v544.Description,val = v544.Value}
+--data_table[545]= {desc = v545.Description,val = v545.Value}
+--data_table[546]= {desc = v546.Description,val = v546.Value}
 data_table[547]= {desc = v547.Description,val = v547.Value}
 data_table[548]= {desc = v548.Description,val = v548.Value}
 data_table[549]= {desc = v549.Description,val = v549.Value}
@@ -5230,6 +5238,19 @@ data_table[555]= {desc = v555.Description,val = v555.Value}
 data_table[556]= {desc = v556.Description,val = v556.Value}
 data_table[557]= {desc = v557.Description,val = v557.Value}
 data_table[558]= {desc = v558.Description,val = v558.Value}
+data_table[559] = { desc = v559.Description , val = v559.Value }
+data_table[560] = { desc = v560.Description , val = v560.Value }
+data_table[561] = { desc = v561.Description , val = v561.Value }
+data_table[562] = { desc = v562.Description , val = v562.Value }
+data_table[563] = { desc = v563.Description , val = v563.Value }
+data_table[564] = { desc = v564.Description , val = v564.Value }
+
+data_table[565] = { desc = v565.Description , val = v565.Value }
+data_table[566] = { desc = v566.Description , val = v566.Value }
+data_table[567] = { desc = v567.Description , val = v567.Value }
+data_table[568] = { desc = v568.Description , val = v568.Value }
+data_table[569] = { desc = v569.Description , val = v569.Value }
+data_table[570] = { desc = v570.Description , val = v570.Value }
 --stopREGEX
 	v0_prev = v0.Value
 	csv_write(outPath, data_table)
@@ -9678,50 +9699,6 @@ end
               </CheatEntries>
             </CheatEntry>
             <CheatEntry>
-              <ID>14686</ID>
-              <Description>"Assist_Counter"</Description>
-              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
-              <GroupHeader>1</GroupHeader>
-              <CheatEntries>
-                <CheatEntry>
-                  <ID>14687</ID>
-                  <Description>"P1_A_Assist_Counter"</Description>
-                  <VariableType>Byte</VariableType>
-                  <Address>2C2684E3</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>14688</ID>
-                  <Description>"P1_B_Assist_Counter"</Description>
-                  <VariableType>Byte</VariableType>
-                  <Address>2C26902B</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>14689</ID>
-                  <Description>"P1_C_Assist_Counter"</Description>
-                  <VariableType>Byte</VariableType>
-                  <Address>2C269B73</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>14690</ID>
-                  <Description>"P2_A_Assist_Counter"</Description>
-                  <VariableType>Byte</VariableType>
-                  <Address>2C268A87</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>14691</ID>
-                  <Description>"P2_B_Assist_Counter"</Description>
-                  <VariableType>Byte</VariableType>
-                  <Address>2C2695CF</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>14692</ID>
-                  <Description>"P2_C_Assist_Counter"</Description>
-                  <VariableType>Byte</VariableType>
-                  <Address>2C26A117</Address>
-                </CheatEntry>
-              </CheatEntries>
-            </CheatEntry>
-            <CheatEntry>
               <ID>13015</ID>
               <Description>"Assist_Onscreen"</Description>
               <Options moHideChildren="1" moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
@@ -11973,6 +11950,56 @@ end
               </CheatEntries>
             </CheatEntry>
             <CheatEntry>
+              <ID>14773</ID>
+              <Description>"THC_State"</Description>
+              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>14836</ID>
+                  <Description>"P1_A_THC_State"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268595</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>14837</ID>
+                  <Description>"P1_B_THC_State"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C2690DD</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>14838</ID>
+                  <Description>"P1_C_THC_State"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C269C25</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>14839</ID>
+                  <Description>"P2_A_THC_State"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C268B39</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>14840</ID>
+                  <Description>"P2_B_THC_State"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C269681</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>14841</ID>
+                  <Description>"P2_C_THC_State"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>2C26A1C9</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
               <ID>12581</ID>
               <Description>"Throw_Counter_Mash"</Description>
               <Options moHideChildren="1" moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
@@ -12233,56 +12260,6 @@ end
                   <Description>"P2_C_Unfly"</Description>
                   <VariableType>Byte</VariableType>
                   <Address>2C26A14A</Address>
-                </CheatEntry>
-              </CheatEntries>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>14773</ID>
-              <Description>"THC_State"</Description>
-              <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
-              <GroupHeader>1</GroupHeader>
-              <CheatEntries>
-                <CheatEntry>
-                  <ID>14836</ID>
-                  <Description>"P1_A_THC_State"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>2C268595</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>14837</ID>
-                  <Description>"P1_B_THC_State"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>2C2690DD</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>14838</ID>
-                  <Description>"P1_C_THC_State"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>2C269C25</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>14839</ID>
-                  <Description>"P2_A_THC_State"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>2C268B39</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>14840</ID>
-                  <Description>"P2_B_THC_State"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>2C269681</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>14841</ID>
-                  <Description>"P2_C_THC_State"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>2C26A1C9</Address>
                 </CheatEntry>
               </CheatEntries>
             </CheatEntry>
@@ -13154,12 +13131,6 @@ end
     </CheatEntry>
     <CheatEntry>
       <ID>14771</ID>
-      <Description>"header_copy"</Description>
-      <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
-      <GroupHeader>1</GroupHeader>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>14834</ID>
       <Description>"header_copy"</Description>
       <Options moRecursiveSetValue="1" moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
       <GroupHeader>1</GroupHeader>
