@@ -1,5 +1,6 @@
 ﻿;header1 (Check & Run in Admin Mode
-{full_command_line := DllCall("GetCommandLine", "str")
+{
+  full_command_line := DllCall("GetCommandLine", "str")
   
   if not (A_IsAdmin or RegExMatch(full_command_line, " /restart(?!\S)"))
   {

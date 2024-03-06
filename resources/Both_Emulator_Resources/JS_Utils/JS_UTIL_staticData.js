@@ -510,7 +510,7 @@ export const MIN_MAX_ADDRESSES = [
 export const PMEM_PREFIXES = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_']
 
 /**
- * @description Contains the addresses for rounding
+ * @description Addresses that get rounded
  */
 export const FLOATING_POINT_ADDRESSES = [
   'X_Gravity',
@@ -536,8 +536,8 @@ export const FLOATING_POINT_ADDRESSES = [
 ];
 
 /**
-* @description Miscellaneous addresses for which special calculations are not
-necessary. Example: A_2D_Game_Timer
+* @description Miscellaneous addresses for which special 
+calculations are not necessary. Example: A_2D_Game_Timer
 * */
 export const P1P2_ADDRESSES = [
   'Total_Frames',
