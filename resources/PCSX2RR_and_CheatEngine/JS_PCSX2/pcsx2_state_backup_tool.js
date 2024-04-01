@@ -1,7 +1,7 @@
 // State Backup Tool for PCSX2
 import * as fs from 'fs';
 import * as path from 'path';
-import * as punycode from 'punycode';
+
 // import { DIR_PCSX2 } from '../../Both_Emulator_Resources/JS_Utils/JS_UTIL_paths.js';
 
 const DIR_PCSX2 = 'C:/Users/davil/OneDrive/L3/Emulators/PCSX2RR/';
@@ -11,7 +11,6 @@ const REPLAY_EXT = '.p2m';
 const SLEEP_AMOUNT = 1500;
 const errStr = 'No replays found in ' + DIR_PCSX2 + ', exiting...';
 
-// Sleep function to block the thread for a specified amount of time
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -24,6 +23,7 @@ function getNewestReplay() {
     return 'No replays found in ' + DIR_PCSX2 + ', exiting...'
   }
   const newestReplay = replaysList.reduce((previousReplayFile, currentReplayFile) =>
+
     fs.statSync(DIR_PCSX2 + previousReplayFile).mtimeMs > fs.statSync(DIR_PCSX2 + currentReplayFile).mtimeMs
       ? previousReplayFile : currentReplayFile);
   return newestReplay;
