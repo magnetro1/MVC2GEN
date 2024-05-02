@@ -28,7 +28,7 @@ function getNewestReplay() {
       ? previousReplayFile : currentReplayFile);
   return newestReplay;
 }
-console.log(getNewestReplay());
+// console.log(getNewestReplay());
 
 // If no replays are found, exit the script
 if (getNewestReplay() === errStr) {
@@ -45,7 +45,9 @@ function getAndMakeReplayFolder() {
   }
   return ReplayfolderPath;
 }
-
+// store main replay folder in a variable
+const mainReplayFolder = getAndMakeReplayFolder();
+// console.log(mainReplayFolder);
 // Make? and increment a folder inside the Main Replay folder and Return it
 function getAndMakeIncrementedFolder() {
   const mainReplayFolder = getAndMakeReplayFolder();
@@ -74,9 +76,33 @@ function copyReplayAndSstatesToNewFolders() {
     fs.copyFileSync(path.join(DIR_SSTATES, sstate), path.join(newFolderPath, sstate));
   }
   );
-  // Get and copy replay
+
+
   fs.copyFileSync(path.join(DIR_PCSX2, newestReplay), path.join(newFolderPath, newestReplay));
-  return console.log('Copied ' + getNewestReplay() + ' and ' + statesLength + ' states to ' + newFolderPath);
+  // console.log('Copied ' + getNewestReplay() + ' and ' + statesLength + ' states to ' + newFolderPath);
+
+  // find the second newest replay folder and get the replay file's size
+  if (!newFolderPath.endsWith('001')) {
+    const replayFolders = fs.readdirSync(mainReplayFolder);
+    const secondNewestReplayFolder = replayFolders[replayFolders.length - 2];
+    console.log('Second newest replay folder is ' + secondNewestReplayFolder);
+    const replayFiles = fs.readdirSync(path.join(mainReplayFolder, secondNewestReplayFolder));
+    const secondNewestReplay = replayFiles.find(file => file.endsWith(REPLAY_EXT));
+    // Newest replay
+    const stats = fs.statSync(path.join(DIR_PCSX2, newestReplay));
+    const statsMDate = stats.mtimeMs;
+
+    // Second newest replay
+    const stats2 = fs.statSync(path.join(mainReplayFolder, secondNewestReplayFolder, secondNewestReplay));
+    const statsMDate2 = stats2.mtimeMs;
+
+    // Compare the dates of the two replays
+    const timeDifference = statsMDate - statsMDate2;
+    // log the difference in minutes and seconds
+    const minutes = Math.floor(timeDifference / 60000);
+    const seconds = ((timeDifference % 60000) / 1000).toFixed(0);
+    console.log('Difference between ' + newestReplay + ' and ' + secondNewestReplay + ' is ' + minutes + ' minutes and ' + seconds + ' seconds');
+  }
 }
 
 // Run the function and set a timeout in the console
