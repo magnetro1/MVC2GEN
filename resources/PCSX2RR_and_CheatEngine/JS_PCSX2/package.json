@@ -1,25 +1,22 @@
 {
   "name": "pcsx2_state_backup_tool.js",
-  "main": "C:/Git/MVC2GEN/resources/PCSX2RR_and_CheatEngine/JS_PCSX2/pcsx2_state_backup_tool.js",
+  "main": "pcsx2_state_backup_tool.js",
   "version": "2.0.0",
   "type": "module",
-  
   "keywords": [],
   "author": "Magnetro",
   "license": "ISC",
   "homepage": "https://github.com/magnetro1/MVC2GEN",
   "dependencies": {
-    "clipboardy": "^3.0.0",
-    "json5": "^2.2.3",
+    "pkg": "^5.8.1",
+    "python": "^0.0.4",
     "readline": "^1.3.0"
   },
   "scripts": {
-    "build": "npm pkg -t node18-win-x64 --output C:/Git/MVC2GEN/resources/PCSX2RR_and_CheatEngine/JS_PCSX2/pcsx2_state_backup_tool.js C:/Git/MVC2GEN/resources/PCSX2RR_and_CheatEngine/JS_PCSX2/pcsx2_state_backup_tool.js"
+    "build": "pcsx2_state_backup_tool.js --bundle --platform=node --outfile=pcsx2_state_backup_tool.js --sourcemap --minify --target=node16 --external:pkg --external:readline"
   },
   "devDependencies": {
-    "eslint": "^8.38.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.27.5",
+    "@babel/plugin-syntax-import-assertions": "^7.23.3",
     "prettier": "3.0.0"
   }
 }
