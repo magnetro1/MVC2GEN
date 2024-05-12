@@ -10595,13 +10595,13 @@ local fHeight = 552
 -- Custom Font Variables
 local cFont0 = {
   fName = 'Source Code Pro',
-  fSize = 25,
+  fSize = 23,
   fColor = 0xFFFFFF,
 }
 
 local cFont1 = {
   fName = 'Source Code Pro',
-  fSize = 25,
+  fSize = 23,
   fColor = 0xFF0000,
 }
 
@@ -10796,14 +10796,6 @@ local labelX8 = createLabel(MvC2DataDisplay)
       labelX8.Font.Size = cFont0.fSize;
       labelX8.Font.Color = cFont0.fColor;
       labelX8.Font.Name = cFont0.fName
-local labelX9 = createLabel(MvC2DataDisplay)
-      labelX9.Font.Size = cFont0.fSize;
-      labelX9.Font.Color = cFont0.fColor;
-      labelX9.Font.Name = cFont0.fName
-local labelX10 = createLabel(MvC2DataDisplay)
-      labelX10.Font.Size = cFont0.fSize;
-      labelX10.Font.Color = cFont0.fColor;
-      labelX10.Font.Name = cFont0.fName
 
 --descriptions
 local desc0 = 'Frame_Counter'
@@ -10818,12 +10810,10 @@ local memRec1 = getAddressList().getMemoryRecordByDescription(desc1)
 local memRec2 = getAddressList().getMemoryRecordByDescription(desc2)
 local memRec3 = getAddressList().getMemoryRecordByDescription(desc3)
 local memRec4 = getAddressList().getMemoryRecordByDescription(desc4)
-local memRec5 = GetPMem('P1', 'Knockdown_State')
-local memRec6 = GetPMem('P2', 'Knockdown_State')
-local memRec7 = GetPMem('P1', 'X_Position_Arena')
-local memRec8 = GetPMem('P2', 'X_Position_Arena')
-local memRec9 = GetPMem('P1', 'Y_Position_Arena')
-local memRec10 = GetPMem('P2', 'Y_Position_Arena')
+local memRec5 = GetPMem('P1', 'THC_State')
+local memRec6 = GetPMem('P2', 'THC_State')
+local memRec7 = GetPMem('P1', 'Incoming_Timer')
+local memRec8 = GetPMem('P2', 'Incoming_Timer')
 
 --setup function
 function fnGetAndSetData()
@@ -10857,24 +10847,18 @@ function fnGetAndSetData()
   local data4 = desc4 .. ': '.. memoryrecord_getValue(memRec4);
   control_setPosition(labelX4, 3,175);
   control_setCaption(labelX4,data4)
-  local data5 = GetPMem('P1', 'Knockdown_State');
+  local data5 = GetPMem('P1', 'THC_State');
   control_setPosition(labelX5, 3,213);
   control_setCaption(labelX5,data5)
-  local data6 = GetPMem('P2', 'Knockdown_State');
+  local data6 = GetPMem('P2', 'THC_State');
   control_setPosition(labelX6, 3,251);
   control_setCaption(labelX6,data6)
-  local data7 = GetPMem('P1', 'X_Position_Arena');
+  local data7 = GetPMem('P1', 'Incoming_Timer');
   control_setPosition(labelX7, 3,289);
   control_setCaption(labelX7,data7)
-  local data8 = GetPMem('P2', 'X_Position_Arena');
+  local data8 = GetPMem('P2', 'Incoming_Timer');
   control_setPosition(labelX8, 3,327);
   control_setCaption(labelX8,data8)
-  local data9 = GetPMem('P1', 'Y_Position_Arena');
-  control_setPosition(labelX9, 3,365);
-  control_setCaption(labelX9,data9)
-  local data10 = GetPMem('P2', 'Y_Position_Arena');
-  control_setPosition(labelX10, 3,403);
-  control_setCaption(labelX10,data10)
   return true
 end
 
@@ -11459,7 +11443,7 @@ file_handle:close()
           <Description>"01_SCV_Alignment"</Description>
           <Color>0000FF</Color>
           <VariableType>2 Bytes</VariableType>
-          <Address>0558836E</Address>
+          <Address>0520136E</Address>
           <CheatEntries>
             <CheatEntry>
               <ID>14025</ID>
@@ -11483,37 +11467,37 @@ file_handle:close()
                           <ID>6698</ID>
                           <Description>"P1_A_Anakaris_SStun_Timer"</Description>
                           <VariableType>Byte</VariableType>
-                          <Address>0A932BDD</Address>
+                          <Address>0A5ABBDD</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>6706</ID>
                           <Description>"P1_B_Anakaris_SStun_Timer"</Description>
                           <VariableType>Byte</VariableType>
-                          <Address>0A93374D</Address>
+                          <Address>0A5AC74D</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>6707</ID>
                           <Description>"P1_C_Anakaris_SStun_Timer"</Description>
                           <VariableType>Byte</VariableType>
-                          <Address>0A9342BD</Address>
+                          <Address>0A5AD2BD</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>6715</ID>
                           <Description>"P2_A_Anakaris_SStun_Timer"</Description>
                           <VariableType>Byte</VariableType>
-                          <Address>0A933195</Address>
+                          <Address>0A5AC195</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>6716</ID>
                           <Description>"P2_B_Anakaris_SStun_Timer"</Description>
                           <VariableType>Byte</VariableType>
-                          <Address>0A933D05</Address>
+                          <Address>0A5ACD05</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>6717</ID>
                           <Description>"P2_C_Anakaris_SStun_Timer"</Description>
                           <VariableType>Byte</VariableType>
-                          <Address>0A934875</Address>
+                          <Address>0A5AD875</Address>
                         </CheatEntry>
                       </CheatEntries>
                     </CheatEntry>
@@ -11535,37 +11519,37 @@ file_handle:close()
                           <ID>3545</ID>
                           <Description>"P1_A_Bison_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588372</Address>
+                          <Address>05201372</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3548</ID>
                           <Description>"P1_B_Bison_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588EE2</Address>
+                          <Address>05201EE2</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3550</ID>
                           <Description>"P1_C_Bison_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589A52</Address>
+                          <Address>05202A52</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3546</ID>
                           <Description>"P2_A_Bison_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558892A</Address>
+                          <Address>0520192A</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3547</ID>
                           <Description>"P2_B_Bison_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558949A</Address>
+                          <Address>0520249A</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3549</ID>
                           <Description>"P2_C_Bison_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558A00A</Address>
+                          <Address>0520300A</Address>
                         </CheatEntry>
                       </CheatEntries>
                     </CheatEntry>
@@ -11587,37 +11571,37 @@ file_handle:close()
                           <ID>3308</ID>
                           <Description>"P1_A_Cable_236p_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>055880CE</Address>
+                          <Address>052010CE</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3319</ID>
                           <Description>"P1_B_Cable_236p_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588C3E</Address>
+                          <Address>05201C3E</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3349</ID>
                           <Description>"P1_C_Cable_236p_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>055897AE</Address>
+                          <Address>052027AE</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>1534</ID>
                           <Description>"P2_A_Cable_236p_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588686</Address>
+                          <Address>05201686</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>1538</ID>
                           <Description>"P2_B_Cable_236p_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>055891F6</Address>
+                          <Address>052021F6</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>1527</ID>
                           <Description>"P2_C_Cable_236p_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589D66</Address>
+                          <Address>05202D66</Address>
                         </CheatEntry>
                       </CheatEntries>
                     </CheatEntry>
@@ -11639,37 +11623,37 @@ file_handle:close()
                           <ID>1654</ID>
                           <Description>"P1_A_Dhalsim_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588370</Address>
+                          <Address>05201370</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>1653</ID>
                           <Description>"P1_B_Dhalsim_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588EE0</Address>
+                          <Address>05201EE0</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>1655</ID>
                           <Description>"P1_C_Dhalsim_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589A50</Address>
+                          <Address>05202A50</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>1657</ID>
                           <Description>"P2_A_Dhalsim_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588928</Address>
+                          <Address>05201928</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>1658</ID>
                           <Description>"P2_B_Dhalsim_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589498</Address>
+                          <Address>05202498</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>1659</ID>
                           <Description>"P2_C_Dhalsim_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558A008</Address>
+                          <Address>05203008</Address>
                         </CheatEntry>
                       </CheatEntries>
                     </CheatEntry>
@@ -11691,37 +11675,37 @@ file_handle:close()
                           <ID>3525</ID>
                           <Description>"P1_A_Doom_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588372</Address>
+                          <Address>05201372</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3526</ID>
                           <Description>"P1_B_Doom_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558892A</Address>
+                          <Address>0520192A</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3530</ID>
                           <Description>"P1_C_Doom_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589A52</Address>
+                          <Address>05202A52</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3529</ID>
                           <Description>"P2_A_Doom_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588EE2</Address>
+                          <Address>05201EE2</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3527</ID>
                           <Description>"P2_B_Doom_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558949A</Address>
+                          <Address>0520249A</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3528</ID>
                           <Description>"P2_C_Doom_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558A00A</Address>
+                          <Address>0520300A</Address>
                         </CheatEntry>
                       </CheatEntries>
                     </CheatEntry>
@@ -11743,37 +11727,37 @@ file_handle:close()
                           <ID>1122</ID>
                           <Description>"P1_A_Iron_Man_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558836C</Address>
+                          <Address>0520136C</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3511</ID>
                           <Description>"P1_B_Iron_Man_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588EDC</Address>
+                          <Address>05201EDC</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3512</ID>
                           <Description>"P1_C_Iron_Man_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589A4C</Address>
+                          <Address>05202A4C</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3508</ID>
                           <Description>"P2_A_Iron_Man_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588924</Address>
+                          <Address>05201924</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3509</ID>
                           <Description>"P2_B_Iron_Man_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589494</Address>
+                          <Address>05202494</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3510</ID>
                           <Description>"P2_C_Iron_Man_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558A004</Address>
+                          <Address>05203004</Address>
                         </CheatEntry>
                       </CheatEntries>
                     </CheatEntry>
@@ -11795,37 +11779,37 @@ file_handle:close()
                           <ID>6829</ID>
                           <Description>"P1_A_Magneto_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558836E</Address>
+                          <Address>0520136E</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>397</ID>
                           <Description>"P1_B_Magneto_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588EDE</Address>
+                          <Address>05201EDE</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>402</ID>
                           <Description>"P1_C_Magneto_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589A4E</Address>
+                          <Address>05202A4E</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>396</ID>
                           <Description>"P2_A_Magneto_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588926</Address>
+                          <Address>05201926</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>401</ID>
                           <Description>"P2_B_Magneto_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589496</Address>
+                          <Address>05202496</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>398</ID>
                           <Description>"P2_C_Magneto_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558A006</Address>
+                          <Address>05203006</Address>
                         </CheatEntry>
                       </CheatEntries>
                     </CheatEntry>
@@ -11847,37 +11831,37 @@ file_handle:close()
                           <ID>342</ID>
                           <Description>"P1_A_Megaman_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588386</Address>
+                          <Address>05201386</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3514</ID>
                           <Description>"P1_B_Megaman_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588EF6</Address>
+                          <Address>05201EF6</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>431</ID>
                           <Description>"P1_C_Megaman_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589A66</Address>
+                          <Address>05202A66</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>358</ID>
                           <Description>"P2_A_Megaman_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558893E</Address>
+                          <Address>0520193E</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3513</ID>
                           <Description>"P2_B_Megaman_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>055894AE</Address>
+                          <Address>052024AE</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>432</ID>
                           <Description>"P2_C_Megaman_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558A01E</Address>
+                          <Address>0520301E</Address>
                         </CheatEntry>
                       </CheatEntries>
                     </CheatEntry>
@@ -11899,37 +11883,37 @@ file_handle:close()
                           <ID>3515</ID>
                           <Description>"P1_A_Sentinel_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588368</Address>
+                          <Address>05201368</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3517</ID>
                           <Description>"P1_B_Sentinel_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588ED8</Address>
+                          <Address>05201ED8</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3518</ID>
                           <Description>"P1_C_Sentinel_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589A48</Address>
+                          <Address>05202A48</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3516</ID>
                           <Description>"P2_A_Sentinel_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588920</Address>
+                          <Address>05201920</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3519</ID>
                           <Description>"P2_B_Sentinel_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589490</Address>
+                          <Address>05202490</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3520</ID>
                           <Description>"P2_C_Sentinel_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558A000</Address>
+                          <Address>05203000</Address>
                         </CheatEntry>
                       </CheatEntries>
                     </CheatEntry>
@@ -11951,37 +11935,37 @@ file_handle:close()
                           <ID>3410</ID>
                           <Description>"P1_A_Storm_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588378</Address>
+                          <Address>05201378</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3503</ID>
                           <Description>"P1_B_Storm_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588EE8</Address>
+                          <Address>05201EE8</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3504</ID>
                           <Description>"P1_C_Storm_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589A58</Address>
+                          <Address>05202A58</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3499</ID>
                           <Description>"P2_A_Storm_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588930</Address>
+                          <Address>05201930</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3505</ID>
                           <Description>"P2_B_Storm_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>055894A0</Address>
+                          <Address>052024A0</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3506</ID>
                           <Description>"P2_C_Storm_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558A010</Address>
+                          <Address>05203010</Address>
                         </CheatEntry>
                       </CheatEntries>
                     </CheatEntry>
@@ -12003,37 +11987,37 @@ file_handle:close()
                           <ID>3535</ID>
                           <Description>"P1_A_War_Machine_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558836C</Address>
+                          <Address>0520136C</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3541</ID>
                           <Description>"P1_B_War_Machine_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588EDC</Address>
+                          <Address>05201EDC</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3542</ID>
                           <Description>"P1_C_War_Machine_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589A4C</Address>
+                          <Address>05202A4C</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3536</ID>
                           <Description>"P2_A_War_Machine_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05588924</Address>
+                          <Address>05201924</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3543</ID>
                           <Description>"P2_B_War_Machine_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>05589494</Address>
+                          <Address>05202494</Address>
                         </CheatEntry>
                         <CheatEntry>
                           <ID>3544</ID>
                           <Description>"P2_C_War_Machine_214kk_Timer"</Description>
                           <VariableType>2 Bytes</VariableType>
-                          <Address>0558A004</Address>
+                          <Address>05203004</Address>
                         </CheatEntry>
                       </CheatEntries>
                     </CheatEntry>

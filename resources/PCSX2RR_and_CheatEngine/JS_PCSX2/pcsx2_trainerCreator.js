@@ -12,7 +12,6 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// JS Values
 // Use 'One' or 'Two' to denote PMem calls and formatting
 const ENTRIES = [
   'Frame_Counter', //reserved
@@ -21,33 +20,35 @@ const ENTRIES = [
   'P1_Combo_Meter_Value',
   'P2_Combo_Meter_Value',
   // PMem calls, use 'One' or 'Two' to denote P1 or P2
-  'One_Knockdown_State',
-  'Two_Knockdown_State',
-  'One_X_Position_Arena',
-  'One_Y_Position_Arena',
-  'Two_X_Position_Arena',
-  'Two_Y_Position_Arena',
+  // 'One_Been_OTG',
+  // 'Two_Been_OTG',
+  // 'One_Throw_Limiter',
+  // 'Two_Throw_Limiter',
+  // 'One_THC_State',
+  // 'Two_THC_State',
+  // 'One_Air_Dash_Count',
+  // 'Two_Air_Dash_Count',
+  // 'One_Incoming_Timer',
+  // 'Two_Incoming_Timer',
 ];
 
 // Form Constants
-const luaFormColor = '0x00b140'; // green; used in OBS
-const luaFormWidth = 820 - 2 // subtracting due to Windows Panel // 279
-const luaFormHeight = 580 - 28 // subtracting due to Windows Panel // 480
-const luaFormXPos = 3;
-const luaFormYPos = 3;
-const luaFontSize = 25;
-// const luaLabelColOffset = 0;
-const luaLabelRowOffset = 38;
-const luaFont0 = {
+const L_Color = '0x00b140'; // green; used in OBS
+const L_Width = 820 - 2 // sub Windows Panel // 279
+const L_Height = 580 - 28 // sub Windows Panel // 480
+const L_XPos = 3;
+const L_YPos = 3;
+const L_FontSize = 18;
+const L_RowsOffset = 32;
+const L_Font_1 = {
   fName0: 'Source Code Pro',
-  fSize0: luaFontSize,
+  fSize0: L_FontSize,
   fSColor0: '0xFFFFFF',
 };
-const luaFont1 = {
+const L_Font_2 = {
   fName1: 'Source Code Pro',
-  fSize1: luaFontSize,
-  // fSColor0: '0x000000',
-  fSColor1: '0xFF0000', //red
+  fSize1: L_FontSize,
+  fSColor1: '0xFF0000',
 };
 
 const TEMPLATE_LITERAL_START =
@@ -56,20 +57,20 @@ const TEMPLATE_LITERAL_START =
 -- ENABLE 'Frame_Counter' after form launches,
 -- then DISABLE it in order to let the form update.
 -- Label Position Variables
-local fWidth = ${luaFormWidth}
-local fHeight = ${luaFormHeight}
+local fWidth =  ${L_Width}
+local fHeight = ${L_Height}
 
--- Custom Font Variables
+-- Custom Font Variaxbles
 local cFont0 = {
-  fName = '${luaFont0.fName0}',
-  fSize = ${luaFont0.fSize0},
-  fColor = ${luaFont0.fSColor0},
+  fName =  '${L_Font_1.fName0}',
+  fSize =   ${L_Font_1.fSize0},
+  fColor =  ${L_Font_1.fSColor0},
 }
 
 local cFont1 = {
-  fName = '${luaFont1.fName1}',
-  fSize = ${luaFont1.fSize1},
-  fColor = ${luaFont1.fSColor1},
+  fName =  '${L_Font_2.fName1}',
+  fSize =   ${L_Font_2.fSize1},
+  fColor =  ${L_Font_2.fSColor1},
 }
 
 -- Input Converter
@@ -101,13 +102,19 @@ function getPoint(p1OrP2)
   end
 
   -- Store function calls
-  local getP1A = memoryrecord_getValue(getAddressList().getMemoryRecordByDescription("P1_A_Is_Point"))
-  local getP1B = memoryrecord_getValue(getAddressList().getMemoryRecordByDescription("P1_B_Is_Point"))
-  local getP1C = memoryrecord_getValue(getAddressList().getMemoryRecordByDescription("P1_C_Is_Point"))
+  local getP1A = memoryrecord_getValue(getAddressList()
+    .getMemoryRecordByDescription("P1_A_Is_Point"))
+  local getP1B = memoryrecord_getValue(getAddressList()
+    .getMemoryRecordByDescription("P1_B_Is_Point"))
+  local getP1C = memoryrecord_getValue(getAddressList()
+    .getMemoryRecordByDescription("P1_C_Is_Point"))
 
-  local getP2A = memoryrecord_getValue(getAddressList().getMemoryRecordByDescription("P2_A_Is_Point"))
-  local getP2B = memoryrecord_getValue(getAddressList().getMemoryRecordByDescription("P2_B_Is_Point"))
-  local getP2C = memoryrecord_getValue(getAddressList().getMemoryRecordByDescription("P2_C_Is_Point"))
+  local getP2A = memoryrecord_getValue(getAddressList()
+    .getMemoryRecordByDescription("P2_A_Is_Point"))
+  local getP2B = memoryrecord_getValue(getAddressList()
+    .getMemoryRecordByDescription("P2_B_Is_Point"))
+  local getP2C = memoryrecord_getValue(getAddressList()
+    .getMemoryRecordByDescription("P2_C_Is_Point"))
 
   local pointResult = ''
   -- find the point
@@ -187,7 +194,8 @@ function GetPMem(p1OrP2, memVal)
   local pResult = getPoint(p1OrP2)
   local retString = ''
   local inputValue = tostring(pResult .. memVal) -- EX: P1_A_Knockdown_State
-  local getValue = getAddressList().getMemoryRecordByDescription(inputValue).Value
+  local getValue = getAddressList()
+    .getMemoryRecordByDescription(inputValue).Value
   -- do lookup if Knockdown_State
   if memVal == "Knockdown_State" then
     getValue = tonumber(getValue)
@@ -202,12 +210,12 @@ end
 
 -- Timer and Form Creation
 local timer = createTimer(nil)
-local MvC2DataDisplay = createForm()
-  MvC2DataDisplay.caption = 'MvC2 Data Display'
-  MvC2DataDisplay.width = fWidth
-  MvC2DataDisplay.height = fHeight
-  MvC2DataDisplay.color = ${luaFormColor}
-local stopButton = createButton(MvC2DataDisplay)
+local MVC2_1 = createForm()
+  MVC2_1.caption = 'MvC2 Data Display'
+  MVC2_1.width = fWidth
+  MVC2_1.height = fHeight
+  MVC2_1.color = ${L_Color}
+local stopButton = createButton(MVC2_1)
   stopButton.setName('Stop')
 
 function fnToggleForm()
@@ -247,21 +255,27 @@ const TEMPLATE_LITERAL_INPUTS =
 
 const TEMPLATE_LITERAL_END = `\n{$asm}\n[DISABLE]`;
 
-let labelsStr = '', descriptionsStr = '', memoryRecordsStr = '', mainFunctionStr = '', activateStr = '';
+let labels = ''
+let descriptions = ''
+let memoryRecords = ''
+let mainFunction = ''
+let activates = ''
 
 // Expects ENTRIES-NUM!
 
 // labels
 for (let labelsIdx = 0; labelsIdx < ENTRIES.length; labelsIdx++) {
-  // Combo_Meter_Value Exception!
+  // Combo_Meter Exception!
   if (ENTRIES[labelsIdx].includes('Combo_Meter_Value')) {
-    labelsStr += `local labelX${labelsIdx} = createLabel(MvC2DataDisplay)
+    labels +=
+      `local labelX${labelsIdx} = createLabel(MVC2_1)
       labelX${labelsIdx}.Font.Size = cFont1.fSize;
       labelX${labelsIdx}.Font.Color = cFont1.fColor;
       labelX${labelsIdx}.Font.Name = cFont1.fName\n`
   }
   else {
-    labelsStr += `local labelX${labelsIdx} = createLabel(MvC2DataDisplay)
+    labels +=
+      `local labelX${labelsIdx} = createLabel(MVC2_1)
       labelX${labelsIdx}.Font.Size = cFont0.fSize;
       labelX${labelsIdx}.Font.Color = cFont0.fColor;
       labelX${labelsIdx}.Font.Name = cFont0.fName\n`
@@ -274,7 +288,8 @@ for (let descriptionsIdx = 0; descriptionsIdx < ENTRIES.length; descriptionsIdx+
   if (ENTRIES[descriptionsIdx].includes('One_') || ENTRIES[descriptionsIdx].includes('Two_')) {
     continue
   }
-  descriptionsStr += `local desc${descriptionsIdx} = '${ENTRIES[descriptionsIdx]}'\n`
+  descriptions +=
+    `local desc${descriptionsIdx} = '${ENTRIES[descriptionsIdx]}'\n`
 }
 
 // memory records
@@ -283,50 +298,58 @@ for (let memRecIdx = 0; memRecIdx < ENTRIES.length; memRecIdx++) {
   let pString = ''
   if (ENTRIES[memRecIdx].includes('One_') || ENTRIES[memRecIdx].includes('one_')) {
     pString = 'P1'
-    memoryRecordsStr += `local memRec${memRecIdx} = GetPMem('P1', '${ENTRIES[memRecIdx].split('One_')[1]}')\n`
+    memoryRecords +=
+      `local memRec${memRecIdx} = GetPMem('P1', '${ENTRIES[memRecIdx].split('One_')[1]}')\n`
     continue
   }
   else if (ENTRIES[memRecIdx].includes('Two_') || ENTRIES[memRecIdx].includes('two_')) {
     pString = 'P2'
-    memoryRecordsStr += `local memRec${memRecIdx} = GetPMem('P2', '${ENTRIES[memRecIdx].split('Two_')[1]}')\n`
+    memoryRecords +=
+      `local memRec${memRecIdx} = GetPMem('P2', '${ENTRIES[memRecIdx].split('Two_')[1]}')\n`
     continue
   }
-
-  memoryRecordsStr += `local memRec${memRecIdx} = getAddressList().getMemoryRecordByDescription(desc${memRecIdx})\n`
+  memoryRecords +=
+    `local memRec${memRecIdx} = getAddressList().getMemoryRecordByDescription(desc${memRecIdx})\n`
 }
 
-// setup function
-for (let mainFunctionIdx = 0, updaterVal = 20; mainFunctionIdx < ENTRIES.length; mainFunctionIdx++, updaterVal += luaLabelRowOffset) {
+// mainFunction
+for (let mainFunctionIdx = 0, rowSpacer = 20; mainFunctionIdx < ENTRIES.length; mainFunctionIdx++, rowSpacer += L_RowsOffset) {
   // Input_DEC Exception!
   if (mainFunctionIdx === 1) {
-    mainFunctionStr += `  local data1 = desc1 .. ': ' .. P1Str;
-    control_setPosition(labelX${mainFunctionIdx}, ${luaFormXPos},${luaFormYPos + updaterVal});
+    mainFunction +=
+      `  local data1 = desc1 .. ': ' .. P1Str;
+    control_setPosition(labelX${mainFunctionIdx}, ${L_XPos},${L_YPos + rowSpacer});
     control_setCaption(labelX${mainFunctionIdx},data${mainFunctionIdx})\n`
     continue
   }
   // Input_DEC Exception!
   if (mainFunctionIdx === 2) {
-    mainFunctionStr += `  local data2 = desc2 .. ': ' .. P2Str;
-  control_setPosition(labelX${mainFunctionIdx}, ${luaFormXPos},${luaFormYPos + updaterVal});
+    mainFunction +=
+      `  local data2 = desc2 .. ': ' .. P2Str;
+  control_setPosition(labelX${mainFunctionIdx}, ${L_XPos},${L_YPos + rowSpacer});
   control_setCaption(labelX${mainFunctionIdx},data${mainFunctionIdx})\n`
     continue
   }
   // Skip PMem calls
   if (ENTRIES[mainFunctionIdx].includes('One_')) {
-    mainFunctionStr += `  local data${mainFunctionIdx} = GetPMem('P1', '${ENTRIES[mainFunctionIdx].split('One_')[1]}');
-  control_setPosition(labelX${mainFunctionIdx}, ${luaFormXPos},${luaFormYPos + updaterVal});
+    mainFunction +=
+      `  local data${mainFunctionIdx} = GetPMem('P1', '${ENTRIES[mainFunctionIdx].split('One_')[1]}');
+  control_setPosition(labelX${mainFunctionIdx}, ${L_XPos},${L_YPos + rowSpacer});
   control_setCaption(labelX${mainFunctionIdx},data${mainFunctionIdx})\n`
     continue
   }
+  // Skip PMem calls
   else if (ENTRIES[mainFunctionIdx].includes('Two_')) {
-    mainFunctionStr += `  local data${mainFunctionIdx} = GetPMem('P2', '${ENTRIES[mainFunctionIdx].split('Two_')[1]}');
-  control_setPosition(labelX${mainFunctionIdx}, ${luaFormXPos},${luaFormYPos + updaterVal});
+    mainFunction +=
+      `  local data${mainFunctionIdx} = GetPMem('P2', '${ENTRIES[mainFunctionIdx].split('Two_')[1]}');
+  control_setPosition(labelX${mainFunctionIdx}, ${L_XPos},${L_YPos + rowSpacer});
   control_setCaption(labelX${mainFunctionIdx},data${mainFunctionIdx})\n`
     continue
   }
   // Else, continue as normal
-  mainFunctionStr += `  local data${mainFunctionIdx} = desc${mainFunctionIdx} .. ': '.. memoryrecord_getValue(memRec${mainFunctionIdx});
-  control_setPosition(labelX${mainFunctionIdx}, ${luaFormXPos},${luaFormYPos + updaterVal});
+  mainFunction +=
+    `  local data${mainFunctionIdx} = desc${mainFunctionIdx} .. ': '.. memoryrecord_getValue(memRec${mainFunctionIdx});
+  control_setPosition(labelX${mainFunctionIdx}, ${L_XPos},${L_YPos + rowSpacer});
   control_setCaption(labelX${mainFunctionIdx},data${mainFunctionIdx})\n`
 }
 
@@ -336,26 +359,24 @@ for (let activatesIdx = 0; activatesIdx < ENTRIES.length; activatesIdx++) {
   if (ENTRIES[activatesIdx].includes('One_') || ENTRIES[activatesIdx].includes('Two_')) {
     continue
   }
-  activateStr += `memoryrecord_onActivate(memRec${activatesIdx}, fnUpdateOnTimer)\n`
+  activates += `memoryrecord_onActivate(memRec${activatesIdx}, fnUpdateOnTimer)\n`
 }
 
 // update strings
-labelsStr += `\n--descriptions\n`
-descriptionsStr += `\n--memory records\n`
-memoryRecordsStr += `\n--setup function\nfunction fnGetAndSetData()\n${TEMPLATE_LITERAL_INPUTS}\n`
-mainFunctionStr += `  return true\nend\n\n-- activate\n`
+labels += `\n--descriptions\n`
+descriptions += `\n--memory records\n`
+memoryRecords += `\n--setup function\nfunction fnGetAndSetData()\n${TEMPLATE_LITERAL_INPUTS}\n`
+mainFunction += `  return true\nend\n\n-- activate\n`
 
 const FINAL_STRING =
   TEMPLATE_LITERAL_START
-  + labelsStr
-  + descriptionsStr
-  + memoryRecordsStr
-  + mainFunctionStr
-  + activateStr
+  + labels
+  + descriptions
+  + memoryRecords
+  + mainFunction
+  + activates
   + TEMPLATE_LITERAL_END;
 
 clipboard.writeSync(FINAL_STRING);
 
 console.log('Copied to clipboard!' || '');
-
-sleep(1000);
