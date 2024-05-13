@@ -507,7 +507,14 @@ export const MIN_MAX_ADDRESSES = [
  * @description Letter prefixes for each character's memory addresses
  * @example P1_A_, P1_B_, P1_C_, P2_A_, P2_B_, P2_C_
  */
-export const PMEM_PREFIXES = ['P1_A_', 'P2_A_', 'P1_B_', 'P2_B_', 'P1_C_', 'P2_C_']
+export const PMEM_PREFIXES = [
+  'P1_A_',
+  'P2_A_',
+  'P1_B_',
+  'P2_B_',
+  'P1_C_',
+  'P2_C_'
+]
 
 /**
  * @description Addresses that get rounded
@@ -578,8 +585,8 @@ export const P1P2_ADDRESSES = [
 ];
 
 /**
-@description Contains the decimal value of each stage as a key, and the color hex code for
-After Effects.
+@description Contains the decimal value of each stage as a key,
+and the color hex code for After Effects.
 @example
 *
 0 : Boat1
@@ -600,6 +607,7 @@ After Effects.
 15 : Clock1
 16 : Raft1
 * */
+
 export const STAGES_OBJ = {
   0: 'C09A71FF',   // 'Boat1',
   1: 'E1540CFF',   // 'Desert1',
@@ -673,6 +681,7 @@ export const STAGES_NAMES = {
 50-99:  Monster
 100+:   Marvelous
 */
+
 export const COMBO_CALLOUTS = [
   'Yes',
   'Good',
@@ -944,7 +953,8 @@ export const UNUSED_CT_ADDRESSES = [
 ];
 
 /**
-* @description Uses custom font in After Effects to display the inputs.
+* @description Uses custom font in 
+After Effects to display the inputs.
 * @example
 "6": 1024,    // 6 = right
 "4": 2048,    // 4 = left

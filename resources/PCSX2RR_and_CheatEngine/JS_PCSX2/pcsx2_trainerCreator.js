@@ -8,9 +8,9 @@
 
 import clipboard from "clipboardy";
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+// function sleep(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
 // Use 'One' or 'Two' to denote PMem calls and formatting
 const ENTRIES = [
@@ -135,8 +135,6 @@ function getPoint(p1OrP2)
       pointResult = 'P2_C_';
     end
   end
-
-  -- print (pointResult)
   return pointResult
 end
 

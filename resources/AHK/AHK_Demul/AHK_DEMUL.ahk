@@ -24,14 +24,12 @@
   #NoEnv
   SendMode Input
   SetWorkingDir %A_ScriptDir%
-  Menu, Tray, Icon, shell32.dll, 042 ;link to icons https://renenyffenegger.ch/development/Windows/PowerShell/examples/WinAPI/ExtractIconEx/shell32.html
-  
+  Menu, Tray, Icon, shell32.dll, 042
+  ; icons https://renenyffenegger.ch/development/Windows/PowerShell/examples/WinAPI/ExtractIconEx/shell32.html
 }
-;---------------------------------------------------------;
+
 ;------------------------forDemul+------------------------;
-;---------------------------------------------------------;
 ; ^ : Ctrl, ! : Alt, + : Shift, # : Win, ~ : Apps
-;------Separate Stuff
 
 ; F14 sends mouse Click
 {
@@ -40,80 +38,82 @@
   return
 }
 
-;Propagate-Character-Value Function. Highlight and cop entire line/address. Execute command.
+;Propagate-Character-Value Function.
+;Highlight and cop entire line/address. Execute command.
+
 {
   ; P1_A -> P1_B =  B48
   ; P1_A -> P1_C =  1690
   ; P1_A -> P2_A =  5A4
   ; P1_A -> P2_B =  10EC
   ; P1_A -> P2_C =  1C34
-  ; !Numpad0::
+  
   !6::
-  ;P1_A ->  P1_A
-  Send ^v
-  WinWait Paste table entries
-  SendInput {Tab}
-  SendInput {Tab}
-  SendInput {Tab}
-  SendInput {Tab}
-  SendInput {Tab}
-  SendInput {ENTER}
-  sleep 100
-  ;P1_A -> P1_B
-  Send ^v
-  WinWait Paste table entries
-  Send P1_A
-  sleep 25
-  SendInput {Tab}
-  Send P1_B
-  SendInput {Tab}
-  Send B48
-  SendInput {ENTER}
-  sleep 100
-  ;P1_A -> P1_C
-  Send ^v
-  WinWait Paste table entries
-  Send P1_A
-  sleep 25
-  SendInput {Tab}
-  Send P1_C
-  SendInput {Tab}
-  Send 1690
-  SendInput {ENTER}
-  sleep 100
-  ;P1_A -> P2_A
-  Send ^v
-  WinWait Paste table entries
-  Send P1_A
-  sleep 25
-  SendInput {Tab}
-  Send P2_A
-  SendInput {Tab}
-  Send 5A4
-  SendInput {ENTER}
-  sleep 100
-  ;P1_A -> P2_B
-  Send ^v
-  WinWait Paste table entries
-  Send P1_A
-  sleep 25
-  SendInput {Tab}
-  Send P2_B
-  SendInput {Tab}
-  Send 10EC
-  SendInput {ENTER}
-  sleep 100
-  ;P1_A -> P2_C
-  Send ^v
-  WinWait Paste table entries
-  Send P1_A
-  sleep 25
-  SendInput {Tab}
-  Send P2_C
-  SendInput {Tab}
-  Send 1C34
-  SendInput {ENTER}
-  sleep 100
+    ;P1_A ->  P1_A
+    Send ^v
+    WinWait Paste table entries
+    SendInput {Tab}
+    SendInput {Tab}
+    SendInput {Tab}
+    SendInput {Tab}
+    SendInput {Tab}
+    SendInput {ENTER}
+    sleep 100
+    ;P1_A -> P1_B
+    Send ^v
+    WinWait Paste table entries
+    Send P1_A
+    sleep 25
+    SendInput {Tab}
+    Send P1_B
+    SendInput {Tab}
+    Send B48
+    SendInput {ENTER}
+    sleep 100
+    ;P1_A -> P1_C
+    Send ^v
+    WinWait Paste table entries
+    Send P1_A
+    sleep 25
+    SendInput {Tab}
+    Send P1_C
+    SendInput {Tab}
+    Send 1690
+    SendInput {ENTER}
+    sleep 100
+    ;P1_A -> P2_A
+    Send ^v
+    WinWait Paste table entries
+    Send P1_A
+    sleep 25
+    SendInput {Tab}
+    Send P2_A
+    SendInput {Tab}
+    Send 5A4
+    SendInput {ENTER}
+    sleep 100
+    ;P1_A -> P2_B
+    Send ^v
+    WinWait Paste table entries
+    Send P1_A
+    sleep 25
+    SendInput {Tab}
+    Send P2_B
+    SendInput {Tab}
+    Send 10EC
+    SendInput {ENTER}
+    sleep 100
+    ;P1_A -> P2_C
+    Send ^v
+    WinWait Paste table entries
+    Send P1_A
+    sleep 25
+    SendInput {Tab}
+    Send P2_C
+    SendInput {Tab}
+    Send 1C34
+    SendInput {ENTER}
+    sleep 100
   return
 }
 

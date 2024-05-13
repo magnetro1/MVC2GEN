@@ -2,20 +2,35 @@
 import * as fs from 'fs';
 import { exec } from 'child_process';
 
-const DIR_PCSX2_CT_FILES = import.meta.url.replace('file:///', '').replace('openNewestPCSX2CTFile.js', '');
-const CT_EXT = '.CT';
+const CT_EXT = '.CT' || '.ct';
 
-function reduceNewestFile(previous, current) {
-  return fs.statSync(DIR_PCSX2_CT_FILES + previous).mtimeMs > fs.statSync(DIR_PCSX2_CT_FILES + current).mtimeMs ? previous : current;
+// We get our current directory and remove the file name
+const DIR_CT_FILES = import.meta.url
+  .replace('file:///', '')
+  .replace('openNewestPCSX2CTFile.js', '');
+
+// get the newest file
+function reduceNewestFile(prev, curr) {
+  let prevFileDate = fs.statSync(DIR_CT_FILES + prev).mtimeMs;
+  let currFileDate = fs.statSync(DIR_CT_FILES + curr).mtimeMs;
+  if (prevFileDate > currFileDate) {
+    return prev;
+  } else {
+    return curr;
+  }
 };
-// filter for CT files
+
+// Find CT file
 function filterCTFile() {
-  const files = fs.readdirSync(DIR_PCSX2_CT_FILES);
-  const cheatTables = files.filter(function (file) {
-    return file.endsWith(CT_EXT);
-  });
+  const files = fs.readdirSync(DIR_CT_FILES);
+  const cheatTables = files.filter((file) => file.endsWith(CT_EXT));
   return cheatTables.reduce(reduceNewestFile)
 }
+
+// Open CT file
 exec(filterCTFile(), {
-  cwd: DIR_PCSX2_CT_FILES
+  cwd: DIR_CT_FILES,
+  windowsHide: true,
+  detached: true,
+  shell: true,
 });
