@@ -1,80 +1,145 @@
 /*
-  Trainer propagator for PCSX2
-    - Creates a LUA script for Cheat Engine
-    - Paste into `Scripts > Trainer_V2` in Cheat Engine
-    - Check "Frame_Counter" to activate script inside of:
-       Main > System_Values > Frame_Skip
+Trainer propagator for PCSX2 README
+- Creates a LUA script for Cheat Engine
+- Paste into `Scripts > Trainer_V3` in Cheat Engine
+- Check "Frame_Counter" to activate script inside of:
+    Main > System_Values > Frame_Skip
+- To turn off, first click "Stop" button, then uncheck "Frame_Counter"
  */
 
 import clipboard from "clipboardy";
 
-// function sleep(ms) {
-//   return new Promise(resolve => setTimeout(resolve, ms));
-// }
-
-// Use 'One' or 'Two' to denote PMem calls and formatting
+/**
+ * Prefix Key:
+ * 
+ * MISC  = Miscellaneous Values that should not be edited; 1 Entry in Lua-Window
+ * 
+ * SYST  = System Values that possess P1 and P2; 2 Entries in Lua-Window
+ * 
+ * PMEM  = Player Memory Values that possess P1_A, P1_B, P1_C, P2_A, P2_B, P2_C; 2 Entries in Lua-Window
+ * 
+ * SYST AND PMEM entries require subtracting the iteration by 1 to get the correct value.
+ * 
+ * Rename these when editing the script; the rest should work on its own!
+ */
 const ENTRIES = [
-  'Frame_Counter', //reserved
-  'P1_Input_DEC',  //reserved
-  'P2_Input_DEC',  //reserved
-  'P1_Combo_Meter_Value',
-  'P2_Combo_Meter_Value',
-  // PMem calls, use 'One' or 'Two' to denote P1 or P2
-  // 'One_Been_OTG',
-  // 'Two_Been_OTG',
-  // 'One_Throw_Limiter',
-  // 'Two_Throw_Limiter',
-  // 'One_THC_State',
-  // 'Two_THC_State',
-  // 'One_Air_Dash_Count',
-  // 'Two_Air_Dash_Count',
-  // 'One_Incoming_Timer',
-  // 'Two_Incoming_Timer',
+  'MISC_Frame_Counter',         // 1 Entry in Lua-Window
+  //
+  'MISC_Frame_Skip_Toggle',     // 1 Entry in Lua-Window
+  'SYST_Input_DEC',             // 2 Entries in Lua-Window
+  'SYST_Combo_Meter_Value',     // 2 Entries in Lua-Window
+  //
+  'PMEM_Throw_Counter_Mash',    // 2 Entries in Lua-Window
+  'PMEM_Throw_RNG',             // 2 Entries in Lua-Window
+  'PMEM_Hitstop2',              // 2 Entries in Lua-Window
 ];
 
-// Form Constants
-const L_Color = '0x00b140'; // green; used in OBS
-const L_Width = 820 - 2 // sub Windows Panel // 279
-const L_Height = 580 - 28 // sub Windows Panel // 480
-const L_XPos = 3;
-const L_YPos = 3;
-const L_FontSize = 18;
-const L_RowsOffset = 32;
-const L_Font_1 = {
+// the ones we will use to write the lua script
+const REAL_ENTRIES = [];
+
+// Trainer-box constants
+const T_PROPS = {
+  tColor: '0x00b140', // green; used in OBS for green screen
+  tWidth: 820 - 2, // sub Windows Panel // 279
+  tHeight: 580 - 28, // sub Windows Panel // 480
+  tXPos: 3,
+  tYPos: 3,
+  tFontSize: 28,
+  tRowsOffset: 43,
+  tRowSpacer: 20,
+};
+// Font constants
+const T_FONT_0 = {
   fName0: 'Source Code Pro',
-  fSize0: L_FontSize,
-  fSColor0: '0xFFFFFF',
+  fSize0: T_PROPS.tFontSize,
+  fColor0: '0xFF0000',
 };
-const L_Font_2 = {
+const T_FONT_1 = {
   fName1: 'Source Code Pro',
-  fSize1: L_FontSize,
-  fSColor1: '0xFF0000',
+  fSize1: T_PROPS.tFontSize,
+  fColor1: '0xFFFFFF',
 };
+
+/**
+ * Generates a list of variables based on the ENTRIES array.
+ * The variables will keep their prefixes for the Javascript code,
+ * but will be stripped for the Lua code.
+ * @returns {string} The generated variable list.
+ */
+function WriteEntryList() {
+  let var_list_main = '';
+
+  for (let i = 0, counter = 0; i < ENTRIES.length; i++) {
+    if (ENTRIES[i].includes('MISC_')) {
+      var_list_main += `VAR_${counter} = '${ENTRIES[i]}'\n`.replace('MISC_', '');
+      counter++;
+    }
+    else if (ENTRIES[i].includes('SYST_')) {
+      var_list_main += `VAR_${counter} = 'P1_${ENTRIES[i]}'\n`.replace('SYST_', '');
+      counter++;
+      var_list_main += `VAR_${counter} = 'P2_${ENTRIES[i]}'\n`.replace('SYST_', '');
+      counter++;
+    }
+    else if (ENTRIES[i].includes('PMEM_')) {
+      var_list_main += `VAR_${counter} = 'One_${ENTRIES[i]}'\n`.replace('PMEM_', '');
+      counter++;
+      var_list_main += `VAR_${counter} = 'Two_${ENTRIES[i]}'\n`.replace('PMEM_', '');
+      counter++;
+    }
+    else {
+      throw new Error('Invalid prefix found in ENTRIES array!');
+    }
+  }
+  return var_list_main;
+}
+// console.log(WriteEntryList());
+function ConvertToPlayerString(pString) {
+  let playerValue = ''
+  if ((pString === 'One') || (pString === 'one') || (pString === 'P1') || (pString === 'ONE')) {
+    playerValue = 'P1'
+  }
+  else if ((pString === 'Two') || (pString === 'two') || (pString === 'P2') || (pString === 'TWO')) {
+    playerValue = 'P2'
+  }
+  return playerValue
+}
+
+
 
 const TEMPLATE_LITERAL_START =
   `[ENABLE]
 {$lua}
+
 -- ENABLE 'Frame_Counter' after form launches,
 -- then DISABLE it in order to let the form update.
--- Label Position Variables
-local fWidth =  ${L_Width}
-local fHeight = ${L_Height}
+`
 
--- Custom Font Variaxbles
+// contains constants for conversion
+const TEMPLATE_LITERAL_MIDDLE = `
+-- Main Variables
+
+${WriteEntryList()}
+
+--Label Position Variables
+local fWidth = ${T_PROPS.tWidth}
+local fHeight = ${T_PROPS.tHeight}
+
+--Custom Font Variables
 local cFont0 = {
-  fName =  '${L_Font_1.fName0}',
-  fSize =   ${L_Font_1.fSize0},
-  fColor =  ${L_Font_1.fSColor0},
+  fName =  '${T_FONT_0.fName0}',
+  fSize =   ${T_FONT_0.fSize0},
+  fColor = ${T_FONT_0.fColor0},
 }
 
 local cFont1 = {
-  fName =  '${L_Font_2.fName1}',
-  fSize =   ${L_Font_2.fSize1},
-  fColor =  ${L_Font_2.fSColor1},
+  fName =  '${T_FONT_1.fName1}',
+  fSize =   ${T_FONT_1.fSize1},
+  fColor =  ${T_FONT_1.fColor1},
 }
 
--- Input Converter
-local inputConverterObject = {
+-- Converter Objects
+
+inputConverterObject = {
   Down  = 4096,
   Up    = 8192,
   Right = 1024,
@@ -89,67 +154,17 @@ local inputConverterObject = {
   SE    = 2,
 }
 
-function getPoint(p1OrP2)
-  -- ToString and get P1 or P2
-  p1OrP2 = tostring(p1OrP2)
-  if p1OrP2 == "P1" or p1OrP2 == "p1" or p1OrP2 == "1" then
-    p1OrP2 = "P1"
-  elseif p1OrP2 == "P2" or p1OrP2 == "p2" or p1OrP2 == "2" then
-    p1OrP2 = "P2"
-  else
-    print("Invalid input. Please enter 'P1' or 'P2'.")
-    return
-  end
-
-  -- Store function calls
-  local getP1A = memoryrecord_getValue(getAddressList()
-    .getMemoryRecordByDescription("P1_A_Is_Point"))
-  local getP1B = memoryrecord_getValue(getAddressList()
-    .getMemoryRecordByDescription("P1_B_Is_Point"))
-  local getP1C = memoryrecord_getValue(getAddressList()
-    .getMemoryRecordByDescription("P1_C_Is_Point"))
-
-  local getP2A = memoryrecord_getValue(getAddressList()
-    .getMemoryRecordByDescription("P2_A_Is_Point"))
-  local getP2B = memoryrecord_getValue(getAddressList()
-    .getMemoryRecordByDescription("P2_B_Is_Point"))
-  local getP2C = memoryrecord_getValue(getAddressList()
-    .getMemoryRecordByDescription("P2_C_Is_Point"))
-
-  local pointResult = ''
-  -- find the point
-  if p1OrP2 == "P1" then
-    if tonumber(getP1A) == 0 then
-      pointResult = 'P1_A_';
-    elseif tonumber(getP1B) == 0 then
-      pointResult = 'P1_B_';
-    elseif tonumber(getP1C) == 0 then
-      pointResult = 'P1_C_';
-    end
-  elseif p1OrP2 == "P2" then
-    if tonumber(getP2A) == 0 then
-      pointResult = 'P2_A_';
-    elseif tonumber(getP2B) == 0 then
-      pointResult = 'P2_B_';
-    elseif tonumber(getP2C) == 0 then
-      pointResult = 'P2_C_';
-    end
-  end
-  return pointResult
-end
-
--- Knockdown_State Converter
-Knockdown_State_OBJ     = {}
-Knockdown_State_OBJ[0]  = "Neutral"
-Knockdown_State_OBJ[1]  = "Walking"
-Knockdown_State_OBJ[2]  = "Normal Jump Rise"
-Knockdown_State_OBJ[3]  = "Normal Jump"
-Knockdown_State_OBJ[4]  = "Landing"
-Knockdown_State_OBJ[5]  = "Crouching"
-Knockdown_State_OBJ[6]  = "Crouched"
-Knockdown_State_OBJ[7]  = "Stand Rise"
-Knockdown_State_OBJ[8]  = "Stand Turn"
-Knockdown_State_OBJ[9]  = "Crouch Turning"
+Knockdown_State_OBJ = {}
+Knockdown_State_OBJ[0] = "Neutral"
+Knockdown_State_OBJ[1] = "Walking"
+Knockdown_State_OBJ[2] = "Normal Jump Rise"
+Knockdown_State_OBJ[3] = "Normal Jump"
+Knockdown_State_OBJ[4] = "Landing"
+Knockdown_State_OBJ[5] = "Crouching"
+Knockdown_State_OBJ[6] = "Crouched"
+Knockdown_State_OBJ[7] = "Stand Rise"
+Knockdown_State_OBJ[8] = "Stand Turn"
+Knockdown_State_OBJ[9] = "Crouch Turning"
 Knockdown_State_OBJ[10] = "Forward Dashing"
 Knockdown_State_OBJ[11] = "Back Dashing"
 Knockdown_State_OBJ[12] = "Double Dizzy"
@@ -177,9 +192,9 @@ Knockdown_State_OBJ[33] = "???"
 Knockdown_State_OBJ[34] = "Command Launcher"
 
 
-function GetPMem(p1OrP2, memVal)
-  -- ToString and get P1 or P2
+function GetPointForPMem(p1OrP2)
   p1OrP2 = tostring(p1OrP2)
+  
   if p1OrP2 == "P1" or p1OrP2 == "p1" or p1OrP2 == "1" then
     p1OrP2 = "P1"
   elseif p1OrP2 == "P2" or p1OrP2 == "p2" or p1OrP2 == "2" then
@@ -189,192 +204,254 @@ function GetPMem(p1OrP2, memVal)
     return
   end
 
-  local pResult = getPoint(p1OrP2)
+  --Store CE function calls in variables
+  local getP1A = memoryrecord_getValue(getAddressList()
+    .getMemoryRecordByDescription("P1_A_Is_Point"))
+  local getP1B = memoryrecord_getValue(getAddressList()
+    .getMemoryRecordByDescription("P1_B_Is_Point"))
+  local getP1C = memoryrecord_getValue(getAddressList()
+    .getMemoryRecordByDescription("P1_C_Is_Point"))      
+
+  local getP2A = memoryrecord_getValue(getAddressList()
+    .getMemoryRecordByDescription("P2_A_Is_Point"))
+  local getP2B = memoryrecord_getValue(getAddressList()
+    .getMemoryRecordByDescription("P2_B_Is_Point"))
+  local getP2C = memoryrecord_getValue(getAddressList()
+    .getMemoryRecordByDescription("P2_C_Is_Point"))
+
+  local pointResult = ''
+  
+  --find the point
+  if p1OrP2 == "P1" then
+    if tonumber(getP1A) == 0 then
+      pointResult = 'P1_A_';
+    elseif tonumber(getP1B) == 0 then
+      pointResult = 'P1_B_';
+    elseif tonumber(getP1C) == 0 then
+      pointResult = 'P1_C_';
+    end
+  elseif p1OrP2 == "P2" then
+    if tonumber(getP2A) == 0 then
+      pointResult = 'P2_A_';
+    elseif tonumber(getP2B) == 0 then
+      pointResult = 'P2_B_';
+    elseif tonumber(getP2C) == 0 then
+      pointResult = 'P2_C_';
+    end
+  end
+  return pointResult
+end
+
+function GetPMem(p1OrP2, memVal)
+-- get rid of the ONE_ or TWO_ from memVal in LUA; using LUA
+  memVal = tostring(memVal)
+  memVal = string.gsub(memVal, "One_", "")
+  memVal = string.gsub(memVal, "Two_", "")
+  --print(memVal);
+  
+  p1OrP2 = tostring(p1OrP2)
+  
+  if p1OrP2 == "P1" or p1OrP2 == "p1" or p1OrP2 == "1" then
+    p1OrP2 = "P1"
+  elseif p1OrP2 == "P2" or p1OrP2 == "p2" or p1OrP2 == "2" then
+    p1OrP2 = "P2"
+  else
+    print("Invalid input. Please enter 'P1' or 'P2'.")
+    return
+  end
+  local pResult = GetPointForPMem(p1OrP2)
   local retString = ''
-  local inputValue = tostring(pResult .. memVal) -- EX: P1_A_Knockdown_State
-  local getValue = getAddressList()
-    .getMemoryRecordByDescription(inputValue).Value
+
+  local inputValue = tostring(pResult..memVal)-- EX: P1_A_Knockdown_State
+  local getValue = getAddressList().getMemoryRecordByDescription(inputValue).Value
+
   -- do lookup if Knockdown_State
   if memVal == "Knockdown_State" then
     getValue = tonumber(getValue)
-    retString = p1OrP2 .. "_" .. (Knockdown_State_OBJ[tonumber(getValue)])
+    retString = p1OrP2.. "_".. (Knockdown_State_OBJ[tonumber(getValue)])
     return retString
   else
-    retString = p1OrP2 .. "_" .. memVal .. ": " .. getValue
-    -- print ( retString )
+    retString = p1OrP2.. "_"..memVal.. ": "..getValue
+
     return retString
   end
 end
 
--- Timer and Form Creation
+--Timer and Form Creation
 local timer = createTimer(nil)
-local MVC2_1 = createForm()
-  MVC2_1.caption = 'MvC2 Data Display'
-  MVC2_1.width = fWidth
-  MVC2_1.height = fHeight
-  MVC2_1.color = ${L_Color}
-local stopButton = createButton(MVC2_1)
-  stopButton.setName('Stop')
+local MvC2DataDisplay = createForm()
+MvC2DataDisplay.caption = 'MvC2 Data Display'
+MvC2DataDisplay.width = fWidth
+MvC2DataDisplay.height = fHeight
+MvC2DataDisplay.color = ${T_PROPS.tColor}
+
+local stopButton = createButton(MvC2DataDisplay)
+stopButton.setName('Stop')
 
 function fnToggleForm()
   timer_setEnabled(timer, not timer_getEnabled(timer))
 end
 
 control_onClick(stopButton, fnToggleForm)
-control_setPosition(stopButton, 0,0)
+control_setPosition(stopButton, 0, 0)
 
 function fnUpdateOnTimer(memoryrecord, before, currentstate)
   timer_onTimer(timer, fnGetAndSetData)
-  timer_setInterval(timer,100)
+  timer_setInterval(timer, 100)
   timer_setEnabled(timer, true)
   return true
 end
 
----Dynamic Entries
+--- Dynamic Entries
 
---labels
-`;
+--labels`;
 
 const TEMPLATE_LITERAL_INPUTS =
-  `  -- Process Directions
+  `  --Process Directions
   local P1Str = ''
   local P2Str = ''
-  local p1Inputs = memRec1.Value
-  local p2Inputs = memRec2.Value
-  -- & operation
+  local p1Inputs = memRec2.Value -- reserved! 
+  local p2Inputs = memRec3.Value -- reserved! 
+  -- Bitwise-And operation
   for i, v in pairs(inputConverterObject) do
-    if ( bAnd(p1Inputs, inputConverterObject[i]) ~= 0 ) then
-      P1Str = P1Str .. i
+    if (bAnd(p1Inputs, inputConverterObject[i]) ~= 0) then
+      P1Str = P1Str..i
     end
-    if ( bAnd(p2Inputs, inputConverterObject[i]) ~= 0 ) then
-      P2Str = P2Str .. i
+    if (bAnd(p2Inputs, inputConverterObject[i]) ~= 0 ) then
+      P2Str = P2Str..i
     end
   end\n`;
 
-const TEMPLATE_LITERAL_END = `\n{$asm}\n[DISABLE]`;
+const TEMPLATE_LITERAL_END = `\n{$asm} \n[DISABLE]`;
 
-let labels = ''
-let descriptions = ''
-let memoryRecords = ''
-let mainFunction = ''
-let activates = ''
+// Dynamic stuff
+// Gets concatenated to the end of the script
+let sLabels = ''
+let sDescriptions = '' // not used; using VAR_XX instead
+let sMemoryRecords = ''
+let sMainFunction = ''
+let sActivates = ''
 
-// Expects ENTRIES-NUM!
-
-// labels
-for (let labelsIdx = 0; labelsIdx < ENTRIES.length; labelsIdx++) {
-  // Combo_Meter Exception!
-  if (ENTRIES[labelsIdx].includes('Combo_Meter_Value')) {
-    labels +=
-      `local labelX${labelsIdx} = createLabel(MVC2_1)
-      labelX${labelsIdx}.Font.Size = cFont1.fSize;
-      labelX${labelsIdx}.Font.Color = cFont1.fColor;
-      labelX${labelsIdx}.Font.Name = cFont1.fName\n`
+function MakeRealEntries(entry, idx) {
+  if (entry.includes('PMEM') || entry.includes('SYST')) {
+    // If it's PMEM or SYST, we need to make 2 entries, one for P1 and one for P2
+    let p1Entry = entry.replace('PMEM_', 'ONE_').replace('SYST_', 'P1_')
+    let p2Entry = entry.replace('PMEM_', 'TWO_').replace('SYST_', 'P2_')
+    REAL_ENTRIES.push(p1Entry)
+    REAL_ENTRIES.push(p2Entry)
+    idx++
+    // console.log(`Pushed ${p1Entry} and ${p2Entry} to ENTRIES`)
   }
   else {
-    labels +=
-      `local labelX${labelsIdx} = createLabel(MVC2_1)
-      labelX${labelsIdx}.Font.Size = cFont0.fSize;
-      labelX${labelsIdx}.Font.Color = cFont0.fColor;
-      labelX${labelsIdx}.Font.Name = cFont0.fName\n`
+    let miscEntry = entry.replace('MISC_', '')
+    REAL_ENTRIES.push(miscEntry)
   }
 }
 
-// descriptions
-for (let descriptionsIdx = 0; descriptionsIdx < ENTRIES.length; descriptionsIdx++) {
-  // if the entry has the prefix One_ or Two_, then it's a PMem call, continue
-  if (ENTRIES[descriptionsIdx].includes('One_') || ENTRIES[descriptionsIdx].includes('Two_')) {
-    continue
-  }
-  descriptions +=
-    `local desc${descriptionsIdx} = '${ENTRIES[descriptionsIdx]}'\n`
+for (let idx = 0; idx < ENTRIES.length; idx++) {
+  MakeRealEntries(ENTRIES[idx], idx)
 }
+
+// now we can start writing the script
+// labels. 1 label per entry, visual
+for (let labelsIdx = 0; labelsIdx < REAL_ENTRIES.length; labelsIdx++) {
+
+  sLabels += `
+labelX${labelsIdx} = createLabel(MvC2DataDisplay)`;
+
+  if (REAL_ENTRIES[labelsIdx].includes('Combo_Meter_Value')) {
+    sLabels += `
+labelX${labelsIdx}.Font.Size = cFont0.fSize;
+labelX${labelsIdx}.Font.Size = cFont0.fSize;
+labelX${labelsIdx}.Font.Color = cFont0.fColor;
+labelX${labelsIdx}.Font.Name = cFont0.fName\n`
+  }
+  else {
+    sLabels += `
+labelX${labelsIdx}.Font.Size = cFont1.fSize;
+labelX${labelsIdx}.Font.Color = cFont1.fColor;
+labelX${labelsIdx}.Font.Name = cFont1.fName\n`
+  }
+}
+// console.log(sLabels)
+
+
 
 // memory records
-for (let memRecIdx = 0; memRecIdx < ENTRIES.length; memRecIdx++) {
-  // if the entry has the prefix One_ or Two_, then it's a PMem call
+for (let memRecIdx = 0; memRecIdx < REAL_ENTRIES.length; memRecIdx++) {
+  // if the entry has the prefix ONE_ or TWO_, then it's a PMem call
   let pString = ''
-  if (ENTRIES[memRecIdx].includes('One_') || ENTRIES[memRecIdx].includes('one_')) {
+  if (REAL_ENTRIES[memRecIdx].includes('ONE_')) {
     pString = 'P1'
-    memoryRecords +=
-      `local memRec${memRecIdx} = GetPMem('P1', '${ENTRIES[memRecIdx].split('One_')[1]}')\n`
+    sMemoryRecords +=
+      `memRec${memRecIdx} = GetPMem('P1', VAR_${memRecIdx}) \n`
     continue
   }
-  else if (ENTRIES[memRecIdx].includes('Two_') || ENTRIES[memRecIdx].includes('two_')) {
+  else if (REAL_ENTRIES[memRecIdx].includes('TWO_')) {
     pString = 'P2'
-    memoryRecords +=
-      `local memRec${memRecIdx} = GetPMem('P2', '${ENTRIES[memRecIdx].split('Two_')[1]}')\n`
+    sMemoryRecords +=
+      `memRec${memRecIdx} = GetPMem('P2', VAR_${memRecIdx}) \n`
     continue
   }
-  memoryRecords +=
-    `local memRec${memRecIdx} = getAddressList().getMemoryRecordByDescription(desc${memRecIdx})\n`
+  sMemoryRecords +=
+    `memRec${memRecIdx} = getAddressList().getMemoryRecordByDescription(VAR_${memRecIdx}) \n`
 }
+// console.log(sMemoryRecords)
 
 // mainFunction
-for (let mainFunctionIdx = 0, rowSpacer = 20; mainFunctionIdx < ENTRIES.length; mainFunctionIdx++, rowSpacer += L_RowsOffset) {
-  // Input_DEC Exception!
-  if (mainFunctionIdx === 1) {
-    mainFunction +=
-      `  local data1 = desc1 .. ': ' .. P1Str;
-    control_setPosition(labelX${mainFunctionIdx}, ${L_XPos},${L_YPos + rowSpacer});
-    control_setCaption(labelX${mainFunctionIdx},data${mainFunctionIdx})\n`
-    continue
+
+for (let mainFunctionIdx = 0; mainFunctionIdx < REAL_ENTRIES.length; mainFunctionIdx++, T_PROPS.tRowSpacer += T_PROPS.tRowsOffset) {
+  if (REAL_ENTRIES[mainFunctionIdx].includes('Input_DEC')) {
+    // Figure out the player, P1 or P2
+    let pString = ConvertToPlayerString(REAL_ENTRIES[mainFunctionIdx].split('_')[0])
+
+    sMainFunction +=
+      `  local data${mainFunctionIdx} = '${REAL_ENTRIES[mainFunctionIdx]}'.. ': '..${pString}Str `
+    // console.log(pString)
+    sMainFunction += `
+    control_setPosition(labelX${mainFunctionIdx}, ${T_PROPS.tXPos}, ${T_PROPS.tYPos + T_PROPS.tRowSpacer});
+    control_setCaption(labelX${mainFunctionIdx}, data${mainFunctionIdx}) \n`
   }
-  // Input_DEC Exception!
-  if (mainFunctionIdx === 2) {
-    mainFunction +=
-      `  local data2 = desc2 .. ': ' .. P2Str;
-  control_setPosition(labelX${mainFunctionIdx}, ${L_XPos},${L_YPos + rowSpacer});
-  control_setCaption(labelX${mainFunctionIdx},data${mainFunctionIdx})\n`
-    continue
+  else if (REAL_ENTRIES[mainFunctionIdx].includes('ONE_') || REAL_ENTRIES[mainFunctionIdx].includes('TWO_')) {
+    let pString = ConvertToPlayerString(REAL_ENTRIES[mainFunctionIdx].split('_')[0])
+    sMainFunction += `  local data${mainFunctionIdx} = GetPMem('${pString}', '${REAL_ENTRIES[mainFunctionIdx]}')
+    control_setPosition(labelX${mainFunctionIdx}, ${T_PROPS.tXPos}, ${T_PROPS.tYPos + T_PROPS.tRowSpacer});
+    control_setCaption(labelX${mainFunctionIdx}, data${mainFunctionIdx}) \n`;
+    // remove ONE_ or TWO_ from the string
+    sMainFunction = sMainFunction.replace('ONE_', '').replace('TWO_', '')
   }
-  // Skip PMem calls
-  if (ENTRIES[mainFunctionIdx].includes('One_')) {
-    mainFunction +=
-      `  local data${mainFunctionIdx} = GetPMem('P1', '${ENTRIES[mainFunctionIdx].split('One_')[1]}');
-  control_setPosition(labelX${mainFunctionIdx}, ${L_XPos},${L_YPos + rowSpacer});
-  control_setCaption(labelX${mainFunctionIdx},data${mainFunctionIdx})\n`
-    continue
+  else {
+    sMainFunction +=
+      `  local data${mainFunctionIdx} = '${REAL_ENTRIES[mainFunctionIdx]}'..': '..memoryrecord_getValue(memRec${mainFunctionIdx});
+    control_setPosition(labelX${mainFunctionIdx}, ${T_PROPS.tXPos}, ${T_PROPS.tYPos + T_PROPS.tRowSpacer});
+    control_setCaption(labelX${mainFunctionIdx}, data${mainFunctionIdx}) \n`
   }
-  // Skip PMem calls
-  else if (ENTRIES[mainFunctionIdx].includes('Two_')) {
-    mainFunction +=
-      `  local data${mainFunctionIdx} = GetPMem('P2', '${ENTRIES[mainFunctionIdx].split('Two_')[1]}');
-  control_setPosition(labelX${mainFunctionIdx}, ${L_XPos},${L_YPos + rowSpacer});
-  control_setCaption(labelX${mainFunctionIdx},data${mainFunctionIdx})\n`
-    continue
-  }
-  // Else, continue as normal
-  mainFunction +=
-    `  local data${mainFunctionIdx} = desc${mainFunctionIdx} .. ': '.. memoryrecord_getValue(memRec${mainFunctionIdx});
-  control_setPosition(labelX${mainFunctionIdx}, ${L_XPos},${L_YPos + rowSpacer});
-  control_setCaption(labelX${mainFunctionIdx},data${mainFunctionIdx})\n`
+  // console.log(sMainFunction)
 }
 
 // activate
-for (let activatesIdx = 0; activatesIdx < ENTRIES.length; activatesIdx++) {
+for (let activatesIdx = 0; activatesIdx < REAL_ENTRIES.length; activatesIdx++) {
   // Skip PMem calls
-  if (ENTRIES[activatesIdx].includes('One_') || ENTRIES[activatesIdx].includes('Two_')) {
+  if (REAL_ENTRIES[activatesIdx].includes('ONE_') || REAL_ENTRIES[activatesIdx].includes('TWO_')) {
     continue
   }
-  activates += `memoryrecord_onActivate(memRec${activatesIdx}, fnUpdateOnTimer)\n`
+  sActivates += `memoryrecord_onActivate(memRec${activatesIdx}, fnUpdateOnTimer) \n`
 }
 
 // update strings
-labels += `\n--descriptions\n`
-descriptions += `\n--memory records\n`
-memoryRecords += `\n--setup function\nfunction fnGetAndSetData()\n${TEMPLATE_LITERAL_INPUTS}\n`
-mainFunction += `  return true\nend\n\n-- activate\n`
+sLabels += `\n--descriptions\n`
+sDescriptions += `\n--memory records\n`
+sMemoryRecords += `\n--setup function\nfunction fnGetAndSetData()\n${TEMPLATE_LITERAL_INPUTS} \n`
+sMainFunction += `  return true\nend\n\n-- activate\n`
 
 const FINAL_STRING =
   TEMPLATE_LITERAL_START
-  + labels
-  + descriptions
-  + memoryRecords
-  + mainFunction
-  + activates
+  + TEMPLATE_LITERAL_MIDDLE
+  + sLabels
+  + sDescriptions
+  + sMemoryRecords
+  + sMainFunction
+  + sActivates
   + TEMPLATE_LITERAL_END;
 
 clipboard.writeSync(FINAL_STRING);
-
-console.log('Copied to clipboard!' || '');
