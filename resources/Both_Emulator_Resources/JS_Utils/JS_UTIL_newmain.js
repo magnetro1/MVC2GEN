@@ -1,7 +1,7 @@
 /* eslint-disable */
 import * as fs from 'fs';
 import clipboardy from "clipboardy";
-
+import path from 'path';
 // Import the static data
 import {
   AE_TO_CVS2_POSITION_OBJ,
@@ -24,8 +24,7 @@ import {
 import {
   DIR_EXPORT_TO_AE,
   DIR_CSVS,
-} from './JS_UTIL_paths.js';
-
+} from '../JS_Utils/JS_UTIL_paths.js';
 console.time('⏱');
 // Write exportToAE folder if it doesn't exist
 if (!fs.existsSync(DIR_EXPORT_TO_AE)) {
@@ -58,12 +57,14 @@ for (let csv = 0; csv < csvArr.length; csv++) {
    * @description The path to the output folder for the AE files
    * @path `resources/Both_Emulator_Resources/JS_Utils/exportToAE/`
    */
-  const DIR_OUTPATH = `${DIR_EXPORT_TO_AE}${csvNameArr[csv]}/`;
+  const DIR_OUTPATH = path.join(DIR_EXPORT_TO_AE, csvNameArr[csv], '/');
+  // console.log(`DIR_OUTPATH: ${DIR_OUTPATH}`);
   // Make Output folder for AE files
   if (!fs.existsSync(`${DIR_OUTPATH}`)) {
     fs.mkdirSync(`${DIR_OUTPATH}`);
   }
-  fs.readFileSync(DIR_CSVS + csvArr[csv], 'utf8')
+
+  fs.readFileSync(path.join(DIR_CSVS, csvArr[csv]), 'utf8')
     .split('\r\n').map((line, index) => {
       if (index === 0) {
         headersArray = line.split(',');
@@ -214,24 +215,19 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       + `var result = [];\n`
       + `result[0] = '${csvNameArr[csv]}';\n`
     );
-
-    fs.writeFileSync(`${DIR_OUTPATH}${clipDataAE}.js`,
+    let csvName = csvNameArr[csv];
+    // console.log(`csvName: ${csvName}`);
+    fs.writeFileSync(`${csvName}${clipDataAE}.js`,
       missingEntries.toString().replace(/,/g, ''));
   }
 
 
 
-
-
-
-
-
-
-
   writeMissingEntries(csv, DIR_OUTPATH);
 
+  let tempDir = path.join(DIR_OUTPATH, csvNameArr[csv]);
+  let tempJS = `${tempDir}.js`;
 
-  let tempJS = `${DIR_EXPORT_TO_AE}${csvNameArr[csv]}.js`;
 
   let dataObject = {};
   for (let i = 0; i < headersArray.length; i++) {
@@ -2546,4 +2542,5 @@ fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
     fs.unlinkSync(`${DIR_EXPORT_TO_AE}${file}`);
   }
 });
+
 console.timeEnd('⏱');

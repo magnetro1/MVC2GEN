@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { exec } from 'child_process';
-import { DIR_DEMUL_CT_FILES, DIR_PCSX2_CT_FILES, CT_EXT } from './JS_UTILS/JS_UTIL_paths.js';
+import { DIR_DEMUL_CT_FILES, DIR_PCSX2_CT_FILES, CT_EXT } from './JS_Utils/JS_UTIL_paths.js';
 import { main } from '../Both_Emulator_Resources/promptForOpen.js';
 
 
