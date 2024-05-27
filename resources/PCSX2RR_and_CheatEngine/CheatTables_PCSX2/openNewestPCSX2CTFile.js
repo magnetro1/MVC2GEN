@@ -1,36 +1,42 @@
 // Open Newest CT file from directory
 import * as fs from 'fs';
 import { exec } from 'child_process';
+import { DIR_DEMUL_CT_FILES, DIR_PCSX2_CT_FILES, CT_EXT } from '../../Both_Emulator_Resources/JS_Utils/JS_UTIL_paths.js';
 
-const CT_EXT = '.CT' || '.ct';
 
-// We get our current directory and remove the file name
-const DIR_CT_FILES = import.meta.url
-  .replace('file:///', '')
-  .replace('openNewestPCSX2CTFile.js', '');
 
-// get the newest file
-function reduceNewestFile(prev, curr) {
-  let prevFileDate = fs.statSync(DIR_CT_FILES + prev).mtimeMs;
-  let currFileDate = fs.statSync(DIR_CT_FILES + curr).mtimeMs;
-  if (prevFileDate > currFileDate) {
-    return prev;
-  } else {
-    return curr;
+// Open Newest CT file from directory using exec()
+/**
+ * @param {string} pcsx2OrDemul
+ * @returns {void}
+ * */
+function openNewestCTFile(pcsx2OrDemul) {
+  let answer = prompt('Please enter either "pcsx2" or "demul"');
+
+  if (pcsx2OrDemul === 'pcsx2') {
+    answer = DIR_PCSX2_CT_FILES
   }
-};
+  if (pcsx2OrDemul === 'demul') {
+    answer = DIR_DEMUL_CT_FILES
+  }
 
-// Find CT file
-function filterCTFile() {
-  const files = fs.readdirSync(DIR_CT_FILES);
+  const files = fs.readdirSync(answer);
   const cheatTables = files.filter((file) => file.endsWith(CT_EXT));
-  return cheatTables.reduce(reduceNewestFile)
+
+  const newestFile = cheatTables.reduce((previous, current) => {
+    let prevTime = fs.statSync(answer + previous).mtimeMs;
+    let currTime = fs.statSync(answer + current).mtimeMs;
+    if (prevTime > currTime) {
+      return previous;
+    } else {
+      return current;
+    }
+  });
+
+  exec(newestFile, {
+    cwd: answer
+  });
 }
 
-// Open CT file
-exec(filterCTFile(), {
-  cwd: DIR_CT_FILES,
-  windowsHide: true,
-  detached: true,
-  shell: true,
-});
+openNewestCTFile('demul');
+openNewestCTFile('pcsx2');

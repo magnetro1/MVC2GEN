@@ -1,107 +1,122 @@
 // State Backup Tool for PCSX2
 import * as fs from 'fs';
 import * as path from 'path';
+import { DIR_PCSX2 } from '../../Both_Emulator_Resources/JS_Utils/JS_UTIL_paths.js';
 
-// import { DIR_PCSX2 } from '../../Both_Emulator_Resources/JS_Utils/JS_UTIL_paths.js';
 
-const DIR_PCSX2 = 'C:/Users/davil/OneDrive/L3/Emulators/PCSX2RR/';
 const DIR_SSTATES = DIR_PCSX2 + 'sstates/';
 const DIR_STATEBK = DIR_PCSX2 + 'StateBK/';
 const REPLAY_EXT = '.p2m';
-const SLEEP_AMOUNT = 1500;
-const errStr = 'No replays found in ' + DIR_PCSX2 + ', exiting...';
+const SLEEP_AMOUNT = 2500;
+const ERR_STR = 'No replays found in ' + DIR_PCSX2 + ', exiting...';
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-
 // Returns the newest 'p2m' replay file in the DIR_PCSX2
 function getNewestReplay() {
-  const files = fs.readdirSync(DIR_PCSX2);
-  const replaysList = files.filter(file => file.endsWith(REPLAY_EXT));
-  if (replaysList.length === 0) {
+  const FILES = fs.readdirSync(DIR_PCSX2);
+  const REPLAYS_LIST = FILES.filter(file => file.endsWith(REPLAY_EXT));
+  if (REPLAYS_LIST.length === 0) {
     return 'No replays found in ' + DIR_PCSX2 + ', exiting...'
   }
-  const newestReplay = replaysList.reduce((previousReplayFile, currentReplayFile) =>
+  const NEWEST_REPLAY = REPLAYS_LIST.reduce((previousReplayFile, currentReplayFile) =>
 
-    fs.statSync(DIR_PCSX2 + previousReplayFile).mtimeMs > fs.statSync(DIR_PCSX2 + currentReplayFile).mtimeMs
+    fs.statSync(DIR_PCSX2 + previousReplayFile).mtimeMs > fs
+      .statSync(DIR_PCSX2 + currentReplayFile).mtimeMs
       ? previousReplayFile : currentReplayFile);
-  return newestReplay;
+  return NEWEST_REPLAY;
 }
 // console.log(getNewestReplay());
 
 // If no replays are found, exit the script
-if (getNewestReplay() === errStr) {
-  console.log(errStr || '')
+if (getNewestReplay() === ERR_STR) {
+  console.log(ERR_STR || '')
   await sleep(SLEEP_AMOUNT)
 }
-// Make? and Return the new main replay-folder in StateBK using the newest replay name if it doesn't exist
+// Make? and Return the new main replay-folder
+// in StateBK using the newest replay name if it doesn't exist
 function getAndMakeReplayFolder() {
-  const newestReplay = getNewestReplay();
-  const folderName = newestReplay.replace(REPLAY_EXT, '_pcsx2');
-  const ReplayfolderPath = path.join(DIR_STATEBK, folderName)
-  if (!fs.existsSync(ReplayfolderPath) && newestReplay !== errStr) {
-    fs.mkdirSync(ReplayfolderPath);
+  const NEWEST_REPLAY = getNewestReplay();
+  const FOLDER_NAME = NEWEST_REPLAY.replace(REPLAY_EXT, '_pcsx2');
+  const REPLAY_FOLDER_PATH = path.join(DIR_STATEBK, FOLDER_NAME)
+  if (!fs.existsSync(REPLAY_FOLDER_PATH) && NEWEST_REPLAY !== ERR_STR) {
+    fs.mkdirSync(REPLAY_FOLDER_PATH);
   }
-  return ReplayfolderPath;
+  return REPLAY_FOLDER_PATH;
 }
 // store main replay folder in a variable
-const mainReplayFolder = getAndMakeReplayFolder();
-// console.log(mainReplayFolder);
+const MAIN_REPLAY_FOLDER = getAndMakeReplayFolder();
+// console.log(MAIN_REPLAY_FOLDER);
 // Make? and increment a folder inside the Main Replay folder and Return it
 function getAndMakeIncrementedFolder() {
-  const mainReplayFolder = getAndMakeReplayFolder();
-  const folders = fs.readdirSync(mainReplayFolder);
-  const folderNumber = folders.length + 1;
-  const newFolderName = getNewestReplay()
-    .replace('.p2m', '_pcsx2_') + folderNumber
+  const MAIN_REPLAY_FOLDER = getAndMakeReplayFolder();
+  const FOLDERS = fs.readdirSync(MAIN_REPLAY_FOLDER);
+  const FOLDER_NUMBER = FOLDERS.length + 1;
+  const NEW_FOLDER_NAME = getNewestReplay()
+    .replace('.p2m', '_pcsx2_') + FOLDER_NUMBER
       .toString()
       .padStart(3, '0');
-  const newFolderPath = path.join(mainReplayFolder, newFolderName);
-  if (!fs.existsSync(newFolderPath)) {
-    fs.mkdirSync(newFolderPath);
+  const NEW_FOLDER_PATH = path.join(MAIN_REPLAY_FOLDER, NEW_FOLDER_NAME);
+  if (!fs.existsSync(NEW_FOLDER_PATH)) {
+    fs.mkdirSync(NEW_FOLDER_PATH);
   }
-  return newFolderPath;
+  return NEW_FOLDER_PATH;
 }
 
 
 // Copy the newest replay and the contents of sstates to the new folder
 function copyReplayAndSstatesToNewFolders() {
-  const newestReplay = getNewestReplay();
-  const newFolderPath = getAndMakeIncrementedFolder();
+  const NEWEST_REPLAY = getNewestReplay();
+  const NEW_FOLDER_PATH = getAndMakeIncrementedFolder();
   // Get and copy sstates
-  const sstates = fs.readdirSync(DIR_SSTATES);
-  const statesLength = sstates.length;
-  sstates.forEach(sstate => {
-    fs.copyFileSync(path.join(DIR_SSTATES, sstate), path.join(newFolderPath, sstate));
+  const SSTATES = fs.readdirSync(DIR_SSTATES);
+  const STATES_LENGTH = SSTATES.length;
+  SSTATES.forEach(SSTATE => {
+    // if SSTATE ends with this regex: /00[0-9]
+    if (SSTATE.match(/00[0-9]/)) {
+      fs.copyFileSync(path.join(DIR_SSTATES, SSTATE), path.join(NEW_FOLDER_PATH, SSTATE));
+    }
   }
   );
 
 
-  fs.copyFileSync(path.join(DIR_PCSX2, newestReplay), path.join(newFolderPath, newestReplay));
-  // console.log('Copied ' + getNewestReplay() + ' and ' + statesLength + ' states to ' + newFolderPath);
+  fs.copyFileSync(path.join(DIR_PCSX2, NEWEST_REPLAY), path.join(NEW_FOLDER_PATH, NEWEST_REPLAY));
 
   // find the second newest replay folder and get the replay file's size
-  if (!newFolderPath.endsWith('001')) {
-    const replayFolders = fs.readdirSync(mainReplayFolder);
-    const secondNewestReplayFolder = replayFolders[replayFolders.length - 2];
-    console.log('Second newest replay folder is ' + secondNewestReplayFolder);
-    const replayFiles = fs.readdirSync(path.join(mainReplayFolder, secondNewestReplayFolder));
-    const secondNewestReplay = replayFiles.find(file => file.endsWith(REPLAY_EXT));
+  if (!NEW_FOLDER_PATH.endsWith('001')) {
+    const REPLAY_FOLDERS = fs.readdirSync(MAIN_REPLAY_FOLDER);
+    const SECOND_NEWEST_REPLAY_FOLDER = REPLAY_FOLDERS[REPLAY_FOLDERS.length - 2];
+    console.log('Second newest replay folder is ' + SECOND_NEWEST_REPLAY_FOLDER);
+    const REPLAY_FILES = fs.readdirSync(path.join(MAIN_REPLAY_FOLDER, SECOND_NEWEST_REPLAY_FOLDER));
+    const SECOND_NEWEST_REPLAY = REPLAY_FILES.find(file => file.endsWith(REPLAY_EXT));
     // Newest replay
-    const stats = fs.statSync(path.join(DIR_PCSX2, newestReplay));
-    const statsMDate = stats.mtimeMs;
+    const STATS = fs.statSync(path.join(DIR_PCSX2, NEWEST_REPLAY));
+    const STATS_MDATE = STATS.mtimeMs;
 
     // Second newest replay
-    const stats2 = fs.statSync(path.join(mainReplayFolder, secondNewestReplayFolder, secondNewestReplay));
-    const statsMDate2 = stats2.mtimeMs;
+    const STATS2 = fs.statSync(path.join(
+      MAIN_REPLAY_FOLDER, SECOND_NEWEST_REPLAY_FOLDER, SECOND_NEWEST_REPLAY
+    ));
+    const STATS_MDATE2 = STATS2.mtimeMs;
 
     // Compare the dates of the two replays
-    const timeDifference = statsMDate - statsMDate2;
+    const TIME_DIFFERENCE = STATS_MDATE - STATS_MDATE2;
     // log the difference in minutes and seconds
-    const minutes = Math.floor(timeDifference / 60000);
-    const seconds = ((timeDifference % 60000) / 1000).toFixed(0);
-    console.log('Difference between ' + newestReplay + ' and ' + secondNewestReplay + ' is ' + minutes + ' minutes and ' + seconds + ' seconds');
+    const MINUTES = Math.floor(TIME_DIFFERENCE / 60000);
+    const SECONDS = ((TIME_DIFFERENCE % 60000) / 1000).toFixed(0);
+    console.log('Difference between '
+      + NEWEST_REPLAY + ' and '
+      + SECOND_NEWEST_REPLAY
+      + ' is '
+      + MINUTES
+      + ' minutes and '
+      + SECONDS
+      + ' seconds');
+    // if the time difference is 0, throw an error
+    if (TIME_DIFFERENCE === 0) {
+      throw new Error('Replay files have the same date!');
+    }
   }
 }
 

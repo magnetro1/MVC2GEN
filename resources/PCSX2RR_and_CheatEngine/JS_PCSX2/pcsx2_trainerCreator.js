@@ -12,13 +12,18 @@ import clipboard from "clipboardy";
 /**
  * Prefix Key:
  * 
- * MISC  = Miscellaneous Values that should not be edited; 1 Entry in Lua-Window
+ * MISC  = Miscellaneous Values that should not be edited;
+ * 1 Entry in Lua-Window
  * 
- * SYST  = System Values that possess P1 and P2; 2 Entries in Lua-Window
+ * SYST  = System Values that possess P1 and P2;
+ * 2 Entries in Lua-Window
  * 
- * PMEM  = Player Memory Values that possess P1_A, P1_B, P1_C, P2_A, P2_B, P2_C; 2 Entries in Lua-Window
+ * PMEM  = Player Memory Values that possess
+ * P1_A, P1_B, P1_C, P2_A, P2_B, P2_C;
+ * 2 Entries in Lua-Window
  * 
- * SYST AND PMEM entries require subtracting the iteration by 1 to get the correct value.
+ * SYST AND PMEM entries require subtracting the iteration
+ * by 1 to get the correct value.
  * 
  * Rename these when editing the script; the rest should work on its own!
  */
@@ -40,29 +45,29 @@ const REAL_ENTRIES = [];
 // Trainer-box constants
 const T_PROPS = {
   tColor: '0x00b140', // green; used in OBS for green screen
-  tWidth: 820 - 2, // sub Windows Panel // 279
-  tHeight: 580 - 28, // sub Windows Panel // 480
+  tWidth: 800 - 2, // sub Windows Panel
+  tHeight: 600 - 28, // sub Windows Panel
   tXPos: 3,
   tYPos: 3,
   tFontSize: 28,
-  tRowsOffset: 43,
+  tRowsOffset: 45,
   tRowSpacer: 20,
 };
 // Font constants
 const T_FONT_0 = {
-  fName0: 'Source Code Pro',
+  fName0: 'Cascade Mono',
   fSize0: T_PROPS.tFontSize,
   fColor0: '0xFF0000',
 };
 const T_FONT_1 = {
-  fName1: 'Source Code Pro',
+  fName1: 'Cascade Mono',
   fSize1: T_PROPS.tFontSize,
   fColor1: '0xFFFFFF',
 };
 
 /**
  * Generates a list of variables based on the ENTRIES array.
- * The variables will keep their prefixes for the Javascript code,
+ * The variables will keep their prefixes for the Javascript,
  * but will be stripped for the Lua code.
  * @returns {string} The generated variable list.
  */
@@ -71,19 +76,24 @@ function WriteEntryList() {
 
   for (let i = 0, counter = 0; i < ENTRIES.length; i++) {
     if (ENTRIES[i].includes('MISC_')) {
-      var_list_main += `VAR_${counter} = '${ENTRIES[i]}'\n`.replace('MISC_', '');
+      var_list_main += `VAR_${counter} = '${ENTRIES[i]}'\n`
+        .replace('MISC_', '');
       counter++;
     }
     else if (ENTRIES[i].includes('SYST_')) {
-      var_list_main += `VAR_${counter} = 'P1_${ENTRIES[i]}'\n`.replace('SYST_', '');
+      var_list_main += `VAR_${counter} = 'P1_${ENTRIES[i]}'\n`
+        .replace('SYST_', '');
       counter++;
-      var_list_main += `VAR_${counter} = 'P2_${ENTRIES[i]}'\n`.replace('SYST_', '');
+      var_list_main += `VAR_${counter} = 'P2_${ENTRIES[i]}'\n`
+        .replace('SYST_', '');
       counter++;
     }
     else if (ENTRIES[i].includes('PMEM_')) {
-      var_list_main += `VAR_${counter} = 'One_${ENTRIES[i]}'\n`.replace('PMEM_', '');
+      var_list_main += `VAR_${counter} = 'One_${ENTRIES[i]}'\n`
+        .replace('PMEM_', '');
       counter++;
-      var_list_main += `VAR_${counter} = 'Two_${ENTRIES[i]}'\n`.replace('PMEM_', '');
+      var_list_main += `VAR_${counter} = 'Two_${ENTRIES[i]}'\n`
+        .replace('PMEM_', '');
       counter++;
     }
     else {
@@ -94,17 +104,24 @@ function WriteEntryList() {
 }
 // console.log(WriteEntryList());
 function ConvertToPlayerString(pString) {
-  let playerValue = ''
-  if ((pString === 'One') || (pString === 'one') || (pString === 'P1') || (pString === 'ONE')) {
-    playerValue = 'P1'
+  let playerValue = '';
+  if (
+    (pString === 'One') ||
+    (pString === 'one') ||
+    (pString === 'P1') ||
+    (pString === 'ONE')
+  ) {
+    playerValue = 'P1';
+  } else if (
+    (pString === 'Two') ||
+    (pString === 'two') ||
+    (pString === 'P2') ||
+    (pString === 'TWO')
+  ) {
+    playerValue = 'P2';
   }
-  else if ((pString === 'Two') || (pString === 'two') || (pString === 'P2') || (pString === 'TWO')) {
-    playerValue = 'P2'
-  }
-  return playerValue
+  return playerValue;
 }
-
-
 
 const TEMPLATE_LITERAL_START =
   `[ENABLE]
@@ -334,17 +351,18 @@ let sActivates = ''
 
 function MakeRealEntries(entry, idx) {
   if (entry.includes('PMEM') || entry.includes('SYST')) {
-    // If it's PMEM or SYST, we need to make 2 entries, one for P1 and one for P2
-    let p1Entry = entry.replace('PMEM_', 'ONE_').replace('SYST_', 'P1_')
-    let p2Entry = entry.replace('PMEM_', 'TWO_').replace('SYST_', 'P2_')
-    REAL_ENTRIES.push(p1Entry)
-    REAL_ENTRIES.push(p2Entry)
-    idx++
-    // console.log(`Pushed ${p1Entry} and ${p2Entry} to ENTRIES`)
+    let p1Entry = entry.replace('PMEM_', 'ONE_')
+      .replace('SYST_', 'P1_');
+    let p2Entry = entry.replace('PMEM_', 'TWO_')
+      .replace('SYST_', 'P2_');
+    REAL_ENTRIES.push(p1Entry);
+    REAL_ENTRIES.push(p2Entry);
+    idx++;
+    // console.log(`Pushed ${p1Entry} and ${p2Entry} to ENTRIES`);
   }
   else {
-    let miscEntry = entry.replace('MISC_', '')
-    REAL_ENTRIES.push(miscEntry)
+    let miscEntry = entry.replace('MISC_', '');
+    REAL_ENTRIES.push(miscEntry);
   }
 }
 
@@ -400,31 +418,31 @@ for (let memRecIdx = 0; memRecIdx < REAL_ENTRIES.length; memRecIdx++) {
 
 // mainFunction
 
-for (let mainFunctionIdx = 0; mainFunctionIdx < REAL_ENTRIES.length; mainFunctionIdx++, T_PROPS.tRowSpacer += T_PROPS.tRowsOffset) {
-  if (REAL_ENTRIES[mainFunctionIdx].includes('Input_DEC')) {
+for (let mainIDX = 0; mainIDX < REAL_ENTRIES.length; mainIDX++, T_PROPS.tRowSpacer += T_PROPS.tRowsOffset) {
+  if (REAL_ENTRIES[mainIDX].includes('Input_DEC')) {
     // Figure out the player, P1 or P2
-    let pString = ConvertToPlayerString(REAL_ENTRIES[mainFunctionIdx].split('_')[0])
+    let pString = ConvertToPlayerString(REAL_ENTRIES[mainIDX].split('_')[0])
 
     sMainFunction +=
-      `  local data${mainFunctionIdx} = '${REAL_ENTRIES[mainFunctionIdx]}'.. ': '..${pString}Str `
+      `  local data${mainIDX} = '${REAL_ENTRIES[mainIDX]}'.. ': '..${pString}Str `
     // console.log(pString)
     sMainFunction += `
-    control_setPosition(labelX${mainFunctionIdx}, ${T_PROPS.tXPos}, ${T_PROPS.tYPos + T_PROPS.tRowSpacer});
-    control_setCaption(labelX${mainFunctionIdx}, data${mainFunctionIdx}) \n`
+    control_setPosition(labelX${mainIDX}, ${T_PROPS.tXPos}, ${T_PROPS.tYPos + T_PROPS.tRowSpacer});
+    control_setCaption(labelX${mainIDX}, data${mainIDX}) \n`
   }
-  else if (REAL_ENTRIES[mainFunctionIdx].includes('ONE_') || REAL_ENTRIES[mainFunctionIdx].includes('TWO_')) {
-    let pString = ConvertToPlayerString(REAL_ENTRIES[mainFunctionIdx].split('_')[0])
-    sMainFunction += `  local data${mainFunctionIdx} = GetPMem('${pString}', '${REAL_ENTRIES[mainFunctionIdx]}')
-    control_setPosition(labelX${mainFunctionIdx}, ${T_PROPS.tXPos}, ${T_PROPS.tYPos + T_PROPS.tRowSpacer});
-    control_setCaption(labelX${mainFunctionIdx}, data${mainFunctionIdx}) \n`;
+  else if (REAL_ENTRIES[mainIDX].includes('ONE_') || REAL_ENTRIES[mainIDX].includes('TWO_')) {
+    let pString = ConvertToPlayerString(REAL_ENTRIES[mainIDX].split('_')[0])
+    sMainFunction += `  local data${mainIDX} = GetPMem('${pString}', '${REAL_ENTRIES[mainIDX]}')
+    control_setPosition(labelX${mainIDX}, ${T_PROPS.tXPos}, ${T_PROPS.tYPos + T_PROPS.tRowSpacer});
+    control_setCaption(labelX${mainIDX}, data${mainIDX}) \n`;
     // remove ONE_ or TWO_ from the string
     sMainFunction = sMainFunction.replace('ONE_', '').replace('TWO_', '')
   }
   else {
     sMainFunction +=
-      `  local data${mainFunctionIdx} = '${REAL_ENTRIES[mainFunctionIdx]}'..': '..memoryrecord_getValue(memRec${mainFunctionIdx});
-    control_setPosition(labelX${mainFunctionIdx}, ${T_PROPS.tXPos}, ${T_PROPS.tYPos + T_PROPS.tRowSpacer});
-    control_setCaption(labelX${mainFunctionIdx}, data${mainFunctionIdx}) \n`
+      `  local data${mainIDX} = '${REAL_ENTRIES[mainIDX]}'..': '..memoryrecord_getValue(memRec${mainIDX});
+    control_setPosition(labelX${mainIDX}, ${T_PROPS.tXPos}, ${T_PROPS.tYPos + T_PROPS.tRowSpacer});
+    control_setCaption(labelX${mainIDX}, data${mainIDX}) \n`
   }
   // console.log(sMainFunction)
 }
