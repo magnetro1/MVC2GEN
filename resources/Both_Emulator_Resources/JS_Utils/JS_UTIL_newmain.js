@@ -1,8 +1,6 @@
-/* eslint-disable */
 import * as fs from 'fs';
 import clipboardy from "clipboardy";
 import path from 'path';
-// Import the static data
 import {
   AE_TO_CVS2_POSITION_OBJ,
   AE_TO_POSITION_OBJ,
@@ -24,7 +22,8 @@ import {
 import {
   DIR_EXPORT_TO_AE,
   DIR_CSVS,
-} from '../JS_Utils/JS_UTIL_paths.js';
+} from '../JS_UTILS/JS_UTIL_paths.js'
+
 console.time('⏱');
 // Write exportToAE folder if it doesn't exist
 if (!fs.existsSync(DIR_EXPORT_TO_AE)) {
