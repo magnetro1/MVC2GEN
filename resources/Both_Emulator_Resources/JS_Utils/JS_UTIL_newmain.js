@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as fsPromises from 'fs/promises';
 import clipboardy from "clipboardy";
 import path from 'path';
 import {
@@ -189,8 +190,8 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       STRUCT[colIdx].push(allDataArray[rowIdx][colIdx]);
     }
   }
-  const clipDataAE = '_clipDataAE';
 
+  const clipDataAE = '_clipDataAE_';
   // Check for missing entries. Two strings, write once.
   function writeMissingEntries(csv, DIR_OUTPATH) {
     let missingEntries = [`/*\n`];
@@ -214,19 +215,19 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       + `var result = [];\n`
       + `result[0] = '${csvNameArr[csv]}';\n`
     );
+
     let csvName = csvNameArr[csv];
     // console.log(`csvName: ${csvName}`);
-    fs.writeFileSync(`${csvName}${clipDataAE}.js`,
+    fs.writeFileSync(`${DIR_OUTPATH}${clipDataAE}.js`,
       missingEntries.toString().replace(/,/g, ''));
   }
-
-
-
   writeMissingEntries(csv, DIR_OUTPATH);
 
-  let tempDir = path.join(DIR_OUTPATH, csvNameArr[csv]);
-  let tempJS = `${tempDir}.js`;
 
+  // Write a TempJS file with the updated object
+
+  let tempDir = path.join(DIR_EXPORT_TO_AE, csvNameArr[csv]);
+  let tempJS = `${tempDir}.js`;
 
   let dataObject = {};
   for (let i = 0; i < headersArray.length; i++) {
@@ -939,7 +940,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
 
     const stageSelection = STAGE_SELECTOR[firstValidFrame];
     stageName = Object.values(STAGES_NAMES)[stageSelection];
-
+    let csvName = csvNameArr[csv];
     fs.appendFileSync(`${DIR_OUTPATH}${clipDataAE}.js`,
       `result[1] = '${playerOne}';\n`
       + `result[2] = '${playerTwo}';\n`
@@ -2535,11 +2536,31 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   writeDataObject();
 }
 
-// delete temp JS file
-fs.readdirSync(DIR_EXPORT_TO_AE).forEach(file => {
-  if (file.endsWith('.js')) {
-    fs.unlinkSync(`${DIR_EXPORT_TO_AE}${file}`);
-  }
-});
+// Delete the "TEMP.JS" file
+let tempDir = path.join(DIR_EXPORT_TO_AE, '/');
+/**
+ * Asynchronously deletes all JavaScript files in the specified directory.
+ * @param {string} tempDir - The directory path where files should be deleted.
+ */
+async function deleteFiles(tempDir) {
+  // Read the contents of the directory
+  let files = await fsPromises.readdir(tempDir);
 
-console.timeEnd('⏱');
+  // Filter the list of files to include only those ending with '.js'
+  let jsFiles = files.filter(fn => fn.endsWith('.js'));
+
+  // Loop until there are no more JavaScript files to delete
+  while (jsFiles.length > 0) {
+    // Delete all JavaScript files concurrently
+    await Promise.all(jsFiles.map(file => fsPromises.unlink(path.join(tempDir, file))));
+
+    // Read the contents of the directory again
+    files = await fsPromises.readdir(tempDir);
+
+    // Update the list of JavaScript files
+    jsFiles = files.filter(fn => fn.endsWith('.js'));
+  }
+  console.timeEnd('⏱');
+}
+
+deleteFiles(tempDir).catch(console.error);

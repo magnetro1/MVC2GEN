@@ -3,11 +3,14 @@ import { DIR_DEMUL_CT_FILES, DIR_PCSX2_CT_FILES, CT_EXT } from './JS_UTILS/JS_UT
 import { exec } from 'child_process';
 
 export function openNewestCTFile(emulator) {
+
+
   let DIR_CT_FILES;
   if (emulator === 'pcsx2') {
     DIR_CT_FILES = DIR_PCSX2_CT_FILES;
   } else if (emulator === 'demul') {
     DIR_CT_FILES = DIR_DEMUL_CT_FILES;
+    console.log(DIR_CT_FILES);
   } else {
     console.log('Invalid emulator');
     return;
@@ -22,7 +25,7 @@ export function openNewestCTFile(emulator) {
   // Filter for CT files and find the newest one
   function filterCTFile() {
     const files = fs.readdirSync(DIR_CT_FILES);
-    console.log(files)
+    // console.log(files)
     const cheatTables = files.filter((file) => file.endsWith(CT_EXT));
     if (cheatTables.length === 0) {
       console.log(`No cheat tables found in directory: ${DIR_CT_FILES}`);
@@ -48,4 +51,3 @@ export function openNewestCTFile(emulator) {
     });
   }
 }
-openNewestCTFile('demul');
