@@ -1,11 +1,10 @@
 // State Backup Tool for PCSX2
 import * as fs from 'fs';
 import * as path from 'path';
-import { DIR_PCSX2 } from '../../Both_Emulator_Resources/JS_Utils/JS_UTIL_paths.js';
+import { DIR_PCSX2 } from '../../Both_Emulator_Resources/JS_UTILS/JS_UTIL_paths.js';
 
-
-const DIR_SSTATES = DIR_PCSX2 + 'sstates/';
-const DIR_STATEBK = DIR_PCSX2 + 'StateBK/';
+const DIR_SSTATES = path.join(DIR_PCSX2, 'sstates');
+const DIR_STATEBK = path.join(DIR_PCSX2, 'StateBK');
 const REPLAY_EXT = '.p2m';
 const SLEEP_AMOUNT = 2500;
 const ERR_STR = 'No replays found in ' + DIR_PCSX2 + ', exiting...';
@@ -13,6 +12,7 @@ const ERR_STR = 'No replays found in ' + DIR_PCSX2 + ', exiting...';
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 // Returns the newest 'p2m' replay file in the DIR_PCSX2
 function getNewestReplay() {
   const FILES = fs.readdirSync(DIR_PCSX2);
@@ -34,6 +34,7 @@ if (getNewestReplay() === ERR_STR) {
   console.log(ERR_STR || '')
   await sleep(SLEEP_AMOUNT)
 }
+
 // Make? and Return the new main replay-folder
 // in StateBK using the newest replay name if it doesn't exist
 function getAndMakeReplayFolder() {
@@ -45,9 +46,9 @@ function getAndMakeReplayFolder() {
   }
   return REPLAY_FOLDER_PATH;
 }
-// store main replay folder in a variable
 const MAIN_REPLAY_FOLDER = getAndMakeReplayFolder();
 // console.log(MAIN_REPLAY_FOLDER);
+
 // Make? and increment a folder inside the Main Replay folder and Return it
 function getAndMakeIncrementedFolder() {
   const MAIN_REPLAY_FOLDER = getAndMakeReplayFolder();
