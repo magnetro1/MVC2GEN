@@ -37,6 +37,7 @@ const ENTRIES = [
   'PMEM_Throw_Counter_Mash',    // 2 Entries in Lua-Window
   'PMEM_Throw_RNG',             // 2 Entries in Lua-Window
   'PMEM_Hitstop2',              // 2 Entries in Lua-Window
+  'PMEM_Knockdown_State',              // 2 Entries in Lua-Window
 ];
 
 // the ones we will use to write the lua script
@@ -46,21 +47,21 @@ const REAL_ENTRIES = [];
 const T_PROPS = {
   tColor: '0x00b140', // green; used in OBS for green screen
   tWidth: 800 - 2, // sub Windows Panel
-  tHeight: 600 - 28, // sub Windows Panel
+  tHeight: 800 - 28, // sub Windows Panel
   tXPos: 3,
-  tYPos: 3,
-  tFontSize: 28,
+  tYPos: 15, // is this where the stop button is?
+  tFontSize: 23,
   tRowsOffset: 45,
-  tRowSpacer: 20,
+  tRowSpacer: 10,
 };
 // Font constants
 const T_FONT_0 = {
-  fName0: 'Cascade Mono',
+  fName0: 'Courier',
   fSize0: T_PROPS.tFontSize,
   fColor0: '0xFF0000',
 };
 const T_FONT_1 = {
-  fName1: 'Cascade Mono',
+  fName1: 'Courier',
   fSize1: T_PROPS.tFontSize,
   fColor1: '0xFFFFFF',
 };
