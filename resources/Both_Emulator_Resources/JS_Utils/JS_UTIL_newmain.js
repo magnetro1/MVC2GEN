@@ -1160,6 +1160,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       State_Thrown_Air: [[], [], []],
       State_Thrown_Ground: [[], [], []],
       State_Undizzy: [[], [], []],
+      State_FS_All: [[], [], []],
       // NEW_STATE_ADD_HERE ⏫
       // Magneto-Only
       State_Magneto_Moves: [[], [], []],
@@ -1831,6 +1832,15 @@ for (let csv = 0; csv < csvArr.length; csv++) {
               ? nStateObj.State_Undizzy[pABC].push(1)
               : nStateObj.State_Undizzy[pABC].push(0);
           }
+          // "FS_All"
+          if (nStateObj.State_FS_All) {
+            (
+              ((pMemObject[`P1_FlyingScreen`])[pABC][cLen] == 1
+                || (pMemObject[`P2_FlyingScreen`])[pABC][cLen] == 1)
+            )
+              ? nStateObj.State_FS_All[pABC].push(1)
+              : nStateObj.State_FS_All[pABC].push(0);
+          }
           // "NEW_STATE_ADD_NAME_HERE" (its name in comments)
           // NEW_STATE_ADD_HERE
         } // cLen Scope
@@ -1881,7 +1891,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
 
       }
     }
-  }
+  } // writeNewStates() Scope
 
   // End of Player Memory
   // Call all the functions
@@ -1902,7 +1912,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   writeStaticDataCNV();
   await writeNewStates()
   writeDataObject();
-}
+} // CSV For Loop Scope
 
 // Delete the "TEMP.JS" file
 let tempDir = path.join(DIR_EXPORT_TO_AE, '/');
