@@ -45,7 +45,7 @@ export const IS_PROX_BLOCK_OBJ = {
   11: 'Air Punches',
   12: 'Air Kicks',
   13: 'Stunned',
-  14: '???',
+  14: '???', // ⭐
   15: 'Throwing',
   16: 'Being Thrown',
   17: 'OTG Rise',
@@ -54,7 +54,7 @@ export const IS_PROX_BLOCK_OBJ = {
   20: 'Tag-in & OC Launcher',
   21: 'Specials & Snapbacks',
   22: 'Supers',
-  23: '???',
+  23: '???', // ⭐
   24: 'Assist Related',
   25: '???',
   26: 'Air Dash',

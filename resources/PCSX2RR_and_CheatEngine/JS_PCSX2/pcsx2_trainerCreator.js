@@ -37,7 +37,7 @@ const ENTRIES = [
   'PMEM_Throw_Counter_Mash',    // 2 Entries in Lua-Window
   'PMEM_Throw_RNG',             // 2 Entries in Lua-Window
   'PMEM_Hitstop2',              // 2 Entries in Lua-Window
-  'PMEM_Knockdown_State',              // 2 Entries in Lua-Window
+  'PMEM_Knockdown_State',       // 2 Entries in Lua-Window
 ];
 
 // the ones we will use to write the lua script
@@ -189,7 +189,7 @@ Knockdown_State_OBJ[12] = "Double Dizzy"
 Knockdown_State_OBJ[13] = "Super Jump Rise"
 Knockdown_State_OBJ[14] = "Super Jumping"
 Knockdown_State_OBJ[15] = "Air Recovery"
-Knockdown_State_OBJ[16] = "???"
+Knockdown_State_OBJ[16] = "???" --Unknown
 Knockdown_State_OBJ[17] = "Knockdown Rise"
 Knockdown_State_OBJ[18] = "Ground Block"
 Knockdown_State_OBJ[19] = "Air Blocking"
@@ -206,9 +206,8 @@ Knockdown_State_OBJ[29] = "Supers & Flashes"
 Knockdown_State_OBJ[30] = "Throwing"
 Knockdown_State_OBJ[31] = "Thrown"
 Knockdown_State_OBJ[32] = "Stunned"
-Knockdown_State_OBJ[33] = "???"
+Knockdown_State_OBJ[33] = "???" --Unknown
 Knockdown_State_OBJ[34] = "Command Launcher"
-
 
 function GetPointForPMem(p1OrP2)
   p1OrP2 = tostring(p1OrP2)
@@ -420,6 +419,7 @@ for (let memRecIdx = 0; memRecIdx < REAL_ENTRIES.length; memRecIdx++) {
 // mainFunction
 
 for (let mainIDX = 0; mainIDX < REAL_ENTRIES.length; mainIDX++, T_PROPS.tRowSpacer += T_PROPS.tRowsOffset) {
+  // Inputs Only!
   if (REAL_ENTRIES[mainIDX].includes('Input_DEC')) {
     // Figure out the player, P1 or P2
     let pString = ConvertToPlayerString(REAL_ENTRIES[mainIDX].split('_')[0])
@@ -430,7 +430,7 @@ for (let mainIDX = 0; mainIDX < REAL_ENTRIES.length; mainIDX++, T_PROPS.tRowSpac
     sMainFunction += `
     control_setPosition(labelX${mainIDX}, ${T_PROPS.tXPos}, ${T_PROPS.tYPos + T_PROPS.tRowSpacer});
     control_setCaption(labelX${mainIDX}, data${mainIDX}) \n`
-  }
+  } // PMem Only!
   else if (REAL_ENTRIES[mainIDX].includes('ONE_') || REAL_ENTRIES[mainIDX].includes('TWO_')) {
     let pString = ConvertToPlayerString(REAL_ENTRIES[mainIDX].split('_')[0])
     sMainFunction += `  local data${mainIDX} = GetPMem('${pString}', '${REAL_ENTRIES[mainIDX]}')
@@ -438,7 +438,7 @@ for (let mainIDX = 0; mainIDX < REAL_ENTRIES.length; mainIDX++, T_PROPS.tRowSpac
     control_setCaption(labelX${mainIDX}, data${mainIDX}) \n`;
     // remove ONE_ or TWO_ from the string
     sMainFunction = sMainFunction.replace('ONE_', '').replace('TWO_', '')
-  }
+  } // Everything else, like System-calls, example: Combo Meter
   else {
     sMainFunction +=
       `  local data${mainIDX} = '${REAL_ENTRIES[mainIDX]}'..': '..memoryrecord_getValue(memRec${mainIDX});
