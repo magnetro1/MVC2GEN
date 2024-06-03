@@ -451,7 +451,6 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       // console.log(`pMemObject: ${Object.keys(pMemObject)}`);
     }
   }
-
   // Main function to write data to files
   /**
    * @param {number|string} p1OrP2 ex: 1 or "P1"
@@ -560,6 +559,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       }
     });
   }
+
 
   /**
    * @description outputs arrays containing Total_Frames in ascending and
@@ -1039,6 +1039,9 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       } else if (p1OrP2 == 2) {
         player_ = 'P2_';
       }
+
+
+
       // console.log(player_);
       for (let staticDataLen = 0; staticDataLen < STATIC_DATA_ADRS.length; staticDataLen++) {
 
@@ -1122,6 +1125,47 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       }
     }
   };
+
+  /**
+   * Takes in Unfly base-10 number, converts it into 2 binary numbers, by punch and kick order.
+   * @param {number} number - Base 10 number, Unfly data.
+   * @returns {number[]} - Array: Punches, Kicks in binary.
+   */
+  function NumToBinary(number) {
+    let unflyPunchesBIN = (number & 0b11110000) >> 4;
+    let unflyKicksBIN = number & 0b00001111;
+    return [unflyPunchesBIN, unflyKicksBIN];
+  }
+
+  async function writeUnflyData() {
+    for (let p1OrP2 = 1; p1OrP2 < 3; p1OrP2++) {
+      let unflyPunchesResults = [];
+      let unflyKicksResults = [];
+
+      // We first need to store the result of getPlayerMemory() in a variable
+      const getUnflyData = new Promise((resolve, reject) => {
+        resolve(getPlayerMemory(p1OrP2, 'Unfly', 0));
+        reject("Error");
+      });
+      const callPlayerMemoryFN = await getUnflyData;
+
+      // run through NumToBinary
+      // FN[0] has data; i dont believe its taking
+      // into account the two-character bug results
+      // ...TODO This might haunt you later
+      callPlayerMemoryFN[0].forEach((element) => {
+        let tempResults = NumToBinary(element);
+        unflyPunchesResults.push(tempResults[0]); // punches
+        unflyKicksResults.push(tempResults[1]);   // kicks
+      });
+      // Write the results to a file
+      fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_Unfly_BIN.js`,
+        `var result = [];\n// Punches\nresult[0] = [${unflyPunchesResults}];\n//Kicks\nresult[1] = [${unflyKicksResults}];`,
+        'utf8'
+      );
+    }
+  }
+
 
   /**
    * @description Writes State-Files that count and
@@ -1912,6 +1956,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   writeStaticDataCNV();
   await writeNewStates()
   writeDataObject();
+  writeUnflyData();
 } // CSV For Loop Scope
 
 // Delete the "TEMP.JS" file
