@@ -3,8 +3,6 @@ import { DIR_DEMUL_CT_FILES, DIR_PCSX2_CT_FILES, CT_EXT } from './JS_UTILS/JS_UT
 import { exec } from 'child_process';
 
 export function openNewestCTFile(emulator) {
-
-
   let DIR_CT_FILES;
   if (emulator === 'pcsx2') {
     DIR_CT_FILES = DIR_PCSX2_CT_FILES;
@@ -19,7 +17,13 @@ export function openNewestCTFile(emulator) {
   function reduceNewestFile(previous, current) {
     let prev = fs.statSync(`${DIR_CT_FILES}/${previous}`).mtimeMs;
     let curr = fs.statSync(`${DIR_CT_FILES}/${current}`).mtimeMs;
-    return prev > curr ? previous : current;
+    if (prev > curr) {
+      // If the previous file is newer, return the previous file
+      return previous;
+    } else {
+      // If the current file is newer, return the current file
+      return current;
+    }
   }
 
   // Filter for CT files and find the newest one

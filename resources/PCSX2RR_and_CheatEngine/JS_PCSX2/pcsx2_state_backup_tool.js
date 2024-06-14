@@ -67,7 +67,6 @@ function getAndMakeIncrementedFolder() {
   return NEW_FOLDER_PATH;
 }
 
-
 // Copy the newest replay and the contents of sstates to the new folder
 function copyReplayAndSstatesToNewFolders() {
   const NEWEST_REPLAY = getNewestReplay();
@@ -82,7 +81,6 @@ function copyReplayAndSstatesToNewFolders() {
     }
   }
   );
-
 
   fs.copyFileSync(path.join(DIR_PCSX2, NEWEST_REPLAY), path.join(NEW_FOLDER_PATH, NEWEST_REPLAY));
 

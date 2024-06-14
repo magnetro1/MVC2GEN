@@ -1,6 +1,19 @@
+/*
+1. Find which machine, hard drive and directory the repository is in.
+2. Find the directories of the Cheat Tables for PCSX2 and DEMUL on the machine.
+3. Find the directories of the PCSX2 and DEMUL emulators on the machine.
+4. Export the directories to be used in other files.
+*/
+
 import * as fs from "fs";
 import { fileURLToPath } from 'url';
 import path from 'path';
+
+export function getDriveLetter() {
+  const currentPath = path.resolve(process.cwd());
+  const driveLetter = currentPath[0];
+  return driveLetter;
+}
 
 const REPO_NAME = 'MVC2GEN';
 
@@ -11,7 +24,7 @@ const __dirname = path.dirname(__filename);
 // Find the position of the repository name in the path
 const repoNameLocation = __dirname.indexOf(REPO_NAME);
 
-// Extract the base directory path up to the repository name
+// Extract everything to the left of the repository name
 let baseDir = __dirname.substring(0, repoNameLocation + REPO_NAME.length);
 
 // Normalize the path
@@ -37,14 +50,16 @@ let tempPSCSX2 = '';
 let tempDEMUL = '';
 
 // Define the base directories of each machine
-const baseDirs = [
-  ['F:', 'OneDrive', 'DesktopPC', 'Emulators'],
-  ['C:', 'Users', 'davil', 'OneDrive', 'L2', 'Emulators'],
-  ['C:', 'Users', 'davil', 'OneDrive', 'L3', 'Emulators'],
+let driveLetter = getDriveLetter();
+const BASE_DIRS = [
+  [driveLetter + ':', 'OneDrive', 'DesktopPC', 'Emulators'],
+  [driveLetter + ':', 'Users', 'davil', 'OneDrive', 'L2', 'Emulators'],
+  [driveLetter + ':', 'Users', 'davil', 'OneDrive', 'L3', 'Emulators'],
 ];
+// console.log(driveLetter);
 
-const emulatorFolders = ['PCSX2RR', 'DEMUL'];
-const emulatorExecutables = ['pcsx2.exe', 'demul.exe'];
+const EMU_FOLDERS = ['PCSX2RR', 'DEMUL'];
+const EMU_EXES = ['pcsx2.exe', 'demul.exe'];
 
 function testFileExists(dir, file) {
   const filePath = path.join(dir, file);
@@ -53,14 +68,14 @@ function testFileExists(dir, file) {
 
 /*
 The for...of loop: only need to access the elements of
-baseDirs sequentially.
-The i-loop: access elements of emulatorFolders and
-emulatorExecutables array at the same index.
+BASE_DIRS sequentially.
+The i-loop: access elements of EMU_FOLDERS and
+EMU_EXES array at the same index.
 */
-for (const baseDir of baseDirs) {
-  for (let i = 0; i < emulatorFolders.length; i++) {
-    const EMULATOR_DIR = path.join(...baseDir, emulatorFolders[i]);
-    if (testFileExists(EMULATOR_DIR, emulatorExecutables[i])) {
+for (const baseDir of BASE_DIRS) {
+  for (let i = 0; i < EMU_FOLDERS.length; i++) {
+    const EMULATOR_DIR = path.join(...baseDir, EMU_FOLDERS[i]);
+    if (testFileExists(EMULATOR_DIR, EMU_EXES[i])) {
       if (i === 0) { // if true and if i is 0, then it's PCSX2
         tempPSCSX2 = EMULATOR_DIR;
       } else {
@@ -72,3 +87,6 @@ for (const baseDir of baseDirs) {
 
 export const DIR_PCSX2 = tempPSCSX2;
 export const DIR_DEMUL = tempDEMUL;
+
+// console.log(DIR_PCSX2);
+// console.log(DIR_DEMUL);

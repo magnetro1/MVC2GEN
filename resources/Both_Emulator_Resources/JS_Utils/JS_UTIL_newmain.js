@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as fsPromises from 'fs/promises';
-import clipboardy from "clipboardy";
 import path from 'path';
 import {
   AE_TO_CVS2_POSITION_OBJ,
@@ -277,15 +276,15 @@ for (let csv = 0; csv < csvArr.length; csv++) {
     }
 
     // Round off floating point addresses using FLOATING_POINT_ADDRESSES
-    var postFixes = ['', '_Min', '_Max']
+    var postFixes = ['', '_Min', '_Max'] // '' is the default
     var toFixedDigits = [0]; // 7 is the default
-    for (let playerPrefix in PMEM_PREFIXES) {
-      for (let floatAdr in FLOATING_POINT_ADDRESSES) {
-        for (let postFix in postFixes) {
-          let fullAdr = FLOATING_POINT_ADDRESSES[floatAdr] + postFixes[postFix];
+    for (let playerPrefix in PMEM_PREFIXES) {            // P1_A_, P1_B_, P1_C_, P2_A_, P2_B_, P2_C_
+      for (let floatAdr in FLOATING_POINT_ADDRESSES) {   // X_Gravity
+        for (let postFix in postFixes) {                 // '', '_Min', '_Max'
+          let fullAdr = FLOATING_POINT_ADDRESSES[floatAdr] + postFixes[postFix]; // X_Gravity, X_Gravity_Min, X_Gravity_Max
           for (let digit in toFixedDigits) {
-            let floatAdr = dataObject[PMEM_PREFIXES[playerPrefix] + fullAdr].split(',');
-            for (let i = 0; i < floatAdr.length; i++) {
+            let floatAdr = dataObject[PMEM_PREFIXES[playerPrefix] + fullAdr].split(','); // P1_A_X_Gravity. All the values.
+            for (let i = 0; i < floatAdr.length; i++) { // Loop through all the values inside of an entry.
               floatAdr[i] = parseFloat(floatAdr[i]).toFixed(toFixedDigits[digit]);
             }
             // Merge tempArray into the dataObject so that it is written later.
@@ -321,7 +320,6 @@ for (let csv = 0; csv < csvArr.length; csv++) {
     });
     // Remove duplicates
     playerMemoryEntries = [...new Set(playerMemoryEntries)];
-    clipboardy.writeSync(playerMemoryEntries.join('\n'));
 
     return playerMemoryEntries;
   }
@@ -339,7 +337,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
   }
   // console.log(`Step 3: Updated object with MIN&MAX and wrote tempJS file.`);
 
-  let pMemObject = {}; // 
+  let pMemObject = {};
   let pMemList = [];
 
   /**
@@ -436,16 +434,16 @@ for (let csv = 0; csv < csvArr.length; csv++) {
    * @returns {Promise} Returns an object with the point-character memory results for PMemList
    * @async
   */
-  async function pushAllPMemPrommises() {
+  async function pushAllPMemPromisesIntoObject() {
     for (let i = 0; i < pMemList.length; i += 2) { // has P1 and P2 entries; skip every other entry
       let pMemEntry = pMemList[i]
         .toString()
         .replace('P1_', '')
         .replace('P2_', '');
-      pMemObject[pMemList[i + 0]] = await new Promise((res, rej) => { // i is P1
+      pMemObject[pMemList[i + 0]] = await new Promise((res, rej) => { // i is P1 ex: P1_Air_Recovery_Timer
         res(getPlayerMemory(1, pMemEntry))
       });
-      pMemObject[pMemList[i + 1]] = await new Promise((res, rej) => { // i is P2
+      pMemObject[pMemList[i + 1]] = await new Promise((res, rej) => { // i is P2 ex: P2_Air_Recovery_Timer
         res(getPlayerMemory(2, pMemEntry))
       });
       // console.log(`pMemObject: ${Object.keys(pMemObject)}`);
@@ -1155,12 +1153,12 @@ for (let csv = 0; csv < csvArr.length; csv++) {
       // ...TODO This might haunt you later
       callPlayerMemoryFN[0].forEach((element) => {
         let tempResults = NumToBinary(element);
-        unflyPunchesResults.push(tempResults[0]); // punches
-        unflyKicksResults.push(tempResults[1]);   // kicks
+        unflyPunchesResults.push(tempResults[0]);
+        unflyKicksResults.push(tempResults[1]);
       });
       // Write the results to a file
       fs.writeFileSync(`${DIR_OUTPATH}P${p1OrP2}_Unfly_BIN.js`,
-        `var result = [];\n// Punches\nresult[0] = [${unflyPunchesResults}];\n//Kicks\nresult[1] = [${unflyKicksResults}];`,
+        `var result = [];\n\nresult[0] = [${unflyPunchesResults}];\n\nresult[1] = [${unflyKicksResults}];`,
         'utf8'
       );
     }
@@ -1178,8 +1176,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
     let p1P2_;
     let tempROMCounter = 0;
     let tempROMSwitch = 0;
-    let nStateObj =
-    {
+    let nStateObj = {
       State_Being_Hit: [[], [], []],
       State_Flying_Screen_Air: [[], [], []],
       State_Flying_Screen_OTG: [[], [], []],
@@ -1911,9 +1908,6 @@ for (let csv = 0; csv < csvArr.length; csv++) {
             }
           });
         }
-
-
-
         // Write the files
         for (let state = 0; state < Object.entries(nStateObj).length; state++) {
           fs.writeFileSync(`${DIR_OUTPATH}P${pI}_${Object.keys(nStateObj)[state]}.js`,
@@ -1932,17 +1926,15 @@ for (let csv = 0; csv < csvArr.length; csv++) {
               .replace(/"/gm, '\'') // replace double-quotes with single-quotes
           );
         }
-
-      }
-    }
+      } // pABC Scope
+    } // pI Scope
   } // writeNewStates() Scope
 
-  // End of Player Memory
   // Call all the functions
   writeTeamNames();
   appendMinMaxRound();
   await writeSortedJS();
-  await pushAllPMemPrommises();
+  await pushAllPMemPromisesIntoObject();
   fetchPMemEntries().forEach(async (label) => {
     await writePlayerMemory(1, label.toString());
     await writePlayerMemory(2, label.toString());

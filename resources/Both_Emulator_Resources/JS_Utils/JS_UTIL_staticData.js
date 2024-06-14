@@ -518,6 +518,7 @@ export const PMEM_PREFIXES = [
 
 /**
  * @description Addresses that get rounded
+ * @example X_Gravity
  */
 export const FLOATING_POINT_ADDRESSES = [
   'X_Gravity',
