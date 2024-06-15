@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { DIR_DEMUL_CT_FILES, DIR_PCSX2_CT_FILES, CT_EXT } from './JS_UTILS/JS_UTIL_paths.js';
+import { DIR_DEMUL_CT_FILES, DIR_PCSX2_CT_FILES, CT_EXT } from './JS_TOOLS/Utils/Paths.js';
 import { exec } from 'child_process';
 
 export function openNewestCTFile(emulator) {
