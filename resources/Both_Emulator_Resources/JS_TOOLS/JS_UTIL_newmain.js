@@ -1,3 +1,4 @@
+// TODO: before writing anything, delete the existing JS files inside of exportTOAE
 import * as fs from 'fs';
 import * as fsPromises from 'fs/promises';
 import path from 'path';
@@ -23,6 +24,9 @@ import {
   DIR_EXPORT_TO_AE,
   DIR_CSVS,
 } from './Utils/Paths.js'
+
+console.log('⚙️  Starting CSV to AE conversion...');
+console.log(DIR_EXPORT_TO_AE);
 
 console.time('⏱');
 // Write exportToAE folder if it doesn't exist

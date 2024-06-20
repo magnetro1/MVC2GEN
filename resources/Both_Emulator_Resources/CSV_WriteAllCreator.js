@@ -1,8 +1,10 @@
 // Create AA Script for Cheat Engine to write all values to a CSV file
 // Figure out if PCSX2 or Demul
 // Read all values frm the latest CT file
+// Ensure no duplicates
 // Push entire AA Script to clipboard for pasting into Cheat Engine
-// ! HAVING CHEAT ENGINE OPEN MIGHT BREAK THIS SCRIPT !
+
+// CLOSE CHEAT ENGINE BEFORE RUNNING !
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -17,7 +19,7 @@ import {
   DIR_PCSX2_CT_FILES,
 } from './JS_TOOLS/Utils/Paths.js';
 
-const EMULATOR_VALUE = 'demul'; // 'pcsx2' or 'demul'
+const EMULATOR_VALUE = 'pcsx2'; // 'pcsx2' or 'demul' // !Main switch for PCSX2 or Demul
 
 let useDC = false; // for WriteAllStrings
 let usePCSX2 = false; // for WriteAllStrings
@@ -51,37 +53,40 @@ desiredFile = getDesiredFile(EMULATOR_VALUE); // 'pcsx2' or 'demul'
 
 // Read all values from the latest CT file
 async function readCTFile(file) {
-  if (file) {
-
-    let read = '';
-    // Read the file as an output stream as it is a large file
-    await new Promise((resolve, reject) => {
-      fs.createReadStream(file)
-        .on('data', (chunk) => {
-          read += chunk;
-        })
-        .on('end', () => {
-          resolve();
-        })
-        .on('error', (error) => {
-          reject(error);
-        });
-    });
-    return read;
+  if (!file) {
+    throw new Error('No file provided');
   }
+
+  let read = '';
+
+  // Read the file as a stream to handle large files efficiently
+  await new Promise((resolve, reject) => {
+    const stream = fs.createReadStream(file, { encoding: 'utf-8' });
+
+    stream.on('data', (chunk) => {
+      read += chunk;
+    });
+
+    stream.on('end', resolve);
+    stream.on('error', reject);
+  });
+
+  return read;
 }
 
 // Store the entire CT file as a string
 const READ_CT = await readCTFile(desiredFile);
+if (!readCTFile) {
+  console.log('No CT file read');
+}
 // console.log(READ_CT);
 
-let writeAllArray = ['Total_Frames']; // !Needs to be first for legacy reasons across MVC2GEN
+let ALL_ARRAY = ['Total_Frames']; // !Needs to be first for legacy reasons across MVC2GEN
 
 // Regex for the 2 sections of our file that we care about
 // the ID numbers are unique to the sections we want
 const scvRegex = /<Description>"Specific_Character_Values"<\/Description>([\s\S]*?)<Description>"Main"<\/Description>/g; // Starts at SCV and ends at Main
-const mainRegex = /<Description>"Main"<\/Description>([\s\S]*?)<Description>"header_copy"<\/Description>/g; // Starts at Main and ends at Timer_Secondary
-
+const mainRegex = /<Description>"Main"<\/Description>([\s\S]*?)<Description>"header_copy"<\/Description>/g; // Starts at Main and ends at Timer_Secondary ## TODO: Write a valid HTML comment-stopping point, or something that CHEAT ENGINE will be OK with, and will not overwrite later on-save operations. This way we don't use an arbitrary address point (but it's ok so far)
 //////////////////////////////////////////////
 // // Test mainRegex and console.log the result
 // let testSCV = scvRegex.exec(READ_CT);
@@ -133,15 +138,15 @@ function extractDescriptions(tableSection, array) {
 }
 
 // Specific Character Values (SCV)
-extractDescriptions(scvRegex, writeAllArray);
+extractDescriptions(scvRegex, ALL_ARRAY);
 
 // Main
-extractDescriptions(mainRegex, writeAllArray);
+extractDescriptions(mainRegex, ALL_ARRAY);
 
 
 // Check for duplicates
 let seen = new Set();
-let duplicates = writeAllArray.filter((element) => {
+let duplicates = ALL_ARRAY.filter((element) => {
   if (seen.has(element)) {
     return true;
   }
@@ -162,12 +167,12 @@ else {
 let pcsx2Pointer = `"pcsx2.exe+271A324"`;
 let demulPointer = `0x2C3496B0`;
 
+//[ENABLE]
+// {$lua}
 let writeAllString01 =
-  `[ENABLE]
-{$lua}
-
+  `--startREGEX
 -- Variables and Functions
-local outPath = "F:\\\\Git\\\\MVC2GEN\\\\resources\\\\Both_Emulator_Resources\\\\JS_Utils\\\\CSV_FILES\\\\MvC2DataAll_Original.csv"
+local outPath = "F:\\\\MvC2DataAll_Original.csv"
 
 local _starting_new_write_flag = false
 local contScript = true
@@ -199,7 +204,7 @@ let writeAllString03 =
 	local output_string = ""
 	if _starting_new_write_flag == false then
 	  for i = 0, #data, 1 do
-      if i < #data then
+      if i &lt; #data then -- the "less-than" symbol has to be written in HTML format when using CSV_WriteAllCreator!
         output_string = output_string .. data[i].desc .. separator
       else
         output_string = output_string .. data[i].desc
@@ -211,7 +216,7 @@ let writeAllString03 =
 	  output_string = ""
 	end
 	for i = 0, #data, 1 do
-	  if i < #data then
+	  if i &lt; #data then -- the "less-than" symbol has to be written in HTML format when using CSV_WriteAllCreator!
 		  output_string = output_string .. data[i].val .. separator
 	  else
 		  output_string = output_string .. data[i].val
@@ -227,7 +232,6 @@ currentFrame = readTF()
 
 -- Main Script
 address_list = getAddressList()
---startREGEX
 
 -- Lua Capture Data Script:
 `
@@ -235,8 +239,8 @@ address_list = getAddressList()
 let vString = ''; // first
 let dataString = ''; // second
 
-for (let i = 0; i < writeAllArray.length; i++) {
-  let vStr = `v${i} = address_list.getMemoryRecordByDescription("${writeAllArray[i]}") \n`;
+for (let i = 0; i < ALL_ARRAY.length; i++) {
+  let vStr = `v${i} = address_list.getMemoryRecordByDescription("${ALL_ARRAY[i]}") \n`;
   vString += vStr;
   let dataStr = `data_table[${i}] = { desc = v${i}.Description, val = v${i}.Value } \n`;
   dataString += dataStr;
@@ -262,15 +266,60 @@ while (currentFrame ~= v0.Value) and contScript do
 // dataString goes here
 
 let writeAllString05 =
-  `--stopREGEX
-  
+  `
   v0_prev = v0.Value
   csv_write(outPath, data_table)
 end
-{$asm}
-[DISABLE]
+--stopREGEX
 `
+// { $asm }
+//[DISABLE]
 
-let writeAllString = writeAllString01 + writeAllString02 + writeAllString03 + vString + writeAllString04 + dataString + writeAllString05;
-clipboard.writeSync(writeAllString);
-console.log(`AA Script copied to clipboard. ${desiredFile}'s writeAllArray length: ${writeAllArray.length}`);
+let writeAllString =
+  writeAllString01
+  + writeAllString02
+  + writeAllString03
+  + vString
+  + writeAllString04
+  + dataString
+  + writeAllString05;
+
+// clipboard.writeSync(writeAllString);
+// console.log(`AA Script copied to clipboard.${ desiredFile } 's writeAllArray length: ${ALL_ARRAY.length}`);
+
+// console.log(writeAllString);
+
+// Find and replace everything between startREGEX and stopREGEX
+
+async function writeCTFile(file, data) {
+  await new Promise((resolve, reject) => {
+    fs.writeFile(file, data, 'utf-8', (err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+}
+
+let startREGEX = /--startREGEX/g;
+let stopREGEX = /--stopREGEX/g;
+
+let startREGEXMatch = writeAllString.match(startREGEX);
+let stopREGEXMatch = writeAllString.match(stopREGEX);
+
+if (startREGEXMatch && stopREGEXMatch) {
+  let startREGEXIndex = READ_CT.indexOf(startREGEXMatch[0]);
+  let stopREGEXIndex = READ_CT.indexOf(stopREGEXMatch[0]) + stopREGEXMatch[0].length;
+
+  // Replace the content between the markers
+  let entireFile = READ_CT.substring(0, startREGEXIndex)
+    + writeAllString
+    + READ_CT.substring(stopREGEXIndex);
+
+  console.log(entireFile);
+
+  // Write the modified content back to the file
+  await writeCTFile(desiredFile, entireFile);
+  console.log(`Successfully updated the file: ${desiredFile}`);
+} else {
+  console.error('Markers not found in the file.');
+}
