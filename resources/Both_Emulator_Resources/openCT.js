@@ -18,10 +18,8 @@ export function openNewestCTFile(emulator) {
     let prev = fs.statSync(`${DIR_CT_FILES}/${previous}`).mtimeMs;
     let curr = fs.statSync(`${DIR_CT_FILES}/${current}`).mtimeMs;
     if (prev > curr) {
-      // If the previous file is newer, return the previous file
       return previous;
     } else {
-      // If the current file is newer, return the current file
       return current;
     }
   }

@@ -14,17 +14,10 @@
   "homepage": "https://github.com/magnetro1/MVC2GEN",
   "dependencies": {
     "clipboardy": "^3.0.0",
-    "json5": "^2.2.3",
-    "punycode": "^2.3.1",
+    "csv-parser": "^3.0.0",
     "readline": "^1.3.0"
   },
   "scripts": {
-    "js_util": "node ./resources/Both_Emulator_Resources/JS_Utils/JS_UTIL_newmain.js"
-  },
-  "devDependencies": {
-    "eslint": "^8.38.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.27.5",
-    "prettier": "3.0.0"
+    "js_util": "node resources/Both_Emulator_Resources/JS_TOOLS/JS_UTIL_newmain.js"
   }
 }

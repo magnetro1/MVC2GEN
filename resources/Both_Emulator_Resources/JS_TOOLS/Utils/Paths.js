@@ -18,7 +18,8 @@ baseDir = path.join(baseDir);
 export const CT_EXT = ".CT";
 export const DIR_MAIN_TRUNK = baseDir;
 export const DIR_RESOURCES = path.join(DIR_MAIN_TRUNK, 'resources');
-export const DIR_JS_UTILS = path.join(DIR_RESOURCES, 'Both_Emulator_Resources', 'JS_TOOLS');
+export const DIR_BOTH_EMULATOR_RESOURCES = path.join(DIR_RESOURCES, 'Both_Emulator_Resources');
+export const DIR_JS_UTILS = path.join(DIR_RESOURCES, DIR_BOTH_EMULATOR_RESOURCES, 'JS_TOOLS');
 export const DIR_CSVS = path.join(DIR_JS_UTILS, 'CSV_FILES');
 export const DIR_EXPORT_TO_AE = path.join(DIR_JS_UTILS, 'exportToAE');
 // Paths to Cheat Tables in this Github Repository
