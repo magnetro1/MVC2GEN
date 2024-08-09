@@ -1,3 +1,5 @@
+// CHOOSE PLATFORM: PCSX2 or DEMUL
+
 // Create AA Script for Cheat Engine to write all values to a CSV file
 // Figure out if PCSX2 or Demul
 // Read all values frm the latest CT file
@@ -25,10 +27,11 @@ let useDC = false; // for WriteAllStrings
 let usePCSX2 = false; // for WriteAllStrings
 let desiredFile; // full path and filename of CT file
 
-function getDesiredFile(emulator) { // 'pcsx2' or 'demul'
+function getDesiredFile(emulator) {
   let desiredPath;
   let desiredFile;
   let fullPathAndFile;
+
   // Get the desired file with the full path
   if (emulator === 'pcsx2') {
     desiredPath = DIR_PCSX2_CT_FILES;
@@ -45,7 +48,9 @@ function getDesiredFile(emulator) { // 'pcsx2' or 'demul'
   } else {
     console.log('Invalid emulator');
   }
+
   console.log(`Opening file: ${desiredFile}`);
+
   return fullPathAndFile
 }
 
@@ -59,7 +64,7 @@ async function readCTFile(file) {
 
   let read = '';
 
-  // Read the file as a stream to handle large files efficiently
+  // Read the file as a stream 
   await new Promise((resolve, reject) => {
     const stream = fs.createReadStream(file, { encoding: 'utf-8' });
 
@@ -84,9 +89,11 @@ if (!readCTFile) {
 let ALL_ARRAY = ['Total_Frames']; // !Needs to be first for legacy reasons across MVC2GEN
 
 // Regex for the 2 sections of our file that we care about
-// the ID numbers are unique to the sections we want
+// ID numbers are unique to the sections we want
 const scvRegex = /<Description>"Specific_Character_Values"<\/Description>([\s\S]*?)<Description>"Main"<\/Description>/g; // Starts at SCV and ends at Main
-const mainRegex = /<Description>"Main"<\/Description>([\s\S]*?)<Description>"header_copy"<\/Description>/g; // Starts at Main and ends at Timer_Secondary ## TODO: Write a valid HTML comment-stopping point, or something that CHEAT ENGINE will be OK with, and will not overwrite later on-save operations. This way we don't use an arbitrary address point (but it's ok so far)
+const mainRegex = /<Description>"Main"<\/Description>([\s\S]*?)<Description>"header_copy"<\/Description>/g; // Starts at Main and ends at Timer_Secondary
+
+//# TODO: Write a valid HTML comment-stopping point, or something that CHEAT ENGINE will be OK with, and will not overwrite later on-save operations. This way we don't use an arbitrary address point (but it's ok so far)
 //////////////////////////////////////////////
 // // Test mainRegex and console.log the result
 // let testSCV = scvRegex.exec(READ_CT);
@@ -160,6 +167,7 @@ if (duplicates.length > 0) {
 else {
   console.log('No duplicates found');
 }
+
 
 // Begin Building the AA Script
 
@@ -315,7 +323,7 @@ if (startREGEXMatch && stopREGEXMatch) {
     + writeAllString
     + READ_CT.substring(stopREGEXIndex);
 
-  console.log(entireFile);
+  // console.log(entireFile);
 
   // Write the modified content back to the file
   await writeCTFile(desiredFile, entireFile);

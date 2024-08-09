@@ -1,7 +1,7 @@
 // State Backup Tool for PCSX2
 import * as fs from 'fs';
 import * as path from 'path';
-import { DIR_PCSX2 } from '../../Both_Emulator_Resources/JS_UTILS/JS_UTIL_paths.js';
+import { DIR_PCSX2 } from '../../Both_Emulator_Resources/JS_TOOLS/Utils/getEmulatorDirectories.js';
 
 console.log(DIR_PCSX2);
 

@@ -7,7 +7,7 @@ Trainer propagator for PCSX2 README
 - To turn off, first click "Stop" button, then uncheck "Frame_Counter"
  */
 
-import clipboard from "clipboardy";
+import clipboard from 'clipboardy'
 
 /**
  * Prefix Key:
@@ -35,7 +35,7 @@ const ENTRIES = [
   'SYST_Combo_Meter_Value',     // 2 Entries in Lua-Window
   //
   'PMEM_Throw_Counter_Mash',    // 2 Entries in Lua-Window
-  'PMEM_Throw_RNG',             // 2 Entries in Lua-Window
+  'PMEM_Health_Big',             // 2 Entries in Lua-Window
   'PMEM_Hitstop2',              // 2 Entries in Lua-Window
   'PMEM_Knockdown_State',       // 2 Entries in Lua-Window
 ];
