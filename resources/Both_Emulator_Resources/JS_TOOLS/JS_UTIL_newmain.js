@@ -1,4 +1,8 @@
 // TODO: before writing anything, delete the existing JS files inside of exportTOAE
+// TODO: CSV True-Data Logic redo
+// TODO: Update ct-file naming conventions
+// TODO: Update LY-Hitbox Viewer script to allow variable game resolution
+
 import * as fs from 'fs';
 import * as fsPromises from 'fs/promises';
 import path from 'path';
