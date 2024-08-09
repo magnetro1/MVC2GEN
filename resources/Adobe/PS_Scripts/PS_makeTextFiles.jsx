@@ -174,7 +174,7 @@ var GLOBAL_PARAGRAPH_ARRAY = [
 ];
 // Helper Functions
 /**
- * @description Creates a the main GLOBAL_OUTPUT_FOLDER
+ * @description Creates the main
  * directory if it doesn't exist
 */
 function existsOutputFolder() {
@@ -588,10 +588,10 @@ function createAllCharacterTitlesForEachGame() {
 }
 
 // Globals
-GLOBAL_OUTPUT_FOLDER = 'I:/fontTests';
+GLOBAL_OUTPUT_FOLDER = 'F:/fontTests';
 
 GLOBAL_POINT_TEXT =
-  "BANKBANK VS JED";
+  "";
 
 GLOBAL_PARAGRAPH_TEXT =
   "";
@@ -610,7 +610,7 @@ GLOBAL_PARAGRAPH_ARRAY = [
 // createAllCharacterTitlesForEachGame() // takes a while
 
 // Dynamic Single String
-writePointText(FONTS_SUB['MVC2'], 172, -50, 'png', false)
+writePointText(FONTS_SUB['XVSF'], 172, -50, 'png', false)
 // writeParagraphText(FONTS_SUB['COTA'], 72, 0, 'png', false)
 
 // Dynamic Arrays FOR ONE font
