@@ -3,12 +3,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { DIR_PCSX2 } from '../../Both_Emulator_Resources/JS_TOOLS/Utils/getEmulatorDirectories.js';
 
-console.log(DIR_PCSX2);
-
 const DIR_SSTATES = path.join(DIR_PCSX2, 'sstates');
 const DIR_STATEBK = path.join(DIR_PCSX2, 'StateBK');
 const REPLAY_EXT = '.p2m';
-const SLEEP_AMOUNT = 2500;
+const SLEEP_AMOUNT = 3500;
 const ERR_STR = 'No replays found in ' + DIR_PCSX2 + ', exiting...';
 
 function sleep(ms) {

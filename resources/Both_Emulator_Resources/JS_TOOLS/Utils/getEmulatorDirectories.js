@@ -32,9 +32,9 @@ for (const baseDir of BASE_DIRS) {
     if (CheckFileExists(EMULATOR_DIR, EMU_EXES[i])) {
       // Assign the emulator directory path to the corresponding variable
       if (i === 0) { // if the emulator path and the emulator executable are for PCSX2, and they EXIST
-        tempPSCSX2 = EMULATOR_DIR;
+        tempPSCSX2 = EMULATOR_DIR + '\\';
       } else if (i === 1) {
-        tempDEMUL = EMULATOR_DIR;
+        tempDEMUL = EMULATOR_DIR + '\\';
       }
     }
   }

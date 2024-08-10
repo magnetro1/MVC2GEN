@@ -1,12 +1,6 @@
 // CHOOSE PLATFORM: PCSX2 or DEMUL
-
-// Create AA Script for Cheat Engine to write all values to a CSV file
-// Figure out if PCSX2 or Demul
-// Read all values frm the latest CT file
-// Ensure no duplicates
-// Push entire AA Script to clipboard for pasting into Cheat Engine
-
 // CLOSE CHEAT ENGINE BEFORE RUNNING !
+
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -21,10 +15,13 @@ import {
   DIR_PCSX2_CT_FILES,
 } from './JS_TOOLS/Utils/Paths.js';
 
+
 const EMULATOR_VALUE = 'pcsx2'; // 'pcsx2' or 'demul' // !Main switch for PCSX2 or Demul
+
 
 let useDC = false; // for WriteAllStrings
 let usePCSX2 = false; // for WriteAllStrings
+
 let desiredFile; // full path and filename of CT file
 
 function getDesiredFile(emulator) {
