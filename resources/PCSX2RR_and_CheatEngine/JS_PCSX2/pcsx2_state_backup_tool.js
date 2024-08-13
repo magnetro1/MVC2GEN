@@ -43,6 +43,8 @@ function getAndMakeReplayFolder() {
   const REPLAY_FOLDER_PATH = path.join(DIR_STATEBK, FOLDER_NAME)
   if (!fs.existsSync(REPLAY_FOLDER_PATH) && NEWEST_REPLAY !== ERR_STR) {
     fs.mkdirSync(REPLAY_FOLDER_PATH);
+    console.log('Created: ' + REPLAY_FOLDER_PATH);
+    console.log('Newest replay is: ' + NEWEST_REPLAY);
   }
   return REPLAY_FOLDER_PATH;
 }

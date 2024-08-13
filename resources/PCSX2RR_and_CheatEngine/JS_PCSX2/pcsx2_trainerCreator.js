@@ -30,14 +30,17 @@ import clipboard from 'clipboardy'
 const ENTRIES = [
   'MISC_Frame_Counter',         // 1 Entry in Lua-Window
   //
-  'MISC_Frame_Skip_Toggle',     // 1 Entry in Lua-Window
+  // 'MISC_Frame_Skip_Toggle',     // 1 Entry in Lua-Window
   'SYST_Input_DEC',             // 2 Entries in Lua-Window
   'SYST_Combo_Meter_Value',     // 2 Entries in Lua-Window
+  'SYST_Meter_Big',     // 2 Entries in Lua-Window
+  'SYST_Meter_Small',     // 2 Entries in Lua-Window
   //
-  'PMEM_Throw_Counter_Mash',    // 2 Entries in Lua-Window
+  // 'PMEM_Throw_Counter_Mash',     // 2 Entries in Lua-Window
+  'PMEM_Dizzy',                 // 2 Entries in Lua-Window
   'PMEM_Health_Big',             // 2 Entries in Lua-Window
-  'PMEM_Hitstop2',              // 2 Entries in Lua-Window
-  'PMEM_Knockdown_State',       // 2 Entries in Lua-Window
+  // 'PMEM_Hitstop2',               // 2 Entries in Lua-Window
+  // 'PMEM_Knockdown_State',        // 2 Entries in Lua-Window
 ];
 
 // the ones we will use to write the lua script
