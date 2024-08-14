@@ -28,17 +28,18 @@ import clipboard from 'clipboardy'
  * Rename these when editing the script; the rest should work on its own!
  */
 const ENTRIES = [
-  'MISC_Frame_Counter',         // 1 Entry in Lua-Window
-  //
-  // 'MISC_Frame_Skip_Toggle',     // 1 Entry in Lua-Window
-  'SYST_Input_DEC',             // 2 Entries in Lua-Window
-  'SYST_Combo_Meter_Value',     // 2 Entries in Lua-Window
-  'SYST_Meter_Big',     // 2 Entries in Lua-Window
-  'SYST_Meter_Small',     // 2 Entries in Lua-Window
+  // RESERVED
+  'MISC_Frame_Counter',             // 1 Entry   in Lua-Window
+  // 'MISC_Frame_Skip_Toggle',         // 1 Entry   in Lua-Window
+  'SYST_Input_DEC',                 // 2 Entries in Lua-Window
+  // RESERVED
+  'SYST_Combo_Meter_Value',         // 2 Entries in Lua-Window
+  'SYST_Meter_Big',                 // 2 Entries in Lua-Window
+  'SYST_Meter_Small',               // 2 Entries in Lua-Window
   //
   // 'PMEM_Throw_Counter_Mash',     // 2 Entries in Lua-Window
-  'PMEM_Dizzy',                 // 2 Entries in Lua-Window
-  'PMEM_Health_Big',             // 2 Entries in Lua-Window
+  'PMEM_Dizzy',                     // 2 Entries in Lua-Window
+  'PMEM_Health_Big',                // 2 Entries in Lua-Window
   // 'PMEM_Hitstop2',               // 2 Entries in Lua-Window
   // 'PMEM_Knockdown_State',        // 2 Entries in Lua-Window
 ];
@@ -69,43 +70,41 @@ const T_FONT_1 = {
   fColor1: '0xFFFFFF',
 };
 
-/**
- * Generates a list of variables based on the ENTRIES array.
- * The variables will keep their prefixes for the Javascript,
- * but will be stripped for the Lua code.
- * @returns {string} The generated variable list.
- */
+let inputMemRecords = []; // To store memRec indices for inputs
+
 function WriteEntryList() {
   let var_list_main = '';
+  let counter = 0;
 
-  for (let i = 0, counter = 0; i < ENTRIES.length; i++) {
+  for (let i = 0; i < ENTRIES.length; i++) {
     if (ENTRIES[i].includes('MISC_')) {
-      var_list_main += `VAR_${counter} = '${ENTRIES[i]}'\n`
-        .replace('MISC_', '');
+      var_list_main += `VAR_${counter} = '${ENTRIES[i]}'\n`.replace('MISC_', '');
       counter++;
-    }
-    else if (ENTRIES[i].includes('SYST_')) {
-      var_list_main += `VAR_${counter} = 'P1_${ENTRIES[i]}'\n`
-        .replace('SYST_', '');
+    } else if (ENTRIES[i].includes('SYST_')) {
+      var_list_main += `VAR_${counter} = 'P1_${ENTRIES[i]}'\n`.replace('SYST_', '');
+      if (ENTRIES[i] === 'SYST_Input_DEC') {
+        inputMemRecords.push(counter); // Store the index for later use
+      }
       counter++;
-      var_list_main += `VAR_${counter} = 'P2_${ENTRIES[i]}'\n`
-        .replace('SYST_', '');
+      var_list_main += `VAR_${counter} = 'P2_${ENTRIES[i]}'\n`.replace('SYST_', '');
+      if (ENTRIES[i] === 'SYST_Input_DEC') {
+        inputMemRecords.push(counter); // Store the index for later use
+      }
       counter++;
-    }
-    else if (ENTRIES[i].includes('PMEM_')) {
-      var_list_main += `VAR_${counter} = 'One_${ENTRIES[i]}'\n`
-        .replace('PMEM_', '');
+    } else if (ENTRIES[i].includes('PMEM_')) {
+      var_list_main += `VAR_${counter} = 'One_${ENTRIES[i]}'\n`.replace('PMEM_', '');
       counter++;
-      var_list_main += `VAR_${counter} = 'Two_${ENTRIES[i]}'\n`
-        .replace('PMEM_', '');
+      var_list_main += `VAR_${counter} = 'Two_${ENTRIES[i]}'\n`.replace('PMEM_', '');
       counter++;
-    }
-    else {
+    } else {
       throw new Error('Invalid prefix found in ENTRIES array!');
     }
   }
   return var_list_main;
 }
+
+
+
 // console.log(WriteEntryList());
 function ConvertToPlayerString(pString) {
   let playerValue = '';
@@ -326,21 +325,33 @@ end
 
 --labels`;
 
-const TEMPLATE_LITERAL_INPUTS =
-  `  --Process Directions
+let dynamicInputProcessing = '';
+
+for (let i = 0; i < inputMemRecords.length; i += 2) {
+  const memRecP1 = `memRec${inputMemRecords[i]}`;
+  const memRecP2 = `memRec${inputMemRecords[i + 1]}`;
+
+  dynamicInputProcessing += `
+  --Process Directions for ${memRecP1} and ${memRecP2}
   local P1Str = ''
   local P2Str = ''
-  local p1Inputs = memRec2.Value -- reserved! 
-  local p2Inputs = memRec3.Value -- reserved! 
+  local p1Inputs = ${memRecP1}.Value
+  local p2Inputs = ${memRecP2}.Value
   -- Bitwise-And operation
   for i, v in pairs(inputConverterObject) do
     if (bAnd(p1Inputs, inputConverterObject[i]) ~= 0) then
       P1Str = P1Str..i
     end
-    if (bAnd(p2Inputs, inputConverterObject[i]) ~= 0 ) then
+    if (bAnd(p2Inputs, inputConverterObject[i]) ~= 0) then
       P2Str = P2Str..i
     end
-  end\n`;
+  end
+  `;
+}
+
+// Use this dynamic input processing string in your final TEMPLATE_LITERAL_INPUTS
+
+const TEMPLATE_LITERAL_INPUTS = `${dynamicInputProcessing}\n`;
 
 const TEMPLATE_LITERAL_END = `\n{$asm} \n[DISABLE]`;
 
@@ -420,19 +431,20 @@ for (let memRecIdx = 0; memRecIdx < REAL_ENTRIES.length; memRecIdx++) {
 // console.log(sMemoryRecords)
 
 // mainFunction
-
 for (let mainIDX = 0; mainIDX < REAL_ENTRIES.length; mainIDX++, T_PROPS.tRowSpacer += T_PROPS.tRowsOffset) {
   // Inputs Only!
   if (REAL_ENTRIES[mainIDX].includes('Input_DEC')) {
     // Figure out the player, P1 or P2
     let pString = ConvertToPlayerString(REAL_ENTRIES[mainIDX].split('_')[0])
-
     sMainFunction +=
       `  local data${mainIDX} = '${REAL_ENTRIES[mainIDX]}'.. ': '..${pString}Str `
-    // console.log(pString)
+
     sMainFunction += `
-    control_setPosition(labelX${mainIDX}, ${T_PROPS.tXPos}, ${T_PROPS.tYPos + T_PROPS.tRowSpacer});
-    control_setCaption(labelX${mainIDX}, data${mainIDX}) \n`
+      control_setPosition(labelX${mainIDX}, ${T_PROPS.tXPos}, ${T_PROPS.tYPos + T_PROPS.tRowSpacer});
+      control_setCaption(labelX${mainIDX}, data${mainIDX}) \n`
+
+    // console.log(sMainFunction)
+
   } // PMem Only!
   else if (REAL_ENTRIES[mainIDX].includes('ONE_') || REAL_ENTRIES[mainIDX].includes('TWO_')) {
     let pString = ConvertToPlayerString(REAL_ENTRIES[mainIDX].split('_')[0])
@@ -472,6 +484,7 @@ const FINAL_STRING =
   + sLabels
   + sDescriptions
   + sMemoryRecords
+  + TEMPLATE_LITERAL_INPUTS // Now dynamic
   + sMainFunction
   + sActivates
   + TEMPLATE_LITERAL_END;

@@ -2,12 +2,26 @@ import * as fs from 'fs';
 import { DIR_DEMUL_CT_FILES, DIR_PCSX2_CT_FILES, CT_EXT } from './JS_TOOLS/Utils/Paths.js';
 import { exec } from 'child_process';
 
+/**
+ * Reduces the newest file between two given files.
+ *
+ * @param {string} DIR_CT_FILES - The directory path where the files are located.
+ * @param {string} previous - The name of the previous file.
+ * @param {string} current - The name of the current file.
+ * @returns {string} - The name of the newest file.
+ */
 export function reduceNewestFile(DIR_CT_FILES, previous, current) {
   let prev = fs.statSync(`${DIR_CT_FILES}/${previous}`).mtimeMs;
   let curr = fs.statSync(`${DIR_CT_FILES}/${current}`).mtimeMs;
   return prev > curr ? previous : current;
 }
 
+/**
+ * Filters the CT files in the specified directory.
+ * 
+ * @param {string} DIR_CT_FILES - The directory path where the CT files are located.
+ * @returns {string[] | null} - An array of filtered cheat table file names, or null if no cheat tables are found.
+ */
 export function filterCTFile(DIR_CT_FILES) {
   const files = fs.readdirSync(DIR_CT_FILES);
   const cheatTables = files.filter((file) => file.endsWith(CT_EXT));
@@ -18,6 +32,12 @@ export function filterCTFile(DIR_CT_FILES) {
   return cheatTables.reduce((prev, curr) => reduceNewestFile(DIR_CT_FILES, prev, curr));
 }
 
+/**
+ * Opens the newest CT file based on the specified emulator.
+ * 
+ * @param {string} emulator - The emulator to determine the CT file directory.
+ * @returns {void}
+ */
 export function openNewestCTFile(emulator) {
   let DIR_CT_FILES;
   if (emulator === 'pcsx2') {
