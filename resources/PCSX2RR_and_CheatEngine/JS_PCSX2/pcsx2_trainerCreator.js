@@ -42,15 +42,21 @@ const ENTRIES = [
   'PMEM_Health_Big',                // 2 Entries in Lua-Window
   // 'PMEM_Hitstop2',               // 2 Entries in Lua-Window
   // 'PMEM_Knockdown_State',        // 2 Entries in Lua-Window
+  // 'PMEM_FlyingScreen',        // 2 Entries in Lua-Window
 ];
 
 // the ones we will use to write the lua script
 const REAL_ENTRIES = [];
 
+
+///////////////////////////////////
+// f : form for LUA
+// t : template from JS
+///////////////////////////////////
 // Trainer-box constants
 const T_PROPS = {
   tColor: '0x00b140', // green; used in OBS for green screen
-  tWidth: 800 - 2, // sub Windows Panel
+  tWidth: 600 - 2, // sub Windows Panel
   tHeight: 800 - 28, // sub Windows Panel
   tXPos: 3,
   tYPos: 15, // is this where the stop button is?
@@ -62,12 +68,12 @@ const T_PROPS = {
 const T_FONT_0 = {
   fName0: 'Courier',
   fSize0: T_PROPS.tFontSize,
-  fColor0: '0xFF0000',
+  fColor0: '0xFF0000', // red
 };
 const T_FONT_1 = {
   fName1: 'Courier',
   fSize1: T_PROPS.tFontSize,
-  fColor1: '0xFFFFFF',
+  fColor1: '0xFFFFFF', // white
 };
 
 let inputMemRecords = []; // To store memRec indices for inputs
@@ -327,7 +333,7 @@ end
 
 let dynamicInputProcessing = '';
 
-for (let i = 0; i < inputMemRecords.length; i += 2) {
+for (let i = 0; i < inputMemRecords.length; i += 2) { // Process two at a time
   const memRecP1 = `memRec${inputMemRecords[i]}`;
   const memRecP2 = `memRec${inputMemRecords[i + 1]}`;
 
@@ -358,7 +364,7 @@ const TEMPLATE_LITERAL_END = `\n{$asm} \n[DISABLE]`;
 // Dynamic stuff
 // Gets concatenated to the end of the script
 let sLabels = ''
-let sDescriptions = '' // not used; using VAR_XX instead
+let sDescriptions = ''
 let sMemoryRecords = ''
 let sMainFunction = ''
 let sActivates = ''
