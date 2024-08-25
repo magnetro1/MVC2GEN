@@ -1,10 +1,10 @@
+// SCRAPES & INJECTS LUA INTO THE LATEST CHEAT TABLE FILE
 // CHOOSE PLATFORM: PCSX2 or DEMUL
 // CLOSE CHEAT ENGINE BEFORE RUNNING !
 
 
 import * as fs from 'fs';
 import * as path from 'path';
-import clipboard from 'clipboardy';
 
 import {
   filterCTFile,

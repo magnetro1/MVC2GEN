@@ -31,30 +31,33 @@ export const DIR_EXPORT_TO_AE = path.join(DIR_JS_UTILS, 'exportToAE');
 export const DIR_DEMUL_CT_FILES = path.join(DIR_RESOURCES, 'Demul_and_CheatEngine', 'CheatTables_Demul');
 export const DIR_PCSX2_CT_FILES = path.join(DIR_RESOURCES, 'PCSX2RR_and_CheatEngine', 'CheatTables_PCSX2');
 
-// List of paths to check
-const pathsToCheck = [
-  DIR_MAIN_TRUNK,
-  DIR_RESOURCES,
-  DIR_BOTH_EMULATOR_RESOURCES,
-  DIR_JS_UTILS,
-  DIR_CSVS,
-  DIR_EXPORT_TO_AE,
-  DIR_DEMUL_CT_FILES,
-  DIR_PCSX2_CT_FILES,
-];
+
+// TESTS:
+
+// // List of paths to check
+// const pathsToCheck = [
+//   DIR_MAIN_TRUNK,
+//   DIR_RESOURCES,
+//   DIR_BOTH_EMULATOR_RESOURCES,
+//   DIR_JS_UTILS,
+//   DIR_CSVS,
+//   DIR_EXPORT_TO_AE,
+//   DIR_DEMUL_CT_FILES,
+//   DIR_PCSX2_CT_FILES,
+// ];
 
 // Function to check if a path exists and log the result
-async function checkPaths(paths) {
-  for (const dir of paths) {
-    // console.log(`Checking path: ${dir}`); // Print the path being checked
-    try {
-      await fs.access(dir, fs.constants.F_OK);
-      console.log(`Path exists: ${dir}`);
-    } catch (err) {
-      console.log(`Path does not exist: ${dir}`);
-    }
-  }
-}
+// async function checkPaths(paths) {
+//   for (const dir of paths) {
+//     console.log(`Checking path: ${dir}`); // Print the path being checked
+//     try {
+//       await fs.access(dir, fs.constants.F_OK);
+//       console.log(`Path exists: ${dir}`);
+//     } catch (err) {
+//       console.log(`Path does not exist: ${dir}`);
+//     }
+//   }
+// }
 
 // Run the check
-checkPaths(pathsToCheck);
+// checkPaths(pathsToCheck);
