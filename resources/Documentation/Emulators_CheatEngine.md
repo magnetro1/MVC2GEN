@@ -39,7 +39,6 @@
    - Double Click the `P->0x05xxxxxx` numbers.
    - Copy `Address`.
 
-
 2. Recalculate (Paste):
    - Go to `Main` in purple in the table.
    - Go to `A_2D_Game_Timer` in red.
@@ -58,6 +57,10 @@
 - Set both controllers to profile `1`.
 
   <img src="support/xpadder_01.png" alt="Recalculate" width="300" height="200">`
+
+### Sizer PCSX2 Hotkeys
+- Game:     Win+Num1
+- Console:  Win+Num2
 
 ---
 ## Demul
@@ -98,3 +101,7 @@
 ### Demul Hotkeys
 - Set Hotkeys manually from emulator
 - Frame-stepping, etc., will not work unless the Cheat Table is running.
+
+### Sizer Demul Hotkeys
+- 4K:       Ctrl+Alt+\1
+- 1080:     Ctrl+Shift+\

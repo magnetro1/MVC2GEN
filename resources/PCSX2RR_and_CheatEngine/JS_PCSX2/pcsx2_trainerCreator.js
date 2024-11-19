@@ -12,17 +12,17 @@ import clipboard from 'clipboardy'
 /**
  * Prefix Key:
  * 
- * MISC  = Miscellaneous Values that should not be edited;
+ * `MISC`  = Miscellaneous Values that should not be edited;
  * 1 Entry in Lua-Window
  * 
- * SYST  = System Values that possess P1 and P2;
+ * `SYST`  = System Values that possess P1 and P2;
  * 2 Entries in Lua-Window
  * 
- * PMEM  = Player Memory Values that possess
+ * `PMEM`  = Player Memory Values that possess
  * P1_A, P1_B, P1_C, P2_A, P2_B, P2_C;
  * 2 Entries in Lua-Window
  * 
- * SYST AND PMEM entries require subtracting the iteration
+ * `SYST` AND `PMEM` entries require subtracting the iteration
  * by 1 to get the correct value.
  * 
  * Rename these when editing the script; the rest should work on its own!
@@ -34,15 +34,16 @@ const ENTRIES = [
   'SYST_Input_DEC',                 // 2 Entries in Lua-Window
   // RESERVED
   'SYST_Combo_Meter_Value',         // 2 Entries in Lua-Window
-  'SYST_Meter_Big',                 // 2 Entries in Lua-Window
-  'SYST_Meter_Small',               // 2 Entries in Lua-Window
+  // 'SYST_Meter_Big',                 // 2 Entries in Lua-Window
+  // 'SYST_Meter_Small',               // 2 Entries in Lua-Window
   //
   // 'PMEM_Throw_Counter_Mash',     // 2 Entries in Lua-Window
-  'PMEM_Dizzy',                     // 2 Entries in Lua-Window
-  'PMEM_Health_Big',                // 2 Entries in Lua-Window
+  // 'PMEM_Dizzy',                     // 2 Entries in Lua-Window
+  // 'PMEM_Health_Big',                // 2 Entries in Lua-Window
   // 'PMEM_Hitstop2',               // 2 Entries in Lua-Window
-  // 'PMEM_Knockdown_State',        // 2 Entries in Lua-Window
+  'PMEM_Knockdown_State',        // 2 Entries in Lua-Window
   // 'PMEM_FlyingScreen',        // 2 Entries in Lua-Window
+  'MISC_Frame_Skip_Counter', // 2 Entries in Lua-Window
 ];
 
 // the ones we will use to write the lua script
