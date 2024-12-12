@@ -1526,8 +1526,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
                 (
                   ((pMemObject[`${p1P2_}ID_2`])[pABC][cLen] == 42) // Storm
                   && ((pMemObject[`${p1P2_}Hitstop2`])[pABC][cLen] == 0) // No Hitstop
-                  && ((pMemObject[`${p1P2_}Unfly`])[pABC][cLen] == 16)
-                  || ((pMemObject[`${p1P2_}Unfly`])[pABC][cLen] == 1)
+                  && ((pMemObject[`${p1P2_}Unfly`])[pABC][cLen] == 16) || ((pMemObject[`${p1P2_}Unfly`])[pABC][cLen] == 1)
                   && ((pMemObject[`${p1P2_}Normal_Location`])[pABC][cLen] == 1) //Normal was done in the air
                   && ((pMemObject[`${p1P2_}Air_Dash_Count`])[pABC][cLen] == 1) // Air Dash was done once
                   && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] == 20) // Normal Attacks
@@ -1623,7 +1622,7 @@ for (let csv = 0; csv < csvArr.length; csv++) {
                   && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] != 26) // "Air Dash"
                   && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] != 19) // "Air Blocking"
                   && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] != 21) // "Special Attacks"
-                  && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] != 29) // "Freezes and Flash"
+                  && ((pMemObject[`${p1P2_}Knockdown_State`])[pABC][cLen] != 29) // "Freezes and Flash" 
                   && (playerTwoInputs[cLen].match(/1|4|7|9|6|3/g))
                 )
                   ? nStateObj.State_Storm_DI[pABC].push(1)

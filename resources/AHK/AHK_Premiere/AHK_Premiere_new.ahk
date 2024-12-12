@@ -11,32 +11,32 @@
   {
     DetectHiddenText, On
     yesRemoveKeyframes:
-      WinWait, Warning ahk_exe Adobe Premiere Pro.exe
-      sleep 30
-      sendinput, {enter}
-      sleep 900
-      goto yesRemoveKeyframes
-    }
-    
-    ;MButton for Hand Tool
-    
-    MButton::
+    WinWait, Warning ahk_exe Adobe Premiere Pro.exe
+    sleep 30
+    sendinput, {enter}
+    sleep 900
+    goto yesRemoveKeyframes
+  }
+
+  ;MButton for Hand Tool
+
+  MButton::
 #IfWinExist ahk_exe Adobe Premiere Pro.exe
   Send, {h}{LButton Down}
   KeyWait, MButton,
   SendInput, {LButton Up}{v}
   return
-  
+
   ;Drag Faster
   {
     If WinActive("ahk_exe Adobe Premiere Pro.exe")
       DllCall("SystemParametersInfo", UInt, 0x71, UInt, 0, UInt, 11, UInt, 0) ; Slightly Faster than Windows default
     Return
-    
+
     ~LButton Up::
-      DllCall("SystemParametersInfo", UInt, 0x70, UInt, 0, UInt, MOUSE_NOW, UInt, 0)
-      If MOUSE_NOW != 10 ; Check if the speed is not default, adjust this as needed.
-        DllCall("SystemParametersInfo", UInt, 0x71, UInt, 0, UInt, 10, UInt, 0) ; Default Windows 6 Ticks [10], adjust this as needed.
+    DllCall("SystemParametersInfo", UInt, 0x70, UInt, 0, UInt, MOUSE_NOW, UInt, 0)
+    If MOUSE_NOW != 10 ; Check if the speed is not default, adjust this as needed.
+      DllCall("SystemParametersInfo", UInt, 0x71, UInt, 0, UInt, 10, UInt, 0) ; Default Windows 6 Ticks [10], adjust this as needed.
     Return
   }
 
@@ -69,7 +69,7 @@ preset(name)
   Send +{backspace}
   sleep 10
   Send %name%
-  
+
   ImageSearch, FoundX, FoundY, 0, 0, A_ScreenWidth, A_ScreenHeight, Adobe_Premiere_Pro_Effects.png
   if (ErrorLevel = 2)
     MsgBox Could not conduct the search.
@@ -191,63 +191,63 @@ preset(name)
   ;~ +F1::
   ;~ sequence("Joo's Combo Collection - Combos 4K")
   ;~ return
-  
+
   ;~ +F2::
   ;~ sequence("01: PCSX2-Combo Creation")
   ;~ return
-  
+
   F13::
-    Atransition("exponential fade")
+  Atransition("exponential fade")
   Return
-  
+
   F14::
-    Atransition("constant power")
+  Atransition("constant power")
   Return
-  
+
   F15::
-    Vtransition("cross dissolve")
+  Vtransition("cross dissolve")
   Return
-  
+
   F16::
-    preset("Crop_Preset_Test")
+  preset("Crop_Preset_Test")
   Return
-  
+
   F17::
-    preset("scale-50%")
+  preset("scale-50%")
   Return
-  
+
   F18::
-    Vtransition("cross zoom")
+  Vtransition("cross zoom")
   Return
-  
+
   F19::
-    Vtransition("exposureblur")
+  Vtransition("exposureblur")
   Return
-  
+
   ;F20::
   Vtransition("swish pan")
   Return
-  
+
   ;F21::
   preset("Zoom_abs_.6")
   Return
-  
+
   F22::
-    preset("AC_Remove")
+  preset("AC_Remove")
   return
-  
+
   ;~ +F13::
   ;~ preset("uni.Blur_15")
   ;~ Return
-  
+
   ;~ +F14::
   ;~ preset("B&C_SS")
   ;~ return
-  
+
   ;~ +F15::
   ;~ preset("Transform Default")
   ;~ return
-  
+
   ;~ +F16::
   ;~ preset("unmult_26")
   ;~ return
