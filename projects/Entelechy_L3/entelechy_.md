@@ -18,7 +18,7 @@
 * Cable FSI with 2HP, SJC vs Felicia Yarn into y_boost
 * Samurai s.HP , c.LP s.HP infinite
 * Block Meter that allows movement only as well as quick-land to block something, quick land with doom or anak?
-* Ruby, Tron, Rogue AA, Chain, Trip, Barrel, DHC, Auto-Assist again 1F on DC?
+* Ruby, Tron, RogueAA, Chain, Trip, Barrel, DHC, Auto-Assist again 1F on DC?
 
 ## OK ✅
 
