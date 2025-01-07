@@ -20,10 +20,12 @@ function getNewestReplay() {
   if (REPLAYS_LIST.length === 0) {
     return ERR_STR;
   }
-  const NEWEST_REPLAY = REPLAYS_LIST.reduce((previousReplayFile, currentReplayFile) =>
-    fs.statSync(DIR_PCSX2 + previousReplayFile).mtimeMs > fs
-      .statSync(DIR_PCSX2 + currentReplayFile).mtimeMs
-      ? previousReplayFile : currentReplayFile);
+  const NEWEST_REPLAY = REPLAYS_LIST.reduce((prevRep, currRep) => {
+    const oldTime = fs.statSync(path.join(DIR_PCSX2, prevRep)).mtimeMs;
+    const newTime = fs.statSync(path.join(DIR_PCSX2, currRep)).mtimeMs;
+    return oldTime > newTime ? prevRep : currRep;
+  });
+
   return NEWEST_REPLAY;
 }
 
@@ -36,7 +38,8 @@ if (getNewestReplay() === ERR_STR) {
 
 // Make and return the new main replay-folder
 // in StateBK using the newest replay name if it doesn't exist
-// Function to make and return the new main replay-folder in StateBK using the newest replay name if it doesn't exist
+// Function to make and return the new main replay-folder 
+// in StateBK using the newest replay name if it doesn't exist
 function getAndMakeReplayFolder() {
   const NEWEST_REPLAY = getNewestReplay();
   const FOLDER_NAME = NEWEST_REPLAY.replace(REPLAY_EXT, '_pcsx2');
@@ -47,10 +50,12 @@ function getAndMakeReplayFolder() {
     fs.mkdirSync(REPLAY_FOLDER_PATH);
 
     // Highlight folder creation message with bright cyan
-    console.log(colors.bright + colors.fg.cyan + 'Created: ' + REPLAY_FOLDER_PATH + colors.reset);
+    console.log(colors.bright + colors.fg.cyan
+      + 'Created: ' + REPLAY_FOLDER_PATH + colors.reset);
 
     // Highlight the newest replay information with bright cyan
-    console.log(colors.bright + colors.fg.cyan + 'Newest replay is: ' + NEWEST_REPLAY + colors.reset);
+    console.log(colors.bright + colors.fg.cyan
+      + 'Newest replay is: ' + NEWEST_REPLAY + colors.reset);
   }
 
   return REPLAY_FOLDER_PATH;
@@ -94,7 +99,9 @@ function copyReplayAndSstatesToNewFolders() {
     const SECOND_NEWEST_REPLAY_FOLDER = REPLAY_FOLDERS[REPLAY_FOLDERS.length - 2];
 
     // Highlight second newest replay folder information with bright cyan
-    console.log(colors.bright + colors.fg.cyan + 'Second newest replay folder is ' + SECOND_NEWEST_REPLAY_FOLDER + colors.reset);
+    console.log(colors.bright + colors.fg.cyan
+      + 'Second newest replay folder is ' + SECOND_NEWEST_REPLAY_FOLDER + colors.reset
+    );
 
     const REPLAY_FILES = fs.readdirSync(path.join(MAIN_REPLAY_FOLDER, SECOND_NEWEST_REPLAY_FOLDER));
     const SECOND_NEWEST_REPLAY = REPLAY_FILES.find(file => file.endsWith(REPLAY_EXT));
@@ -109,11 +116,18 @@ function copyReplayAndSstatesToNewFolders() {
 
     // Calculate the time difference between replays
     const TIME_DIFFERENCE = STATS_MDATE - STATS_MDATE2;
+    const HOURS = Math.floor(TIME_DIFFERENCE / 3600000);
     const MINUTES = Math.floor(TIME_DIFFERENCE / 60000);
     const SECONDS = ((TIME_DIFFERENCE % 60000) / 1000).toFixed(0);
 
     // Highlight the time difference between replays with bright cyan
-    console.log(colors.bright + colors.fg.cyan + 'Difference between ' + NEWEST_REPLAY + ' and ' + SECOND_NEWEST_REPLAY + ' is ' + MINUTES + ' minutes and ' + SECONDS + ' seconds' + colors.reset);
+    console.log(colors.bright + colors.fg.cyan
+      + 'Difference between ' + NEWEST_REPLAY
+      + ' and ' + SECOND_NEWEST_REPLAY
+      + ' is ' + HOURS
+      + ' hours ' + MINUTES
+      + ' minutes and ' + SECONDS
+      + ' seconds' + colors.reset);
 
     if (TIME_DIFFERENCE === 0) {
       throw new Error(colors.fg.red + 'Replay files have the same date!' + colors.reset);
