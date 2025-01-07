@@ -54,42 +54,177 @@
 * THC FSD: Wolverine/WolverineB
 * DHC FSD: Magneto & Spider-Man or Chun-Li
 
+```md
+Stage Count:
+  - Abyss     : 1
+  - Boat1     : 3
+  - Boat2     : 1
+  - Bridge1   : 0
+  - Bridge2   : 2
+  - Carnival1 : 0
+  - Carnival2 : 1
+  - Cave1     : 2
+  - Cave2     : 2
+  - Clock1    : 0
+  - Clock2    : 3
+  - Desert1   : 1
+  - Desert2   : 0
+  - Factory   : 2
+  - Raft1     : 2
+  - Raft2     : 0
+  - Training  : 0
+```
+
+
 #### Combo_Anakaris276_pcsx2
-Stage: Clock1
-![alt text](entelechy_images/Combo_Anakaris276_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Anakaris276_pcsx2.png)
+
 #### **Combo_Cable70_pcsx2**
-![alt text](entelechy_images/Combo_Cable70_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Cable70_pcsx2.png)
+
 #### Combo_CaptainCommandoRogueCable8_pcsx2
-![alt text](entelechy_images/Combo_CaptainCommandoRogueCable8_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_CaptainCommandoRogueCable8_pcsx2.png)
+
 #### Combo_Dan31_pcsx2
-![alt text](entelechy_images/Combo_Dan31_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Dan31_pcsx2.png)
+
 #### Combo_Guile19_pcsx2
-![alt text](entelechy_images/Combo_Guile19_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Guile19_pcsx2.png)
+
 #### Combo_Hulk28_demul
-![alt text](entelechy_images/Combo_Hulk28_demul.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Hulk28_demul.png)
+
 #### Combo_Iceman67_pcsx2
-![alt text](entelechy_images/Combo_Iceman67_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Iceman67_pcsx2.png)
+
 #### Combo_Juggernaut1_pcsx2
-![alt text](entelechy_images/Combo_Juggernaut1_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Juggernaut1_pcsx2.png)
+
 #### Combo_Magneto66_pcsx2
-![alt text](entelechy_images/Combo_Magneto66_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Magneto66_pcsx2.png)
+
 #### Combo_MagnetoBisonWolverine85_pcsx2
-![alt text](entelechy_images/Combo_MagnetoBisonWolverine85_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_MagnetoBisonWolverine85_pcsx2.png)
+
 #### Combo_MagnetoGuile18_demul
-![alt text](entelechy_images/Combo_MagnetoGuile18_demul.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_MagnetoGuile18_demul.png)
+
 #### Combo_Morrigan115_pcsx2
-![alt text](entelechy_images/Combo_Morrigan115_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Morrigan115_pcsx2.png)
+
 #### Combo_Sentinel52_pcsx2
-![alt text](entelechy_images/Combo_Sentinel52_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Sentinel52_pcsx2.png)
+
 #### Combo_Spiral6_pcsx2
-![alt text](entelechy_images/Combo_Spiral6_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Spiral6_pcsx2.png)
+
 #### Combo_Storm114_pcsx2
-![alt text](entelechy_images/Combo_Storm114_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Storm114_pcsx2.png)
+
 #### Combo_Venom17_pcsx2
-![alt text](entelechy_images/Combo_Venom17_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Combo_Venom17_pcsx2.png)
+
 #### NoDamage_Psylocke_WarMachine_pcsx2
-![alt text](entelechy_images/NoDamage_Psylocke_WarMachine_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/NoDamage_Psylocke_WarMachine_pcsx2.png)
+
 #### Situation_Hulk_Juggernaut_pcsx2
-![alt text](entelechy_images/Situation_Hulk_Juggernaut_pcsx2.png)
-#### Situation_MagnetoSentinel_SentinelIronMan_pcsx2*
-![alt text](entelechy_images/Situation_MagnetoSentinel_SentinelIronMan_pcsx2.png)
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Situation_Hulk_Juggernaut_pcsx2.png)
+
+#### Situation_MagnetoSentinel_SentinelIronMan_pcsx2
+
+```md
+ClipInfo
+```
+
+![alt](entelechy_images/Situation_MagnetoSentinel_SentinelIronMan_pcsx2.png)
+****

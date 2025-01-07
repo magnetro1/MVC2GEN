@@ -1,0 +1,36 @@
+Turbo FrameSkip:
+  A frame is skipped every four frames, so timers that are supposed to count down
+  every frame, actually skip a number every third frame. So you'll see 10, 9, 8, 6, 5, 4, 2, 1, 0
+
+P2: Dummy:
+  Hitstop
+  Inputs
+  Throw_Counter_Mash value for Hyper-Grav
+    Not affected by frame skip
+    RNG. 12-20
+    Direction+Input(s) reduce by 3
+    Button(s) only reduce by 1
+    Directions reduce by 2
+    [Direction+Button, Neutral+DifferentButton] reduce by 4 over two frames
+
+Custom Properties
+Normals
+  j.LK Stun: ~21 (Includes 10F of Hitstop)
+  j.MK Stun: ~25 (Includes 10F of Hitstop)
+Hyper-Grav
+  Hyper-Grav Startup
+    21 frames to opponent as close as possible in standing.
+    ~24-28 when opponent is in the air during combo
+  Hyper-Grav Hitstun with no mash
+    57 frames of hitstun before they automatically get released
+  HyperGrav Post-Release Stun: 
+    ~10F always occurs, even if opponent mashes out ASAP
+  Hyper-Grav xx Tempest ASAP timing
+    HyperGrav-8F of startup, motion for tempest is finished on frame 9.
+Tempest
+  Tempest Startup ~3F
+  SuperFlash: 40F
+  Post-SuperFlash Hitstop: 10F
+    (meaning hyper-grav begins to materialize for 10F while dummy is frozen.)
+  Tempest dispersal is random.
+    ASAP-Mashout doesn't matter in the corner sometimes.
