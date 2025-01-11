@@ -1,140 +1,190 @@
-import * as fs from 'fs';
+import * as fs from 'fs/promises';
 import * as path from 'path';
 import { DIR_PCSX2 } from '../../Both_Emulator_Resources/JS_TOOLS/Utils/getEmulatorDirectories.js';
 import colors from '../../Both_Emulator_Resources/colors.js';
 
-const DIR_SSTATES = path.join(DIR_PCSX2, 'sstates');
-const DIR_STATEBK = path.join(DIR_PCSX2, 'StateBK');
-const REPLAY_EXT = '.p2m';
-const SLEEP_AMOUNT = 3500;
-const ERR_STR = 'No replays found in ' + DIR_PCSX2 + ', exiting...';
+class ReplayBackupManager {
+  static REPLAY_EXT = '.p2m';
+  static SLEEP_AMOUNT = 3500;
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-// Returns the newest 'p2m' replay file in the DIR_PCSX2
-function getNewestReplay() {
-  const FILES = fs.readdirSync(DIR_PCSX2);
-  const REPLAYS_LIST = FILES.filter(file => file.endsWith(REPLAY_EXT));
-  if (REPLAYS_LIST.length === 0) {
-    return ERR_STR;
-  }
-  const NEWEST_REPLAY = REPLAYS_LIST.reduce((prevRep, currRep) => {
-    const oldTime = fs.statSync(path.join(DIR_PCSX2, prevRep)).mtimeMs;
-    const newTime = fs.statSync(path.join(DIR_PCSX2, currRep)).mtimeMs;
-    return oldTime > newTime ? prevRep : currRep;
-  });
-
-  return NEWEST_REPLAY;
-}
-
-// If no replays are found, exit the script
-if (getNewestReplay() === ERR_STR) {
-  console.log(colors.fg.red + ERR_STR + colors.reset);
-  await sleep(SLEEP_AMOUNT);
-  process.exit(0);
-}
-
-// Make and return the new main replay-folder
-// in StateBK using the newest replay name if it doesn't exist
-// Function to make and return the new main replay-folder 
-// in StateBK using the newest replay name if it doesn't exist
-function getAndMakeReplayFolder() {
-  const NEWEST_REPLAY = getNewestReplay();
-  const FOLDER_NAME = NEWEST_REPLAY.replace(REPLAY_EXT, '_pcsx2');
-  const REPLAY_FOLDER_PATH = path.join(DIR_STATEBK, FOLDER_NAME);
-
-  // Check if the folder doesn't exist and create it
-  if (!fs.existsSync(REPLAY_FOLDER_PATH) && NEWEST_REPLAY !== ERR_STR) {
-    fs.mkdirSync(REPLAY_FOLDER_PATH);
-
-    // Highlight folder creation message with bright cyan
-    console.log(colors.bright + colors.fg.cyan
-      + 'Created: ' + REPLAY_FOLDER_PATH + colors.reset);
-
-    // Highlight the newest replay information with bright cyan
-    console.log(colors.bright + colors.fg.cyan
-      + 'Newest replay is: ' + NEWEST_REPLAY + colors.reset);
+  constructor() {
+    this.dirPcsx2 = DIR_PCSX2;
+    this.dirSstates = path.join(this.dirPcsx2, 'sstates');
+    this.dirStateBk = path.join(this.dirPcsx2, 'StateBK');
   }
 
-  return REPLAY_FOLDER_PATH;
-}
-
-const MAIN_REPLAY_FOLDER = getAndMakeReplayFolder();
-
-// Make and increment a folder inside the Main Replay folder and return it
-function getAndMakeIncrementedFolder() {
-  const MAIN_REPLAY_FOLDER = getAndMakeReplayFolder();
-  const FOLDERS = fs.readdirSync(MAIN_REPLAY_FOLDER);
-  const FOLDER_NUMBER = FOLDERS.length + 1;
-  const NEW_FOLDER_NAME = getNewestReplay()
-    .replace('.p2m', '_pcsx2_') + FOLDER_NUMBER
-      .toString()
-      .padStart(3, '0');
-  const NEW_FOLDER_PATH = path.join(MAIN_REPLAY_FOLDER, NEW_FOLDER_NAME);
-  if (!fs.existsSync(NEW_FOLDER_PATH)) {
-    fs.mkdirSync(NEW_FOLDER_PATH);
+  async sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
-  return NEW_FOLDER_PATH;
-}
 
-// Function to copy the newest replay and the contents of sstates to the new folder
-function copyReplayAndSstatesToNewFolders() {
-  const NEWEST_REPLAY = getNewestReplay();
-  const NEW_FOLDER_PATH = getAndMakeIncrementedFolder();
+  async getNewestReplay() {
+    try {
+      const files = await fs.readdir(this.dirPcsx2);
+      const replaysList = files.filter(file => file.endsWith(ReplayBackupManager.REPLAY_EXT));
 
-  // Get and copy sstates
-  const SSTATES = fs.readdirSync(DIR_SSTATES);
-  SSTATES.forEach(SSTATE => {
-    if (SSTATE.match(/00[0-9]/)) { // Match files ending with 00[0-9]
-      fs.copyFileSync(path.join(DIR_SSTATES, SSTATE), path.join(NEW_FOLDER_PATH, SSTATE));
+      if (replaysList.length === 0) {
+        throw new Error(`No replays found in ${this.dirPcsx2}`);
+      }
+
+      const replaysWithStats = await Promise.all(
+        replaysList.map(async (replay) => {
+          const stats = await fs.stat(path.join(this.dirPcsx2, replay));
+          return { name: replay, time: stats.mtimeMs };
+        })
+      );
+
+      return replaysWithStats.reduce((prev, curr) =>
+        prev.time > curr.time ? prev : curr
+      ).name;
+
+    } catch (error) {
+      throw new Error(`Failed to get newest replay: ${error.message}`);
     }
-  });
-  fs.copyFileSync(path.join(DIR_PCSX2, NEWEST_REPLAY), path.join(NEW_FOLDER_PATH, NEWEST_REPLAY));
+  }
 
-  // Handle the second newest replay folder
-  if (!NEW_FOLDER_PATH.endsWith('001')) {
-    const REPLAY_FOLDERS = fs.readdirSync(MAIN_REPLAY_FOLDER);
-    const SECOND_NEWEST_REPLAY_FOLDER = REPLAY_FOLDERS[REPLAY_FOLDERS.length - 2];
+  async getAndMakeReplayFolder() {
+    try {
+      const newestReplay = await this.getNewestReplay();
+      const folderName = newestReplay.replace(ReplayBackupManager.REPLAY_EXT, '_pcsx2');
+      const replayFolderPath = path.join(this.dirStateBk, folderName);
 
-    // Highlight second newest replay folder information with bright cyan
-    console.log(colors.bright + colors.fg.cyan
-      + 'Second newest replay folder is ' + SECOND_NEWEST_REPLAY_FOLDER + colors.reset
-    );
+      const exists = await fs.access(replayFolderPath)
+        .then(() => true)
+        .catch(() => false);
 
-    const REPLAY_FILES = fs.readdirSync(path.join(MAIN_REPLAY_FOLDER, SECOND_NEWEST_REPLAY_FOLDER));
-    const SECOND_NEWEST_REPLAY = REPLAY_FILES.find(file => file.endsWith(REPLAY_EXT));
+      if (!exists) {
+        await fs.mkdir(replayFolderPath);
+        console.log(colors.bright + colors.fg.cyan +
+          `Created: ${replayFolderPath}
+Newest replay is: ${newestReplay}` + colors.reset);
+      }
 
-    // Newest replay statistics
-    const STATS = fs.statSync(path.join(DIR_PCSX2, NEWEST_REPLAY));
-    const STATS_MDATE = STATS.mtimeMs;
+      return replayFolderPath;
+    } catch (error) {
+      throw new Error(`Failed to create replay folder: ${error.message}`);
+    }
+  }
 
-    // Second newest replay statistics
-    const STATS2 = fs.statSync(path.join(MAIN_REPLAY_FOLDER, SECOND_NEWEST_REPLAY_FOLDER, SECOND_NEWEST_REPLAY));
-    const STATS_MDATE2 = STATS2.mtimeMs;
+  async getAndMakeIncrementedFolder() {
+    try {
+      const mainReplayFolder = await this.getAndMakeReplayFolder();
+      const folders = await fs.readdir(mainReplayFolder);
+      const folderNumber = folders.length + 1;
 
-    // Calculate the time difference between replays
-    const TIME_DIFFERENCE = STATS_MDATE - STATS_MDATE2;
-    const HOURS = Math.floor(TIME_DIFFERENCE / 3600000);
-    const MINUTES = Math.floor(TIME_DIFFERENCE / 60000);
-    const SECONDS = ((TIME_DIFFERENCE % 60000) / 1000).toFixed(0);
+      const newestReplay = await this.getNewestReplay();
+      const newFolderName = `${newestReplay.replace('.p2m', '_pcsx2_')}${String(folderNumber).padStart(3, '0')}`;
+      const newFolderPath = path.join(mainReplayFolder, newFolderName);
 
-    // Highlight the time difference between replays with bright cyan
-    console.log(colors.bright + colors.fg.cyan
-      + 'Difference between ' + NEWEST_REPLAY
-      + ' and ' + SECOND_NEWEST_REPLAY
-      + ' is ' + HOURS
-      + ' hours ' + MINUTES
-      + ' minutes and ' + SECONDS
-      + ' seconds' + colors.reset);
+      const exists = await fs.access(newFolderPath)
+        .then(() => true)
+        .catch(() => false);
 
-    if (TIME_DIFFERENCE === 0) {
+      if (!exists) {
+        await fs.mkdir(newFolderPath);
+      }
+
+      return newFolderPath;
+    } catch (error) {
+      throw new Error(`Failed to create incremented folder: ${error.message}`);
+    }
+  }
+
+  async copyReplayAndSstatesToNewFolders() {
+    try {
+      const newestReplay = await this.getNewestReplay();
+      const newFolderPath = await this.getAndMakeIncrementedFolder();
+
+      // Copy save states
+      const sstates = await fs.readdir(this.dirSstates);
+      const copyPromises = sstates
+        .filter(sstate => /00[0-9]$/.test(sstate))
+        .map(sstate =>
+          fs.copyFile(
+            path.join(this.dirSstates, sstate),
+            path.join(newFolderPath, sstate)
+          )
+        );
+
+      // Copy replay file
+      copyPromises.push(
+        fs.copyFile(
+          path.join(this.dirPcsx2, newestReplay),
+          path.join(newFolderPath, newestReplay)
+        )
+      );
+
+      await Promise.all(copyPromises);
+
+      // Handle comparison with previous replay if not the first one
+      if (!newFolderPath.endsWith('001')) {
+        await this.compareWithPreviousReplay(newestReplay, newFolderPath);
+      }
+
+    } catch (error) {
+      throw new Error(`Failed to copy files: ${error.message}`);
+    }
+  }
+
+  async compareWithPreviousReplay(newestReplay, newFolderPath) {
+    const mainReplayFolder = await this.getAndMakeReplayFolder();
+    const replayFolders = await fs.readdir(mainReplayFolder);
+    const secondNewestFolder = replayFolders[replayFolders.length - 2];
+
+    console.log(colors.bright + colors.fg.cyan +
+      `Second newest replay folder is ${secondNewestFolder}` + colors.reset);
+
+    const replayFiles = await fs.readdir(path.join(mainReplayFolder, secondNewestFolder));
+    const secondNewestReplay = replayFiles.find(file => file.endsWith(ReplayBackupManager.REPLAY_EXT));
+
+    const [newestStats, secondNewestStats] = await Promise.all([
+      fs.stat(path.join(this.dirPcsx2, newestReplay)),
+      fs.stat(path.join(mainReplayFolder, secondNewestFolder, secondNewestReplay))
+    ]);
+
+    const timeDifference = newestStats.mtimeMs - secondNewestStats.mtimeMs;
+
+    if (timeDifference === 0) {
       throw new Error(colors.fg.red + 'Replay files have the same date!' + colors.reset);
     }
+
+    const hours = Math.floor(timeDifference / 3600000);
+    const minutes = Math.floor((timeDifference % 3600000) / 60000);
+    const seconds = Math.floor((timeDifference % 60000) / 1000);
+
+    console.log(colors.bright + colors.fg.cyan +
+      `Difference between ${newestReplay} and ${secondNewestReplay} is ` +
+      `${hours} hours ${minutes} minutes and ${seconds} seconds` + colors.reset);
   }
 }
 
-// Run the function and set a timeout in the console
-console.log(copyReplayAndSstatesToNewFolders() || ``);
-await sleep(SLEEP_AMOUNT);
+async function main() {
+  try {
+    const backupManager = new ReplayBackupManager();
+    await backupManager.copyReplayAndSstatesToNewFolders();
+    console.log(colors.bright + colors.fg.green + 'Backup completed successfully!' + colors.reset);
+  } catch (error) {
+    console.error(colors.fg.red + error.message + colors.reset);
+  }
+
+  // After all operations and logs are complete, keep the window open
+  console.log(colors.fg.yellow + '\nClosing in 3 seconds...' + colors.reset);
+  await new ReplayBackupManager().sleep(3000);
+}
+
+// Use process.on('exit') to ensure the script doesn't exit prematurely
+process.on('exit', () => {
+  console.log(colors.reset);  // Reset colors before exit
+});
+
+// Handle any uncaught errors to ensure they're visible
+process.on('uncaughtException', (err) => {
+  console.error(colors.fg.red + 'Unexpected error: ' + err.message + colors.reset);
+  console.log(colors.fg.yellow + '\nClosing in 3 seconds...' + colors.reset);
+  setTimeout(() => process.exit(1), 3000);
+});
+
+main().catch(err => {
+  console.error(colors.fg.red + 'Fatal error: ' + err.message + colors.reset);
+  console.log(colors.fg.yellow + '\nClosing in 3 seconds...' + colors.reset);
+  setTimeout(() => process.exit(1), 3000);
+});
