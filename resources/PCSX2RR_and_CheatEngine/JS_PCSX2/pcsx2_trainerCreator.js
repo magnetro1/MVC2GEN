@@ -30,19 +30,19 @@ import clipboard from 'clipboardy'
 const ENTRIES = [
   // RESERVED
   'MISC_Frame_Counter',             // 1 Entry   in Lua-Window
-  // 'MISC_Frame_Skip_Toggle',         // 1 Entry   in Lua-Window
+  'MISC_Frame_Skip_Toggle',         // 1 Entry   in Lua-Window
   'SYST_Input_DEC',                 // 2 Entries in Lua-Window
   // RESERVED
   'SYST_Combo_Meter_Value',         // 2 Entries in Lua-Window
-  // 'SYST_Meter_Big',                 // 2 Entries in Lua-Window
-  // 'SYST_Meter_Small',               // 2 Entries in Lua-Window
-  //
-  // 'PMEM_Throw_Counter_Mash',     // 2 Entries in Lua-Window
-  // 'PMEM_Dizzy',                     // 2 Entries in Lua-Window
-  // 'PMEM_Health_Big',                // 2 Entries in Lua-Window
-  // 'PMEM_Hitstop2',               // 2 Entries in Lua-Window
+  'SYST_Meter_Big',                 // 2 Entries in Lua-Window
+  'SYST_Meter_Small',               // 2 Entries in Lua-Window
+
+  'PMEM_Throw_Counter_Mash',     // 2 Entries in Lua-Window
+  'PMEM_Dizzy',                     // 2 Entries in Lua-Window
+  'PMEM_Health_Big',                // 2 Entries in Lua-Window
+  'PMEM_Hitstop2',               // 2 Entries in Lua-Window
   'PMEM_Knockdown_State',        // 2 Entries in Lua-Window
-  // 'PMEM_FlyingScreen',        // 2 Entries in Lua-Window
+  'PMEM_FlyingScreen',        // 2 Entries in Lua-Window
   'MISC_Frame_Skip_Counter', // 2 Entries in Lua-Window
 ];
 
@@ -58,7 +58,7 @@ const REAL_ENTRIES = [];
 const T_PROPS = {
   tColor: '0x00b140', // green; used in OBS for green screen
   tWidth: 600 - 2, // sub Windows Panel
-  tHeight: 800 - 28, // sub Windows Panel
+  tHeight: 1200 - 28, // sub Windows Panel
   tXPos: 3,
   tYPos: 15, // is this where the stop button is?
   tFontSize: 23,
