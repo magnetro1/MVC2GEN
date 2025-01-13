@@ -11304,9 +11304,9 @@ executeSequence()
           <AssemblerScript>[ENABLE]
 {$lua}
 
-local CameraCore = require('01_CameraCore')
-local NOPManager = require('02_NOP')
-local CameraAnimation = require('03_CameraAnim')
+local CameraCore = require('./support/camera/01_CameraCore')
+local NOPManager = require('./support/camera/02_NOP')
+local CameraAnimation = require('./support/camera/03_CameraAnim')
 
 CameraAnimation.Core = CameraCore
 
@@ -11332,7 +11332,6 @@ NOPManager.disable(activeNOPs)
 writeFloat(CameraCore.Pointers.zSpt, 0)
 {$asm}
 [DISABLE]
-
 
 </AssemblerScript>
         </CheatEntry>
