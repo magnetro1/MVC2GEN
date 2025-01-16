@@ -187,6 +187,7 @@
 - Magneto can TriJump faster after being pushblocked
 - **P1 Mag vs Cable/etc**
   - Pushblock a dash in `S.LP` or `CR.LK`, dash in, whiff-trijump `2LK`.
+  
 ## Double Snapback Setups
 
 - **Basic from Psy/Solo**

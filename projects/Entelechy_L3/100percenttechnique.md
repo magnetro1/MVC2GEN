@@ -342,8 +342,71 @@ Despite its quirks and limitations, the **100% technique** is an essential tool 
 ---
 
 **Special Thanks**
-Special thanks to:
 
 - **ECZangief**  
 - **Joo**  
 - **Majestros**
+
+---
+
+**100% Technique Table**
+
+
+| **Character**          | **Sequence**                     |
+|-------------------------|----------------------------------|
+| Akuma                  | n/2lp9/lk21                      |
+| Amingo                 | n/3hk21/lp21                     |
+| Anakaris               | n/lp17/lk21                      |
+| B.B. Hood              | n/lk13/lp21                      |
+| Blackheart             | n/2lp9/lk21                      |
+| Cable                  | n/lk+start53/lp21                |
+| Cammy                  | n/hp25/lp21                      |
+| Captain America        | n/lp13/lk21                      |
+| Captain Commando       | n/2hp33/lk21                     |
+| Charlie                | n/lp9/lk21                       |
+| Chun-Li                | n/lk13/lp21                      |
+| Colossus               | 2hk29/lk21                       |
+| Cyclops                | n/lp13/lk21                      |
+| Dan                    | n/2lp9/lk21                      |
+| Dhalsim                | n/2lp13/lk21                     |
+| Doctor Doom            | n/lp13/lk21                      |
+| Felicia                | n/2lp9/lk21                      |
+| Gambit                 | n/2hp29/lp21                     |
+| Guile                  | n/2lp9/lk21                      |
+| Hayato                 | n/4hp17/lp21                     |
+| Hulk                   | n/lk+start53/lp21                |
+| Iceman                 | n/lp13/lk21                      |
+| Iron Man               | n/lk13/lp21                      |
+| Jill                   | n/lk13/lp21                      |
+| Jin                    | n/lk37/lp21                      |
+| Juggernaut             | n/2lk21/lp21                     |
+| Ken                    | n/hk33/lp21                      |
+| M. Bison               | n/2lp9/lk21                      |
+| Magneto                | n/2lp14/lk21/2lp14/lk23          |
+| Marrow                 | n/2lp14/lk13/2lp14/lk21          |
+| Megaman                | n/3hk25/lk21                     |
+| Morrigan               | n/lk9/lp21                       |
+| Omega Red              | n/2lp9/lk21                      |
+| Psylocke               | n/lk17/lp21                      |
+| Rogue                  | n/2lk18/lp13/2lk18/lp21          |
+| Roll                   | n/lp9/lk21                       |
+| Ruby Heart             | 3hk37/lp21                       |
+| Ryu                    | lk14/lp13/lk14/lp21              |
+| Sabretooth             | n/hk29/lk21                      |
+| Sakura                 | n/2lk13/lp21                     |
+| Sentinel               | n/2lk25/lp21                     |
+| Servbot                | n/3hp37/lp21                     |
+| Shuma-Gorath           | n/2hp37/lk21                     |
+| Silver Samurai         | n/lp22/lk25/lp22/lk25            |
+| Sonson                 | n/6hp34/lp21/6hp34/lp21          |
+| Spider-Man             | n/2lk13/lp21                     |
+| Spiral                 | n/2hp30/lp13/2hp30/lp21          |
+| Storm                  | n/lp9/lk21                       |
+| Strider Hiryu          | n/2hp33/lk21                     |
+| Thanos                 | n/lp17/lk21                      |
+| Tron                   | n/lk37/lp21                      |
+| Venom                  | n/lp13/lk21                      |
+| War Machine            | n/2lk18/lp13/2lk18/lp25          |
+| Wolverine (Adamantium) | n/2lp13/lk21                     |
+| Wolverine (Bone)       | n/hk33/lk21                      |
+| Zangief                | n/lp13/lk21                      |
