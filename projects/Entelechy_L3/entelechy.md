@@ -2,19 +2,6 @@
 
 ## Ideas 💡
 
-* Bison Delay Kneepress from across a screen
-  * Isn't OTG
-  * Slow to come out, no FSD followups
-  * Can hit after snap > dhc
-* Combo Meter bug using 1f air stun. ex spiral level3 grab, dhc
-* Anakaris & Doom instant land go under-dummy
-* No-Count OTG with Hayato Dash-HP
-* Strider Double-Bomb using Counter-Bug
-  * HK bomb, interrupt, counter, counter back into bird, interrupt, hk or LK bomb
-  * Flip Side with 2nd Bomb?
-* Guile, Wolverine, Bison Triple FSD.
-* Cable FSI with 2HP, SJC vs Felicia Yarn into y_boost
-* Block Meter that allows movement only as well as quick-land to block something, quick land with doom or anak?
 * Ruby, Tron, Rogue-AA, Chain, Trip, Barrel, DHC, Auto-Assist again 1F on DC?
 * THC Unblockable Escape using Just-Defend and THC
 * THC FSD: Wolverine/WolverineB
@@ -22,7 +9,7 @@
   
 ## OK ✅
 
-* Triple FSD-B Setup: Magneto, Wolverine, Bison VS Roll + Amingo
+* Triple FSD-B Setup: Magneto, Wolverine, **Bison** VS Roll + Amingo
 * Combo after throw with Spiral
 * Tag causes Dizzy/Spin-Out > Punish!
 * Psylocke + Ruby-Y: HP SJGC
@@ -43,38 +30,17 @@
 * Colossus QCF+LP, FSD, DHC-Wolverine-QCF+PP, DHC-Strider-QCF+PP, Grab, FSD, DHC, TAG, Special-Grab FSD again
 * Servbot-B QCF+PP, Sentinel QCF+PP
 * VS-Capcom j.infinite: Strider Psylocke, Chun-Li, Guile, Charlie  > FSD & Assist Followup: Guile, Charlie, Ken ( FSD > Assist > OTG )
-
-## Edit 🎦
-
-* VS-Sentinel Mekuri Infinites
-  * OK: Dhalsim, Magneto, Iron Man, War Machine, Sentinel
-  * NG: Bison, Storm, Doom
-
-## Research 🔬
-
-* Magneto QCF+PP vs Sentinel Taunt > THC (1F), OTG, Roll, Punish
-
-## Stage Count
-
-```md
-  - Abyss     : 1
-  - Boat1     : 3
-  - Boat2     : 1
-  - Bridge1   : 0
-  - Bridge2   : 2
-  - Carnival1 : 0
-  - Carnival2 : 2
-  - Cave1     : 2
-  - Cave2     : 2
-  - Clock1    : 0
-  - Clock2    : 3
-  - Desert1   : 1
-  - Desert2   : 0
-  - Factory   : 2
-  - Raft1     : 2
-  - Raft2     : 1
-  - Training  : 0
-```
+* Bison Delay Kneepress from across a screen
+  * Isn't OTG
+  * Slow to come out, no FSD followups
+  * Can hit after snap > dhc
+* Combo Meter bug using 1f air stun. ex spiral level3 grab, dhc
+* Anakaris & Doom instant land go under-dummy
+* No-Count OTG with Hayato Dash-HP
+* Strider Double-Bomb using Counter-Bug
+  * HK bomb, interrupt, counter, counter back into bird, interrupt, hk or LK bomb
+  * Flip Side with 2nd Bomb?
+* Block Meter that allows movement only as well as quick-land to block something, quick land with doom or anak?
 
 ## Clip Info
 

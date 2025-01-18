@@ -9,6 +9,7 @@
 ### **Briefing & Skipping**
 
 ### **100% Execution of Combos**
+
 There is a way to ensure that the programmable controller will execute a combo **100% of the time**. This method also lets you identify when certain **attacks**, **combos**, or **situations** won’t work.
 
 > **Key Issue:**
@@ -19,6 +20,7 @@ However, **programmable controllers are flawless**; the inconsistency lies in th
 ---
 
 ### **Calibration is Key**
+
 To get accurate results every time, the programmable controller must be **calibrated** before executing the main combo or situation.
 
 - **How It Works:**
@@ -30,6 +32,7 @@ This tool is especially valuable for **complicated** and **elaborate** combos th
 ---
 
 ### **Understanding Frame Skipping in MvC2**
+
 Before diving into the technique, it’s important to understand how MvC2 works in terms of **frame skipping**:
 
 - On **Normal Speed**, MvC2 runs at **72 frames per second**.
@@ -205,7 +208,7 @@ Using specific normals, you can align the programmable pad to the game’s frame
 **Key Frame Lengths for Calibration**
 
 The following numbers are optimal for calibration because subtracting **1** and dividing by **4** results in **.25**:
-`2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54`
+`6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54`
 
 **Breakdown Example:**
 
