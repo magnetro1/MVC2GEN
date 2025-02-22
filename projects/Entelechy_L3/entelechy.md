@@ -2,24 +2,26 @@
 
 ## Ideas 💡
 
+* Post-Death, make it look like the dummy is supposed to come out from the right side of the screen, when they come out from the left.
 * Ruby, Tron, Rogue-AA, Chain, Trip, Barrel, DHC, Auto-Assist again 1F on DC?
-* THC Unblockable Escape using Just-Defend and THC
-* THC FSD: Wolverine/WolverineB
-* DHC FSD: Magneto & Spider-Man or Chun-Li
+* Pause On sentinel unblockable
   
 ## OK ✅
 
-* Triple FSD-B Setup: Magneto, Wolverine, **Bison** VS Roll + Amingo
+* MSP vs Servbot * 3 to no-damage the 3 different supers
+* Triple FSD-B Setup: Magneto, Wolverine, Bison VS Roll + Amingo
 * Combo after throw with Spiral
 * Tag causes Dizzy/Spin-Out > Punish!
 * Psylocke + Ruby-Y: HP SJGC
 * Psylocke vs Marrow & War Machine (and Sonson?) no-damage
 * Magneto: QCF+PP, Spider-Man: QCF+PP / Chun-Li: QCF+KK, X: DHC
-* Sentinel assist 1 bug w/ Venom Rush switch side stuff vs Jin
+* Sentinel assist 1  bug w/ Venom Rush switch side stuff vs Jin
 * Juggernaut HP-Punch > Headcrush V2
-
+  
 ## NG ❌
 
+* THC Unblockable Escape using Just-Defend and THC
+* Magneto, Low-Health-Dummy vs. Cyclops, Juggernaut-Puch: HK-Forcefield + Dummy vs. Cyclops calls Juggernaut-Punch (hits Magneto and Dummy), LP-Optic Blast, 5~ hits, Magneto cancels into Tempest, adds another 5~ hits -- with Juggernaut Punch, the Dummy should be dead? Magneto, DHC, Dummy
 * Sentinel corner mekuri vs Capcom or Jin, spawn drones underneath them
 * Jill Zombie with Fire OTG
 * Samurai s.HP , c.LP s.HP infinite
@@ -41,175 +43,3 @@
   * HK bomb, interrupt, counter, counter back into bird, interrupt, hk or LK bomb
   * Flip Side with 2nd Bomb?
 * Block Meter that allows movement only as well as quick-land to block something, quick land with doom or anak?
-
-## Clip Info
-
-### Combo_Anakaris276_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Anakaris276_pcsx2.png)
-
-### **Combo_Cable70_pcsx2**
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Cable70_pcsx2.png)
-
-### Combo_CaptainCommandoRogueCable8_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_CaptainCommandoRogueCable8_pcsx2.png)
-
-### Combo_Dan31_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Dan31_pcsx2.png)
-
-### Combo_Guile19_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Guile19_pcsx2.png)
-
-### Combo_Hulk28_demul
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Hulk28_demul.png)
-
-### Combo_HulkCharlie55_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_HulkCharlie55_pcsx2.png)
-
-### Combo_Iceman67_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Iceman67_pcsx2.png)
-
-### Combo_Juggernaut1_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Juggernaut1_pcsx2.png)
-
-### Combo_Juggernaut24_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Juggernaut24_pcsx2.png)
-
-### Combo_Magneto66_pcsx2
-
-```md
-ClipInfo
-* Magneto, Spider-Man, Sentinel
-```
-
-![alt](entelechy_images/Combo_Magneto66_pcsx2.png)
-
-### Combo_MagnetoBisonWolverine85_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_MagnetoBisonWolverine85_pcsx2.png)
-
-### Combo_MagnetoGuile18_demul
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_MagnetoGuile18_demul.png)
-
-### Combo_Morrigan115_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Morrigan115_pcsx2.png)
-
-### Combo_Sentinel52_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Sentinel52_pcsx2.png)
-
-### Combo_Spiral6_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Spiral6_pcsx2.png)
-
-### Combo_Storm114_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Storm114_pcsx2.png)
-
-### Combo_Venom17_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Combo_Venom17_pcsx2.png)
-
-### NoDamage_Psylocke_WarMachine_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/NoDamage_Psylocke_WarMachine_pcsx2.png)
-
-### Situation_Hulk_Juggernaut_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Situation_Hulk_Juggernaut_pcsx2.png)
-
-### Situation_MagnetoSentinel_SentinelIronMan_pcsx2
-
-```md
-ClipInfo
-```
-
-![alt](entelechy_images/Situation_MagnetoSentinel_SentinelIronMan_pcsx2.png)
-****

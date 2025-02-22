@@ -27,5 +27,6 @@ end
 
 NOPManager.disable(activeNOPs)
 writeFloat(CameraCore.Pointers.zSpt, 0)
+
 {$asm}
 [DISABLE]

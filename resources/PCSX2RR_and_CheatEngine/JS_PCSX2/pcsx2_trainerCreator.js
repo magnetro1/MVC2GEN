@@ -29,21 +29,20 @@ import clipboard from 'clipboardy'
  */
 const ENTRIES = [
   // RESERVED
-  'MISC_Frame_Counter',             // 1 Entry   in Lua-Window
-  'MISC_Frame_Skip_Toggle',         // 1 Entry   in Lua-Window
-  'SYST_Input_DEC',                 // 2 Entries in Lua-Window
+  'MISC_Frame_Counter',                // 1 Entry
+  'MISC_Frame_Skip_Toggle',            // 1 Entry
+  'SYST_Input_DEC',                    // 2 Entries
   // RESERVED
-  'SYST_Combo_Meter_Value',         // 2 Entries in Lua-Window
-  'SYST_Meter_Big',                 // 2 Entries in Lua-Window
-  'SYST_Meter_Small',               // 2 Entries in Lua-Window
-
-  'PMEM_Throw_Counter_Mash',     // 2 Entries in Lua-Window
-  'PMEM_Dizzy',                     // 2 Entries in Lua-Window
-  'PMEM_Health_Big',                // 2 Entries in Lua-Window
-  'PMEM_Hitstop2',               // 2 Entries in Lua-Window
-  'PMEM_Knockdown_State',        // 2 Entries in Lua-Window
-  'PMEM_FlyingScreen',        // 2 Entries in Lua-Window
-  'MISC_Frame_Skip_Counter', // 2 Entries in Lua-Window
+  'SYST_Combo_Meter_Value',            // 2 Entries
+  // 'PMEM_Health_Big',                // 2 Entries
+  // 'SYST_Meter_Big',                 // 2 Entries
+  // 'SYST_Meter_Small',               // 2 Entries
+  'PMEM_FlyingScreen',                 // 2 Entries
+  'PMEM_Throw_Counter_Mash',           // 2 Entries
+  'PMEM_Hitstop2',                     // 2 Entries
+  'PMEM_Dizzy',                        // 2 Entries
+  'PMEM_Knockdown_State',              // 2 Entries
+  // 'MISC_Frame_Skip_Counter',        // 2 Entries
 ];
 
 // the ones we will use to write the lua script
@@ -61,18 +60,18 @@ const T_PROPS = {
   tHeight: 1200 - 28, // sub Windows Panel
   tXPos: 3,
   tYPos: 15, // is this where the stop button is?
-  tFontSize: 23,
+  tFontSize: 25,
   tRowsOffset: 45,
   tRowSpacer: 10,
 };
 // Font constants
 const T_FONT_0 = {
-  fName0: 'Courier',
+  fName0: 'Consolas',
   fSize0: T_PROPS.tFontSize,
   fColor0: '0xFF0000', // red
 };
 const T_FONT_1 = {
-  fName1: 'Courier',
+  fName1: 'Consolas',
   fSize1: T_PROPS.tFontSize,
   fColor1: '0xFFFFFF', // white
 };
@@ -109,8 +108,6 @@ function WriteEntryList() {
   }
   return var_list_main;
 }
-
-
 
 // console.log(WriteEntryList());
 function ConvertToPlayerString(pString) {

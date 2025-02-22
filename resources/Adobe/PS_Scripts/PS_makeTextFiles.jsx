@@ -155,7 +155,7 @@ var FONTS_SUB = {
   'MSH': FONTS_ALL['MSH_03'],
   'MVSF': FONTS_ALL['MVSF_01'],
   'MVC1': FONTS_ALL['MVC1_01'],
-  'MVC2': FONTS_ALL['MVC2_05'],
+  'MVC2': FONTS_ALL['MVC2_04'],
   'SFA3': FONTS_ALL['SFA3_02'],
   'XVSF': FONTS_ALL['XVSF_05'],
 };
@@ -453,8 +453,8 @@ function createAllCharacterTitles(fnFont) {
 function writePointText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
   existsOutputFolder()
   var newDocument = app.documents.add(
-    4000,
-    4000,
+    2880,
+    2160,
     72,
     'name',
     NewDocumentMode.RGB,
@@ -497,8 +497,8 @@ function writePointText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
 function writeParagraphText(fnFont, fnSize, fnTracking, fnExt, promptOrNot) {
   existsOutputFolder()
   var addDocument = app.documents.add(
-    1920,
-    1080,
+    2880,
+    2160,
     72,
     'Temp',
     NewDocumentMode.RGB,
@@ -588,35 +588,35 @@ function createAllCharacterTitlesForEachGame() {
 }
 
 // Globals
-GLOBAL_OUTPUT_FOLDER = 'F:/fontTests';
+GLOBAL_OUTPUT_FOLDER = 'C:/Users/davil/Desktop/mvc2_is_broken/Title_Cards';
 
 GLOBAL_POINT_TEXT =
-  "";
+  "Magnetro Presents";
 
 GLOBAL_PARAGRAPH_TEXT =
-  "";
+  "Magneto's dashes are FAST.";
 GLOBAL_POINT_ARRAY = [
-  "",
+  "Magneto", "Sentinel", "Storm", "Cable",
 ];
 GLOBAL_PARAGRAPH_ARRAY = [
-  "",
+  "Magneto's dashes are FAST.", "He can advance across the screen to punish almost anything",
 ];
 
-// Call Stuff 📞
+// Call Stuff
 
 // Reference
 // createAllFontsReference()
 // createAllCharacterTitles(FONTS_MAIN['COTA'])
 // createAllCharacterTitlesForEachGame() // takes a while
 
-// Dynamic Single String
-writePointText(FONTS_SUB['XVSF'], 172, -50, 'png', false)
-// writeParagraphText(FONTS_SUB['COTA'], 72, 0, 'png', false)
+// Single String
+// writePointText(FONTS_MAIN['MVC2'], 200, -50, 'png', false)
+// writeParagraphText(FONTS_SUB['MVC2'], 100, -75, 'png', false)
 
-// Dynamic Arrays FOR ONE font
-// writePointTextForArray(FONTS_MAIN['XVSF'], 72, 0, 'png', false)
-// writeParagraphTextForArray(FONTS_SUB['MVC2'], 72, 0, 'png', false)
+// Arrays FOR ONE font
+// writePointTextForArray(FONTS_MAIN['MVC2'], 500, -50, 'png', false)
+writeParagraphTextForArray(FONTS_SUB['MVC2'], 250, -75, 'png', false)
 
-// Dynamic Arrays FOR EACH font
+// Arrays FOR EACH font
 // writePointTextForArrayAndGame()
 // writeParagraphTextForArrayAndGame()
