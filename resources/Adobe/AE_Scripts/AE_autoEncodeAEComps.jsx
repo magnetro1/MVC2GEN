@@ -49,7 +49,7 @@ for (var fldr = 0; fldr < getDataArr.length; fldr++) {
   var module = rqItem.outputModule(1);
   // Name output file after the fileName from myPaths array
   module.file = File(videoPath + fileName);
-  module.applyTemplate("CineformRGBA"); // doesn't do anything?
+  module.applyTemplate("CineformAlpha"); // doesn't do anything?
   app.project.renderQueue.queueInAME(false); // auto-starts the render
   $.sleep(2400);
 }

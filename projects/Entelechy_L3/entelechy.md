@@ -4,7 +4,7 @@
 
 * Post-Death, make it look like the dummy is supposed to come out from the right side of the screen, when they come out from the left.
 * Ruby, Tron, Rogue-AA, Chain, Trip, Barrel, DHC, Auto-Assist again 1F on DC?
-* Pause On sentinel unblockable
+* Pause On Sentinel unblockable
   
 ## OK ✅
 
